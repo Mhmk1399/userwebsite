@@ -1,5 +1,7 @@
+
 import { promises as fs } from "fs";
 import path from "path";
+
 import {
   BlogSection,
   CollectionSection,
@@ -18,6 +20,9 @@ import {
 } from "@/lib/types";
 import Banner from "@/components/banner";
 import { headers } from "next/headers";
+import SlideShow from "@/components/slideShow";
+import RichText from "@/components/richText";
+import ImageText from "@/components/imageText";
 
 export default async function Page() {
   const getJsonData = async () => {
@@ -123,7 +128,14 @@ export default async function Page() {
     const { jsonData, isMobile } = await getJsonData();
     const sections = extractSections(jsonData);
 
-    return <Banner sections={sections} isMobile={isMobile} />;  
+    return (
+      <>
+        <RichText sections={sections} isMobile={isMobile} /> 
+        <Banner sections={sections} isMobile={isMobile} />
+        <SlideShow sections={sections} isMobile={isMobile} />
+         <ImageText sections={sections} isMobile={isMobile} />
+      </>
+    );
   } catch (error) {
     console.error("Error:", error);
     return <div>Error loading content</div>;
