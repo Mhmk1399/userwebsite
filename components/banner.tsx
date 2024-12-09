@@ -4,15 +4,15 @@ import Image from "next/image";
 import Link from "next/link";
 import {  BannerSection } from "@/lib/types";
 
-import {  useState } from "react";
-
 interface props {
   sections: {
-    banners: BannerSection[];}
+    banners: BannerSection[];},
+    isMobile: boolean;
   }
 
 const SectionBanner = styled.section<{
   $data: BannerSection;
+  $isMobile: boolean;
  }>`
   position: relative;
   height:600px;
@@ -41,6 +41,7 @@ const BannerImage = styled(Image)<{
 
 const BannerTextBox = styled.div<{
   $data: BannerSection;
+  $isMobile: boolean;
 }>`
   position: absolute;
   top: 50%;
@@ -53,7 +54,7 @@ const BannerTextBox = styled.div<{
   opacity: ${(props) => props.$data.blocks.setting.opacityTextBox || "1"};
   background-color: ${(props) =>
     props.$data.blocks.setting.backgroundColorBox || "rgba(0, 0, 0, 0.5)"};
-  padding: 50px 200px;
+  padding: 50px ${(props) => props.$isMobile ? "2px" : "200px"};
   border-radius: ${(props) =>
     props.$data.blocks.setting.backgroundBoxRadious || "10px"};
 `;
@@ -89,8 +90,9 @@ const DescriptionText = styled.p<{
 
 const Banner: React.FC<props> = ({
   sections: { banners },
+  isMobile,
 }) => {
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  
 
 
 
@@ -108,6 +110,7 @@ const Banner: React.FC<props> = ({
     <SectionBanner
       
       $data={sectionData}
+      $isMobile={isMobile}
       
       
     >
@@ -134,6 +137,7 @@ const Banner: React.FC<props> = ({
       </Link>
       <BannerTextBox
         $data={sectionData}
+        $isMobile={isMobile}
        
       >
         <HeadingText

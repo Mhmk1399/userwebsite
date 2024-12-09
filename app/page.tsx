@@ -39,7 +39,7 @@ export default async function Page() {
       );
 
       const jsonData = await fs.readFile(jsonPath, "utf-8");
-      return JSON.parse(jsonData);
+      return { jsonData: JSON.parse(jsonData), isMobile };
     } catch (error) {
       console.error("Error reading JSON file:", error);
       throw error;
@@ -120,10 +120,10 @@ export default async function Page() {
   };
 
   try {
-    const jsonData = await getJsonData();
+    const { jsonData, isMobile } = await getJsonData();
     const sections = extractSections(jsonData);
 
-    return <Banner sections={sections} />;
+    return <Banner sections={sections} isMobile={isMobile} />;  
   } catch (error) {
     console.error("Error:", error);
     return <div>Error loading content</div>;
