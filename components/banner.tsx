@@ -2,20 +2,21 @@
 import styled from "styled-components";
 import Image from "next/image";
 import Link from "next/link";
-import {  BannerSection } from "@/lib/types";
+import { BannerSection } from "@/lib/types";
 
 interface props {
   sections: {
-    banners: BannerSection[];},
-    isMobile: boolean;
-  }
+    banners: BannerSection[];
+  };
+  isMobile: boolean;
+}
 
 const SectionBanner = styled.section<{
   $data: BannerSection;
   $isMobile: boolean;
- }>`
+}>`
   position: relative;
-  height:600px;
+  height: 600px;
   margin: 0px 10px;
   margin-top: ${(props) => props.$data.setting.marginTop}px;
   margin-bottom: ${(props) => props.$data.setting.marginBottom}px;
@@ -26,7 +27,6 @@ const SectionBanner = styled.section<{
   @media (max-width: 768px) {
     height: 300px;
   }
-
 `;
 
 const BannerImage = styled(Image)<{
@@ -36,7 +36,6 @@ const BannerImage = styled(Image)<{
   border-radius: ${(props) =>
     props.$data.blocks.setting.imageRadious || "10px"};
   object-fit: ${(props) => props.$data.blocks.setting.imageBehavior || "cover"};
-  
 `;
 
 const BannerTextBox = styled.div<{
@@ -54,7 +53,7 @@ const BannerTextBox = styled.div<{
   opacity: ${(props) => props.$data.blocks.setting.opacityTextBox || "1"};
   background-color: ${(props) =>
     props.$data.blocks.setting.backgroundColorBox || "rgba(0, 0, 0, 0.5)"};
-  padding: 50px ${(props) => props.$isMobile ? "2px" : "200px"};
+  padding: 50px ${(props) => (props.$isMobile ? "2px" : "200px")};
   border-radius: ${(props) =>
     props.$data.blocks.setting.backgroundBoxRadious || "10px"};
 `;
@@ -63,8 +62,7 @@ const HeadingText = styled.h2<{
   $data: BannerSection;
 }>`
   color: ${(props) => props.$data.blocks.setting.textColor || "#ffffff"};
-  font-size:${(props) =>
-    props.$data.blocks.setting.textFontSize || "18"}px;
+  font-size: ${(props) => props.$data.blocks.setting.textFontSize || "18"}px;
   font-weight: ${(props) =>
     props.$data.blocks.setting.textFontWeight || "bold"};
   text-align: center;
@@ -77,7 +75,7 @@ const DescriptionText = styled.p<{
   $data: BannerSection;
 }>`
   color: ${(props) => props.$data.blocks.setting.descriptionColor || "#ffffff"};
-  font-size:  ${(props) =>
+  font-size: ${(props) =>
     props.$data.blocks.setting.descriptionFontSize || "20"}px;
   font-weight: ${(props) =>
     props.$data.blocks.setting.descriptionFontWeight || "normal"};
@@ -88,35 +86,18 @@ const DescriptionText = styled.p<{
   }
 `;
 
-const Banner: React.FC<props> = ({
-  sections: { banners },
-  isMobile,
-}) => {
+const Banner: React.FC<props> = ({ sections: { banners }, isMobile }) => {
   
-
-
-
   const sectionData = banners[0];
 
-  
   if (!sectionData) {
     return <div>No data available</div>; // or handle this case appropriately
   }
 
   const { description, imageAlt, imageSrc, text } = sectionData?.blocks;
 
-
   return (
-    <SectionBanner
-      
-      $data={sectionData}
-      $isMobile={isMobile}
-      
-      
-    >
-     
-
-
+    <SectionBanner $data={sectionData} $isMobile={isMobile}>
       <Link
         href={sectionData.blocks.imageLink || "/"}
         style={{
@@ -127,29 +108,16 @@ const Banner: React.FC<props> = ({
         }}
       >
         <BannerImage
-         
           $data={sectionData}
           alt={imageAlt || "banner"}
-          src={ "/assets/images/banner2.webp"}
+          src={imageSrc || "/assets/images/banner2.webp"}
           fill
           priority
         />
       </Link>
-      <BannerTextBox
-        $data={sectionData}
-        $isMobile={isMobile}
-       
-      >
-        <HeadingText
-          $data={sectionData}
-        
-        >
-          {text || "سربرگ بنر"}
-        </HeadingText>
-        <DescriptionText
-          $data={sectionData}
-         
-        >
+      <BannerTextBox $data={sectionData} $isMobile={isMobile}>
+        <HeadingText $data={sectionData}>{text || "سربرگ بنر"}</HeadingText>
+        <DescriptionText $data={sectionData}>
           {description || "توضیحات بنر"}
         </DescriptionText>
       </BannerTextBox>
