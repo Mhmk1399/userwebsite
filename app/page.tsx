@@ -1,4 +1,3 @@
-
 import { promises as fs } from "fs";
 import path from "path";
 
@@ -17,12 +16,21 @@ import {
   MultiColumnSection,
   NewsLetterSection,
   RichTextSection,
+  CollapseSection,
 } from "@/lib/types";
-import Banner from "@/components/banner";
 import { headers } from "next/headers";
+import Banner from "@/components/banner";
 import SlideShow from "@/components/slideShow";
 import RichText from "@/components/richText";
 import ImageText from "@/components/imageText";
+import Video from "@/components/video";
+import ContactForm from "@/components/contactForm";
+import NewsLetter from "@/components/newsLetter";
+import CollapseFaq from "@/components/collapseFaq";
+import MultiColumn from "@/components/multiColumn";
+import MultiRow from "@/components/multiRow";
+import { Collection } from "@/components/collection";
+import Footer from "@/components/footer";
 
 export default async function Page() {
   const getJsonData = async () => {
@@ -60,6 +68,7 @@ export default async function Page() {
       Video: [] as VideoSection[],
       ContactForm: [] as ContactFormDataSection[],
       NewsLetter: [] as NewsLetterSection[],
+      CollapseFaq: [] as CollapseSection[],
       MultiColumn: [] as MultiColumnSection[],
       MultiRow: [] as MultiRowSection[],
       Footer: [] as FooterSection[],
@@ -85,6 +94,9 @@ export default async function Page() {
       if (section.type === "ImageText") {
         sections.ImageText.push(section);
       }
+      if (section.type === "CollapseFaq") {
+        sections.CollapseFaq.push(section);
+      }
       if (section.type === "Video") {
         sections.Video.push(section);
       }
@@ -94,7 +106,6 @@ export default async function Page() {
       if (section.type === "NewsLetter") {
         sections.NewsLetter.push(section);
       }
-
       if (section.type === "MultiColumn") {
         sections.MultiColumn.push(section);
       }
@@ -109,7 +120,6 @@ export default async function Page() {
       }
       if (section.type === "Collection") {
         sections.Collection.push(section);
-        console.log(section);
       }
       if (section.type === "Product") {
         sections.Product.push(section);
@@ -130,10 +140,18 @@ export default async function Page() {
 
     return (
       <>
-        <RichText sections={sections} isMobile={isMobile} /> 
+        {/* <RichText sections={sections} isMobile={isMobile} />
         <Banner sections={sections} isMobile={isMobile} />
         <SlideShow sections={sections} isMobile={isMobile} />
-         <ImageText sections={sections} isMobile={isMobile} />
+        <ImageText sections={sections} isMobile={isMobile} /> */}
+        {/* <Video sections={sections} isMobile={isMobile} /> */}
+        {/* <ContactForm sections={sections} isMobile={isMobile} /> */}
+        {/* <NewsLetter sections={sections} isMobile={isMobile} /> */}
+        {/* <CollapseFaq sections={sections} isMobile={isMobile} /> */}
+        {/* <MultiColumn sections={sections} isMobile={isMobile} /> */}
+        {/* <MultiRow sections={sections} isMobile={isMobile} /> */}
+        {/* <Collection sections={sections} isMobile={isMobile} /> */}
+        {/* <Footer sections={sections} isMobile={isMobile} /> */}
       </>
     );
   } catch (error) {
