@@ -2,12 +2,12 @@ import mongoose from "mongoose";
 
 const UserSchema = new mongoose.Schema(
   {
-    firstName: {
+    name: {
       type: String,
       required: true,
     },
 
-    phoneNumber: {
+    phone: {
       type: String,
       required: true,
       unique: true,
@@ -22,6 +22,8 @@ const UserSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+
 
 const User = mongoose.models.User || mongoose.model("User", UserSchema);
 

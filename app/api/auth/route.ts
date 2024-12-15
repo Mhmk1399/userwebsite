@@ -28,11 +28,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Connection failed!" });
   }
   try {
-    const { firstName, phoneNumber, password } = await request.json();
+    const { name, phone, password } = await request.json();
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({
-      firstName,
-      phoneNumber,
+      name,
+      phone,
       password: hashedPassword,
     });
     await newUser.save();

@@ -10,8 +10,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Connection failed!" });
   }
   try {
-    const { phoneNumber, password } = await request.json();
-    const user = await User.findOne({ phoneNumber });
+    const { phone, password } = await request.json();
+    const user = await User.findOne({ phone });
     if (!user) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }

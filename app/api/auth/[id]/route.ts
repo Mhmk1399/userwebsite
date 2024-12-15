@@ -49,15 +49,15 @@ export async function PATCH(
         { status: 400 }
       );
     }
-    const { firstName, phoneNumber, password } = await request.json();
+    const { name, phone, password } = await request.json();
 
     const user = await User.findByIdAndUpdate(id);
     if (!user) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
     const hashedPassword = await bcryptjs.hash(password, 10);
-    user.firstName = firstName;
-    user.phoneNumber = phoneNumber;
+    user.name = name;
+    user.phone = phone;
     user.password = hashedPassword;
     await user.save();
     return NextResponse.json({ message: "User updated successfully" });
