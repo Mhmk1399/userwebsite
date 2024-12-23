@@ -13,10 +13,10 @@ import Footer from "@/components/footer";
 
 export default async function Page() {
   const getData = async () => {
-    console.log('API URL:', process.env.NEXT_PUBLIC_API_URL);
+    console.log("API URL:", process.env.NEXT_PUBLIC_API_URL);
 
     if (!process.env.NEXT_PUBLIC_API_URL) {
-      throw new Error('NEXT_PUBLIC_API_URL is not set');
+      throw new Error("NEXT_PUBLIC_API_URL is not set");
     }
 
     const response = await fetch(
@@ -38,18 +38,18 @@ export default async function Page() {
 
     return (
       <>
-        <RichText sections={sections} isMobile={isMobile} />
         {/* <Banner sections={sections} isMobile={isMobile} /> */}
         <SlideShow sections={sections} isMobile={isMobile} />
+        <RichText sections={sections} isMobile={isMobile} />
         <ImageText sections={sections} isMobile={isMobile} />
         <Video sections={sections} isMobile={isMobile} />
         <ContactForm sections={sections} isMobile={isMobile} />
         <NewsLetter sections={sections} isMobile={isMobile} />
-        <CollapseFaq sections={sections} isMobile={isMobile} />
+        {/* <CollapseFaq sections={sections} isMobile={isMobile} />
         <MultiColumn sections={sections} isMobile={isMobile} />
         <MultiRow sections={sections} isMobile={isMobile} />
         <Collection sections={sections} isMobile={isMobile} />
-        <Footer sections={sections} isMobile={isMobile} />
+        <Footer sections={sections} isMobile={isMobile} /> */}
       </>
     );
   } catch (error) {

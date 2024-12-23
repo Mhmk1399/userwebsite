@@ -6,7 +6,7 @@ import { BannerSection } from "@/lib/types";
 
 interface props {
   sections: {
-    banners: BannerSection[];
+    Banner: BannerSection[];
   };
   isMobile: boolean;
 }
@@ -53,7 +53,7 @@ const BannerTextBox = styled.div<{
   opacity: ${(props) => props.$data.blocks.setting.opacityTextBox || "1"};
   background-color: ${(props) =>
     props.$data.blocks.setting.backgroundColorBox || "rgba(0, 0, 0, 0.5)"};
-  padding: 50px ${(props) => (props.$isMobile ? "2px" : "200px")};
+  padding:  ${(props) => (props.$isMobile ? "2px" : "40px 150px")};
   border-radius: ${(props) =>
     props.$data.blocks.setting.backgroundBoxRadious || "10px"};
 `;
@@ -86,10 +86,8 @@ const DescriptionText = styled.p<{
   }
 `;
 
-const Banner: React.FC<props> = ({ sections: { banners }, isMobile }) => {
-  
-  const sectionData = banners[0];
-
+const Banner: React.FC<props> = ({ sections: { Banner }, isMobile }) => {
+  const sectionData = Banner[0];
   if (!sectionData) {
     return <div>No data available</div>; // or handle this case appropriately
   }

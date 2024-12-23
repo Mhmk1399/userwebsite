@@ -80,6 +80,7 @@ const RichText: React.FC<RichTextProps> = ({
   sections: { RichText },
   isMobile,
 }) => {
+  console.log("Banner array:", RichText);
   
   const sectionData = RichText[0];
 

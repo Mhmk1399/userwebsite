@@ -13,42 +13,32 @@ export async function GET() {
       process.cwd(),
       "public",
       "template",
-      isMobile ? "nullSm.json" : "null.json"
+      isMobile ? "productSm.json" : "product.json"
     );
 
     const jsonData = await fs.readFile(jsonPath, "utf-8");
     const parsedData = JSON.parse(jsonData);
 
     const sections: Record<string, any[]> = {
-      Banner: [],
-      slideshows: [],
-      RichText: [],
-      ImageText: [],
-      Video: [],
-      ContactForm: [],
-      NewsLetter: [],
-      CollapseFaq: [],
-      MultiColumn: [],
-      MultiRow: [],
-      Footer: [],
-      Header: [],
-      Collection: [],
-      Product: [],
-      Blog: [],
+      ProductList: [],
     };
 
-
-    parsedData.sections.children.sections.forEach((section: { type: string }) => {
-      if (section.type in sections) {
-        sections[section.type].push(section);
+    parsedData.children.sections.forEach(
+      (section: { type: string }) => {
+        if (section.type in sections) {
+          sections[section.type].push(section);
+        }
       }
-    });
+    );
 
     console.log("Parsed sections:", sections);
-    console.log("Banner sections:", sections.banner);
+    console.log("Banner sections:", sections.ProductList);
 
     return NextResponse.json({ sections, isMobile });
   } catch (error) {
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

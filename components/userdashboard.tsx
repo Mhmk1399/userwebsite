@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { toast, Toaster } from "react-hot-toast";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 import {
@@ -10,7 +9,6 @@ import {
   FaSignOutAlt,
   FaCog,
   FaEdit,
-  FaSave,
   FaTimes,
 } from "react-icons/fa";
 import { BsCartCheckFill } from "react-icons/bs";

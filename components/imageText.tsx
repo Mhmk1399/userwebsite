@@ -27,8 +27,9 @@ const Section = styled.section<{
   margin-bottom: ${(props) => props.$data.setting?.marginBottom || "0"}px;
   background-color: ${(props) =>
     props.$data.blocks?.setting?.background || "transparent"};
-  // flex-direction: ${(props) => (props.$isMobile ? "column" : "row")};
+  flex-direction: ${(props) => (props.$isMobile ? "column" : "row")};
 `;
+
 
 const Image = styled.img<{
   $data: ImageTextSection;
@@ -106,15 +107,12 @@ const Button = styled.a<{ $data: ImageTextSection }>`
   }
 `;
 
-// Main Component
 const ImageText: React.FC<ImageTextProps> = ({
   sections: { ImageText },
   isMobile,
 }) => {
-  // Find the first section with type "image-text"
   const sectionData = ImageText[0];
 
-  // Fallback for missing or invalid section data
   if (!sectionData) {
     return null;
   }
