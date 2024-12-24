@@ -108,13 +108,12 @@ const Button = styled.a<{ $data: ImageTextSection }>`
 `;
 
 const ImageText: React.FC<ImageTextProps> = ({
-  sections: { ImageText },
+  sections,
   isMobile,
 }) => {
-  const sectionData = ImageText[0];
-
+  const sectionData = sections.find((section) => section.type === "ImageText");
   if (!sectionData) {
-    return null;
+    return <div>No data available</div>;
   }
 
   const { imageSrc, imageAlt, heading, description, btnLink, btnText } =

@@ -122,10 +122,10 @@ const CollapseFaq: React.FC<CollapseFaqProps> = ({
   const [openIndexes, setOpenIndexes] = useState<number[]>([]);
   const [blocks, setBlocks] = useState<CollapseBlock[]>([]);
 
-  const sectionData = CollapseFaq[0];
+  const sectionData = sections.find((section) => section.type === "CollapseFaq");
   if (!sectionData) {
-    return null;
-  }
+    return <div>No data available</div>;
+  }  
   useEffect(() => {
     if (sectionData?.blocks) {
       const blocksArray = Object.keys(sectionData.blocks)

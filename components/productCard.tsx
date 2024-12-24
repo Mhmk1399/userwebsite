@@ -52,7 +52,7 @@ const ProductImage = styled(Image)<{
   object-fit: cover;
   width: ${(props) => props.$settings?.imageWidth || defaultSetting.imageWidth};
   height: ${(props) =>
-    props.$settings?.imageHeight || defaultSetting.imageheight};
+    props.$settings?.imageheight || defaultSetting.imageheight};
   border-radius: ${(props) =>
     props.$settings?.imageRadius || defaultSetting.imageRadius};
   transition: all 0.3s ease;
@@ -96,7 +96,7 @@ const ProductPrice = styled.span<{
   font-size: ${(props) =>
     props.$settings?.priceFontSize || defaultSetting.priceFontSize};
   font-weight: ${(props) =>
-    props.$settings?.priceColor || defaultSetting.pricecolor};
+    props.$settings?.pricecolor || defaultSetting.pricecolor};
   margin: 8px 0;
 `;
 

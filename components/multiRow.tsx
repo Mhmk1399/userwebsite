@@ -144,10 +144,10 @@ const MultiRow: React.FC<MultiRowShowProps> = ({
   sections: { MultiRow },
   isMobile,
 }) => {
-  const sectionData = MultiRow[0];
-
-  if (!sectionData) return null;
-
+  const sectionData = sections.find((section) => section.type === "MultiRow");
+  if (!sectionData) {
+    return <div>No data available</div>;
+  }
   return (
     <Section $isMobile={isMobile} $data={sectionData}>
       <Title $data={sectionData} $isMobile={isMobile}>

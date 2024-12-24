@@ -94,7 +94,7 @@ const ProductList: React.FC<ProductListProps> = ({
     <SectionProductList $data={sectionData} $isMobile={isMobile}>
       {displayProducts.map((block, index) => (
         <div className="p-0 m-0" key={`${block.id}-${index}`}>
-          <ProductCard productData={block} />
+          <ProductCard key={block.id} productData={block} />
         </div>
       ))}
     </SectionProductList>

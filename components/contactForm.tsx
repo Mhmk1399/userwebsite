@@ -115,14 +115,14 @@ const Button = styled.button<{
 
 // ContactForm Component
 const ContactForm: React.FC<ContactFormProps> = ({
-  sections: { ContactForm },
+  sections,
   isMobile,
 }) => {
-  const sectionData = ContactForm[0];
+  
+  const sectionData = sections.find((section) => section.type === "ContactForm");
   if (!sectionData) {
-    return null;
+    return <div>No data available</div>;
   }
-
   return (
     <Section dir="rtl" $data={sectionData} $isMobile={isMobile}>
       <Heading $data={sectionData}>

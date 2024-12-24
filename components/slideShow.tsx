@@ -1,12 +1,12 @@
 "use client";
 import styled from "styled-components";
-import { useState } from "react";
+import React, { useState } from "react";
 import { SlideSection } from "@/lib/types";
 import Link from "next/link";
 
 interface SlideShowProps {
   sections: {
-    slideshows: SlideSection[];
+    SlideShow: SlideSection[];
   };
   isMobile: boolean;
 }
@@ -31,9 +31,11 @@ const SectionSlideShow = styled.section<{
   justify-content: center;
 `;
 
-const SlideContainer = styled.div<{}>`
+const SlideContainer = styled.div<{
+  $isMobile: boolean;
+}>`
   width: 100%;
-  max-width: 1000px;
+  max-width: ${(props) => (props.$isMobile ? "400px" : "800px")};
   overflow: hidden;
   position: relative;
 `;
@@ -67,9 +69,11 @@ const SlideTextBox = styled.div`
 
 const SlideHeading = styled.h3<{
   $data: SlideSection["setting"];
+  $isMobile: boolean;
 }>`
   color: ${(props) => props.$data.textColor || "#000"};
-  font-size: ${(props) => props.$data?.textFontSize || "22"}px;
+  font-size: ${(props) =>
+    props.$isMobile ? "18" : props.$data?.textFontSize || "22"}px;
   font-weight: ${(props) => props.$data.textFontWeight || "bold"};
   margin-top: 5px;
   text-align: center;
@@ -77,16 +81,18 @@ const SlideHeading = styled.h3<{
 
 const SlideDescription = styled.p<{
   $data: SlideSection["setting"];
+  $isMobile: boolean;
 }>`
   color: ${(props) => props.$data.descriptionColor || "#333"};
-  font-size: ${(props) => props.$data?.descriptionFontSize || "22"}px;
+  font-size: ${(props) =>
+    props.$isMobile ? "14" : props.$data?.descriptionFontSize || "22"}px;
   font-weight: ${(props) => props.$data.descriptionFontWeight || "normal"};
   padding: 20px;
   text-align: center;
   margin-top: 5px;
 `;
 
-const NavButton = styled.button<{ $isMobile: boolean }>`
+const NavButton = styled.button`
   position: absolute;
   top: 50%;
   transform: translateY(-250%);
@@ -97,21 +103,21 @@ const NavButton = styled.button<{ $isMobile: boolean }>`
   border-radius: 20%;
   cursor: pointer;
   z-index: 10;
-  // @media (max-width: 425px) {
-  //   transform: translateY(-490%);
-  //   padding: 7px;
-  // }
+  @media (max-width: 425px) {
+    transform: translateY(-390%);
+    padding: 7px;
+  }
   @media (max-width: 768px) {
-    transform: translateY(-360%);
+    transform: translateY(-290%);
     padding: 7px;
   }
 `;
 
-const PrevButton = styled(NavButton)<{ $isMobile: boolean }>`
+const PrevButton = styled(NavButton)`
   left: 5px;
 `;
 
-const NextButton = styled(NavButton)<{ $isMobile: boolean }>`
+const NextButton = styled(NavButton)`
   right: 5px;
 `;
 
@@ -125,16 +131,14 @@ const Button = styled.button<{
   padding: 10px 20px;
 `;
 
-const SlideShow: React.FC<SlideShowProps> = ({
-  sections: { slideshows },
-  isMobile,
-}) => {
-  
+const SlideShow: React.FC<SlideShowProps> = ({ sections, isMobile }) => {
+  console.log(sections);
+
+  const sectionData = sections.find((section) => section.type === "SlideShow");
+  if (!sectionData) {
+    return <div>No data available</div>;
+  }
   const [currentIndex, setCurrentIndex] = useState(0);
-
-  const sectionData = slideshows[0];
-
-  if (!sectionData) return null;
 
   const { blocks } = sectionData;
 
@@ -144,8 +148,8 @@ const SlideShow: React.FC<SlideShowProps> = ({
     setCurrentIndex((prev) => (prev - 1 + blocks.length) % blocks.length);
 
   return (
-    <SectionSlideShow $data={sectionData} $isMobile={isMobile}>
-      <SlideContainer>
+    <SectionSlideShow $isMobile={isMobile} $data={sectionData}>
+      <SlideContainer $isMobile={isMobile}>
         <SlidesWrapper $currentIndex={currentIndex}>
           {blocks.map((slide, index) => (
             <Slide key={index}>
@@ -155,10 +159,13 @@ const SlideShow: React.FC<SlideShowProps> = ({
                 $data={sectionData.setting}
               />
               <SlideTextBox>
-                <SlideHeading $data={sectionData.setting}>
+                <SlideHeading $isMobile={isMobile} $data={sectionData.setting}>
                   {slide.text}
                 </SlideHeading>
-                <SlideDescription $data={sectionData.setting}>
+                <SlideDescription
+                  $isMobile={isMobile}
+                  $data={sectionData.setting}
+                >
                   {slide.description}
                 </SlideDescription>
                 <Button $data={sectionData.setting}>
@@ -171,16 +178,13 @@ const SlideShow: React.FC<SlideShowProps> = ({
                 </Button>
               </SlideTextBox>
             </Slide>
-          ))}
+          ))}{" "}
         </SlidesWrapper>
-        <PrevButton $isMobile={isMobile} onClick={handlePrev}>
-          {"<"}
-        </PrevButton>
-        <NextButton $isMobile={isMobile} onClick={handleNext}>
-          {">"}
-        </NextButton>
+        <PrevButton onClick={handlePrev}>{"<"}</PrevButton>
+        <NextButton onClick={handleNext}>{">"}</NextButton>
       </SlideContainer>
     </SectionSlideShow>
   );
 };
+
 export default SlideShow;

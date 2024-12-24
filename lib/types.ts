@@ -103,7 +103,6 @@ export interface CommonSettings {
   paddingLeft?: string;
   marginRight?: string;
   marginLeft?: string;
-
 }
 
 export interface HeaderBlockSettings extends CommonSettings {
@@ -147,7 +146,6 @@ export interface BannerBlockSettings extends CommonSettings {
   opacityTextBox: string;
   imageRadious: string;
   imageBehavior: string;
-  
 }
 export interface BannerBlock {
   imageSrc: string;
@@ -680,36 +678,29 @@ export interface StoreChildren {
 }
 
 export interface productCard {
-  blocks: any;
-  setting: any;
-  cardBorderRadius?: string;
-  cardBackground?: string;
-  imageWidth?: string;
-  imageHeight?: string;
-  imageRadius?: string;
-  nameFontSize?: string;
-  nameFontWeight?: string;
-  nameColor?: string;
-  descriptionFontSize?: string;
-  descriptionFontWeight?: string;
-  descriptionColor?: string;
-  priceFontSize?: string;
-  priceColor?: string;
-  btnBackgroundColor?: string;
-  btnColor?: string;
+  cardBorderRadius: string;
+  cardBackground: string;
+  imageWidth: string;
+  imageheight: string;
+  imageRadius: string;
+  nameFontSize: string;
+  nameFontWeight: string;
+  nameColor: string;
+  descriptionFontSize: string;
+  descriptionFontWeight: string;
+  descriptionColor: string;
+  priceFontSize: string;
+  pricecolor: string;
+  btnBackgroundColor: string;
+  btnColor: string;
 }
-// export interface ProductCardData {
-//   imageSrc: string[];
-//   imageAlt: string[];
-//   name: string;
-//   description: string;
-//   price: string;
-//   category: string;
-//   status: string;
-//   discount: string;
-//   id: string;
-//   innventory: string;
-// }
+export interface ProductCardData {
+  id: number;
+  name: string;
+  price: number;
+  description: string;
+  imageUrl: string;
+}
 
 export interface ProductImage {
   imageSrc: string;
@@ -719,14 +710,16 @@ export interface ProductCardData {
   images: ProductImage[];
   name: string;
   description: string;
-  price: string;
-  id: string;
+  price: number;
+  id: number;
   category?: string;
   discount?: string;
   status?: string;
   inventory?: string;
   createdAt?: string;
   updatedAt?: string;
+  imageSrc: string;
+  imageAlt: string;
 }
 export interface ProductCardSetting {
   cardBorderRadius?: string;
@@ -902,7 +895,7 @@ export interface BlogChildren {
   order: string[];
 }
 export interface BlogSection {
-  type: "BlogList";  // Changed from string to literal type
+  type: "BlogList"; // Changed from string to literal type
   blocks: BlogBlock[];
   setting: BlogListSetting;
 }

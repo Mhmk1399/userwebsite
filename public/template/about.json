@@ -1,193 +1,190 @@
- {
+{
   "children": {
-      "type": "about",
-      "sections": [
-
-        {
-          "type": "SlideShow",
-          "blocks": [
-            {
-              "imageSrc": "/assets/images/banner3.jpg",
-              "imageAlt": "",
-              "text": "اسلاید اول",
-              "description": "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد",
-              "btnLink": "",
-              "btnText": "دکمه"
-            },
-            {
-              "imageSrc": "/assets/images/banner1.jpg",
-              "imageAlt": "",
-              "text": "اسلاید دوم",
-              "description": "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد",
-              "link": "",
-              "btnText": "دکمه"
-            }
-          ],
-          "setting": {
-            "paddingTop": "20",
-            "paddingBottom": "20",
-            "marginTop": "10",
-            "marginBottom": "10",
-            "descriptionColor": "#E5E5E5",
-            "descriptionFontSize": "16px",
-            "descriptionFontWeight": "normal",
-            "textColor": "#FFFFFF",
-            "textFontSize": "24",
-            "textFontWeight": "bold",
-            "btnTextColor": "#000000",
-            "btnBackgroundColor": "#FCA311",
-            "backgroundColorBox": "#14213D",
-            "backgroundBoxRadius": "40px",
-            "opacityImage": 1,
-            "imageWidth": "700",
-            "imageHeight": "500",
-            "imageRadious": "40px"
-          }
-        },
-        {
-          "type": "RichText",
-          "blocks": {
-            "textHeading": "سربرگ محصول",
-            "description": "توضیحات درباره محصول",
-            "btnText": "دکمه",
-            "btnLink": "/",
-            "setting": {
-              "textHeadingColor": "#FCA311",
-              "textHeadingFontSize": "40px",
-              "textHeadingFontWeight": "bold",
-              "descriptionColor": "#E5E5E5",
-              "descriptionFontSize": "20px",
-              "descriptionFontWeight": "normal",
-              "background": "#14213D",
-              "btnTextColor": "#ffffff",
-              "btnBackgroundColor": "#FCA311"
-            }
-          },
-
-          "setting": {
-            "paddingTop": "35",
-            "paddingBottom": "35",
-            "marginTop": "10",
-            "marginBottom": "10"
-          }
-        },
-        {
-          "type": "ImageText",
-          "blocks": {
+    "type": "about",
+    "sections": [
+      {
+        "type": "SlideShow",
+        "blocks": [
+          {
             "imageSrc": "/assets/images/banner3.jpg",
             "imageAlt": "",
-            "heading": "سربرگ محصول",
-            "description": "توضیحات درباره محصول",
-            "btnLink": "/",
-            "btnText": "دکمه",
-            "setting": {
-              "headingColor": "#FCA311",
-              "headingFontSize": "60",
-              "headingFontWeight": "bold",
-              "descriptionColor": "#E5E5E5",
-              "descriptionFontSize": "29",
-              "descriptionFontWeight": "normal",
-              "btnTextColor": "#14213D",
-              "btnBackgroundColor": "#FFFFFF",
-              "backgroundColorBox": "",
-              "backgroundBoxOpacity": 0.9,
-              "boxRadiuos": "20px",
-              "opacityImage": 1,
-              "imageWidth": "850px",
-              "imageHeight": "700px",
-              "background": "#14213D"
-            }
+            "text": "اسلاید اول",
+            "description": "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد",
+            "btnLink": "",
+            "btnText": "دکمه"
           },
-          "setting": {
-            "paddingTop": "0px",
-            "paddingBottom": "0px",
-            "marginTop": "10000px",
-            "marginBottom": "0px"
+          {
+            "imageSrc": "/assets/images/banner1.jpg",
+            "imageAlt": "",
+            "text": "اسلاید دوم",
+            "description": "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد",
+            "link": "",
+            "btnText": "دکمه"
           }
-        },
-        {
-          "type": "Video",
-          "blocks": {
-            "heading": "سربرگ ویدیو",
-            "videoUrl": "/assets/video/video.mp4",
-            "videoAlt": "",
-            "setting": {
-              "headingColor": "#FCA311",
-              "headingFontSize": "40",
-              "headingFontWeight": "bold",
-              "videoWidth": "1000px",
-              "videoHeight": "700px",
-              "videoRadious": "30",
-              "videoLoop": true,
-              "videoMute": false,
-              "videoAutoplay": true,
-              "videoPoster": "/assets/images/banner2.webp",
-              "backgroundVideoSection": "#FFFFFF"
-            }
-          },
-          "setting": {
-            "paddingTop": "20",
-            "paddingBottom": "20",
-            "marginTop": "10",
-            "marginBottom": "10"
-          }
-        },
-        {
-          "type": "ContactForm",
-          "blocks": {
-            "heading": "فرم ارتباط با ما",
-            "setting": {
-              "headingColor": "#000000",
-              "headingFontSize": "35",
-              "headingFontWeight": "bold",
-              "btnBackgroundColor": "#14213D",
-              "btnTextColor": "#ffffff",
-              "formBackground": "#FCA311"
-            }
-          },
-          "setting": {
-            "paddingTop": "20px",
-            "paddingBottom": "20px",
-            "marginTop": "20px",
-            "marginBottom": "20px"
-          }
-        },
-        {
-          "type": "NewsLetter",
-          "blocks": {
-            "heading": "عضویت در خبرنامه",
-            "description": "توضیحات درباره خبرنامه",
-            "btnText": "ثبت نام",
-
-            "setting": {
-              "headingColor": "#FCA311",
-              "headingFontSize": "27",
-              "headingFontWeight": "bold",
-              "descriptionColor": "#000000",
-              "descriptionFontSize": "18",
-              "descriptionFontWeight": "normal",
-              "btnBackgroundColor": "#FCA311",
-              "btnTextColor": "#14213D",
-              "formBackground": "#E5E5E5"
-            }
-          },
-          "setting": {
-            "paddingTop": "20",
-            "paddingBottom": "20",
-            "marginTop": "20",
-            "marginBottom": "20"
-          }
+        ],
+        "setting": {
+          "paddingTop": "20",
+          "paddingBottom": "20",
+          "marginTop": "10",
+          "marginBottom": "10",
+          "descriptionColor": "#E5E5E5",
+          "descriptionFontSize": "16px",
+          "descriptionFontWeight": "normal",
+          "textColor": "#FFFFFF",
+          "textFontSize": "24",
+          "textFontWeight": "bold",
+          "btnTextColor": "#000000",
+          "btnBackgroundColor": "#FCA311",
+          "backgroundColorBox": "#14213D",
+          "backgroundBoxRadius": "40px",
+          "opacityImage": 1,
+          "imageWidth": "700",
+          "imageHeight": "500",
+          "imageRadious": "40px"
         }
-        
-      ],
-      "order": [
-        "SlideShow",
-        "RichText",
-        "ImageText",
-        "Video",
-        "ContactForm",
-        "NewsLetter"
-        
-      ]
-    }
+      },
+      {
+        "type": "RichText",
+        "blocks": {
+          "textHeading": "سربرگ محصول",
+          "description": "توضیحات درباره محصول",
+          "btnText": "دکمه",
+          "btnLink": "/",
+          "setting": {
+            "textHeadingColor": "#FCA311",
+            "textHeadingFontSize": "40px",
+            "textHeadingFontWeight": "bold",
+            "descriptionColor": "#E5E5E5",
+            "descriptionFontSize": "20px",
+            "descriptionFontWeight": "normal",
+            "background": "#14213D",
+            "btnTextColor": "#ffffff",
+            "btnBackgroundColor": "#FCA311"
+          }
+        },
+
+        "setting": {
+          "paddingTop": "35",
+          "paddingBottom": "35",
+          "marginTop": "10",
+          "marginBottom": "10"
+        }
+      },
+      {
+        "type": "ImageText",
+        "blocks": {
+          "imageSrc": "/assets/images/banner3.jpg",
+          "imageAlt": "",
+          "heading": "سربرگ محصول",
+          "description": "توضیحات درباره محصول",
+          "btnLink": "/",
+          "btnText": "دکمه",
+          "setting": {
+            "headingColor": "#FCA311",
+            "headingFontSize": "60",
+            "headingFontWeight": "bold",
+            "descriptionColor": "#E5E5E5",
+            "descriptionFontSize": "29",
+            "descriptionFontWeight": "normal",
+            "btnTextColor": "#14213D",
+            "btnBackgroundColor": "#FFFFFF",
+            "backgroundColorBox": "",
+            "backgroundBoxOpacity": 0.9,
+            "boxRadiuos": "20px",
+            "opacityImage": 1,
+            "imageWidth": "850px",
+            "imageHeight": "700px",
+            "background": "#14213D"
+          }
+        },
+        "setting": {
+          "paddingTop": "0px",
+          "paddingBottom": "0px",
+          "marginTop": "10000px",
+          "marginBottom": "0px"
+        }
+      },
+      {
+        "type": "Video",
+        "blocks": {
+          "heading": "سربرگ ویدیو",
+          "videoUrl": "/assets/video/video.mp4",
+          "videoAlt": "",
+          "setting": {
+            "headingColor": "#FCA311",
+            "headingFontSize": "40",
+            "headingFontWeight": "bold",
+            "videoWidth": "1000px",
+            "videoHeight": "700px",
+            "videoRadious": "30",
+            "videoLoop": true,
+            "videoMute": false,
+            "videoAutoplay": true,
+            "videoPoster": "/assets/images/banner2.webp",
+            "backgroundVideoSection": "#FFFFFF"
+          }
+        },
+        "setting": {
+          "paddingTop": "20",
+          "paddingBottom": "20",
+          "marginTop": "10",
+          "marginBottom": "10"
+        }
+      },
+      {
+        "type": "ContactForm",
+        "blocks": {
+          "heading": "فرم ارتباط با ما",
+          "setting": {
+            "headingColor": "#000000",
+            "headingFontSize": "35",
+            "headingFontWeight": "bold",
+            "btnBackgroundColor": "#14213D",
+            "btnTextColor": "#ffffff",
+            "formBackground": "#FCA311"
+          }
+        },
+        "setting": {
+          "paddingTop": "20px",
+          "paddingBottom": "20px",
+          "marginTop": "20px",
+          "marginBottom": "20px"
+        }
+      },
+      {
+        "type": "NewsLetter",
+        "blocks": {
+          "heading": "عضویت در خبرنامه",
+          "description": "توضیحات درباره خبرنامه",
+          "btnText": "ثبت نام",
+
+          "setting": {
+            "headingColor": "#FCA311",
+            "headingFontSize": "27",
+            "headingFontWeight": "bold",
+            "descriptionColor": "#000000",
+            "descriptionFontSize": "18",
+            "descriptionFontWeight": "normal",
+            "btnBackgroundColor": "#FCA311",
+            "btnTextColor": "#14213D",
+            "formBackground": "#E5E5E5"
+          }
+        },
+        "setting": {
+          "paddingTop": "20",
+          "paddingBottom": "20",
+          "marginTop": "20",
+          "marginBottom": "20"
+        }
+      }
+    ],
+    "order": [
+      "SlideShow",
+      "RichText",
+      "ImageText",
+      "Video",
+      "ContactForm",
+      "NewsLetter"
+    ]
   }
+}

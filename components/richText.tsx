@@ -77,15 +77,14 @@ const Btn = styled.button<{
 
 // Update the section data assignment with type checking
 const RichText: React.FC<RichTextProps> = ({
-  sections: { RichText },
+  sections,
   isMobile,
 }) => {
-  console.log("Banner array:", RichText);
-  
-  const sectionData = RichText[0];
+  console.log(sections);
 
+  const sectionData = sections.find((section) => section.type === "RichText");
   if (!sectionData) {
-    return null;
+    return <div>No data available</div>;
   }
 
   // Add type guard to verify section type

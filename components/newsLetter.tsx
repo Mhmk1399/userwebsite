@@ -93,13 +93,13 @@ const Button = styled.button<{ $data: NewsLetterSection; $isMobile: boolean }>`
 `;
 
 const NewsLetter: React.FC<NewsLetterProps> = ({
-  sections: { NewsLetter },
+  sections,
   isMobile,
 }) => {
-  const sectionData = NewsLetter[0];
-
-  if (!sectionData) return null;
-
+  const sectionData = sections.find((section) => section.type === "NewsLetter");
+  if (!sectionData) {
+    return <div>No data available</div>;
+  }
   return (
     <Section dir="rtl" $data={sectionData} $isMobile={isMobile}>
       <Heading $data={sectionData} $isMobile={isMobile}>
