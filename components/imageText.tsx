@@ -3,9 +3,7 @@ import styled from "styled-components";
 import { ImageTextSection } from "@/lib/types";
 
 interface ImageTextProps {
-  sections: {
-    ImageText: ImageTextSection[];
-  };
+  sections: ImageTextSection[];
   isMobile: boolean;
 }
 
@@ -29,7 +27,6 @@ const Section = styled.section<{
     props.$data.blocks?.setting?.background || "transparent"};
   flex-direction: ${(props) => (props.$isMobile ? "column" : "row")};
 `;
-
 
 const Image = styled.img<{
   $data: ImageTextSection;
@@ -107,10 +104,7 @@ const Button = styled.a<{ $data: ImageTextSection }>`
   }
 `;
 
-const ImageText: React.FC<ImageTextProps> = ({
-  sections,
-  isMobile,
-}) => {
+const ImageText: React.FC<ImageTextProps> = ({ sections, isMobile }) => {
   const sectionData = sections.find((section) => section.type === "ImageText");
   if (!sectionData) {
     return <div>No data available</div>;

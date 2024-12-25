@@ -3,9 +3,7 @@ import styled from "styled-components";
 import { ContactFormDataSection } from "@/lib/types";
 
 interface ContactFormProps {
-  sections: {
-    ContactForm: ContactFormDataSection[];
-  };
+  sections: ContactFormDataSection[];
   isMobile: boolean;
 }
 
@@ -114,12 +112,10 @@ const Button = styled.button<{
 `;
 
 // ContactForm Component
-const ContactForm: React.FC<ContactFormProps> = ({
-  sections,
-  isMobile,
-}) => {
-  
-  const sectionData = sections.find((section) => section.type === "ContactForm");
+const ContactForm: React.FC<ContactFormProps> = ({ sections, isMobile }) => {
+  const sectionData = sections.find(
+    (section) => section.type === "ContactForm"
+  );
   if (!sectionData) {
     return <div>No data available</div>;
   }

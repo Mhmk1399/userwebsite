@@ -54,7 +54,7 @@ export interface CollapseBlock {
 export interface CollapseSection {
   blocks: CollapseBlock[];
   setting: CollapseBlockSetting;
-  type: "collapse";
+  type: "CollapseFaq";
 }
 
 export interface CommonSettings {
@@ -156,7 +156,7 @@ export interface BannerBlock {
   setting: CommonSettings;
 }
 export interface BannerSection {
-  type: "banner";
+  type: "Banner";
   blocks: BannerBlock;
   setting: CommonSettings;
 }
@@ -199,7 +199,7 @@ export interface MultiColumnSection {
     [key: number]: MultiColumnBlock;
   };
   setting: MultiColumnBlockSetting;
-  type: "multicolumn";
+  type: "MultiColumn";
 }
 
 // Add these new interfaces for Newsletter component
@@ -231,7 +231,7 @@ export interface NewsLetterBlock {
 export interface NewsLetterSection {
   blocks: NewsLetterBlock;
   setting: CommonSettings;
-  type: "newsletter";
+  type: "NewsLetter";
 }
 // Add these new interfaces for RichText component
 
@@ -272,7 +272,7 @@ export interface RichTextBlock {
 export interface RichTextSection {
   blocks: RichTextBlock;
   setting: CommonSettings;
-  type: "rich-text";
+  type: "RichText";
 }
 
 export interface Section {
@@ -319,7 +319,7 @@ export interface ImageTextBlock {
 export interface ImageTextSection {
   blocks: ImageTextBlock;
   setting: CommonSettings;
-  type: "image-text";
+  type: "ImageText";
 }
 
 export interface FooterSection {
@@ -406,7 +406,7 @@ export interface ContactFormProps {
 export interface ImageTextSection {
   blocks: ImageTextBlock;
   setting: CommonSettings;
-  type: "image-text";
+  type: "ImageText";
 }
 
 export interface Children {
@@ -512,7 +512,7 @@ export interface VideoBlock {
 export interface VideoSection {
   blocks: VideoBlock;
   setting: CommonSettings;
-  type: "video";
+  type: "Video";
 }
 
 export interface VideoFormProps {
@@ -548,7 +548,7 @@ export interface ContactFormDataSection {
     paddingLeft?: string;
     paddingRight?: string;
   };
-  type: "contact-form";
+  type: "ContactForm";
 }
 
 // export interface ContactFormProps {
@@ -591,7 +591,7 @@ export interface MultiRowBlock {
 }
 
 export interface MultiRowSection {
-  type: "multiRow";
+  type: "MultiRow";
   title: string;
   blocks: MultiRowBlock[];
   setting: MultiRowBlockSetting;
@@ -659,20 +659,20 @@ export interface ProductListSection {
 }
 
 export interface ProductSection {
-  type: "store";
+  type: "ProductList";
   blocks: ProductListSection[];
   setting: ProductBlockSetting;
 }
 
 export interface ProductStoreLayout {
-  type: "store";
+  type: "ProductList";
   children: {
     sections: ProductListSection[];
     order: string[];
   };
 }
 export interface StoreChildren {
-  type: "store";
+  type: "ProductList";
   sections: ProductSection[];
   order: string[];
 }

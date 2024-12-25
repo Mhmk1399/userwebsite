@@ -5,9 +5,7 @@ import Link from "next/link";
 import { BannerSection } from "@/lib/types";
 
 interface props {
-  sections: {
-    BannerSection: any;
-  };
+  sections: BannerSection[]; // Changed from { SlideShow: SlideSection[] }
   isMobile: boolean;
 }
 
@@ -32,10 +30,11 @@ const SectionBanner = styled.section<{
 const BannerImage = styled(Image)<{
   $data: BannerSection;
 }>`
-  opacity: ${(props) => props.$data.blocks.setting.opacityImage || "1"};
+  opacity: ${(props) => props.$data?.blocks?.setting?.opacityImage || "1"};
   border-radius: ${(props) =>
-    props.$data.blocks.setting.imageRadious || "10px"};
-  object-fit: ${(props) => props.$data.blocks.setting.imageBehavior || "cover"};
+    props.$data?.blocks?.setting?.imageRadious || "10px"};
+  object-fit: ${(props) =>
+    props.$data?.blocks?.setting?.imageBehavior || "cover"};
 `;
 
 const BannerTextBox = styled.div<{
@@ -50,21 +49,21 @@ const BannerTextBox = styled.div<{
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  opacity: ${(props) => props.$data.blocks.setting.opacityTextBox || "1"};
+  opacity: ${(props) => props.$data?.blocks?.setting?.opacityTextBox || "1"};
   background-color: ${(props) =>
-    props.$data.blocks.setting.backgroundColorBox || "rgba(0, 0, 0, 0.5)"};
-  padding: ${(props) => (props.$isMobile ? "2px" : "40px 150px")};
+    props.$data?.blocks?.setting?.backgroundColorBox || "rgba(0, 0, 0, 0.5)"};
+  padding: ${(props) => (props.$isMobile ? "20px" : "40px")};
   border-radius: ${(props) =>
-    props.$data.blocks.setting.backgroundBoxRadious || "10px"};
+    props.$data?.blocks?.setting?.backgroundBoxRadious || "10"}px;
 `;
 
 const HeadingText = styled.h2<{
   $data: BannerSection;
 }>`
-  color: ${(props) => props.$data.blocks.setting.textColor || "#ffffff"};
-  font-size: ${(props) => props.$data.blocks.setting.textFontSize || "18"}px;
+  color: ${(props) => props.$data?.blocks?.setting?.textColor || "#ffffff"};
+  font-size: ${(props) => props.$data?.blocks?.setting?.textFontSize || "18"}px;
   font-weight: ${(props) =>
-    props.$data.blocks.setting.textFontWeight || "bold"};
+    props.$data?.blocks?.setting?.textFontWeight || "bold"};
   text-align: center;
   @media (max-width: 768px) {
     font-size: 28px;
@@ -74,11 +73,12 @@ const HeadingText = styled.h2<{
 const DescriptionText = styled.p<{
   $data: BannerSection;
 }>`
-  color: ${(props) => props.$data.blocks.setting.descriptionColor || "#ffffff"};
+  color: ${(props) =>
+    props.$data?.blocks?.setting?.descriptionColor || "#ffffff"};
   font-size: ${(props) =>
-    props.$data.blocks.setting.descriptionFontSize || "20"}px;
+    props.$data?.blocks?.setting?.descriptionFontSize || "20"}px;
   font-weight: ${(props) =>
-    props.$data.blocks.setting.descriptionFontWeight || "normal"};
+    props.$data?.blocks?.setting?.descriptionFontWeight || "normal"};
   margin-top: 14px;
   text-align: center;
   @media (max-width: 768px) {

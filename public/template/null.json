@@ -59,10 +59,10 @@
               "textFontSize": "30",
               "textFontWeight": "bold",
               "backgroundColorBox": "#14213D",
-              "backgroundBoxRadious": "10px",
+              "backgroundBoxRadious": "10",
               "opacityImage": 1,
               "opacityTextBox": 1,
-              "imageRadious": "14px",
+              "imageRadious": "14",
               "imageBehavior": "cover"
             }
           },

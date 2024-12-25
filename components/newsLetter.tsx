@@ -3,9 +3,7 @@ import styled from "styled-components";
 import { NewsLetterSection } from "@/lib/types";
 
 interface NewsLetterProps {
-  sections: {
-    NewsLetter: NewsLetterSection[];
-  };
+  sections: NewsLetterSection[]; // Changed from { SlideShow: SlideSection[] }
   isMobile: boolean;
 }
 
@@ -92,14 +90,12 @@ const Button = styled.button<{ $data: NewsLetterSection; $isMobile: boolean }>`
   }
 `;
 
-const NewsLetter: React.FC<NewsLetterProps> = ({
-  sections,
-  isMobile,
-}) => {
+const NewsLetter: React.FC<NewsLetterProps> = ({ sections, isMobile }) => {
   const sectionData = sections.find((section) => section.type === "NewsLetter");
   if (!sectionData) {
     return <div>No data available</div>;
   }
+
   return (
     <Section dir="rtl" $data={sectionData} $isMobile={isMobile}>
       <Heading $data={sectionData} $isMobile={isMobile}>

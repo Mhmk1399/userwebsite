@@ -3,9 +3,7 @@ import { MultiColumnSection } from "@/lib/types";
 import styled from "styled-components";
 
 interface MultiColumnProps {
-  sections: {
-    MultiColumn: MultiColumnSection[];
-  };
+  sections: MultiColumnSection[];
   isMobile: boolean;
 }
 
@@ -148,11 +146,10 @@ const Button = styled.a<{ $data: MultiColumnSection }>`
   }
 `;
 
-const MultiColumn: React.FC<MultiColumnProps> = ({
-  sections: { MultiColumn },
-  isMobile,
-}) => {
-  const sectionData = sections.find((section) => section.type === "MultiColumn");
+const MultiColumn: React.FC<MultiColumnProps> = ({ sections, isMobile }) => {
+  const sectionData = sections.find(
+    (section) => section.type === "MultiColumn"
+  );
   if (!sectionData) {
     return <div>No data available</div>;
   }

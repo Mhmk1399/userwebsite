@@ -3,9 +3,7 @@ import { MultiRowSection, MultiRowBlock } from "@/lib/types";
 import styled from "styled-components";
 
 interface MultiRowShowProps {
-  sections: {
-    MultiRow: MultiRowSection[];
-  };
+  sections: MultiRowSection[];
   isMobile: boolean;
 }
 
@@ -140,10 +138,7 @@ const Button = styled.a<{
   }
 `;
 
-const MultiRow: React.FC<MultiRowShowProps> = ({
-  sections: { MultiRow },
-  isMobile,
-}) => {
+const MultiRow: React.FC<MultiRowShowProps> = ({ sections, isMobile }) => {
   const sectionData = sections.find((section) => section.type === "MultiRow");
   if (!sectionData) {
     return <div>No data available</div>;

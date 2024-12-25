@@ -1,94 +1,117 @@
 {
-    "children": {
-        "type": "about",
-        "sections": [
-          {
-            "type": "ImageText",
-            "blocks": {
-              "imageSrc": "/assets/images/banner3.jpg",
-              "imageAlt": "",
-              "heading": "سربرگ محصول",
-              "description": "توضیحات درباره محصول",
-              "btnLink": "/",
-              "btnText": "دکمه",
-              "setting": {
-                "headingColor": "#FCA311",
-                "headingFontSize": "60",
-                "headingFontWeight": "bold",
-                "descriptionColor": "#E5E5E5",
-                "descriptionFontSize": "29",
-                "descriptionFontWeight": "normal",
-                "btnTextColor": "#14213D",
-                "btnBackgroundColor": "#FFFFFF",
-                "backgroundColorBox": "",
-                "backgroundBoxOpacity": 0.9,
-                "boxRadiuos": "20px",
-                "opacityImage": 1,
-                "imageWidth": "850px",
-                "imageHeight": "700px",
-                "background": "#14213D"
-              }
-            },
-            "setting": {
-              "paddingTop": "0px",
-              "paddingBottom": "0px",
-              "marginTop": "10000px",
-              "marginBottom": "0px"
-            }
-          },
-          {
-            "type": "ContactForm",
-            "blocks": {
-              "heading": "فرم ارتباط با ما",
-              "setting": {
-                "headingColor": "#000000",
-                "headingFontSize": "35",
-                "headingFontWeight": "bold",
-                "btnBackgroundColor": "#14213D",
-                "btnTextColor": "#ffffff",
-                "formBackground": "#FCA311"
-              }
-            },
-            "setting": {
-              "paddingTop": "20px",
-              "paddingBottom": "20px",
-              "marginTop": "20px",
-              "marginBottom": "20px"
-            }
-          },
-          {
-            "type": "NewsLetter",
-            "blocks": {
-              "heading": "عضویت در خبرنامه",
-              "description": "توضیحات درباره خبرنامه",
-              "btnText": "ثبت نام",
-  
-              "setting": {
-                "headingColor": "#FCA311",
-                "headingFontSize": "27",
-                "headingFontWeight": "bold",
-                "descriptionColor": "#000000",
-                "descriptionFontSize": "18",
-                "descriptionFontWeight": "normal",
-                "btnBackgroundColor": "#FCA311",
-                "btnTextColor": "#14213D",
-                "formBackground": "#E5E5E5"
-              }
-            },
-            "setting": {
-              "paddingTop": "20",
-              "paddingBottom": "20",
-              "marginTop": "20",
-              "marginBottom": "20"
-            }
+  "children": {
+    "type": "about",
+    "sections": [
+      {
+        "type": "ImageText",
+        "blocks": {
+          "imageSrc": "/assets/images/banner3.jpg",
+          "imageAlt": "",
+          "heading": "سربرگ محصول",
+          "description": "توضیحات درباره محصول",
+          "btnLink": "/",
+          "btnText": "دکمه",
+          "setting": {
+            "headingColor": "#FCA311",
+            "headingFontSize": "60",
+            "headingFontWeight": "bold",
+            "descriptionColor": "#E5E5E5",
+            "descriptionFontSize": "29",
+            "descriptionFontWeight": "normal",
+            "btnTextColor": "#14213D",
+            "btnBackgroundColor": "#FFFFFF",
+            "backgroundColorBox": "",
+            "backgroundBoxOpacity": 0.9,
+            "boxRadiuos": "20px",
+            "opacityImage": 1,
+            "imageWidth": "850px",
+            "imageHeight": "700px",
+            "background": "#14213D"
           }
-          
-        ],
-        "order": [
-          "ImageText",
-          "ContactForm",
-          "NewsLetter"
-          
-        ]
+        },
+        "setting": {
+          "paddingTop": "10",
+          "paddingBottom": "10",
+          "marginTop": "10",
+          "marginBottom": "0"
+        }
+      },
+      {
+        "type": "Banner",
+        "blocks": {
+          "imageSrc": "/assets/images/ban.jpg",
+          "imageAlt": "",
+          "text": "سربرگ بنر",
+          "description": " توضیحات بنر",
+          "setting": {
+            "descriptionColor": "#E5E5E5",
+            "descriptionFontSize": "15",
+            "descriptionFontWeight": "normal",
+            "textColor": "#FCA311",
+            "textFontSize": "30",
+            "textFontWeight": "bold",
+            "backgroundColorBox": "#14213D",
+            "backgroundBoxRadious": "10",
+            "opacityImage": 1,
+            "opacityTextBox": 1,
+            "imageRadious": "14",
+            "imageBehavior": "cover"
+          }
+        },
+        "setting": {
+          "paddingTop": "0",
+          "paddingBottom": "0",
+          "marginTop": "20",
+          "marginBottom": "80"
+        }
+      },
+      {
+        "type": "ContactForm",
+        "blocks": {
+          "heading": "فرم ارتباط با ما",
+          "setting": {
+            "headingColor": "#000000",
+            "headingFontSize": "35",
+            "headingFontWeight": "bold",
+            "btnBackgroundColor": "#14213D",
+            "btnTextColor": "#ffffff",
+            "formBackground": "#FCA311"
+          }
+        },
+        "setting": {
+          "paddingTop": "20px",
+          "paddingBottom": "20px",
+          "marginTop": "20px",
+          "marginBottom": "20px"
+        }
+      },
+      {
+        "type": "NewsLetter",
+        "blocks": {
+          "heading": "عضویت در خبرنامه",
+          "description": "توضیحات درباره خبرنامه",
+          "btnText": "ثبت نام",
+
+          "setting": {
+            "headingColor": "#FCA311",
+            "headingFontSize": "27",
+            "headingFontWeight": "bold",
+            "descriptionColor": "#000000",
+            "descriptionFontSize": "18",
+            "descriptionFontWeight": "normal",
+            "btnBackgroundColor": "#FCA311",
+            "btnTextColor": "#14213D",
+            "formBackground": "#E5E5E5"
+          }
+        },
+        "setting": {
+          "paddingTop": "20",
+          "paddingBottom": "20",
+          "marginTop": "20",
+          "marginBottom": "20"
+        }
       }
-    }
+    ],
+    "order": ["ImageText", "ContactForm", "NewsLetter", "Banner"]
+  }
+}

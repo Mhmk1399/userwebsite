@@ -47,9 +47,9 @@
         {
           "type": "Banner",
           "blocks": {
-            "imageSrc": "/assets/images/pro1.jpg",
+            "imageSrc": "/assets/images/ban.jpg",
             "imageAlt": "",
-            "text": "سربرگ بنر sm",
+            "text": "سربرگ بنر",
             "description": " توضیحات بنر",
             "setting": {
               "descriptionColor": "#000000",
@@ -59,7 +59,7 @@
               "textFontSize": "30",
               "textFontWeight": "bold",
               "backgroundColorBox": "#e4e4e4",
-              "backgroundBoxRadious": "10px",
+              "backgroundBoxRadious": "10",
               "opacityImage": 1,
               "opacityTextBox": 1,
               "imageRadious": "14",
@@ -70,9 +70,7 @@
             "paddingTop": "0",
             "paddingBottom": "0",
             "marginTop": "20",
-            "marginBottom": "80",
-            "paddinRight": "0",
-            "paddinLeft": "0"
+            "marginBottom": "80"
           }
         },
         {
@@ -91,7 +89,7 @@
               "imageAlt": "",
               "text": "اسلاید دوم",
               "description": "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد",
-              "link": "",
+              "link": "#",
               "btnText": "دکمه"
             }
           ],
@@ -100,20 +98,22 @@
             "paddingBottom": "20",
             "marginTop": "10",
             "marginBottom": "10",
+            "paddinRight": "0",
+            "paddinLeft": "0",
             "descriptionColor": "#E5E5E5",
-            "descriptionFontSize": "16px",
+            "descriptionFontSize": "16",
             "descriptionFontWeight": "normal",
             "textColor": "#FFFFFF",
             "textFontSize": "24",
             "textFontWeight": "bold",
-            "btnTextColor": "#000000",
+            "btnTextColor": "#ffffff",
             "btnBackgroundColor": "#FCA311",
             "backgroundColorBox": "#14213D",
-            "backgroundBoxRadius": "40px",
+            "backgroundBoxRadius": "40",
             "opacityImage": 1,
             "imageWidth": "700",
             "imageHeight": "500",
-            "imageRadious": "40px"
+            "imageRadious": "40"
           }
         },
         {
@@ -125,10 +125,10 @@
             "btnLink": "/",
             "setting": {
               "textHeadingColor": "#FCA311",
-              "textHeadingFontSize": "20",
+              "textHeadingFontSize": "40",
               "textHeadingFontWeight": "bold",
               "descriptionColor": "#E5E5E5",
-              "descriptionFontSize": "15",
+              "descriptionFontSize": "18",
               "descriptionFontWeight": "normal",
               "background": "#14213D",
               "btnTextColor": "#ffffff",
@@ -137,10 +137,12 @@
           },
 
           "setting": {
-            "paddingTop": "35",
-            "paddingBottom": "35",
-            "marginTop": "10",
-            "marginBottom": "10"
+            "paddingTop": "30",
+            "paddingBottom": "30",
+            "marginTop": "20",
+            "marginBottom": "20",
+            "paddinRight": "0",
+            "paddinLeft": "0"
           }
         },
         {
@@ -171,10 +173,12 @@
             }
           },
           "setting": {
-            "paddingTop": "0px",
-            "paddingBottom": "0px",
-            "marginTop": "10000px",
-            "marginBottom": "0px"
+            "paddingTop": "30",
+            "paddingBottom": "30",
+            "marginTop": "20",
+            "marginBottom": "20",
+            "paddinRight": "0",
+            "paddinLeft": "0"
           }
         },
         {
@@ -198,10 +202,12 @@
             }
           },
           "setting": {
-            "paddingTop": "20",
-            "paddingBottom": "20",
-            "marginTop": "10",
-            "marginBottom": "10"
+            "paddingTop": "30",
+            "paddingBottom": "30",
+            "marginTop": "20",
+            "marginBottom": "20",
+            "paddinRight": "0",
+            "paddinLeft": "0"
           }
         },
         {
@@ -218,10 +224,12 @@
             }
           },
           "setting": {
-            "paddingTop": "20px",
-            "paddingBottom": "20px",
-            "marginTop": "20px",
-            "marginBottom": "20px"
+            "paddingTop": "30",
+            "paddingBottom": "30",
+            "marginTop": "20",
+            "marginBottom": "20",
+            "paddinRight": "0",
+            "paddinLeft": "0"
           }
         },
         {
@@ -244,10 +252,12 @@
             }
           },
           "setting": {
-            "paddingTop": "20",
-            "paddingBottom": "20",
+            "paddingTop": "30",
+            "paddingBottom": "30",
             "marginTop": "20",
-            "marginBottom": "20"
+            "marginBottom": "20",
+            "paddinRight": "0",
+            "paddinLeft": "0"
           }
         },
         {
@@ -304,10 +314,12 @@
             }
           ],
           "setting": {
-            "paddingTop": "20",
-            "paddingBottom": "20",
-            "marginTop": "10",
-            "marginBottom": "10",
+            "paddingTop": "30",
+            "paddingBottom": "30",
+            "marginTop": "20",
+            "marginBottom": "20",
+            "paddinRight": "0",
+            "paddinLeft": "0",
             "headingColor": "#ffffff",
             "headingFontSize": "30",
             "headingFontWeight": "bold",
@@ -345,10 +357,12 @@
           ],
           "setting": {
             "heading": "سربرگ ستون ها",
-            "paddingTop": "20",
-            "paddingBottom": "20",
+            "paddingTop": "30",
+            "paddingBottom": "30",
             "marginTop": "20",
             "marginBottom": "20",
+            "paddinRight": "0",
+            "paddinLeft": "0",
             "backgroundColorBox": "#E5E5E5",
             "headingFontSize": "40",
             "headingFontWeight": "bold",
@@ -400,10 +414,12 @@
             "titleColor": "#000000",
             "titleFontWeight": "bold",
             "titleFontSize": "35",
-            "paddingTop": "20",
-            "paddingBottom": "20",
+            "paddingTop": "30",
+            "paddingBottom": "30",
             "marginTop": "20",
             "marginBottom": "20",
+            "paddinRight": "0",
+            "paddinLeft": "0",
             "backgroundColorMultiRow": "#FCA311",
             "backgroundColorBox": "#14213D",
             "imageWidth": "500",

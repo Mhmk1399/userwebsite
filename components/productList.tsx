@@ -5,9 +5,7 @@ import ProductCard from "./productCard";
 import { useEffect, useState } from "react";
 
 interface ProductListProps {
-  sections: {
-    ProductList: ProductSection[];
-  };
+  sections: ProductSection[];
   isMobile: boolean;
 }
 
@@ -36,10 +34,7 @@ const SectionProductList = styled.section<{
   }
 `;
 
-const ProductList: React.FC<ProductListProps> = ({
-  sections: { ProductList },
-  isMobile,
-}) => {
+const ProductList: React.FC<ProductListProps> = ({ sections, isMobile }) => {
   const [productData, setProductData] = useState<ProductCardData[]>([]);
 
   useEffect(() => {
@@ -69,12 +64,12 @@ const ProductList: React.FC<ProductListProps> = ({
     fetchProducts();
   }, []);
 
-  const sectionData = ProductList[0];
-
-  console.log(sectionData, "sectionData PPPPP");
+  const sectionData = sections.find(
+    (section) => section.type === "ProductList"
+  );
 
   if (!sectionData) {
-    return null;
+    return <div>No data available</div>;
   }
   const displayProducts =
     productData.length > 0

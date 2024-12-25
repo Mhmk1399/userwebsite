@@ -1,13 +1,11 @@
 "use client";
 import styled from "styled-components";
 import React, { useState } from "react";
-import { SlideSection } from "@/lib/types";
+import { SlideSection, SlideBlock } from "@/lib/types";
 import Link from "next/link";
 
 interface SlideShowProps {
-  sections: {
-    SlideShow: SlideSection[];
-  };
+  sections: SlideSection[];
   isMobile: boolean;
 }
 
@@ -134,7 +132,10 @@ const Button = styled.button<{
 const SlideShow: React.FC<SlideShowProps> = ({ sections, isMobile }) => {
   console.log(sections);
 
-  const sectionData = sections.find((section) => section.type === "SlideShow");
+  const sectionData = sections.find(
+    (section) => section.type.toLowerCase() === "slideshow"
+  );
+
   if (!sectionData) {
     return <div>No data available</div>;
   }
@@ -151,7 +152,7 @@ const SlideShow: React.FC<SlideShowProps> = ({ sections, isMobile }) => {
     <SectionSlideShow $isMobile={isMobile} $data={sectionData}>
       <SlideContainer $isMobile={isMobile}>
         <SlidesWrapper $currentIndex={currentIndex}>
-          {blocks.map((slide, index) => (
+          {blocks.map((slide: SlideBlock, index: number) => (
             <Slide key={index}>
               <SlideImage
                 src={slide.imageSrc}

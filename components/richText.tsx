@@ -4,9 +4,7 @@ import Link from "next/link";
 import styled from "styled-components";
 
 interface RichTextProps {
-  sections: {
-    RichText: RichTextSection[];
-  };
+  sections: RichTextSection[];
   isMobile: boolean;
 }
 
@@ -76,10 +74,7 @@ const Btn = styled.button<{
 `;
 
 // Update the section data assignment with type checking
-const RichText: React.FC<RichTextProps> = ({
-  sections,
-  isMobile,
-}) => {
+const RichText: React.FC<RichTextProps> = ({ sections, isMobile }) => {
   console.log(sections);
 
   const sectionData = sections.find((section) => section.type === "RichText");

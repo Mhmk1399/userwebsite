@@ -3,9 +3,7 @@ import styled from "styled-components";
 import { VideoSection } from "@/lib/types";
 
 interface VideoProps {
-  sections: {
-    Video: VideoSection[];
-  };
+  sections: VideoSection[];
   isMobile: boolean;
 }
 
