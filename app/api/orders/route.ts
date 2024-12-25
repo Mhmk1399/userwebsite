@@ -1,24 +1,17 @@
-import { NextResponse } from "next/server";
-import Order from "@/models/orders";
-import connect from "@/lib/data";
+import { NextResponse } from 'next/server'
+import connect from '@/lib/data'
+import  Order  from '@/models/orders'
 
-// CREATE Order
-export async function POST(req: Request) {
+
+export async function POST (req: Request) {
     await connect();
-    if (!connect) {
-        return NextResponse.json({ error: "Connection failed!" });
-    }
+    const body = await req.json()
+    const order = new Order(body)
+    await order.save()
+    
 
-    const body = await req.json();
-    if (!body) {
-        return NextResponse.json({ error: "Data is required" }, { status: 400 });
-    }
-    try {
-        const order = await Order.create(body);
-        return NextResponse.json(order, { status: 201 });
-    } catch (error) {
-        console.error("Error creating order:", error);
-        return NextResponse.json({ error: "Failed to create order" }, { status: 500 });
-    }
-}
 
+
+
+    return new Response('Hello, Next.js!')
+  }

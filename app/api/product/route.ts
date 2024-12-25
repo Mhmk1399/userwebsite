@@ -1,11 +1,18 @@
 import connect from "@/lib/data";
 import { NextResponse } from "next/server";
 import Products from "../../../models/product";
+import fs from "fs";
 
 export async function GET(request: Request) {
   try {
     await connect();
-    const products = await Products.find();
+    const storeId = fs.readFileSync("storeId.txt", "utf-8");
+    console.log(storeId);
+
+    const products = await Products.find({ storeId });
+
+
+    
     return NextResponse.json({ products }, { status: 200 });
   } catch (error) {
     console.error("Error fetching products:", error);

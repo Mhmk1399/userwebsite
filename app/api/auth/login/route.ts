@@ -26,7 +26,8 @@ export async function POST(request: Request) {
     if (!jwtSecret) {
       throw new Error("JWT_SECRET is not defined");
     }
-    const token = jwt.sign({ userId: user._id }, jwtSecret, {
+    const storeId = user.storeId;
+    const token = jwt.sign({ userId: user._id ,storeId:storeId}, jwtSecret, {
       expiresIn: "1h",
     });
 
