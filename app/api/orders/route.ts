@@ -22,21 +22,3 @@ export async function POST(req: Request) {
     }
 }
 
-// GET All Orders
-export async function GET() {
-    await connect();
-    if (!connect) {
-        return NextResponse.json({ error: "Connection failed!" });
-    }
-    try {
-
-        const orders = await Order.find()
-            .populate('userId')
-            .populate('products.productId');
-        return NextResponse.json(orders);
-    }
-    catch (error) {
-        console.error("Error fetching orders:", error);
-        return NextResponse.json({ error: "Failed to fetch orders" }, { status: 500 });
-    }
-}

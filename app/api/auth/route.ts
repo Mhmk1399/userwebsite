@@ -2,8 +2,13 @@ import { NextResponse } from "next/server";
 import connect from "@/lib/data";
 import User from "../../../models/storesUsers";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import fs from "fs";
 
-// const jwt = require("jsonwebtoken");
+interface CustomJwtPayload extends jwt.JwtPayload {
+  storeId: string;
+}
+
 
 export async function GET(request: Request) {
   await connect();
@@ -27,11 +32,16 @@ export async function POST(request: Request) {
   if (!connect) {
     return NextResponse.json({ error: "Connection failed!" });
   }
+
+
   try {
     const { name, phone, password } = await request.json();
+    const storeId = fs.readFileSync("storeId.txt", "utf-8");
+    console.log(storeId);
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({
       name,
+      storeId,
       phone,
       password: hashedPassword,
     });
