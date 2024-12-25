@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import connect from "@/lib/data";
-import User from "../../../models/user";
+import User from "../../../models/storesUsers";
 import bcrypt from "bcryptjs";
 
 // const jwt = require("jsonwebtoken");

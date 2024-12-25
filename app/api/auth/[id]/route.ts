@@ -1,4 +1,4 @@
-import User from "../../../../models/user";
+import User from "../../../../models/storesUsers";
 import connect from "@/lib/data";
 import { NextRequest, NextResponse } from "next/server";
 import bcryptjs from "bcryptjs";
