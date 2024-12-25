@@ -1,5 +1,5 @@
 import connect from "@/lib/data";
-import User from "@/models/user";
+import User from "@/models/storesUsers";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
@@ -30,7 +30,7 @@ export async function POST(request: Request) {
       expiresIn: "1h",
     });
 
-    const redirectUrl = "http://localhost:3001";
+    const redirectUrl = "/";
 
     return NextResponse.json({
       token,
