@@ -28,7 +28,7 @@
           "marginTop": "10",
           "marginBottom": "10",
           "descriptionColor": "#E5E5E5",
-          "descriptionFontSize": "16px",
+          "descriptionFontSize": "16",
           "descriptionFontWeight": "normal",
           "textColor": "#FFFFFF",
           "textFontSize": "24",
@@ -36,11 +36,11 @@
           "btnTextColor": "#000000",
           "btnBackgroundColor": "#FCA311",
           "backgroundColorBox": "#14213D",
-          "backgroundBoxRadius": "40px",
+          "backgroundBoxRadius": "40",
           "opacityImage": 1,
           "imageWidth": "700",
           "imageHeight": "500",
-          "imageRadious": "40px"
+          "imageRadious": "40"
         }
       },
       {
@@ -52,10 +52,10 @@
           "btnLink": "/",
           "setting": {
             "textHeadingColor": "#FCA311",
-            "textHeadingFontSize": "40px",
+            "textHeadingFontSize": "40",
             "textHeadingFontWeight": "bold",
             "descriptionColor": "#E5E5E5",
-            "descriptionFontSize": "20px",
+            "descriptionFontSize": "20",
             "descriptionFontWeight": "normal",
             "background": "#14213D",
             "btnTextColor": "#ffffff",
@@ -92,16 +92,16 @@
             "backgroundBoxOpacity": 0.9,
             "boxRadiuos": "20px",
             "opacityImage": 1,
-            "imageWidth": "850px",
-            "imageHeight": "700px",
+            "imageWidth": "850",
+            "imageHeight": "700",
             "background": "#14213D"
           }
         },
         "setting": {
-          "paddingTop": "0px",
-          "paddingBottom": "0px",
-          "marginTop": "10000px",
-          "marginBottom": "0px"
+          "paddingTop": "10",
+          "paddingBottom": "10",
+          "marginTop": "10",
+          "marginBottom": "10"
         }
       },
       {
@@ -114,8 +114,8 @@
             "headingColor": "#FCA311",
             "headingFontSize": "40",
             "headingFontWeight": "bold",
-            "videoWidth": "1000px",
-            "videoHeight": "700px",
+            "videoWidth": "1000",
+            "videoHeight": "700",
             "videoRadious": "30",
             "videoLoop": true,
             "videoMute": false,
@@ -145,10 +145,10 @@
           }
         },
         "setting": {
-          "paddingTop": "20px",
-          "paddingBottom": "20px",
-          "marginTop": "20px",
-          "marginBottom": "20px"
+          "paddingTop": "20",
+          "paddingBottom": "20",
+          "marginTop": "20",
+          "marginBottom": "20"
         }
       },
       {

@@ -4,13 +4,7 @@ import { motion } from "framer-motion";
 import { toast, Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
-import {
-  FaUser,
-  FaSignOutAlt,
-  FaCog,
-  FaEdit,
-  FaTimes,
-} from "react-icons/fa";
+import { FaUser, FaSignOutAlt, FaCog, FaEdit, FaTimes } from "react-icons/fa";
 import { BsCartCheckFill } from "react-icons/bs";
 
 interface Order {
@@ -50,6 +44,7 @@ const Dashboard = () => {
       try {
         const response = await fetch("/api/auth", {
           method: "GET",
+
           headers: {
             "Content-Type": "application/json",
           },
@@ -290,8 +285,6 @@ const Dashboard = () => {
             <label className="text-white block mb-2">شماره تماس</label>
             <input
               type="tel"
-
-              
               value={formData.phone}
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, phone: e.target.value }))
@@ -454,7 +447,7 @@ const Dashboard = () => {
               >
                 انصراف
               </button>
-            
+
               <button
                 onClick={() => {
                   setIsModalOpen(false);

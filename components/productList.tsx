@@ -40,7 +40,7 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile }) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch("/api/products", {
+        const response = await fetch("/api/product", {
           method: "GET",
           headers: { "Content-Type": "application/json" },
         });
@@ -57,7 +57,7 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile }) => {
           setProductData(productInfo);
         }
       } catch (error) {
-        console.error("Error fetching products:", error);
+        console.log("Error fetching products:", error);
       }
     };
 

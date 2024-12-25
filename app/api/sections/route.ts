@@ -9,6 +9,8 @@ export async function GET(request: Request) {
     const userAgent = headersList.get("user-agent") || "";
     const isMobile = /mobile|android|iphone|ipad|phone/i.test(userAgent);
 
+    console.log("User Agent:", userAgent);
+
     const url = new URL(request.url);
     const routePath = url.href.split("?").pop() || "home";
 
@@ -18,7 +20,7 @@ export async function GET(request: Request) {
       home: { lg: "null.json", sm: "nullSm.json" },
       about: { lg: "about.json", sm: "aboutSm.json" },
       contact: { lg: "contact.json", sm: "contactSm.json" },
-      products: { lg: "products.json", sm: "productsSm.json" },
+      store: { lg: "product.json", sm: "productSm.json" },
     };
 
     const template = templateMap[routePath] || {
@@ -34,7 +36,7 @@ export async function GET(request: Request) {
       "template",
       isMobile ? template.sm : template.lg
     );
-    // console.log('jsonPath:', jsonPath);
+    console.log('jsonPath:', jsonPath);
 
     const jsonData = await fs.readFile(jsonPath, "utf-8");
     const parsedData = JSON.parse(jsonData);
@@ -52,25 +54,25 @@ export async function GET(request: Request) {
       MultiRow: [],
       Header: [],
       Collection: [],
-      Product: [],
       Blog: [],
+      ProductList: [],
     };
-if(routePath === 'home') {
-    parsedData.sections.children.sections.forEach(
-      (section: { type: string }) => {
+    if (routePath === "home") {
+      parsedData.sections.children.sections.forEach(
+        (section: { type: string }) => {
+          if (section.type in sections) {
+            sections[section.type].push(section);
+          }
+        }
+      );
+    } else {
+      parsedData.children.sections.forEach((section: { type: string }) => {
         if (section.type in sections) {
           sections[section.type].push(section);
         }
-      }
-    );
-  } else {  parsedData.children.sections.forEach(
-    (section: { type: string }) => {
-      if (section.type in sections) {
-        sections[section.type].push(section);
-      }
+      });
     }
-  )}
- 
+
     let Children;
     if (routePath === "home") {
       Children = parsedData.sections.children;

@@ -25,18 +25,24 @@ const Section = styled.section<{
   margin-bottom: ${(props) => props.$data.setting?.marginBottom || "0"}px;
   background-color: ${(props) =>
     props.$data.blocks?.setting?.background || "transparent"};
-  flex-direction: ${(props) => (props.$isMobile ? "column" : "row")};
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 
 const Image = styled.img<{
   $data: ImageTextSection;
 }>`
-  width: ${(props) => props.$data?.blocks?.setting?.imageWidth || "500"}0px;
-  height: ${(props) => props.$data?.blocks?.setting?.imageHeight || "200"}0px;
+  width: ${(props) => props.$data?.blocks?.setting?.imageWidth || "500"}px;
+  max-width: 50%;
+  height: ${(props) => props.$data?.blocks?.setting?.imageHeight || "200"}px;
   opacity: ${(props) => props.$data?.blocks?.setting?.opacityImage || "1"};
   border-radius: ${(props) =>
-    props.$data?.blocks?.setting?.boxRadiuos || "10"}px;
+    props.$data?.blocks?.setting?.boxRadiuos || "30"}px;
   object-fit: cover;
+  @media (max-width: 768px) {
+    max-width: 100%;
+  }
 `;
 
 const TextContainer = styled.div<{
@@ -48,12 +54,12 @@ const TextContainer = styled.div<{
   align-items: ${(props) => (props.$isMobile ? "center" : "flex-end")};
   text-align: ${(props) => (props.$isMobile ? "center" : "right")};
   padding: 20px;
-  width: 100%;
+  width: 50%;
   background-color: ${(props) =>
     props.$data.blocks?.setting?.backgroundColorBox};
   margin: 10px 0px;
 
-  @media (max-width: 425px) {
+  @media (max-width: 768px) {
     align-items: center;
     text-align: center;
     margin: 10px;
