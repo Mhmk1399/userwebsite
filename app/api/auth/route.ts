@@ -9,7 +9,6 @@ interface CustomJwtPayload extends jwt.JwtPayload {
   storeId: string;
 }
 
-
 export async function GET(request: Request) {
   await connect();
   if (!connect) {
@@ -32,7 +31,6 @@ export async function POST(request: Request) {
   if (!connect) {
     return NextResponse.json({ error: "Connection failed!" });
   }
-
 
   try {
     const { name, phone, password } = await request.json();
