@@ -82,20 +82,13 @@ export async function GET(
     );
   }
   await connect();
-  if (!connect) {
-    return NextResponse.json({ error: "Connection failed!" });
-  }
+
   try {
     const user = await User.findById(id);
-    if (!user) {
-      return NextResponse.json({ message: "User not found" }, { status: 404 });
-    }
-    return NextResponse.json({ user });
+
+    return new NextResponse(JSON.stringify(user), { status: 200 });
   } catch (error) {
-    console.error("Error fetching user:", error);
-    return NextResponse.json(
-      { message: "Error fetching user" },
-      { status: 500 }
-    );
+
+    return new NextResponse("Error fetching user", { status: 500 });
   }
-}
+};
