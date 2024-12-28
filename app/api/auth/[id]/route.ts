@@ -74,18 +74,18 @@ export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  const { id } = params;
+  if (!id) {
+    return NextResponse.json(
+      { message: "User ID is required" },
+      { status: 400 }
+    );
+  }
   await connect();
   if (!connect) {
     return NextResponse.json({ error: "Connection failed!" });
   }
   try {
-    const { id } = params;
-    if (!id) {
-      return NextResponse.json(
-        { message: "User ID is required" },
-        { status: 400 }
-      );
-    }
     const user = await User.findById(id);
     if (!user) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });

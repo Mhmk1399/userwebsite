@@ -6,12 +6,26 @@ import { useRouter } from "next/navigation";
 
 import { FaUser, FaSignOutAlt, FaCog, FaEdit, FaTimes } from "react-icons/fa";
 import { BsCartCheckFill } from "react-icons/bs";
+import Jwt, { JwtPayload } from "jsonwebtoken";
+
+interface DecodedToken extends JwtPayload {
+  userId: string;
+  phone: string;
+  role: string;
+}
 
 interface Order {
-  id: number;
+  _id: string;
+  userId: string;
   date: string;
   status: string;
-  total: number;
+  totalAmount: number;
+  shippingAddress: {
+    street: string;
+    city: string;
+    state: string;
+    postalCode: string;
+  };
 }
 interface UserInfo {
   _id: string;
@@ -42,41 +56,45 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch("/api/auth", {
-          method: "GET",
+        // Get the user ID from localStorage token
+        const token = localStorage.getItem("token");
+        const decoded = Jwt.decode(token as string) as DecodedToken;
+        const userId = decoded.userId;
 
+        const response = await fetch(`/api/auth/${userId}`, {
+          method: "GET",
           headers: {
             "Content-Type": "application/json",
           },
         });
         if (response.ok) {
           const userData = await response.json();
-          const user = userData.users[0];
-          setUserInfo(user);
+          console.log("User Data:", userData);
+          setUserInfo(userData.user); // Note the .user since the API returns {user: {...}}
           setFormData({
-            name: user.name,
-            phone: user.phone,
+            name: userData.user.name,
+            phone: userData.user.phone,
           });
         }
       } catch (error) {
         toast.error("خطا در دریافت اطلاعات کاربری");
-
-        console.error("Error fetching user data:", error);
+        console.log("Error fetching user data:", error);
         setLoading(false);
       }
     };
     fetchUserData();
   }, []);
+
   const validateForm = () => {
     let valid = true;
     const newErrors = { name: "", phone: "" };
 
-    if (!formData.name.trim()) {
+    if (!formData.name) {
       newErrors.name = "نام نمی‌تواند خالی باشد";
       valid = false;
     }
 
-    if (!formData.phone.trim()) {
+    if (!formData.phone) {
       newErrors.phone = "شماره تماس نمی‌تواند خالی باشد";
       toast.error("شماره تماس نمی‌تواند خالی باشد");
       valid = false;
@@ -121,92 +139,43 @@ const Dashboard = () => {
       console.log("خطای سرور");
     }
   };
-  const handleDeleteAccount = async () => {
-    try {
-      if (!userInfo?._id) {
-        toast.error("شناسه کاربری یافت نشد");
-        return;
-      }
-
-      const response = await fetch(`/api/auth/${userInfo._id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        toast.success("حساب کاربری شما با موفقیت حذف شد");
-        // Optionally redirect to login or home page
-        router.replace("/login");
-      } else {
-        toast.error(result.message || "خطا در حذف حساب کاربری");
-      }
-    } catch (error) {
-      console.error("Error deleting account:", error);
-      toast.error("خطای سرور در حذف حساب");
-    }
+  const handleDeleteAccount = async (e : React.MouseEvent<HTMLButtonElement>) => {
+    localStorage.removeItem("token");
+    e.preventDefault();
   };
   useEffect(() => {
-    const checkAuthentication = async () => {
+    const checkOrders = async () => {
       try {
-        // Verify token by making a request that checks authentication
-        const response = await fetch("/api/auth", {
-          method: "GET",
-          credentials: "include", // Important for sending cookies
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (!response.ok) {
-          // If authentication fails, redirect to login
-          toast.error("لطفا ابتدا وارد شوید");
-          router.push("/login");
+        const token = localStorage.getItem("token");
+        if (!token) {
+          router.replace("/login");
           return;
         }
-
-        // If authenticated, fetch user data
-        const userData = await response.json();
-
-        console.log("User data:", userData);
-
-        const user = userData.users[0];
-        setUserInfo(user);
-        setFormData({
-          name: user.name,
-          phone: user.phone,
-        });
-
-        // Fetch orders
         const ordersResponse = await fetch("/api/orders", {
           method: "GET",
           credentials: "include",
           headers: {
+            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
         });
+        if (!ordersResponse.ok) {
+          throw new Error("Failed to fetch orders");
+        }
 
-        if (ordersResponse.ok) {
-          const ordersData = await ordersResponse.json();
+        const data = await ordersResponse.json();
+        console.log("Orders data:", data); // Debug log
 
-          console.log("Orders data:", ordersData);
-          
-          setOrders(ordersData.orders);
-          console.log("Orders:", orders);
-          
-        } else {
-          toast.error("Failed to fetch orders");
+        if (data.orders) {
+          setOrders(data.orders);
         }
       } catch (error) {
-        console.error("Error fetching data:", error);
-        toast.error("An error occurred while fetching data");
+        console.error("Error fetching orders:", error);
+        toast.error("Error loading orders");
       }
     };
 
-    checkAuthentication();
+    checkOrders();
   }, [router]);
 
   const Sidebar = () => (
@@ -216,7 +185,7 @@ const Dashboard = () => {
       className="w-64 bg-blue-800 h-screen p-6 text-white fixed"
       dir="rtl"
     >
-      <h2 className="text-2xl font-bold mb-6">داشبورد ( {formData?.name})</h2>
+      <h2 className="text-2xl font-bold mb-6">داشبورد - {userInfo?.name} </h2>
       <nav className="space-y-4">
         <button
           onClick={() => setActiveSection("profile")}
@@ -376,28 +345,42 @@ const Dashboard = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
       style={{ backgroundColor: "#3a6ea5" }}
-      className="p-10 shadow rounded-xl m-10"
+      className="p-10 shadow rounded-xl m-10 text-white"
       dir="rtl"
     >
-      <h3 className="text-2xl text-white font-bold mb-4">سفارشات من</h3>
+      <h3 className="text-2xl font-bold mb-4 border-b border-gray-200 pb-3">
+        سفارشات من
+      </h3>
       {orders.length > 0 ? (
-        <ul>
+        <ul className="space-y-4">
           {orders.map((order) => (
-            <li key={order.id} className="border-b py-4 last:border-none">
-              <p>
-                <strong>شماره سفارش:</strong> {order.id}
+            <li
+              key={order._id}
+              className="border border-blue-400 rounded-lg p-4 hover:bg-blue-900 transition-colors"
+            >
+              <p className="mb-2">
+                <strong className="text-yellow-400">شماره سفارش: </strong>
+                {order._id}
               </p>
-              <p>
-                <strong>وضعیت:</strong> {order.status}
+              <p className="mb-2">
+                <strong className="text-yellow-400">وضعیت: </strong>
+                {order.status}
               </p>
-              <p>
-                <strong>مجموع:</strong> ${order.total}
+              <p className="mb-2">
+                <strong className="text-yellow-400">مجموع: </strong>
+                {order.totalAmount} تومان
+              </p>
+              <p className="mb-2">
+                <strong className="text-yellow-400">آدرس: </strong>
+                {order.shippingAddress.city} - {order.shippingAddress.state} -
+                {order.shippingAddress.street} - پستال :
+                {order.shippingAddress.postalCode}
               </p>
             </li>
           ))}
         </ul>
       ) : (
-        <p>شما سفارشی ندارید.</p>
+        <p className="text-center text-lg">شما سفارشی ندارید.</p>
       )}
     </motion.div>
   );
@@ -472,7 +455,7 @@ const Dashboard = () => {
               <button
                 onClick={() => {
                   setIsModalOpen(false);
-                  handleDeleteAccount();
+                  handleDeleteAccount;
                 }}
                 className="px-4 py-2 mx-2 transition-all text-white border bg-red-500 rounded-lg hover:bg-opacity-75"
               >

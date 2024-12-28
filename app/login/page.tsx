@@ -1,7 +1,14 @@
 "use client";
-import Link from "next/link";
 import React, { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+
+import Jwt, { JwtPayload } from "jsonwebtoken";
+
+interface DecodedToken extends JwtPayload {
+  userId: string;
+  phone: string;
+  role: string;
+}
 
 const Auth: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -72,8 +79,20 @@ const Auth: React.FC = () => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ phone, password }),
           });
+          const data = await response.json();
+          if (response.ok && data.token) {
+            localStorage.setItem("token", data.token);
+            const token = localStorage.getItem("token");
+            const decoded = Jwt.decode(token as string) as DecodedToken;
+            const userId = decoded.userId;
+
+            router.push(`/test/${userId}`);
+          } else {
+            setModalError(true);
+          }
           break;
         }
+
         case false: {
           const { name, phone, email, password, confirmPassword } = formValues;
           if (password !== confirmPassword) {
@@ -95,7 +114,10 @@ const Auth: React.FC = () => {
           if (!isLogin) {
             setIsLogin(true);
           } else {
-            router.push("/test");
+            const token = localStorage.getItem("token");
+            const decoded = Jwt.decode(token as string) as DecodedToken;
+            const userId = decoded.userId;
+            router.push(`/test/${userId}`);
           }
         }, 3000);
       } else {

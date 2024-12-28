@@ -3,6 +3,7 @@ import connect from "@/lib/data";
 import Blog from "@/models/blogs";
 import blogs from "@/models/blogs";
 import Jwt, { JwtPayload } from "jsonwebtoken";
+import { getStoreId } from "@/middleWare/storeId";
 
 
 interface CustomJwtPayload extends JwtPayload {
@@ -37,15 +38,9 @@ export const GET = async (req:NextRequest) => {
   }
 
   try {
-    const token = req.headers.get("Authorization")?.split(" ")[1];
-    if (!token) {
-      return NextResponse.json(
-        { message: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-    const decodedToken = Jwt.decode(token) as CustomJwtPayload;
-    const sotreId = decodedToken.storeId;
+    
+    const sotreId = await getStoreId();
+    
     if (!sotreId) {
       return NextResponse.json(
         { message: "Unauthorized" },

@@ -42,17 +42,18 @@ export async function GET(request: NextRequest) {
   try {
     const token = request.headers.get("Authorization")?.split(" ")[1];
     if (!token) {
-      return NextResponse.json({ message: "asfddasdasd" }, { status: 401 });
+      return NextResponse.json({ message: "No authorization token provided" }, { status: 401 });
     }
 
     const verifiedToken = jwt.verify(
       token,
       process.env.JWT_SECRET!
     ) as CustomJwtPayload;
+    
     const userId = verifiedToken.userId;
-    const data = await Order.find();
-
-    const orders = data.filter((order) => order.userId === userId);
+    // Query directly with userId filter instead of fetching all orders first
+    const orders = await Order.find({ userId: userId });
+    
     return NextResponse.json({ orders }, { status: 200 });
   } catch (error) {
     console.log("Error fetching orders:", error);
@@ -62,4 +63,5 @@ export async function GET(request: NextRequest) {
     );
   }
 }
+
 // Compare this snippet from app/api/orders/route.ts:
