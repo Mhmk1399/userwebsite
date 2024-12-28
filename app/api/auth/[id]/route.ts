@@ -70,32 +70,17 @@ export async function PATCH(
   }
 }
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+  const { id } = params;
+
   await connect();
-  if (!connect) {
-    return NextResponse.json({ error: "Connection failed!" });
-  }
+
   try {
-    const { id } = params;
-    if (!id) {
-      return NextResponse.json(
-        { message: "User ID is required" },
-        { status: 400 }
-      );
-    }
     const user = await User.findById(id);
-    if (!user) {
-      return NextResponse.json({ message: "User not found" }, { status: 404 });
-    }
-    return NextResponse.json({ user });
+
+    return new NextResponse(JSON.stringify(user), { status: 200 });
   } catch (error) {
-    console.error("Error fetching user:", error);
-    return NextResponse.json(
-      { message: "Error fetching user" },
-      { status: 500 }
-    );
+
+    return new NextResponse("Error fetching user", { status: 500 });
   }
-}
+};
