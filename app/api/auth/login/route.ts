@@ -1,5 +1,5 @@
 import connect from "@/lib/data";
-import User from "@/models/storesUsers";
+import StoreUsers from "@/models/storesUsers";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
@@ -11,7 +11,7 @@ export async function POST(request: Request) {
   }
   try {
     const { phone, password } = await request.json();
-    const user = await User.findOne({ phone });
+    const user = await StoreUsers.findOne({ phone });
     if (!user) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }

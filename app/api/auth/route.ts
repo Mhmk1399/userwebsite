@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import connect from "@/lib/data";
-import User from "../../../models/storesUsers";
+import StoreUsers from "../../../models/storesUsers";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import fs from "fs";
@@ -15,7 +15,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Connection failed!" });
   }
   try {
-    const users = await User.find();
+    const users = await StoreUsers.find();
     return NextResponse.json({ users }, { status: 200 });
   } catch (error) {
     console.error("Error fetching users:", error);
@@ -37,7 +37,7 @@ export async function POST(request: Request) {
     const storeId = fs.readFileSync("storeId.txt", "utf-8");
     console.log(storeId , "storeId");
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({
+    const newUser = new StoreUsers({
       name,
       storeId,
       phone,

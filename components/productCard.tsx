@@ -2,6 +2,7 @@ import Image from "next/image";
 import styled from "styled-components";
 import { productCard, ProductCardData } from "@/lib/types";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface ProductCardProps {
   productData: ProductCardData;
@@ -103,6 +104,7 @@ const ProductPrice = styled.span<{
 const BuyButton = styled.button<{
   $settings?: productCard;
   $productData?: ProductCardData;
+  onClick?: () => void;
 }>`
   display: inline-block;
   padding: 10px 20px;
@@ -123,6 +125,11 @@ const BuyButton = styled.button<{
 `;
 
 const ProductCard: React.FC<ProductCardProps> = ({ productData }) => {
+  const router = useRouter();
+  const handleBuyClick = () => {
+    router.push(`/store/${safeProductData._id}`);
+  };
+
   const safeProductData = {
     ...productData,
     images: productData.images || [
@@ -159,7 +166,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData }) => {
           ? safeProductData.price
           : "Price not available"}
       </ProductPrice>
-      <BuyButton $productData={safeProductData}>خرید</BuyButton>
+      <BuyButton onClick={handleBuyClick} $productData={safeProductData}>
+        خرید
+      </BuyButton>
     </Card>
   );
 };

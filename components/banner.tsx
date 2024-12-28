@@ -5,7 +5,7 @@ import Link from "next/link";
 import { BannerSection } from "@/lib/types";
 
 interface props {
-  sections: BannerSection[]; // Changed from { SlideShow: SlideSection[] }
+  sections: BannerSection[];
   isMobile: boolean;
 }
 

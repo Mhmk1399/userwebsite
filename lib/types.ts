@@ -694,13 +694,6 @@ export interface productCard {
   btnBackgroundColor: string;
   btnColor: string;
 }
-export interface ProductCardData {
-  id: number;
-  name: string;
-  price: number;
-  description: string;
-  imageUrl: string;
-}
 
 export interface ProductImage {
   imageSrc: string;
@@ -711,7 +704,7 @@ export interface ProductCardData {
   name: string;
   description: string;
   price: number;
-  id: number;
+  _id: number;
   category?: string;
   discount?: string;
   status?: string;
@@ -748,10 +741,10 @@ export interface DetailPageBlock {
   name: string;
   description: string;
   category: string;
-  price: string;
+  price: number;
   status: string;
   discount: string;
-  id: string;
+  id: number;
   inventory: number;
   btnText: string;
   btnLink: string;

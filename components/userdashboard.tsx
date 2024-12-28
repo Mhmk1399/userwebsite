@@ -139,7 +139,9 @@ const Dashboard = () => {
       console.log("خطای سرور");
     }
   };
-  const handleDeleteAccount = async (e : React.MouseEvent<HTMLButtonElement>) => {
+  const handleDeleteAccount = async (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
     localStorage.removeItem("token");
     e.preventDefault();
   };

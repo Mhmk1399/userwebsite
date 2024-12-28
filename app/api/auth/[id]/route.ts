@@ -1,4 +1,4 @@
-import User from "../../../../models/storesUsers";
+import StoreUsers from "../../../../models/storesUsers";
 import connect from "@/lib/data";
 import { NextRequest, NextResponse } from "next/server";
 import bcryptjs from "bcryptjs";
@@ -19,7 +19,7 @@ export async function DELETE(
         { status: 400 }
       );
     }
-    const user = await User.findByIdAndDelete(id);
+    const user = await StoreUsers.findByIdAndDelete(id);
     if (!user) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
@@ -51,7 +51,7 @@ export async function PATCH(
     }
     const { name, phone, password } = await request.json();
 
-    const user = await User.findByIdAndUpdate(id);
+    const user = await StoreUsers.findByIdAndUpdate(id);
     if (!user) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
@@ -84,11 +84,10 @@ export async function GET(
   await connect();
 
   try {
-    const user = await User.findById(id);
+    const user = await StoreUsers.findById(id);
 
     return new NextResponse(JSON.stringify(user), { status: 200 });
   } catch (error) {
-
     return new NextResponse("Error fetching user", { status: 500 });
   }
-};
+}
