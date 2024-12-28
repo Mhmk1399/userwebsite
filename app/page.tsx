@@ -71,17 +71,6 @@ export default function Page() {
 
   return (
     <>
-      {/* <Banner sections={data.sections} isMobile={isMobile} />
-      <SlideShow sections={data.sections} isMobile={isMobile} />
-      <ImageText sections={data.sections} isMobile={isMobile} />
-      <Video sections={data.sections} isMobile={isMobile} />
-      <ContactForm sections={data.sections} isMobile={isMobile} />
-      <NewsLetter sections={data.sections} isMobile={isMobile} />
-      <CollapseFaq sections={data.sections} isMobile={isMobile} />
-      <MultiColumn sections={data.sections} isMobile={isMobile} />
-      <MultiRow sections={data.sections} isMobile={isMobile} />
-      <Collection sections={data.sections} isMobile={isMobile} /> */}
-
       <div className="grid grid-cols-1 mt-32">
         {orders.map((componentName, index) => {
           const baseComponentName = componentName;
