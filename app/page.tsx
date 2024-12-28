@@ -71,8 +71,6 @@ export default function Page() {
 
   return (
     <>
-      
-
       <div className="grid grid-cols-1 mt-32">
         {orders.map((componentName, index) => {
           const baseComponentName = componentName;
