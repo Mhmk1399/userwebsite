@@ -44,8 +44,7 @@ export async function GET(request: NextRequest) {
     if (!token) {
       return NextResponse.json({ message: "asfddasdasd" }, { status: 401 });
     }
-   
-    
+
     const verifiedToken = jwt.verify(
       token,
       process.env.JWT_SECRET!
