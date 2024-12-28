@@ -45,7 +45,7 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile }) => {
           headers: { "Content-Type": "application/json" },
         });
 
-        const data = await response.json();
+        const data = await response.json();                                                                                         
 
         if (data?.products) {
           const productInfo = data.products.map((product: any) => ({

@@ -37,15 +37,17 @@ const Row = styled.div<{
   $isMobile: boolean;
 }>`
   display: flex;
-  flex-direction: ${(props) =>
-    props.$isMobile
-      ? "column"
-      : props.$data.setting?.imageAlign || "row-reverse"};
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
   gap: ${(props) => (props.$isMobile ? "10px" : "20px")};
   padding: ${(props) => (props.$isMobile ? "15px" : "30px")};
   background-color: ${(props) =>
     props.$data.setting?.backgroundColorBox || "#f9f9f9"};
   border-radius: 18px;
+  @media (max-width: 425px) {
+    flex-direction: column;
+  }
 `;
 
 const ContentWrapper = styled.div<{

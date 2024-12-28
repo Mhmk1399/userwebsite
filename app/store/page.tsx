@@ -52,8 +52,6 @@ export default function Page() {
       );
       const data = await response.json();
       setLoading(false);
-      console.log("data:", data);
-      setTimeout
       setData(data.Children.sections);
       setOrders(data.Children.order);
 

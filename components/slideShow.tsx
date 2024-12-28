@@ -130,7 +130,6 @@ const Button = styled.button<{
 `;
 
 const SlideShow: React.FC<SlideShowProps> = ({ sections, isMobile }) => {
-  console.log(sections);
 
   const sectionData = sections.find(
     (section) => section.type.toLowerCase() === "slideshow"

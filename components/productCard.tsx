@@ -57,7 +57,7 @@ const ProductImage = styled(Image)<{
     props.$settings?.imageRadius || defaultSetting.imageRadius};
   transition: all 0.3s ease;
   &:hover {
-    transform: scale(1.03);
+    transform: scale(1.01);
   }
 `;
 

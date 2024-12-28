@@ -35,7 +35,7 @@ export async function POST(request: Request) {
   try {
     const { name, phone, password } = await request.json();
     const storeId = fs.readFileSync("storeId.txt", "utf-8");
-    console.log(storeId);
+    console.log(storeId , "storeId");
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({
       name,

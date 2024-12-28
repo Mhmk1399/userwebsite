@@ -92,7 +92,6 @@ const Banner: React.FC<props> = ({ sections, isMobile }) => {
     return <div>No data available</div>;
   }
 
-  console.log(sectionData);
 
   const { description, imageAlt, imageSrc, text } = sectionData?.blocks;
 

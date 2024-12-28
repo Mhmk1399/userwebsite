@@ -50,7 +50,7 @@ export default function Page() {
         }
       );
       const data = await response.json();
-      
+
       setData(data.Children.sections);
       setOrders(data.Children.order);
 
@@ -60,8 +60,6 @@ export default function Page() {
     };
     getData();
   }, [pathname]);
-
-  console.log(data, "data");
 
   if (error) {
     return <div>{error}</div>;
@@ -89,8 +87,6 @@ export default function Page() {
           const baseComponentName = componentName;
           const Component =
             componentMap[baseComponentName as keyof typeof componentMap];
-
-          console.log(componentName);
 
           return Component ? (
             <div

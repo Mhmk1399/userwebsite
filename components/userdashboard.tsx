@@ -170,18 +170,39 @@ const Dashboard = () => {
 
         // If authenticated, fetch user data
         const userData = await response.json();
+
+        console.log("User data:", userData);
+
         const user = userData.users[0];
         setUserInfo(user);
         setFormData({
           name: user.name,
           phone: user.phone,
         });
+
+        // Fetch orders
+        const ordersResponse = await fetch("/api/orders", {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (ordersResponse.ok) {
+          const ordersData = await ordersResponse.json();
+
+          console.log("Orders data:", ordersData);
+          
+          setOrders(ordersData.orders);
+          console.log("Orders:", orders);
+          
+        } else {
+          toast.error("Failed to fetch orders");
+        }
       } catch (error) {
-        toast.error("خطا در احراز هویت");
-        console.error("Authentication error:", error);
-        router.push("/login");
-      } finally {
-        setLoading(false);
+        console.error("Error fetching data:", error);
+        toast.error("An error occurred while fetching data");
       }
     };
 
@@ -195,7 +216,7 @@ const Dashboard = () => {
       className="w-64 bg-blue-800 h-screen p-6 text-white fixed"
       dir="rtl"
     >
-      <h2 className="text-2xl font-bold mb-6">داشبورد ( نام کاربر )</h2>
+      <h2 className="text-2xl font-bold mb-6">داشبورد ( {formData?.name})</h2>
       <nav className="space-y-4">
         <button
           onClick={() => setActiveSection("profile")}
@@ -272,7 +293,7 @@ const Dashboard = () => {
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, name: e.target.value }))
               }
-              className={`w-full p-2 rounded ${
+              className={`w-full text-black p-2 rounded ${
                 errors.name ? "border-2 border-red-500" : "border"
               }`}
             />
@@ -289,7 +310,7 @@ const Dashboard = () => {
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, phone: e.target.value }))
               }
-              className={`w-full p-2 rounded ${
+              className={`w-full text-black p-2 rounded ${
                 errors.phone ? "border-2 border-red-500" : "border"
               }`}
             />

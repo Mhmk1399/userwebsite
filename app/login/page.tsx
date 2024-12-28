@@ -95,7 +95,7 @@ const Auth: React.FC = () => {
           if (!isLogin) {
             setIsLogin(true);
           } else {
-            router.push("/dashboard");
+            router.push("/test");
           }
         }, 3000);
       } else {
@@ -254,7 +254,7 @@ const Auth: React.FC = () => {
         </div>
       </div>
     </div>
-  ); 
+  );
 };
 
 const Modal = ({ type, message, onClose }: any) => (

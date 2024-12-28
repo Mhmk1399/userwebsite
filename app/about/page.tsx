@@ -50,7 +50,6 @@ export default function Page() {
         }
       );
       const data = await response.json();
-      console.log("data:", data.Children.sections);
 
       setData(data.Children.sections);
       setOrders(data.Children.order);
@@ -79,7 +78,6 @@ export default function Page() {
             const Component =
               componentMap[baseComponentName as keyof typeof componentMap];
 
-            console.log(componentName);
 
             return Component ? (
               <div

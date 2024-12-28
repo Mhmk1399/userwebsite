@@ -61,7 +61,6 @@ export default function Page() {
     getData();
   }, [pathname]);
 
-  console.log(data, "data");
 
   if (error) {
     return <div>{error}</div>;
@@ -90,7 +89,6 @@ export default function Page() {
           const Component =
             componentMap[baseComponentName as keyof typeof componentMap];
 
-          console.log(componentName);
 
           return Component ? (
             <div
