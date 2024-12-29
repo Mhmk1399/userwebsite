@@ -70,7 +70,7 @@ const Dashboard = () => {
         if (response.ok) {
           const userData = await response.json();
           console.log("User Data:", userData);
-          setUserInfo(userData.user); // Note the .user since the API returns {user: {...}}
+          setUserInfo(userData); // Note the .user since the API returns {user: {...}}
           setFormData({
             name: userData.user.name,
             phone: userData.user.phone,

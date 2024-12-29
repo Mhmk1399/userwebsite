@@ -103,30 +103,33 @@ const DetailPage: React.FC<DetailPageProps> = ({ sections, isMobile }) => {
     status: "",
     inventory: "",
   });
+  const pathname = window.location.pathname;
+  const productId = pathname.split('/').pop();
   const [selectedImage, setSelectedImage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchProductDetails = async () => {
+      if (!productId) return;
       try {
-        const response = await fetch(`/api/product/${product._id}`);
-        console.log("Fetching product details for ID:", product._id);
+        const response = await fetch(`/api/product/${productId}`);
+        console.log("Fetching product details for ID:", productId);
         if (!response.ok) {
           throw new Error(await response.text());
         }
         const data = await response.json();
-        console.log("Product details:", data.products);
+        console.log("Product details:", data);
 
         setProduct(data);
         setSelectedImage(data.images[0]?.imageSrc || "");
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching product details:", error);
+        console.log("Error fetching product details:", error);
       }
     };
 
     fetchProductDetails();
-  }, [product._id]);
+  }, [productId]);
 
   if (loading) {
     return (
@@ -148,7 +151,8 @@ const DetailPage: React.FC<DetailPageProps> = ({ sections, isMobile }) => {
   }
   console.log("Product:", product);
   console.log("Sections:", sections);
-  const sectionData = sections?.find(
+  const sectionData = sections
+  .find(
     (section) => section.type === "DetailPage"
   );
 

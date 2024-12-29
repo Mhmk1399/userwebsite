@@ -12,7 +12,9 @@ export async function GET(request: Request) {
     console.log("User Agent:", userAgent);
 
     const url = new URL(request.url);
-    const routePath = url.href.split("?").pop() || "home";
+    
+    const urlParts = url.pathname.split("/");
+    let routePath = urlParts.slice(1).join("/") || "home";
 
     console.log("routePath:", routePath);
 
@@ -21,22 +23,27 @@ export async function GET(request: Request) {
       about: { lg: "about.json", sm: "aboutSm.json" },
       contact: { lg: "contact.json", sm: "contactSm.json" },
       store: { lg: "product.json", sm: "productSm.json" },
+      "store/[id]": { lg: "detail.json", sm: "detailSm.json" },
+      blogs: { lg: "blog.json", sm: "blogSm.json" },
     };
+    console.log("templateMap:", templateMap);
 
-    const template = templateMap[routePath] || {
-      lg: "null.json",
-      sm: "nullSm.json",
-    };
+    let template: { lg: string; sm: string };
+    if (urlParts.includes("blogs") && urlParts[urlParts.length - 1].match(/^[a-f\d]{24}$/i)) {
+      // If there's a valid ID, use blog detail templates
+      template = { lg: "blogDetail.json", sm: "blogDetailSm.json" };
+    } else {
+      template = templateMap[routePath] || { lg: "null.json", sm: "nullSm.json" };
+    }
 
     console.log("Template:", template);
-
     const jsonPath = path.join(
       process.cwd(),
       "public",
       "template",
       isMobile ? template.sm : template.lg
     );
-    console.log('jsonPath:', jsonPath);
+    console.log("jsonPath:", jsonPath);
 
     const jsonData = await fs.readFile(jsonPath, "utf-8");
     const parsedData = JSON.parse(jsonData);
@@ -54,8 +61,10 @@ export async function GET(request: Request) {
       MultiRow: [],
       Header: [],
       Collection: [],
-      Blog: [],
       ProductList: [],
+      DetailPage: [],
+      BlogList: [],
+      BlogDetail: [],
     };
     if (routePath === "home") {
       parsedData.sections.children.sections.forEach(
@@ -65,13 +74,17 @@ export async function GET(request: Request) {
           }
         }
       );
-    } else {
+    }
+    
+     else {
       parsedData.children.sections.forEach((section: { type: string }) => {
         if (section.type in sections) {
           sections[section.type].push(section);
         }
       });
+      
     }
+    
 
     let Children;
     if (routePath === "home") {
