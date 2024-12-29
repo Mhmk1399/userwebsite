@@ -21,7 +21,7 @@ export async function GET(request: Request) {
       about: { lg: "about.json", sm: "aboutSm.json" },
       contact: { lg: "contact.json", sm: "contactSm.json" },
       store: { lg: "product.json", sm: "productSm.json" },
-      
+      blogDetal: { lg: "blogDetail.json", sm: "blogDetailSm.json" },      
       blogs: { lg: "blog.json", sm: "blogSm.json" },
     };
     console.log("templateMap:", templateMap);
