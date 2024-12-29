@@ -12,9 +12,7 @@ export async function GET(request: Request) {
     console.log("User Agent:", userAgent);
 
     const url = new URL(request.url);
-    
-    const urlParts = url.pathname.split("/");
-    let routePath = urlParts.slice(1).join("/") || "home";
+    const routePath = url.href.split("?").pop() || "home";
 
     console.log("routePath:", routePath);
 
@@ -28,13 +26,10 @@ export async function GET(request: Request) {
     };
     console.log("templateMap:", templateMap);
 
-    let template: { lg: string; sm: string };
-    if (urlParts.includes("blogs") && urlParts[urlParts.length - 1].match(/^[a-f\d]{24}$/i)) {
-      // If there's a valid ID, use blog detail templates
-      template = { lg: "blogDetail.json", sm: "blogDetailSm.json" };
-    } else {
-      template = templateMap[routePath] || { lg: "null.json", sm: "nullSm.json" };
-    }
+    const template = templateMap[routePath] || {
+      lg: "null.json",
+      sm: "nullSm.json",
+    };
 
     console.log("Template:", template);
     const jsonPath = path.join(
@@ -74,17 +69,13 @@ export async function GET(request: Request) {
           }
         }
       );
-    }
-    
-     else {
+    } else {
       parsedData.children.sections.forEach((section: { type: string }) => {
         if (section.type in sections) {
           sections[section.type].push(section);
         }
       });
-      
     }
-    
 
     let Children;
     if (routePath === "home") {
