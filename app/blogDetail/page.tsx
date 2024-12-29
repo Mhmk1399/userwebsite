@@ -3,11 +3,11 @@ import React, { useEffect, useState } from "react";
 import { BlogDetailSection } from "@/lib/types";
 import Image from "next/image";
 import { styled } from "styled-components";
-import { useParams } from "next/navigation";
 
 interface BlogDetailProps {
   sections: BlogDetailSection[];
   isMobile: boolean;
+  id: string;
 }
 interface BlogDetail {
   title: string;
@@ -50,12 +50,12 @@ const SectionBlogDetail = styled.div<{
   }
 `;
 
-const BlogDetail: React.FC<BlogDetailProps> = ({ sections, isMobile }) => {
+const BlogDetail: React.FC<BlogDetailProps> = ({ sections, isMobile, id }) => {
   const [blog, setBlog] = useState<BlogDetail | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const params = useParams();
-  const blogId = params.id;
+  const blogId = id;
+
   useEffect(() => {
     const fetchBlogDetail = async () => {
       try {
