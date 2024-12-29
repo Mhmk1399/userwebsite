@@ -28,6 +28,8 @@ const RowContainer = styled.div<{
 }>`
   display: flex;
   flex-direction: column;
+  items-center: center;
+  justify-content: center;
   gap: ${(props) => (props.$isMobile ? "8px" : "16px")};
   padding: ${(props) => (props.$isMobile ? "10px" : "20px")};
 `;
@@ -45,7 +47,7 @@ const Row = styled.div<{
   background-color: ${(props) =>
     props.$data.setting?.backgroundColorBox || "#f9f9f9"};
   border-radius: 18px;
-  @media (max-width: 425px) {
+  @media (max-width: 426px) {
     flex-direction: column;
   }
 `;

@@ -75,6 +75,9 @@ const Column = styled.div<{
   display: flex;
   flex-direction: column;
   position: relative;
+  @media (max-width: 426px) {
+    width: 100%;
+  }
 `;
 
 const Title = styled.h3<{
@@ -100,6 +103,10 @@ const Image = styled.img<{ $data: MultiColumnSection }>`
   transition: all 0.5s ease-in-out;
 
   @media (max-width: 768px) {
+    width: 100%;
+    height: auto;
+  }
+  @media (max-width: 426px) {
     width: 100%;
     height: auto;
   }

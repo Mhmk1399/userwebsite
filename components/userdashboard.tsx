@@ -68,6 +68,8 @@ const Dashboard = () => {
           },
         });
         if (response.ok) {
+          setLoading(false);
+          toast.success("اطلاعات کاربری با موفقیت دریافت شد");
           const userData = await response.json();
           console.log("User Data:", userData);
           setUserInfo(userData); // Note the .user since the API returns {user: {...}}
@@ -78,8 +80,7 @@ const Dashboard = () => {
         }
       } catch (error) {
         toast.error("خطا در دریافت اطلاعات کاربری");
-        console.log("Error fetching user data:", error);
-        setLoading(false);
+        
       }
     };
     fetchUserData();
@@ -172,7 +173,7 @@ const Dashboard = () => {
           setOrders(data.orders);
         }
       } catch (error) {
-        console.error("Error fetching orders:", error);
+        console.log("Error fetching orders:", error);
         toast.error("Error loading orders");
       }
     };
