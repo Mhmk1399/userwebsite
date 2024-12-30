@@ -30,8 +30,8 @@
           }
         ],
         "setting": {
-          "imageWidth": "30",
-          "imageHeight": "25",
+          "imageWidth": "300",
+          "imageHeight": "250",
           "imageRadius": "20",
           "productNameColor": "#FCA311",
           "productNameFontSize": "30",
