@@ -56,9 +56,6 @@
         }
       }
     ],
-    "order": [
-      "ProductList"
-    ]
-  },
-  "backgroundColor": "yellow"
+    "order": ["ProductList"]
+  }
 }

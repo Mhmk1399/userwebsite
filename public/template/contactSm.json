@@ -1,6 +1,6 @@
 {
   "children": {
-    "type": "about",
+    "type": "contact",
     "sections": [
       {
         "type": "ImageText",
@@ -12,28 +12,30 @@
           "btnLink": "/",
           "btnText": "دکمه",
           "setting": {
-            "headingColor": "#FCA311",
+            "headingColor": "#ffffff",
             "headingFontSize": "60",
             "headingFontWeight": "bold",
-            "descriptionColor": "#E5E5E5",
+            "descriptionColor": "#000000",
             "descriptionFontSize": "29",
             "descriptionFontWeight": "normal",
-            "btnTextColor": "#14213D",
-            "btnBackgroundColor": "#FFFFFF",
-            "backgroundColorBox": "",
+            "btnTextColor": "#000000",
+            "btnBackgroundColor": "#ffffff",
+            "backgroundColorBox": "#1d6bdf",
             "backgroundBoxOpacity": 0.9,
-            "boxRadiuos": "20px",
+            "boxRadiuos": "20",
             "opacityImage": 1,
-            "imageWidth": "850px",
-            "imageHeight": "700px",
-            "background": "#14213D"
+            "imageWidth": "85",
+            "imageHeight": "50",
+            "background": "#ffffff"
           }
         },
         "setting": {
-          "paddingTop": "0",
-          "paddingBottom": "0",
-          "marginTop": "10",
-          "marginBottom": "0"
+          "paddingTop": "30",
+          "paddingBottom": "30",
+          "marginTop": "20",
+          "marginBottom": "20",
+          "paddinRight": "0",
+          "paddinLeft": "0"
         }
       },
       {
@@ -44,16 +46,16 @@
           "text": "سربرگ بنر",
           "description": " توضیحات بنر",
           "setting": {
-            "descriptionColor": "#E5E5E5",
+            "descriptionColor": "#000000",
             "descriptionFontSize": "15",
             "descriptionFontWeight": "normal",
-            "textColor": "#FCA311",
+            "textColor": "#1d6bdf",
             "textFontSize": "30",
             "textFontWeight": "bold",
-            "backgroundColorBox": "#14213D",
+            "backgroundColorBox": "#ffffff",
             "backgroundBoxRadious": "10",
             "opacityImage": 1,
-            "opacityTextBox": 1,
+            "opacityTextBox": 0.8,
             "imageRadious": "14",
             "imageBehavior": "cover"
           }
@@ -62,7 +64,7 @@
           "paddingTop": "0",
           "paddingBottom": "0",
           "marginTop": "20",
-          "marginBottom": "80"
+          "marginBottom": "20"
         }
       },
       {
@@ -70,19 +72,21 @@
         "blocks": {
           "heading": "فرم ارتباط با ما",
           "setting": {
-            "headingColor": "#000000",
+            "headingColor": "#1d6bdf",
             "headingFontSize": "35",
             "headingFontWeight": "bold",
-            "btnBackgroundColor": "#14213D",
+            "btnBackgroundColor": "#1d6bdf",
             "btnTextColor": "#ffffff",
-            "formBackground": "#FCA311"
+            "formBackground": "#ffffff"
           }
         },
         "setting": {
-          "paddingTop": "20",
-          "paddingBottom": "20",
+          "paddingTop": "30",
+          "paddingBottom": "30",
           "marginTop": "20",
-          "marginBottom": "20"
+          "marginBottom": "20",
+          "paddinRight": "0",
+          "paddinLeft": "0"
         }
       },
       {
@@ -93,26 +97,27 @@
           "btnText": "ثبت نام",
 
           "setting": {
-            "headingColor": "#FCA311",
+            "headingColor": "#ffffff",
             "headingFontSize": "27",
             "headingFontWeight": "bold",
-            "descriptionColor": "#000000",
+            "descriptionColor": "#e4e4e4",
             "descriptionFontSize": "18",
             "descriptionFontWeight": "normal",
-            "btnBackgroundColor": "#FCA311",
-            "btnTextColor": "#14213D",
-            "formBackground": "#E5E5E5"
+            "btnBackgroundColor": "#ffffff",
+            "btnTextColor": "#000000",
+            "formBackground": "#1d6bdf"
           }
         },
         "setting": {
-          "paddingTop": "20",
-          "paddingBottom": "20",
+          "paddingTop": "30",
+          "paddingBottom": "30",
           "marginTop": "20",
-          "marginBottom": "20"
+          "marginBottom": "20",
+          "paddinRight": "0",
+          "paddinLeft": "0"
         }
       }
     ],
     "order": ["ImageText", "ContactForm", "NewsLetter", "Banner"]
   }
 }
-

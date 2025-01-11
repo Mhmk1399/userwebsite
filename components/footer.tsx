@@ -3,17 +3,13 @@ import styled from "styled-components";
 import Link from "next/link";
 import Image from "next/image";
 import { FooterSection } from "@/lib/types";
+import data from "@/public/template/homelg.json";
+import { useEffect, useState } from "react";
 
-interface FooterProps {
-  sections: {
-    Footer: FooterSection[];
-  };
-  isMobile: boolean;
-}
+interface FooterProps {}
 
 const FooterContainer = styled.footer<{
   $data: FooterSection;
-  $isMobile: boolean;
 }>`
   padding-top: ${(props) => props.$data?.setting?.paddingTop || "20"}px;
   padding-bottom: ${(props) => props.$data?.setting?.paddingBottom || "20"}px;
@@ -26,66 +22,52 @@ const FooterContainer = styled.footer<{
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: ${(props) => (props.$isMobile ? "8px" : "10px")};
+  gap: 10px;
   text-align: center;
-  // width: ${(props) => (props.$isMobile ? "425px" : "100%")};
+  width: 100%;
 `;
 
 const FooterText = styled.h2<{
   $data: FooterSection;
-  $isMobile: boolean;
 }>`
-  font-size: ${(props) => {
-    const baseFontSize = props.$data?.blocks?.setting?.textFontSize || "16";
-    return props.$isMobile
-      ? `${parseInt(baseFontSize) * 0.8}px`
-      : `${baseFontSize}px`;
-  }};
+  font-size: ${(props) => props.$data?.blocks?.setting?.textFontSize || "16"};
+
   font-weight: ${(props) =>
     props.$data?.blocks?.setting?.textFontWeight || "normal"};
   color: ${(props) => props.$data?.blocks?.setting?.textColor || "#ffffff"};
-  padding: ${(props) => (props.$isMobile ? "8px 4px" : "10px 5px")};
+  padding: 10px 5px;
 `;
 
 const FooterDescription = styled.p<{
   $data: FooterSection;
-  $isMobile: boolean;
 }>`
-  font-size: ${(props) => {
-    const baseFontSize =
-      props.$data?.blocks?.setting?.descriptionFontSize || "16";
-    return props.$isMobile
-      ? `${parseInt(baseFontSize) * 0.8}px`
-      : `${baseFontSize}px`;
-  }};
+  font-size: ${(props) =>
+    props.$data?.blocks?.setting?.descriptionFontSize || "16"};
+
   font-weight: ${(props) =>
     props.$data?.blocks?.setting?.descriptionFontWeight || "normal"};
   color: ${(props) =>
     props.$data?.blocks?.setting?.descriptionColor || "#ffffff"};
-  padding: ${(props) => (props.$isMobile ? "0 20px" : "0 50px")};
+  padding: 0 50px;
 `;
 
-const SocialLinks = styled.div<{
-  $isMobile: boolean;
-}>`
+const SocialLinks = styled.div<{}>`
   display: flex;
   justify-content: center;
-  gap: ${(props) => (props.$isMobile ? "10px" : "15px")};
-  margin: ${(props) => (props.$isMobile ? "8px 0" : "10px 0")};
+  gap: 15px;
+  margin: 10px 0;
   transition: all 0.3s ease-in-out;
   &:hover {
     transform: scale(1.08);
   }
 `;
-const FooterLinks = styled.div<{
-  $isMobile: boolean;
-}>`
+const FooterLinks = styled.div<{}>`
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: ${(props) => (props.$isMobile ? "10px" : "15px")};
-  margin-top: ${(props) => (props.$isMobile ? "8px" : "10px")};
-  padding: ${(props) => (props.$isMobile ? "0 10px" : "0")};
+  gap: 15px;
+  margin-top: 10px;
+  padding: 0;
 `;
 
 const FooterLink = styled(Link)<{ $data: FooterSection }>`
@@ -99,31 +81,24 @@ const FooterLink = styled(Link)<{ $data: FooterSection }>`
 
 const Logo = styled(Image)<{
   $data: FooterSection;
-  $isMobile: boolean;
 }>`
-  width: ${(props) => {
-    const baseWidth = props.$data?.blocks?.setting?.logoWidth || "100";
-    return props.$isMobile
-      ? `${parseInt(baseWidth) * 0.8}px`
-      : `${baseWidth}px`;
-  }};
-  height: ${(props) => {
-    const baseHeight = props.$data?.blocks?.setting?.logoHeight || "100";
-    return props.$isMobile
-      ? `${parseInt(baseHeight) * 0.8}px`
-      : `${baseHeight}px`;
-  }};
+  width: ${(props) => props.$data?.blocks?.setting?.logoWidth || "100"};
+
+  height: ${(props) => props.$data?.blocks?.setting?.logoHeight || "100"};
+
   border-radius: ${(props) =>
     props.$data?.blocks?.setting?.logoRadius || "6"}px;
 `;
 
-const Footer: React.FC<FooterProps> = ({ sections: { Footer }, isMobile }) => {
-  const sectionData = Footer?.[0];
+const Footer: React.FC<FooterProps> = () => {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-  console.log(sectionData , "sec");
+  const sectionData = data.sections.sectionFooter as FooterSection;
 
-
-  if (!sectionData) {
+  if (!mounted || !sectionData) {
     return null;
   }
 
@@ -136,12 +111,10 @@ const Footer: React.FC<FooterProps> = ({ sections: { Footer }, isMobile }) => {
     whatsappLink,
     logo,
   } = sectionData?.blocks;
-  
 
   return (
-    <FooterContainer $isMobile={isMobile} dir="rtl" $data={sectionData}>
+    <FooterContainer dir="rtl" $data={sectionData}>
       <Logo
-        $isMobile={isMobile}
         $data={sectionData}
         src={logo || "/assets/images/logo.webp"}
         width={100}
@@ -149,15 +122,11 @@ const Footer: React.FC<FooterProps> = ({ sections: { Footer }, isMobile }) => {
         alt="Logo"
       />
 
-      <FooterText $isMobile={isMobile} $data={sectionData}>
-        {text}
-      </FooterText>
+      <FooterText $data={sectionData}>{text}</FooterText>
 
-      <FooterDescription $isMobile={isMobile} $data={sectionData}>
-        {description}
-      </FooterDescription>
+      <FooterDescription $data={sectionData}>{description}</FooterDescription>
 
-      <SocialLinks $isMobile={isMobile}>
+      <SocialLinks>
         <Link
           href={instagramLink ? instagramLink : "/"}
           target="_blank"
@@ -197,16 +166,16 @@ const Footer: React.FC<FooterProps> = ({ sections: { Footer }, isMobile }) => {
       </SocialLinks>
 
       {links && Array.isArray(links) && links.length > 0 && (
-        <FooterLinks $isMobile={isMobile}>
+        <FooterLinks>
           {links.map((link, index) => (
             <FooterLink
               key={index}
-              href={link?.url || "#"}
+              href={link.url}
               $data={sectionData}
               target="_blank"
               rel="noopener noreferrer"
             >
-              {link?.label || "Link"}
+              {link.label}
             </FooterLink>
           ))}
         </FooterLinks>

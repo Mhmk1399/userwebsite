@@ -17,12 +17,12 @@ export async function GET(request: Request) {
     console.log("routePath:", routePath);
 
     const templateMap: Record<string, { lg: string; sm: string }> = {
-      home: { lg: "null.json", sm: "nullSm.json" },
-      about: { lg: "about.json", sm: "aboutSm.json" },
-      contact: { lg: "contact.json", sm: "contactSm.json" },
-      store: { lg: "product.json", sm: "productSm.json" },
-      blogDetal: { lg: "blogDetail.json", sm: "blogDetailSm.json" },      
-      blogs: { lg: "blog.json", sm: "blogSm.json" },
+      home: { lg: "homelg.json", sm: "homesm.json" },
+      about: { lg: "aboutlg.json", sm: "aboutsm.json" },
+      contact: { lg: "contactlg.json", sm: "contactsm.json" },
+      store: { lg: "productlg.json", sm: "productsm.json" },
+      blogDetal: { lg: "blogDetaillg.json", sm: "blogDetailsm.json" },
+      blogs: { lg: "bloglg.json", sm: "blogsm.json" },
     };
     console.log("templateMap:", templateMap);
 
