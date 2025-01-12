@@ -5,6 +5,7 @@ import { ContactFormDataSection } from "@/lib/types";
 interface ContactFormProps {
   sections: ContactFormDataSection[];
   isMobile: boolean;
+  componentName: string;
 }
 
 const Section = styled.section<{
@@ -91,6 +92,7 @@ const TextArea = styled.textarea<{ $isMobile: boolean }>`
 const Button = styled.button<{
   $data: ContactFormDataSection;
   $isMobile: boolean;
+  
 }>`
   padding: ${(props) => (props.$isMobile ? "12px 30px" : "15px 50px")};
   background-color: ${(props) =>
@@ -112,9 +114,9 @@ const Button = styled.button<{
 `;
 
 // ContactForm Component
-const ContactForm: React.FC<ContactFormProps> = ({ sections, isMobile }) => {
+const ContactForm: React.FC<ContactFormProps> = ({ sections, isMobile, componentName }) => {
   const sectionData = sections.find(
-    (section) => section.type === "ContactForm"
+    (section) => section.type === componentName
   );
   if (!sectionData) {
     return <div>No data available</div>;

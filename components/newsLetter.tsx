@@ -5,6 +5,7 @@ import { NewsLetterSection } from "@/lib/types";
 interface NewsLetterProps {
   sections: NewsLetterSection[]; // Changed from { SlideShow: SlideSection[] }
   isMobile: boolean;
+  componentName: string;
 }
 
 const Section = styled.section<{
@@ -90,8 +91,8 @@ const Button = styled.button<{ $data: NewsLetterSection; $isMobile: boolean }>`
   }
 `;
 
-const NewsLetter: React.FC<NewsLetterProps> = ({ sections, isMobile }) => {
-  const sectionData = sections.find((section) => section.type === "NewsLetter");
+const NewsLetter: React.FC<NewsLetterProps> = ({ sections, isMobile , componentName}) => {
+  const sectionData = sections.find((section) => section.type === componentName);
   if (!sectionData) {
     return <div>No data available</div>;
   }

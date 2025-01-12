@@ -16,13 +16,36 @@ export async function GET(request: Request) {
 
     console.log("routePath:", routePath);
 
-    const templateMap: Record<string, { lg: string; sm: string }> = {
-      home: { lg: "homelg.json", sm: "homesm.json" },
-      about: { lg: "aboutlg.json", sm: "aboutsm.json" },
-      contact: { lg: "contactlg.json", sm: "contactsm.json" },
-      store: { lg: "productlg.json", sm: "productsm.json" },
-      blogs: { lg: "bloglg.json", sm: "blogsm.json" },
-    };
+    const templateDir = path.join(process.cwd(), "public", "template");
+    let fileNames: string[];
+    
+    try {
+      fileNames = await fs.readdir(templateDir);
+    } catch (error) {
+      return NextResponse.json(
+        { error: 'Failed to read template directory' },
+        { status: 500 }
+      );
+    }
+    
+    const templateMap: Record<string, { lg: string; sm: string }> = {};
+    
+    fileNames
+      .filter(name => name.endsWith('.json'))
+      .forEach(fileName => {
+        const baseName = fileName.replace(/lg\.json$|sm\.json$/, '');
+        
+        if (!templateMap[baseName]) {
+          templateMap[baseName] = { lg: '', sm: '' };
+        }
+        
+        if (fileName.includes('lg.json')) {
+          templateMap[baseName].lg = fileName;
+        } else if (fileName.includes('sm.json')) {
+          templateMap[baseName].sm = fileName;
+        }
+      });
+    
     console.log("templateMap:", templateMap);
 
     const template = templateMap[routePath] || {

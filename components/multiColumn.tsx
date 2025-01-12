@@ -5,6 +5,7 @@ import styled from "styled-components";
 interface MultiColumnProps {
   sections: MultiColumnSection[];
   isMobile: boolean;
+  componentName: string;
 }
 
 const Section = styled.section<{
@@ -153,9 +154,9 @@ const Button = styled.a<{ $data: MultiColumnSection }>`
   }
 `;
 
-const MultiColumn: React.FC<MultiColumnProps> = ({ sections, isMobile }) => {
+const MultiColumn: React.FC<MultiColumnProps> = ({ sections, isMobile,componentName }) => {
   const sectionData = sections.find(
-    (section) => section.type === "MultiColumn"
+    (section) => section.type === componentName
   );
   if (!sectionData) {
     return <div>No data available</div>;

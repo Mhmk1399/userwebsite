@@ -5,6 +5,7 @@ import { ImageTextSection } from "@/lib/types";
 interface ImageTextProps {
   sections: ImageTextSection[];
   isMobile: boolean;
+  componentName: string;
 }
 
 // Styled Components
@@ -110,8 +111,8 @@ const Button = styled.a<{ $data: ImageTextSection }>`
   }
 `;
 
-const ImageText: React.FC<ImageTextProps> = ({ sections, isMobile }) => {
-  const sectionData = sections.find((section) => section.type === "ImageText");
+const ImageText: React.FC<ImageTextProps> = ({ sections, isMobile, componentName }) => {
+  const sectionData = sections.find((section) => section.type === componentName);
   if (!sectionData) {
     return <div>No data available</div>;
   }

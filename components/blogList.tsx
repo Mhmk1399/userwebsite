@@ -20,6 +20,7 @@ interface BlogData {
 interface BlogListProps {
   sections: BlogListSection[];
   isMobile: boolean;
+  componentName: string;
 }
 const SectionBlogList = styled.section<{
   $data: BlogListSection;
@@ -107,7 +108,7 @@ const BlogCard = styled.div<{
   }
 `;
 
-const BlogList: React.FC<BlogListProps> = ({ isMobile, sections }) => {
+const BlogList: React.FC<BlogListProps> = ({ isMobile, sections, componentName }) => {
   const [blogs, setBlogs] = useState<BlogData[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -140,7 +141,7 @@ const BlogList: React.FC<BlogListProps> = ({ isMobile, sections }) => {
     );
   }
 
-  const sectionData = sections?.find((section) => section.type === "BlogList");
+  const sectionData = sections?.find((section) => section.type === componentName);
 
   console.log("Section data:", sectionData);
 

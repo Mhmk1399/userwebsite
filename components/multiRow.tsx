@@ -5,6 +5,7 @@ import styled from "styled-components";
 interface MultiRowShowProps {
   sections: MultiRowSection[];
   isMobile: boolean;
+  componentName: string;
 }
 
 const Section = styled.section<{
@@ -142,8 +143,8 @@ const Button = styled.a<{
   }
 `;
 
-const MultiRow: React.FC<MultiRowShowProps> = ({ sections, isMobile }) => {
-  const sectionData = sections.find((section) => section.type === "MultiRow");
+const MultiRow: React.FC<MultiRowShowProps> = ({ sections, isMobile , componentName}) => {
+  const sectionData = sections.find((section) => section.type === componentName);
   if (!sectionData) {
     return <div>No data available</div>;
   }

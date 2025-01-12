@@ -7,6 +7,7 @@ import { BannerSection } from "@/lib/types";
 interface props {
   sections: BannerSection[];
   isMobile: boolean;
+  componentName: string;
 }
 
 const SectionBanner = styled.section<{
@@ -86,8 +87,8 @@ const DescriptionText = styled.p<{
   }
 `;
 
-const Banner: React.FC<props> = ({ sections, isMobile }) => {
-  const sectionData = sections.find((section) => section.type === "Banner");
+const Banner: React.FC<props> = ({ sections, isMobile ,componentName}) => {
+  const sectionData = sections.find((section) => section.type === componentName);
   if (!sectionData) {
     return <div>No data available</div>;
   }

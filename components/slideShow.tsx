@@ -7,6 +7,7 @@ import Link from "next/link";
 interface SlideShowProps {
   sections: SlideSection[];
   isMobile: boolean;
+  componentName: string;
 }
 
 const SectionSlideShow = styled.section<{
@@ -129,10 +130,10 @@ const Button = styled.button<{
   padding: 10px 20px;
 `;
 
-const SlideShow: React.FC<SlideShowProps> = ({ sections, isMobile }) => {
+const SlideShow: React.FC<SlideShowProps> = ({ sections, isMobile , componentName}) => {
 
   const sectionData = sections.find(
-    (section) => section.type.toLowerCase() === "slideshow"
+    (section) => section.type.toLowerCase() === componentName
   );
 
   if (!sectionData) {

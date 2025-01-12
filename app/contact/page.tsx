@@ -18,7 +18,7 @@ export default function Page() {
   const [data, setData] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
   const [error, setError] = useState("");
-  const [orders, setOrders] = useState([]);
+  const [orders, setOrders] = useState<string[]>([]);
   const pathname = usePathname();
 
   const componentMap = {
@@ -44,13 +44,13 @@ export default function Page() {
       const routePath = pathname.split("/").pop() || "home";
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/sections?${routePath}`,
+        process.env.NEXT_PUBLIC_API_URL+'/api/sections?'+routePath,
         {
           cache: "no-store",
         }
       );
       const data = await response.json();
-      
+
       setData(data.Children.sections);
       setOrders(data.Children.order);
 
@@ -60,7 +60,6 @@ export default function Page() {
     };
     getData();
   }, [pathname]);
-
 
   if (error) {
     return <div>{error}</div>;
@@ -72,23 +71,11 @@ export default function Page() {
 
   return (
     <>
-      {/* <Banner sections={data.sections} isMobile={isMobile} />
-      <SlideShow sections={data.sections} isMobile={isMobile} />
-      <ImageText sections={data.sections} isMobile={isMobile} />
-      <Video sections={data.sections} isMobile={isMobile} />
-      <ContactForm sections={data.sections} isMobile={isMobile} />
-      <NewsLetter sections={data.sections} isMobile={isMobile} />
-      <CollapseFaq sections={data.sections} isMobile={isMobile} />
-      <MultiColumn sections={data.sections} isMobile={isMobile} />
-      <MultiRow sections={data.sections} isMobile={isMobile} />
-      <Collection sections={data.sections} isMobile={isMobile} /> */}
-
       <div className="grid grid-cols-1 mt-32">
         {orders.map((componentName, index) => {
-          const baseComponentName = componentName;
+          const baseComponentName = componentName.split("-")[0];
           const Component =
             componentMap[baseComponentName as keyof typeof componentMap];
-
 
           return Component ? (
             <div
@@ -96,7 +83,7 @@ export default function Page() {
               style={{ order: index }}
               className="w-full"
             >
-              <Component sections={data} isMobile={isMobile} />
+              <Component sections={data} isMobile={isMobile} componentName={componentName} />
             </div>
           ) : null;
         })}

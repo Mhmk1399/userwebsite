@@ -6,6 +6,7 @@ import styled from "styled-components";
 interface RichTextProps {
   sections: RichTextSection[];
   isMobile: boolean;
+  componentName: string;
 }
 
 // Styled components
@@ -74,8 +75,8 @@ const Btn = styled.button<{
 `;
 
 // Update the section data assignment with type checking
-const RichText: React.FC<RichTextProps> = ({ sections, isMobile }) => {
-  const sectionData = sections.find((section) => section.type === "RichText");
+const RichText: React.FC<RichTextProps> = ({ sections, isMobile , componentName }) => {
+  const sectionData = sections.find((section) => section.type === componentName);
   if (!sectionData) {
     return <div>No data available</div>;
   }

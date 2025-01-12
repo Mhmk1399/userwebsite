@@ -11,6 +11,7 @@ import styled from "styled-components";
 interface CollapseFaqProps {
   sections: CollapseSection[];
   isMobile: boolean;
+  componentName: string;
 }
 
 const Section = styled.section<{
@@ -113,12 +114,12 @@ const Answer = styled.div<{
   visibility: ${(props) => (props.$isOpen ? "visible" : "hidden")};
 `;
 
-const CollapseFaq: React.FC<CollapseFaqProps> = ({ sections, isMobile }) => {
+const CollapseFaq: React.FC<CollapseFaqProps> = ({ sections, isMobile, componentName }) => {
   const [openIndexes, setOpenIndexes] = useState<number[]>([]);
   const [blocks, setBlocks] = useState<CollapseBlock[]>([]);
 
   const sectionData = sections.find(
-    (section) => section.type === "CollapseFaq"
+    (section) => section.type === componentName
   );
   if (!sectionData) {
     return <div>No data available</div>;

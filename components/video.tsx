@@ -5,6 +5,7 @@ import { VideoSection } from "@/lib/types";
 interface VideoProps {
   sections: VideoSection[];
   isMobile: boolean;
+  componentName: string;
 }
 
 const Section = styled.section<{ $data: VideoSection; $isMobile: boolean }>`
@@ -54,8 +55,8 @@ const VideoElement = styled.video<{
   padding: ${(props) => (props.$isMobile ? "0 10" : "10 30")}px;
 `;
 
-const Video: React.FC<VideoProps> = ({ sections, isMobile }) => {
-  const sectionData = sections.find((section) => section.type === "Video");
+const Video: React.FC<VideoProps> = ({ sections, isMobile,componentName }) => {
+  const sectionData = sections.find((section) => section.type === componentName);
   if (!sectionData) {
     return <div>No data available</div>;
   }

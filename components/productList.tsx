@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 interface ProductListProps {
   sections: ProductSection[];
   isMobile: boolean;
+  componentName: string;
 }
 
 const SectionProductList = styled.section<{
@@ -34,7 +35,7 @@ const SectionProductList = styled.section<{
   }
 `;
 
-const ProductList: React.FC<ProductListProps> = ({ sections, isMobile }) => {
+const ProductList: React.FC<ProductListProps> = ({ sections, isMobile, componentName }) => {
   const [productData, setProductData] = useState<ProductCardData[]>([]);
 
   useEffect(() => {
@@ -59,7 +60,7 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile }) => {
   }, []);
 
   const sectionData = sections.find(
-    (section) => section.type === "ProductList"
+    (section) => section.type === componentName
   );
 
   if (!sectionData) {

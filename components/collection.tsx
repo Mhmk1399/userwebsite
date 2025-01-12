@@ -7,6 +7,7 @@ import Link from "next/link";
 interface CollectionProps {
   sections: CollectionSection[];
   isMobile: boolean;
+  componentName: string;
 }
 interface ProductData {
   id: string;
@@ -109,6 +110,7 @@ const BuyButton = styled(Link)<{ $setting: CollectionBlockSetting }>`
 export const Collection: React.FC<CollectionProps> = ({
   sections,
   isMobile,
+  componentName,
 }) => {
   // const [products, setProducts] = useState<ProductData[]>([]);
 
@@ -193,7 +195,7 @@ export const Collection: React.FC<CollectionProps> = ({
     }
   };
 
-  const sectionData = sections.find((section) => section.type === "Collection");
+  const sectionData = sections.find((section) => section.type === componentName);
   if (!sectionData) {
     return <div>No data available</div>;
   }
