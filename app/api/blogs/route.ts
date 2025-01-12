@@ -5,7 +5,6 @@ import blogs from "@/models/blogs";
 import Jwt, { JwtPayload } from "jsonwebtoken";
 import { getStoreId } from "@/middleWare/storeId";
 
-
 interface CustomJwtPayload extends JwtPayload {
   storeId: string;
 }
@@ -21,36 +20,37 @@ export async function POST(req: Request) {
     }
     const newBlog = new blogs(BlogData);
     console.log(newBlog);
-    
+
     await newBlog.save();
     console.log("POST_SUCCESS", "Blog created successfully");
     return NextResponse.json(newBlog, { status: 201 });
   } catch (error) {
-    return NextResponse.json({ message: "Error logging in",error }, { status: 500 });
-
+    return NextResponse.json(
+      { message: "Error logging in", error },
+      { status: 500 }
+    );
   }
 }
 
-export const GET = async (req:NextRequest) => {
+export const GET = async (req: NextRequest) => {
   await connect();
   if (!connect) {
     return new NextResponse("Database connection error", { status: 500 });
   }
 
   try {
-    
     const sotreId = await getStoreId();
-    
+
     if (!sotreId) {
-      return NextResponse.json(
-        { message: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const blogs = await Blog.findOne({storeId: sotreId});
+    const blogs = await Blog.findOne({ storeId: sotreId });
     return NextResponse.json({ blogs }, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ message: "Error logging in",error }, { status: 500 });
+    return NextResponse.json(
+      { message: "Error logging in", error },
+      { status: 500 }
+    );
   }
 };

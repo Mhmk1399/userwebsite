@@ -787,7 +787,6 @@ export interface DetailPageSettings {
   marginTop: string;
   marginBottom: string;
   backgroundColor: string;
-  // [key: string]: any; // Allows dynamic properties
 }
 
 export interface DetailPageSection {

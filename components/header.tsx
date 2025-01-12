@@ -75,7 +75,7 @@ const NavItems = styled.div<{
   justify-content: space-around;
 
   @media (min-width: 768px) {
-    flex-direction: row;
+    flex-direction: row-reverse;
     align-items: center;
     justify-content: flex-end;
     opacity: 1;

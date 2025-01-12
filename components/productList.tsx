@@ -40,24 +40,18 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile }) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch("/api/product", {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        });
-
-        const data = await response.json();                                                                                         
+        const response = await fetch("/api/product");
+        const data = await response.json();
 
         if (data?.products) {
           const productInfo = data.products.map((product: any) => ({
             ...product,
-            images: product.images || [],
+            _id: product._id, // Ensure _id is preserved
           }));
-          console.log(productInfo);
-
           setProductData(productInfo);
         }
       } catch (error) {
-        console.log("Error fetching products:", error);
+        console.error("Error fetching products:", error);
       }
     };
 
@@ -71,26 +65,11 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile }) => {
   if (!sectionData) {
     return <div>No data available</div>;
   }
-  const displayProducts =
-    productData.length > 0
-      ? productData
-      : Object.entries(sectionData.blocks)
-          .filter(([key]) => key !== "setting")
-          .map(([key, block]) => ({
-            id: key,
-            name: block.name || "Product Name",
-            price: block.price || 0,
-            imageSrc: block.imageSrc || "/default-image.jpg",
-            imageAlt: block.imageAlt || "Product Image",
-            btnText: block.btnText || "Buy Now",
-          }));
 
   return (
     <SectionProductList $data={sectionData} $isMobile={isMobile}>
-      {displayProducts.map((block, index) => (
-        <div className="p-0 m-0" key={`${block.id}-${index}`}>
-          <ProductCard key={block.id} productData={block} />
-        </div>
+      {productData.map((product) => (
+        <ProductCard key={product._id} productData={product} />
       ))}
     </SectionProductList>
   );

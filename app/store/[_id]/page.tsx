@@ -3,11 +3,10 @@ import React, { useEffect, useState } from "react";
 import { DetailPageSection, ProductCardData, ProductImage } from "@/lib/types";
 import Image from "next/image";
 import { styled } from "styled-components";
+import dataLg from "../../../public/template/detaillg.json";
+import dataSm from "../../../public/template/detailsm.json";
+import { useParams } from "next/navigation";
 
-interface DetailPageProps {
-  sections: DetailPageSection[];
-  isMobile: boolean;
-}
 
 const SectionDetailPage = styled.div<{
   $data: DetailPageSection;
@@ -91,45 +90,55 @@ const SectionDetailPage = styled.div<{
   }
 `;
 
-const DetailPage: React.FC<DetailPageProps> = ({ sections, isMobile }) => {
-  const [product, setProduct] = useState<ProductCardData>({
-    images: [],
-    name: "",
-    description: "",
-    price: "",
-    _id: "",
-    category: "",
-    discount: "",
-    status: "",
-    inventory: "",
-  });
-  const pathname = window.location.pathname;
-  const productId = pathname.split('/').pop();
+const DetailPage = () => {
+  const [product, setProduct] = useState<ProductCardData | null>(null);
   const [selectedImage, setSelectedImage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const [sectionData, setSectionData] = useState<DetailPageSection | null>(
+    null
+  );
+
+  const params = useParams();
 
   useEffect(() => {
     const fetchProductDetails = async () => {
-      if (!productId) return;
       try {
-        const response = await fetch(`/api/product/${productId}`);
-        console.log("Fetching product details for ID:", productId);
+        const response = await fetch(`/api/product/${params._id}`);
         if (!response.ok) {
-          throw new Error(await response.text());
+          throw new Error("Product not found");
         }
         const data = await response.json();
-        console.log("Product details:", data);
-
         setProduct(data);
-        setSelectedImage(data.images[0]?.imageSrc || "");
         setLoading(false);
       } catch (error) {
-        console.log("Error fetching product details:", error);
+        console.error(error);
+        setLoading(false);
       }
     };
 
-    fetchProductDetails();
-  }, [productId]);
+    if (params._id) {
+      fetchProductDetails();
+    }
+  }, [params._id]);
+  useEffect(() => {
+    // Determine which data to use based on screen width
+    const handleResize = () => {
+      const data = window.innerWidth < 768 ? dataSm : dataLg;
+      setSectionData(data.children.sections[0] as unknown as DetailPageSection);
+    };
+
+    // Initial setup
+    handleResize();
+
+    // Add event listener for window resize
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup event listener
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  if (loading || !sectionData) {
+    return <div>Loading...</div>;
+  }
 
   if (loading) {
     return (
@@ -146,19 +155,6 @@ const DetailPage: React.FC<DetailPageProps> = ({ sections, isMobile }) => {
       </div>
     );
   }
-  if (!sections || sections.length === 0) {
-    return <div>No sections available</div>;
-  }
-  console.log("Product:", product);
-  console.log("Sections:", sections);
-  const sectionData = sections
-  .find(
-    (section) => section.type === "DetailPage"
-  );
-
-  if (!sectionData) {
-    return null;
-  }
 
   return (
     <SectionDetailPage
@@ -166,7 +162,7 @@ const DetailPage: React.FC<DetailPageProps> = ({ sections, isMobile }) => {
       className={` mx-2 rounded-lg px-4 py-8 transition-all duration-150 ease-in-out relative`}
       dir="rtl"
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-48">
+      <div className="grid grid-cols-1 mt-32 md:grid-cols-2 gap-12 lg:gap-48">
         {/* Product Images Section */}
         <div className="space-y-4">
           <div className="product-image">

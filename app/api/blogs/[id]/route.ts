@@ -1,26 +1,38 @@
+import { NextRequest, NextResponse } from "next/server";
 import connect from "@/lib/data";
-import { NextResponse } from "next/server";
-import Blog from "../../../../models/blogs";
-import { getStoreId } from "../../../../middleWare/storeId";
+import Blog from "@/models/blogs";
+import { getStoreId } from "@/middleWare/storeId";
 
-export async function GET(
-  request: Request,
+export const GET = async (
+  req: NextRequest,
   { params }: { params: { id: string } }
-) {
+) => {
+  await connect();
+  if (!connect) {
+    return new NextResponse("Database connection error", { status: 500 });
+  }
+
   try {
-    await connect();
-    const storeId = getStoreId();
-    const blogId = params.id;
-    const blog = await Blog.findOne({ storeId, _id: blogId });
+    const storeId = await getStoreId();
+    if (!storeId) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
+    // Find the specific blog by its _id and storeId
+    const blog = await Blog.findOne({
+      _id: params.id,
+      storeId: storeId,
+    });
+
     if (!blog) {
       return NextResponse.json({ message: "Blog not found" }, { status: 404 });
     }
-    return NextResponse.json(blog, { status: 200 });
+
+    return NextResponse.json({ blog }, { status: 200 });
   } catch (error) {
-    console.error("Error fetching Blog:", error);
     return NextResponse.json(
-      { message: "Error fetching Blog" },
+      { message: "Error fetching blog", error },
       { status: 500 }
     );
   }
-}
+};

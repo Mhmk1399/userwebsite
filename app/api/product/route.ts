@@ -9,7 +9,7 @@ export async function GET(request: Request) {
     const storeId = getStoreId();
     console.log(storeId, "storeId");
 
-    const products = await Products.find({ storeId });
+    const products = await Products.find();
     return NextResponse.json({ products }, { status: 200 });
   } catch (error) {
     console.error("Error fetching products:", error);
