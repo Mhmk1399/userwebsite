@@ -11,7 +11,10 @@ export async function GET(
     await connect();
     const storeId = getStoreId();
     const productId = params.id;
-    const product = await Products.findOne({ storeId, _id: productId });
+    console.log(productId);
+    console.log(storeId);
+    
+    const product = await Products.findOne({  _id: productId });
     if (!product) {
       return NextResponse.json(
         { message: "Product not found" },

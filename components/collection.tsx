@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import Link from "next/link";
 
+
 interface CollectionProps {
   sections: CollectionSection[];
   isMobile: boolean;
@@ -118,61 +119,61 @@ export const Collection: React.FC<CollectionProps> = ({
   const [selectedCollection, setSelectedCollection] = useState("all");
   const [filteredProducts, setFilteredProducts] = useState<ProductData[]>([]);
 
-  // Modify your useEffect to handle collections
-  // useEffect(() => {
-  //   const fetchProducts = async () => {
-  //     try {
-  //       console.log("Fetching collections from:", "/api/collections");
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        console.log("Fetching collections from:", "/api/collections");
 
-  //       const response = await fetch("/api/collections", {
-  //         method: "GET",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //       });
-  //       // Check if the response is ok before parsing
-  //       if (!response.ok) {
-  //         throw new Error(`HTTP error! status: ${response.status}`);
-  //       }
-  //       const data = await response.json();
+        const response = await fetch("/api/collections", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            
+          },
+        });
+        // Check if the response is ok before parsing
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
 
-  //       if (!data || !data.collections) {
-  //         console.warn("No collections data received");
-  //         return;
-  //       }
+        if (!data || !data.collections) {
+          console.warn("No collections data received");
+          return;
+        }
 
-  //       const collectionData = data.collections || [];
-  //       setCollections(collectionData);
-  //       // Set initial filtered products from 'all' collection
-  //       const allCollection = data.collections.find(
-  //         (c: any) => c.name === "all"
-  //       );
-  //       if (allCollection && allCollection.products) {
-  //         const formattedProducts = allCollection.products.map(
-  //           (product: any) => ({
-  //             id: product._id,
-  //             name: product.name,
-  //             price: product.price,
-  //             imageSrc: product.images?.imageSrc || "/assets/images/pro2.jpg",
-  //             imageAlt: product.images?.imageAlt || product.name,
-  //             btnText: "خرید محصول",
-  //           })
-  //         );
-  //         setFilteredProducts(formattedProducts);
-  //       } else {
-  //         console.warn('No products found in the "all" collection');
-  //       }
-  //     } catch (error) {
-  //       // More detailed error logging
-  //       console.error("Detailed error fetching products:", {
-  //         message: error instanceof Error ? error.message : "Unknown error",
-  //         stack: error instanceof Error ? error.stack : "No stack trace",
-  //       });
-  //     }
-  //   };
+        const collectionData = data.collections || [];
+        setCollections(collectionData);
+        // Set initial filtered products from 'all' collection
+        const allCollection = data.collections.find(
+          (c: any) => c.name === "all"
+        );
+        if (allCollection && allCollection.products) {
+          const formattedProducts = allCollection.products.map(
+            (product: any) => ({
+              id: product._id,
+              name: product.name,
+              price: product.price,
+              imageSrc: product.images?.imageSrc || "/assets/images/pro2.jpg",
+              imageAlt: product.images?.imageAlt || product.name,
+              btnText: "خرید محصول",
+            })
+          );
+          setFilteredProducts(formattedProducts);
+        } else {
+          console.warn('No products found in the "all" collection');
+        }
+      } catch (error) {
+        // More detailed error logging
+        console.log("Detailed error fetching products:", {
+          message: error instanceof Error ? error.message : "Unknown error",
+          stack: error instanceof Error ? error.stack : "No stack trace",
+        });
+      }
+    };
 
-  //   fetchProducts();
-  // }, []);
+    fetchProducts();
+  }, []);
   const handleCollectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const collectionName = e.target.value;
     setSelectedCollection(collectionName);

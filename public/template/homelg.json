@@ -19,7 +19,7 @@
           { "name": "درباره ", "url": "/about" },
           { "name": "ارتباط  ", "url": "/contact" },
           { "name": "بلاگ", "url": "/blog" },
-          { "name": "فروشگاه", "url": "/shop" },
+          { "name": "فروشگاه", "url": "/store" },
           { "name": "ورود/عضویت", "url": "/login" }
         ],
         "setting": {

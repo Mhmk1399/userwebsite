@@ -86,7 +86,7 @@ export default function Page() {
                 style={{ order: index }}
                 className="w-full"
               >
-                <Component sections={data} isMobile={isMobile} />
+                <Component sections={data} isMobile={isMobile} componentName={componentName} />
               </div>
             ) : null;
           })}

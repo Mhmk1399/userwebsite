@@ -97,13 +97,94 @@ const DetailPage = () => {
   const [sectionData, setSectionData] = useState<DetailPageSection | null>(
     null
   );
-
+  const [isInCart, setIsInCart] = useState(false);
+const [quantity, setQuantity] = useState(0);
+useEffect(() => {
+  const checkCartStatus = async () => {
+    const request = indexedDB.open('CartDB', 1);
+    request.onsuccess = () => {
+      const db = request.result;
+      const transaction = db.transaction('cart', 'readonly');
+      const store = transaction.objectStore('cart');
+      const getRequest = store.get(product?._id || '');
+      
+      getRequest.onsuccess = () => {
+        if (getRequest.result) {
+          setIsInCart(true);
+          setQuantity(getRequest.result.quantity);
+        }
+      };
+    };
+  };
+  
+  if (product?._id) {
+    checkCartStatus();
+  }
+}, [product?._id]);
+const updateQuantity = async (newQuantity: number) => {
+  const request = indexedDB.open('CartDB', 1);
+  request.onsuccess = () => {
+    const db = request.result;
+    const transaction = db.transaction('cart', 'readwrite');
+    const store = transaction.objectStore('cart');
+    
+    if (newQuantity <= 0) {
+      if (product) {
+        store.delete(product._id);
+      }
+      setIsInCart(false);
+      setQuantity(0);
+    } else {
+      const cartItem = {
+        id: product?._id || '',
+        name: product?.name,
+        price: product?.price,
+        quantity: newQuantity,
+        image: product?.images?.[0]?.imageSrc || '/assets/images/pro1.jpg'
+      };
+      store.put(cartItem);
+      setQuantity(newQuantity);
+    }
+  };
+};
+  const addToCart = async (product: ProductCardData) => {
+    const dbName = 'CartDB';
+    const storeName = 'cart';
+    const version = 1;
+  
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open(dbName, version);
+  
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => {
+        const db = request.result;
+        const transaction = db.transaction(storeName, 'readwrite');
+        const store = transaction.objectStore(storeName);
+        
+        const cartItem = {
+          id: product._id,
+          name: product.name,
+          price: product.price,
+          quantity: 1,
+          image: product.images?.[0]?.imageSrc || '/assets/images/pro1.jpg'
+        };
+  
+        store.put(cartItem);
+        resolve(cartItem);
+      };
+  
+      request.onupgradeneeded = (event: IDBVersionChangeEvent) => {
+        const db = (event.target as IDBOpenDBRequest).result;
+        db.createObjectStore(storeName, { keyPath: 'id' });
+      };
+    });
+  };
   const params = useParams();
 
   useEffect(() => {
     const fetchProductDetails = async () => {
       try {
-        const response = await fetch(`/api/product/${params._id}`);
+        const response = await fetch(`/api/store/${params._id}`);
         if (!response.ok) {
           throw new Error("Product not found");
         }
@@ -237,9 +318,34 @@ const DetailPage = () => {
               )}
             </div>
             <div className="flex  gap-2">
-              <button className="px-6 py-3 add-to-cart-button rounded-md">
-                افزودن به سبد خرید
-              </button>
+            {!isInCart ? (
+  <button 
+    className="px-6 py-3 add-to-cart-button rounded-md"
+    onClick={async () => {
+      await addToCart(product);
+      setIsInCart(true);
+      setQuantity(1);
+    }}
+  >
+    افزودن به سبد خرید
+  </button>
+) : (
+  <div className="flex items-center gap-2">
+    <button 
+      className="px-4 py-2 add-to-cart-button rounded-md"
+      onClick={() => updateQuantity(quantity + 1)}
+    >
+      +
+    </button>
+    <span className="text-xl">{quantity}</span>
+    <button 
+      className="px-4 py-2 add-to-cart-button rounded-md"
+      onClick={() => updateQuantity(quantity - 1)}
+    >
+      -
+    </button>
+  </div>
+)}
             </div>
           </div>
         </div>

@@ -131,9 +131,10 @@ const Button = styled.button<{
 `;
 
 const SlideShow: React.FC<SlideShowProps> = ({ sections, isMobile , componentName}) => {
-
+  console.log(componentName);
+  
   const sectionData = sections.find(
-    (section) => section.type.toLowerCase() === componentName
+    (section) => section.type === componentName
   );
 
   if (!sectionData) {

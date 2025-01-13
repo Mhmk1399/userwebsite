@@ -13,6 +13,7 @@ import Video from "@/components/video";
 import { Collection } from "@/components/collection";
 import RichText from "@/components/richText";
 import ProductList from "@/components/productList";
+import BlogList from "@/components/blogList";
 
 export default function Page() {
   const [data, setData] = useState(null);
@@ -34,6 +35,7 @@ export default function Page() {
     MultiRow,
     ProductList,
     Collection,
+    BlogList
   };
 
   useEffect(() => {
@@ -71,7 +73,7 @@ export default function Page() {
 
   return (
     <>
-      <div className="grid grid-cols-1 mt-32">
+      <div className="grid grid-cols-1">
         {orders.map((componentName, index) => {
           const baseComponentName = componentName.split("-")[0];
           const Component =

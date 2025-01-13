@@ -41,7 +41,7 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile, component
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch("/api/product");
+        const response = await fetch("/api/store");
         const data = await response.json();
 
         if (data?.products) {
@@ -49,7 +49,7 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile, component
             ...product,
             _id: product._id, // Ensure _id is preserved
           }));
-          setProductData(productInfo);
+          setProductData(data.products);
         }
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -62,6 +62,7 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile, component
   const sectionData = sections.find(
     (section) => section.type === componentName
   );
+console.log(sectionData);
 
   if (!sectionData) {
     return <div>No data available</div>;

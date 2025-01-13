@@ -115,7 +115,7 @@ const BlogList: React.FC<BlogListProps> = ({ isMobile, sections, componentName }
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const response = await fetch("/api/blogs");
+        const response = await fetch("/api/blog");
         if (!response.ok) {
           throw new Error("Failed to fetch blogs");
         }
