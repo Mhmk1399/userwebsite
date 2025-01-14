@@ -43,8 +43,10 @@ export async function POST(request: Request) {
       phone,
       password: hashedPassword,
     });
+    console.log(newUser);
+    
     await newUser.save();
-    return NextResponse.json({ message: "User created successfully" });
+    return NextResponse.json({ newUser }, { status: 201, statusText: "User created successfully" });
   } catch (error) {
     console.error("Error creating user:", error);
     return NextResponse.json(

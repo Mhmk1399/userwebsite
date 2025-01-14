@@ -81,12 +81,12 @@ const Auth: React.FC = () => {
           });
           const data = await response.json();
           if (response.ok && data.token) {
-            localStorage.setItem("token", data.token);
+            localStorage.setItem("tokenUser", data.token);
             const token = localStorage.getItem("token");
             const decoded = Jwt.decode(token as string) as DecodedToken;
             const userId = decoded.userId;
-
-            router.push(`/test/${userId}`);
+            localStorage.setItem("userId", userId);
+            router.push(`/`);
           } else {
             setModalError(true);
           }
@@ -102,7 +102,10 @@ const Auth: React.FC = () => {
           response = await fetch("/api/auth", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name, phone, email, password }),
+            body: JSON.stringify({ name, phone, email, password }
+              
+            ),
+          
           });
           break;
         }
@@ -110,14 +113,18 @@ const Auth: React.FC = () => {
 
       if (response.ok) {
         setModalSuccess(true);
-        setTimeout(() => {
+        setTimeout(async () => {
           if (!isLogin) {
             setIsLogin(true);
+            
+            const data = await response.json();
+            localStorage.setItem("tokenUser", data.token);
+            localStorage.setItem("userId", data.userId);
           } else {
             const token = localStorage.getItem("token");
             const decoded = Jwt.decode(token as string) as DecodedToken;
             const userId = decoded.userId;
-            router.push(`/test/${userId}`);
+            router.push(`/`);
           }
         }, 3000);
       } else {

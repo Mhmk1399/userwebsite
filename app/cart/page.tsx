@@ -1,7 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { Toaster, toast } from "react-hot-toast";
+
 
 interface CartItem {
   id: string;
@@ -14,6 +16,15 @@ interface CartItem {
 export default function CartPage() {
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const [loading, setLoading] = useState(true);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [shippingAddress, setShippingAddress] = useState({
+      street: '',
+      city: '',
+      state: '',
+      postalCode: ''
+    });
+    
+      
   
     useEffect(() => {
       loadCartItems();
@@ -62,123 +73,230 @@ export default function CartPage() {
     };
   const calculateTotal = () => 
     cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-
-  async function submitOrder(event: React.MouseEvent<HTMLButtonElement, MouseEvent>): Promise<void> {
-    event.preventDefault();
-    if (cartItems.length === 0) {
-      alert("سبد خرید شما خالی است");
-      return;
-    }
-
+  const postOrder = async () => {
+    const userId = localStorage.getItem("userId");
+    const orderData = {
+      userId,
+      products: cartItems.map(item => ({
+        productId: item.id,
+        quantity: item.quantity,
+        price: item.price
+      })),
+      status: "pending",
+      totalAmount: calculateTotal(),
+      shippingAddress: {
+        street: shippingAddress.street,
+        city: shippingAddress.city,
+        state: shippingAddress.state,
+        postalCode: shippingAddress.postalCode
+      },
+      paymentStatus: "pending"
+    };
+  
     try {
-      // Simulate order submission
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      alert("سفارش شما با موفقیت ثبت شد");
-      // Clear cart after successful order submission
+      const response = await fetch('/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderData),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to submit order');
+      }
+      
+      // Clear cart after successful order
       const db = await openDB();
       const transaction = (db as IDBDatabase).transaction('cart', 'readwrite');
       const store = transaction.objectStore('cart');
-      store.clear();
+      await store.clear();
       setCartItems([]);
+      toast.success("سفارش با موفقیت ثبت شد");
     } catch (error) {
-      console.error("Error submitting order:", error);
-      alert("خطایی در ثبت سفارش رخ داده است");
+      console.error('Error submitting order:', error);
+      toast.error('خطا در ثبت سفارش');
     }
-  }
+  };
+  
+
+  const submitOrder = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.preventDefault();
+    
+    if (cartItems.length === 0) {
+      toast.error("سبد خرید شما خالی است");
+      return;
+    }
+  
+    // Validate shipping address
+    if (!shippingAddress.street || !shippingAddress.city || 
+        !shippingAddress.state || !shippingAddress.postalCode) {
+      toast.error("لطفا تمام فیلدهای آدرس را پر کنید");
+      return;
+    }
+  
+    postOrder();
+  };
+  
   return (
-    <div className="min-h-screen bg-gray-50  px-4 sm:px-6 lg:px-8 pt-36">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 px-4 sm:px-6 lg:px-8 pt-36 pb-10">
+      <Toaster position="top-right" />
+      
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8 text-center">سبد خرید شما</h1>
-        
+        <motion.h1 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-4xl font-bold text-gray-800 mb-8 text-center bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600"
+        >
+          سبد خرید شما
+        </motion.h1>
+
         {loading ? (
           <div className="flex justify-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900" />
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500" />
           </div>
         ) : cartItems.length === 0 ? (
           <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center py-12"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="text-center py-12 bg-white rounded-2xl shadow-lg p-8"
           >
-           <svg xmlns="http://www.w3.org/2000/svg" className="h-24 w-24 mx-auto text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-          </svg>
-            <p className="text-gray-600 text-lg">سبد خرید شما خالی است</p>
+            <motion.div
+              animate={{ 
+                rotate: [0, 10, -10, 0],
+                transition: { repeat: Infinity, duration: 2 }
+              }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-32 w-32 mx-auto text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              </svg>
+            </motion.div>
+            <p className="text-gray-600 text-xl mt-4">سبد خرید شما خالی است</p>
           </motion.div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-             <div className="lg:col-span-2">
-        {cartItems.map((item) => (
-          <motion.div
-            key={item.id}
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="bg-white rounded-lg shadow-md p-6 mb-4 flex items-center"
-          >
-            <Image
-              src={item.image}
-              alt={item.name}
-              width={80}
-              height={80}
-              className="rounded-md object-cover"
-            />
-            <div className="flex-1 mr-4">
-              <h3 className="text-lg font-semibold text-gray-900">{item.name}</h3>
-              <p className="text-gray-600">{item.price.toLocaleString()} تومان</p>
-            </div>
-            <div className="flex items-center space-x-2">
-              <button 
-                onClick={() => updateQuantity(item.id, -1)}
-                className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
-              >
-                -
-              </button>
-              <span className="mx-2">{item.quantity}</span>
-              <button 
-                onClick={() => updateQuantity(item.id, 1)}
-                className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
-              >
-                +
-              </button>
-            </div>
-          </motion.div>
-        ))}
-      </div>
+            <div className="lg:col-span-2 space-y-4">
+              <AnimatePresence>
+                {cartItems.map((item, index) => (
+                  <motion.div
+                    key={item.id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20 }}
+                    transition={{ delay: index * 0.1 }}
+                    className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 p-6 flex items-center group"
+                  >
+                    <div className="relative overflow-hidden rounded-lg">
+                      <Image
+                        src={item.image}
+                        alt={item.name}
+                        width={100}
+                        height={100}
+                        className="object-cover transform group-hover:scale-110 transition-transform duration-300"
+                      />
+                    </div>
+                    <div className="flex-1 mr-6">
+                      <h3 className="text-xl font-semibold text-gray-800">{item.name}</h3>
+                      <p className="text-purple-600 font-medium">{item.price.toLocaleString()} تومان</p>
+                    </div>
+                    <div className="flex items-center space-x-2 bg-gray-50 rounded-full p-1">
+                      <motion.button 
+                        whileTap={{ scale: 0.9 }}
+                        onClick={() => updateQuantity(item.id, -1)}
+                        className="w-8 h-8 rounded-full bg-purple-100 hover:bg-purple-200 text-purple-600 flex items-center justify-center"
+                      >
+                        -
+                      </motion.button>
+                      <span className="mx-4 font-medium">{item.quantity}</span>
+                      <motion.button 
+                        whileTap={{ scale: 0.9 }}
+                        onClick={() => updateQuantity(item.id, 1)}
+                        className="w-8 h-8 rounded-full bg-purple-100 hover:bg-purple-200 text-purple-600 flex items-center justify-center"
+                      >
+                        +
+                      </motion.button>
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
 
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-white rounded-xl shadow-md p-6 mt-6"
+              >
+                <h3 className="text-xl font-semibold mb-4 text-gray-800">آدرس تحویل</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <input
+                    type="text"
+                    placeholder="آدرس خیابان"
+                    className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent outline-none"
+                    value={shippingAddress.street}
+                    onChange={(e) => setShippingAddress(prev => ({...prev, street: e.target.value}))}
+                  />
+                  <input
+                    type="text"
+                    placeholder="شهر"
+                    className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent outline-none"
+                    value={shippingAddress.city}
+                    onChange={(e) => setShippingAddress(prev => ({...prev, city: e.target.value}))}
+                  />
+                  <input
+                    type="text"
+                    placeholder="استان"
+                    className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent outline-none"
+                    value={shippingAddress.state}
+                    onChange={(e) => setShippingAddress(prev => ({...prev, state: e.target.value}))}
+                  />
+                  <input
+                    type="text"
+                    placeholder="کد پستی"
+                    className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent outline-none"
+                    value={shippingAddress.postalCode}
+                    onChange={(e) => setShippingAddress(prev => ({...prev, postalCode: e.target.value}))}
+                  />
+                </div>
+              </motion.div>
+            </div>
 
-            <div className="lg:col-span-1">
-              <div className="bg-white rounded-lg shadow-md p-6 sticky top-24">
-                <h2 className="text-xl font-semibold mb-4">خلاصه سفارش</h2>
-                <div className="space-y-3">
-                  <div className="flex justify-between">
+            <motion.div 
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="lg:col-span-1"
+            >
+              <div className="bg-white rounded-xl shadow-md p-6 sticky top-24">
+                <h2 className="text-2xl font-bold mb-6 text-gray-800">خلاصه سفارش</h2>
+                <div className="space-y-4">
+                  <div className="flex justify-between text-gray-600">
                     <span>جمع کل</span>
                     <span>{calculateTotal().toLocaleString()} تومان</span>
                   </div>
-                  <div className="flex justify-between">
+                  <div className="flex justify-between text-gray-600">
                     <span>هزینه ارسال</span>
-                    <span>رایگان</span>
+                    <span className="text-green-500">رایگان</span>
                   </div>
-                  <hr className="my-4" />
-                  <div className="flex justify-between font-semibold">
+                  <div className="h-px bg-gradient-to-r from-purple-100 via-purple-300 to-purple-100 my-4"></div>
+                  <div className="flex justify-between text-xl font-bold text-gray-800">
                     <span>مبلغ قابل پرداخت</span>
                     <span>{calculateTotal().toLocaleString()} تومان</span>
                   </div>
-                  <button 
-                    className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors"
+                  <motion.button 
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-300"
                     onClick={submitOrder}
                   >
                     ادامه فرآیند خرید
-                  </button>
+                  </motion.button>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         )}
       </div>
     </div>
   );
 }
-
 async function openDB() {
   return await new Promise((resolve, reject) => {
     const request = indexedDB.open('CartDB', 1);

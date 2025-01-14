@@ -6,6 +6,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 
 interface CustomJwtPayload extends JwtPayload {
   userId: string;
+  status: string;
 }
 
 export async function POST(req: Request) {
