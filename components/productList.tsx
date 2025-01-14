@@ -45,7 +45,7 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile, component
         const data = await response.json();
 
         if (data?.products) {
-          const productInfo = data.products.map((product: object) => ({
+          const productInfo = data.products.map((product: { _id: string }) => ({
             ...product,
             _id: product._id, // Ensure _id is preserved
           }));

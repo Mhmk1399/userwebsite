@@ -1,13 +1,10 @@
 import connect from "@/lib/data";
 import Order from "@/models/orders";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(
-  request: Request,
-  context: { params: { id: string } }
-) {
+export async function GET(request: NextRequest) {
   try {
-    const id = await context.params.id;
+    const id = request.nextUrl.pathname.split('/')[3];
     await connect();
 
     if (!connect) {
@@ -21,7 +18,7 @@ export async function GET(
 
     return NextResponse.json(order, { status: 200 });
   } catch (error) {
-    console.error("Error fetching order:", error);
+    console.log(error);
     return NextResponse.json(
       { error: "Failed to fetch order" },
       { status: 500 }

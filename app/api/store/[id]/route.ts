@@ -1,20 +1,13 @@
 import connect from "@/lib/data";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import Products from "../../../../models/product";
-import { getStoreId } from "../../../../middleWare/storeId";
 
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest) {
   try {
     await connect();
-    const storeId = getStoreId();
-    const productId = params.id;
-    console.log(productId);
-    console.log(storeId);
+    const productId = request.nextUrl.pathname.split('/')[3];
     
-    const product = await Products.findOne({  _id: productId });
+    const product = await Products.findOne({ _id: productId });
     if (!product) {
       return NextResponse.json(
         { message: "Product not found" },
@@ -23,7 +16,7 @@ export async function GET(
     }
     return NextResponse.json(product, { status: 200 });
   } catch (error) {
-    console.error("Error fetching product:", error);
+    console.log(error);
     return NextResponse.json(
       { message: "Error fetching product" },
       { status: 500 }
