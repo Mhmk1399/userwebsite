@@ -1,15 +1,15 @@
 "use client";
 import {
   HeaderSection,
-  Section as SectionType,
   HeaderBlock,
 } from "@/lib/types";
+
 import data from "@/public/template/homelg.json";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
-interface HeaderProps {}
+
 
 // Styled components
 const SectionHeader = styled.section<{
@@ -138,7 +138,7 @@ const MenuButton = styled.button<{
   }
 `;
 
-const Header: React.FC<HeaderProps> = () => {
+const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [mounted, setMounted] = useState(false);
 

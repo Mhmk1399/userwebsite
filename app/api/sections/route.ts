@@ -22,6 +22,7 @@ export async function GET(request: Request) {
     try {
       fileNames = await fs.readdir(templateDir);
     } catch (error) {
+      console.log('Error reading template directory:', error);
       return NextResponse.json(
         { error: 'Failed to read template directory' },
         { status: 500 }
@@ -65,7 +66,7 @@ export async function GET(request: Request) {
     const jsonData = await fs.readFile(jsonPath, "utf-8");
     const parsedData = JSON.parse(jsonData);
 
-    const sections: Record<string, any[]> = {
+    const sections: Record<string, Array<object> >= {
       Banner: [],
       SlideShow: [],
       RichText: [],

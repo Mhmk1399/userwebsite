@@ -1,6 +1,6 @@
 "use client";
 import {
-  Layout,
+  
   CollapseSection,
   CollapseBlock,
   CollapseBlockSetting,
@@ -117,13 +117,10 @@ const Answer = styled.div<{
 const CollapseFaq: React.FC<CollapseFaqProps> = ({ sections, isMobile, componentName }) => {
   const [openIndexes, setOpenIndexes] = useState<number[]>([]);
   const [blocks, setBlocks] = useState<CollapseBlock[]>([]);
-
-  const sectionData = sections.find(
+ const sectionData = sections.find(
     (section) => section.type === componentName
   );
-  if (!sectionData) {
-    return <div>No data available</div>;
-  }
+  
   useEffect(() => {
     if (sectionData?.blocks) {
       const blocksArray = Object.keys(sectionData.blocks)
@@ -132,6 +129,10 @@ const CollapseFaq: React.FC<CollapseFaqProps> = ({ sections, isMobile, component
       setBlocks(blocksArray);
     }
   }, [sectionData]);
+
+ if (!sectionData) {
+    return <div>No data available</div>;
+  }
 
   const toggleOpen = (index: number) => {
     setOpenIndexes((prev) =>

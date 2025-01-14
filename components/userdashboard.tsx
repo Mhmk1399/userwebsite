@@ -55,6 +55,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
+      console.log(loading)
       try {
         // Get the user ID from localStorage token
         const token = localStorage.getItem("token");
@@ -79,6 +80,7 @@ const Dashboard = () => {
           });
         }
       } catch (error) {
+        console.log("Error fetching user data:", error);
         toast.error("خطا در دریافت اطلاعات کاربری");
         
       }
@@ -135,6 +137,7 @@ const Dashboard = () => {
         console.log(result.message || "خطا در به‌روزرسانی اطلاعات");
       }
     } catch (error) {
+      console.log("Error updating user:", error);
       toast.error("خطای سرور");
 
       console.log("خطای سرور");
@@ -456,9 +459,9 @@ const Dashboard = () => {
               </button>
 
               <button
-                onClick={() => {
+                onClick={(e) => {
                   setIsModalOpen(false);
-                  handleDeleteAccount;
+                  handleDeleteAccount(e);
                 }}
                 className="px-4 py-2 mx-2 transition-all text-white border bg-red-500 rounded-lg hover:bg-opacity-75"
               >

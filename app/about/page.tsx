@@ -38,6 +38,8 @@ export default function Page() {
 
   useEffect(() => {
     const getData = async () => {
+      console.log(setIsMobile)
+      console.log(setError)
       if (!process.env.NEXT_PUBLIC_API_URL) {
         throw new Error("NEXT_PUBLIC_API_URL is not set");
       }
