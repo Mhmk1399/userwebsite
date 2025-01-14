@@ -100,22 +100,43 @@ const DetailPage = () => {
   const [isInCart, setIsInCart] = useState(false);
 const [quantity, setQuantity] = useState(0);
 useEffect(() => {
-  const checkCartStatus = async () => {
-    const request = indexedDB.open('CartDB', 1);
-    request.onsuccess = () => {
-      const db = request.result;
-      const transaction = db.transaction('cart', 'readonly');
-      const store = transaction.objectStore('cart');
-      const getRequest = store.get(product?._id || '');
+  // Initialize database and store
+const initializeDB = () => {
+  return new Promise((resolve) => {
+    const openRequest = indexedDB.deleteDatabase('CartDB');
+    openRequest.onsuccess = () => {
+      const request = indexedDB.open('CartDB', 1);
       
-      getRequest.onsuccess = () => {
-        if (getRequest.result) {
-          setIsInCart(true);
-          setQuantity(getRequest.result.quantity);
-        }
+      request.onupgradeneeded = (event) => {
+        const db = (event.target as IDBOpenDBRequest).result;
+        db.createObjectStore('cart', { keyPath: 'id' });
       };
+
+      request.onsuccess = () => resolve(request.result);
     };
-  };
+  });
+};
+
+// Update the checkCartStatus function
+const checkCartStatus = async () => {
+  const db = await initializeDB();
+  if (product?._id) {
+    const transaction = (db as IDBDatabase).transaction('cart', 'readonly');
+    const store = transaction.objectStore('cart');
+    const getRequest = store.get(product._id);
+    
+    getRequest.onsuccess = () => {
+      if (getRequest.result) {
+        setIsInCart(true);
+        setQuantity(getRequest.result.quantity);
+      }
+    };
+  }
+};
+
+  
+  
+  
   
   if (product?._id) {
     checkCartStatus();
