@@ -43,7 +43,7 @@ export default function Page() {
       const routePath = pathname.split("/").pop() || "home";
 
       const response = await fetch(
-     '/api/sections?'+routePath,
+     "/api/section/" + routePath,
         {
           cache: "no-store",
         }
