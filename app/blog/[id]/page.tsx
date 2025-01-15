@@ -5,7 +5,7 @@ import Image from "next/image";
 import styled from "styled-components";
 import { BlogDetailSection } from "@/lib/types";
 import largeBlogData from "../../../public/template/blogdetaillg.json";
-import smallBlogData from "../../../public/template/blogdetailsm.json";
+import smallBlogData from "../../../public/template/blogdetailSm.json";
 interface BlogDetailData {
   _id: string;
   title: string;
