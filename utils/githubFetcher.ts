@@ -19,6 +19,7 @@ export async function fetchGitHubFile(filePath: string): Promise<string> {
                 Authorization: `Bearer ${GITHUB_TOKEN}`, // Provide your GitHub token here
                 Accept: "application/vnd.github.v3+json", // Fetch metadata (including content)
             },
+            
         });
 
         // Extract Base64-encoded content and decode it

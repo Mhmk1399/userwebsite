@@ -5,7 +5,7 @@ import { fetchGitHubFile } from "@/utils/githubFetcher";
 export async function GET(request: Request) {
   try {
     const headersList = await headers();
-    const userAgent = headersList.get("user-agent") || "";
+    const userAgent =  headersList.get("user-agent") || "";
     const isMobile = /mobile|android|iphone|ipad|phone/i.test(userAgent);
 
     console.log("User Agent:", userAgent);
@@ -17,7 +17,6 @@ export async function GET(request: Request) {
 
     // Construct file paths based on routePath and isMobile
     const filePath = `public/template/${routePath}${isMobile ? "sm" : "lg"}.json`;
-
 
     console.log("Fetching file from GitHub:", filePath);
 
@@ -67,20 +66,34 @@ export async function GET(request: Request) {
       Children = parsedData.children;
     }
 
-    return NextResponse.json({
-      Children,
-      isMobile,
-      currentRoute: routePath,
-      template: isMobile ? `${routePath}sm.json` : `${routePath}lg.json`,
-    });
+    // Add CORS headers to the response
+    return NextResponse.json(
+      {
+        Children,
+        isMobile,
+        currentRoute: routePath,
+        template: isMobile ? `${routePath}sm.json` : `${routePath}lg.json`,
+      },
+      {
+        headers: {
+          "Access-Control-Allow-Origin": "*", // Allow all origins
+          "Access-Control-Allow-Methods": "GET, OPTIONS", // Allow only GET and OPTIONS
+          "Access-Control-Allow-Headers": "Content-Type", // Allow Content-Type header
+        },
+      }
+    );
   } catch (error) {
     console.error("Error:", error);
     return NextResponse.json(
       {
         error: "Internal Server Error",
-
       },
-      { status: 500 }
+      {
+        status: 500,
+        headers: {
+          "Access-Control-Allow-Origin": "*", // Allow all origins
+        },
+      }
     );
   }
 }
