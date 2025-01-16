@@ -11,7 +11,8 @@ export async function GET(request: Request) {
     console.log("User Agent:", userAgent);
 
     const url = new URL(request.url);
-    const routePath = url.href.split("?").pop() || "home";
+    const routePath = url.href.split("?").pop()?.replace("=", "") || "home";
+
 
     console.log("routePath:", routePath);
 
