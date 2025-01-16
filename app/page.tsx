@@ -38,30 +38,40 @@ export default function Page() {
 
   useEffect(() => {
     const getData = async () => {
-      console.log(setIsMobile);
-      console.log(setError);
-      if (!process.env.NEXT_PUBLIC_API_URL) {
-        throw new Error("NEXT_PUBLIC_API_URL is not set");
-      }
-      const routePath = pathname.split("/").pop() || "home";
-
-      const response = await fetch(
-        process.env.NEXT_PUBLIC_API_URL + "/api/sections?" + routePath,
-        {
-          cache: "no-store",
+      try {
+        if (!process.env.NEXT_PUBLIC_API_URL) {
+          throw new Error("NEXT_PUBLIC_API_URL is not set");
         }
-      );
-      const data = await response.json();
-
-      setData(data.Children.sections);
-      setOrders(data.Children.order);
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch data");
+  
+        const routePath = pathname.split("/").pop() || "home";
+  
+        console.log("Fetching data for routePath:", routePath);
+  
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/sections?${routePath}`,
+          {
+            cache: "no-store", // Ensure fresh data is fetched
+          }
+        );
+  
+        if (!response.ok) {
+          throw new Error(`Failed to fetch data: ${response.statusText}`);
+        }
+  
+        const data = await response.json();
+  
+        console.log("Fetched data:", data);
+  
+        setData(data.Children.sections);
+        setOrders(data.Children.order);
+      } catch (error) {
+        console.error("Error fetching data:", error);
       }
     };
+  
     getData();
   }, [pathname]);
+  
 
   if (error) {
     return <div>{error}</div>;
