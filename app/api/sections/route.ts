@@ -59,7 +59,7 @@ export async function GET(request: Request) {
       process.cwd(),
       "public",
       "template",
-      isMobile ? template.sm : template.lg
+     template.lg
     );
     console.log("jsonPath:", jsonPath);
 
