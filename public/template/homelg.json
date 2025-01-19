@@ -77,8 +77,8 @@
               "descriptionColor": "#E5E5E5",
               "descriptionFontSize": "22",
               "descriptionFontWeight": "bold",
-              "textColor": "#FCA311",
-              "textFontSize": "71",
+              "textColor": "#716b60",
+              "textFontSize": "35",
               "textFontWeight": "bold",
               "backgroundColorBox": "#14213d",
               "backgroundBoxRadious": "54",
@@ -128,7 +128,7 @@
             "descriptionColor": "#E5E5E5",
             "descriptionFontSize": "16",
             "descriptionFontWeight": "normal",
-            "textColor": "#dc1818",
+            "textColor": "#FFFFFF",
             "textFontSize": "24",
             "textFontWeight": "bold",
             "btnTextColor": "#ee2020",
@@ -144,7 +144,7 @@
         {
           "type": "RichText",
           "blocks": {
-            "textHeading": "حصول",
+            "textHeading": "سربرگ محصول",
             "description": "توضیحات درباره محصول",
             "btnText": "دکمه",
             "btnLink": "/",
