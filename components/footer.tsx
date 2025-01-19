@@ -95,7 +95,7 @@ const Footer = () => {
     setMounted(true);
   }, []);
 
-  const sectionData = data.sections.sectionFooter as FooterSection;
+  const sectionData = data.sections.sectionFooter as unknown as FooterSection;
 
   if (!mounted || !sectionData) {
     return null;
