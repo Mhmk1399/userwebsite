@@ -71,14 +71,14 @@
           "blocks": {
             "imageSrc": "/assets/images/ban.jpg",
             "imageAlt": "",
-            "text": "lggggg",
+            "text": "lgggggaasdasdasdasd",
             "description": " توضیحات بنر",
             "setting": {
               "descriptionColor": "#E5E5E5",
               "descriptionFontSize": "22",
               "descriptionFontWeight": "bold",
-              "textColor": "#716b60",
-              "textFontSize": "35",
+              "textColor": "#FCA311",
+              "textFontSize": "71",
               "textFontWeight": "bold",
               "backgroundColorBox": "#14213d",
               "backgroundBoxRadious": "54",
