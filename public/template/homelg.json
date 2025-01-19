@@ -111,7 +111,7 @@
         {
           "type": "RichText",
           "blocks": {
-            "textHeading": "سربرگ محصول",
+            "textHeading": "سربرل",
             "description": "توضیحات درباره محصول",
             "btnText": "دکمه",
             "btnLink": "/",
