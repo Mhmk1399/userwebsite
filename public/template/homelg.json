@@ -64,40 +64,7 @@
       "type": "header"
     },
     "children": {
-      "type": "home",
       "sections": [
-        {
-          "type": "Banner",
-          "blocks": {
-            "imageSrc": "/assets/images/ban.jpg",
-            "imageAlt": "",
-            "text": "awerw",
-            "description": " توضیحات بنر",
-            "setting": {
-              "descriptionColor": "#E5E5E5",
-              "descriptionFontSize": "22",
-              "descriptionFontWeight": "bold",
-              "textColor": "#FCA311",
-              "textFontSize": "71",
-              "textFontWeight": "bold",
-              "backgroundColorBox": "#14213d",
-              "backgroundBoxRadious": "54",
-              "opacityImage": "1",
-              "opacityTextBox": "0.7",
-              "imageRadious": "14",
-              "imageBehavior": "cover"
-            }
-          },
-          "setting": {
-            "paddingTop": "30",
-            "paddingBottom": "30",
-            "marginTop": "20",
-            "marginBottom": "20",
-            "imageBehavior": "cover",
-            "paddingLeft": "10",
-            "paddingRight": "10"
-          }
-        },
         {
           "type": "SlideShow",
           "blocks": [
@@ -523,7 +490,6 @@
         }
       ],
       "order": [
-        "Banner",
         "SlideShow",
         "RichText",
         "ImageText",
