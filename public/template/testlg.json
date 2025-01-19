@@ -1,7 +1,40 @@
 {
   "children": {
-    "type": "test",
-    "sections": [],
-    "order": []
+    "sections": [
+      {
+        "type": "RichText-ee22a230-13fc-42fc-8d39-27ab67f5c310",
+        "blocks": {
+          "imageSrc": "",
+          "imageAlt": "",
+          "heading": "",
+          "description": "توضیحات درباره محصول",
+          "textHeading": "سربرگ محصول",
+          "btnText": "دکمه",
+          "btnLink": "/",
+          "setting": {
+            "textHeadingColor": "#FCA311",
+            "textHeadingFontSize": "40",
+            "textHeadingFontWeight": "bold",
+            "descriptionColor": "#E5E5E5",
+            "descriptionFontSize": "18",
+            "descriptionFontWeight": "normal",
+            "background": "#14213D",
+            "btnTextColor": "#ffffff",
+            "btnBackgroundColor": "#FCA311"
+          }
+        },
+        "setting": {
+          "paddingTop": "30",
+          "paddingBottom": "30",
+          "marginTop": "20",
+          "marginBottom": "20",
+          "paddinRight": "0",
+          "paddinLeft": "0"
+        }
+      }
+    ],
+    "order": [
+      "RichText-ee22a230-13fc-42fc-8d39-27ab67f5c310"
+    ]
   }
 }
