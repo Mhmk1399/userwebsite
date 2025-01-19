@@ -146,7 +146,7 @@ const Header: React.FC = () => {
     setMounted(true);
   }, []);
 
-  const sectionData = data.sections.sectionHeader as HeaderSection;
+  const sectionData = data.sections.sectionHeader as unknown as HeaderSection;
   if (!mounted) {
     return null;
   }
