@@ -15,12 +15,30 @@
         "imageLogo": "",
         "imageAlt": "",
         "links": [
-          { "name": "خانه", "url": "/" },
-          { "name": "درباره ", "url": "/about" },
-          { "name": "ارتباط  ", "url": "/contact" },
-          { "name": "بلاگ", "url": "/blog" },
-          { "name": "فروشگاه", "url": "/shop" },
-          { "name": "ورود/عضویت", "url": "/login" }
+          {
+            "name": "خانه",
+            "url": "/"
+          },
+          {
+            "name": "درباره ",
+            "url": "/about"
+          },
+          {
+            "name": "ارتباط  ",
+            "url": "/contact"
+          },
+          {
+            "name": "بلاگ",
+            "url": "/blog"
+          },
+          {
+            "name": "فروشگاه",
+            "url": "/shop"
+          },
+          {
+            "name": "ورود/عضویت",
+            "url": "/login"
+          }
         ],
         "setting": {
           "imageWidth": "80",
@@ -42,7 +60,6 @@
       }
     },
     "children": {
-      "type": "home",
       "sections": [
         {
           "type": "Banner",
@@ -135,7 +152,6 @@
               "btnBackgroundColor": "#1d6bdf"
             }
           },
-
           "setting": {
             "paddingTop": "30",
             "paddingBottom": "30",
@@ -238,7 +254,6 @@
             "heading": "عضویت در خبرنامه",
             "description": "توضیحات درباره خبرنامه",
             "btnText": "ثبت نام",
-
             "setting": {
               "headingColor": "#ffffff",
               "headingFontSize": "27",
@@ -383,7 +398,6 @@
         {
           "type": "MultiRow",
           "title": "سربرگ ردیف ها",
-
           "blocks": [
             {
               "heading": "ردیف اول",
@@ -442,7 +456,6 @@
             "heading": "عضویت در خبرنامه",
             "description": "توضیحات درباره خبرنامه",
             "btnText": "ثبت نام",
-
             "setting": {
               "headingColor": "#ffffff",
               "headingFontSize": "27",
@@ -501,6 +514,38 @@
             "marginBottom": "20px",
             "backgroundColor": "#ffffff"
           }
+        },
+        {
+          "type": "Video-4ebb7877-ba73-45c4-95cf-cd89db89d308",
+          "blocks": {
+            "imageSrc": "",
+            "imageAlt": "",
+            "heading": "سربرگ ویدیو",
+            "description": "",
+            "videoUrl": "/assets/video/video.mp4",
+            "videoAlt": "",
+            "setting": {
+              "headingColor": "#FCA311",
+              "headingFontSize": "40",
+              "headingFontWeight": "bold",
+              "videoWidth": "1000px",
+              "videoHeight": "700px",
+              "videoRadious": "79",
+              "videoLoop": true,
+              "videoMute": false,
+              "videoAutoplay": true,
+              "videoPoster": "/assets/images/banner2.webp",
+              "backgroundVideoSection": "#FFFFFF"
+            }
+          },
+          "setting": {
+            "paddingTop": "30",
+            "paddingBottom": "30",
+            "marginTop": "20",
+            "marginBottom": "20",
+            "paddinRight": "0",
+            "paddinLeft": "0"
+          }
         }
       ],
       "order": [
@@ -515,7 +560,8 @@
         "MultiColumn",
         "MultiRow",
         "NewsLetter-1",
-        "Collection"
+        "Collection",
+        "Video-4ebb7877-ba73-45c4-95cf-cd89db89d308"
       ]
     },
     "sectionFooter": {
@@ -539,10 +585,15 @@
         "telegramLink": "#",
         "whatsappLink": "#",
         "logo": "/assets/images/logo.webp",
-
         "links": [
-          { "url": "/privacy-policy", "label": "Privacy Policy" },
-          { "url": "/terms-of-service", "label": "Terms of Service" }
+          {
+            "url": "/privacy-policy",
+            "label": "Privacy Policy"
+          },
+          {
+            "url": "/terms-of-service",
+            "label": "Terms of Service"
+          }
         ]
       },
       "setting": {
@@ -554,5 +605,9 @@
       }
     }
   },
-  "order": ["section-header", "children", "section-footer"]
+  "order": [
+    "section-header",
+    "children",
+    "section-footer"
+  ]
 }
