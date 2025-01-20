@@ -1,8 +1,8 @@
 import connect from "@/lib/data";
 import { getStoreId } from "@/middleWare/storeId";
-import { NextRequest, NextResponse } from "next/server";
+import {  NextResponse } from "next/server";
 import Collections from "@/models/collection";
-export async function GET(req: NextRequest) {
+export async function GET() {
    await connect();
    if (!connect) {
      return NextResponse.json({ error: "Connection failed!" });
@@ -13,6 +13,7 @@ export async function GET(req: NextRequest) {
      const collection = await Collections.find({ storeId });
      return NextResponse.json(collection, { status: 200 });
    } catch (error) {
+    console.log(error);
      return NextResponse.json(
        {    error: "Failed to fetch collections" },
        { status: 500 }

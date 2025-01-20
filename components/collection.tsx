@@ -1,10 +1,9 @@
 "use client";
 import { CollectionBlockSetting, CollectionSection } from "@/lib/types";
-import { use, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import styled from "styled-components";
 import Link from "next/link";
 import pro2 from "@/public/assets/images/pro2.jpg";
-import { set } from "mongoose";
 
 interface Collection {
   _id: string;
@@ -131,7 +130,7 @@ export const Collection: React.FC<CollectionProps> = ({
 }) => {
   // const [products, setProducts] = useState<ProductData[]>([]);
 
-  const [collections, setCollections] = useState<any[]>([]);
+  const [collections, setCollections] = useState<Collection[]>([]);
   const [selectedCollection, setSelectedCollection] = useState("");
   const [filteredProducts, setFilteredProducts] = useState<ProductData[]>([]);
 
@@ -196,7 +195,7 @@ export const Collection: React.FC<CollectionProps> = ({
     if (collections.length > 0) {
       setSelectedCollection(collections[0].name);
       const firstCollectionData = collections[0];
-      const formattedProducts = firstCollectionData.products.map((product: any) => ({
+      const formattedProducts = firstCollectionData.products.map((product: Product) => ({
         id: product._id,
         name: product.name,
         price: product.price,
