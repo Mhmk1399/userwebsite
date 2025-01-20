@@ -16,7 +16,6 @@ interface CartItem {
 export default function CartPage() {
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const [loading, setLoading] = useState(true);
-    const [isModalOpen, setIsModalOpen] = useState(false);
     const [shippingAddress, setShippingAddress] = useState({
       street: '',
       city: '',

@@ -6,7 +6,6 @@ import { FooterSection } from "@/lib/types";
 import data from "@/public/template/homelg.json";
 import { useEffect, useState } from "react";
 
-interface FooterProps {}
 
 const FooterContainer = styled.footer<{
   $data: FooterSection;
@@ -51,7 +50,7 @@ const FooterDescription = styled.p<{
   padding: 0 50px;
 `;
 
-const SocialLinks = styled.div<{}>`
+const SocialLinks = styled.div<object>`
   display: flex;
   justify-content: center;
   gap: 15px;
@@ -61,7 +60,7 @@ const SocialLinks = styled.div<{}>`
     transform: scale(1.08);
   }
 `;
-const FooterLinks = styled.div<{}>`
+const FooterLinks = styled.div<object>`
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
@@ -90,13 +89,13 @@ const Logo = styled(Image)<{
     props.$data?.blocks?.setting?.logoRadius || "6"}px;
 `;
 
-const Footer: React.FC<FooterProps> = () => {
+const Footer = () => {
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const sectionData = data.sections.sectionFooter as FooterSection;
+  const sectionData = data.sections.sectionFooter as unknown as FooterSection;
 
   if (!mounted || !sectionData) {
     return null;

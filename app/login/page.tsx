@@ -124,6 +124,7 @@ const Auth: React.FC = () => {
             const token = localStorage.getItem("token");
             const decoded = Jwt.decode(token as string) as DecodedToken;
             const userId = decoded.userId;
+            console.log(userId);
             router.push(`/`);
           }
         }, 3000);
@@ -139,7 +140,7 @@ const Auth: React.FC = () => {
   };
 
   const validateField = (name: string, value: string) => {
-    let newErrors = { ...errors };
+    const newErrors = { ...errors };
 
     switch (name) {
       case "phone":
@@ -286,7 +287,13 @@ const Auth: React.FC = () => {
   );
 };
 
-const Modal = ({ type, message, onClose }: any) => (
+interface ModalProps {
+  type: "success" | "error";
+  message: string;
+  onClose: () => void;
+}
+
+const Modal = ({ type, message, onClose }: ModalProps) => (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 ">
     <div
       className={`px-16 py-8 rounded-lg  shadow-lg ${

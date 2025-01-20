@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import Products from "../../../models/product";
 import { getStoreId } from "../../../middleWare/storeId";
 
-export async function GET(request: Request) {
+export async function GET() {
   try {
     await connect();
     const storeId = getStoreId();

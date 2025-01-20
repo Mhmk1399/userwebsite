@@ -1,13 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
+import {  NextResponse } from "next/server";
 import connect from "@/lib/data";
 import Blog from "@/models/blogs";
 import blogs from "@/models/blogs";
-import Jwt, { JwtPayload } from "jsonwebtoken";
 import { getStoreId } from "@/middleWare/storeId";
 
-interface CustomJwtPayload extends JwtPayload {
-  storeId: string;
-}
+
 
 export async function POST(req: Request) {
   const BlogData = await req.json();
@@ -32,7 +29,7 @@ export async function POST(req: Request) {
   }
 }
 
-export const GET = async (req: NextRequest) => {
+export const GET = async () => {
   await connect();
   if (!connect) {
     return new NextResponse("Database connection error", { status: 500 });

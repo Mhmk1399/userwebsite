@@ -428,7 +428,7 @@ export interface Layout {
     colorSchema: ColorSchema;
   };
   sections: {
-    find(arg0: (section: any) => boolean): unknown;
+    find(arg0: (section:Array<Section>) => boolean): unknown;
     slideshow: SlideSection;
     richtext: RichTextSection;
     sectionHeader: HeaderSection;

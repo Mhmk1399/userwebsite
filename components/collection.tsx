@@ -6,7 +6,21 @@ import Link from "next/link";
 import pro2 from "@/public/assets/images/pro2.jpg";
 import { set } from "mongoose";
 
+interface Collection {
+  _id: string;
+  name: string;
+  products: Product[];
+}
 
+interface Product {
+  _id: string;
+  name: string;
+  price: number;
+  images?: {
+    imageSrc: string;
+    imageAlt: string;
+  };
+}
 interface CollectionProps {
   sections: CollectionSection[];
   isMobile: boolean;
@@ -144,10 +158,15 @@ export const Collection: React.FC<CollectionProps> = ({
           return;
         }
 
-        const allCollection = data.collections
+        const collectionData = data.collections || [] as Collection[];
+        setCollections(collectionData);
+        // Set initial filtered products from 'all' collection
+        const allCollection = data.collections.find(
+          (c: Collection) => c.name === "all"
+        );
         if (allCollection && allCollection.products) {
           const formattedProducts = allCollection.products.map(
-            (product: any) => ({
+            (product: Product) => ({
               id: product._id,
               name: product.name,
               price: product.price,
@@ -195,12 +214,12 @@ export const Collection: React.FC<CollectionProps> = ({
     setSelectedCollection(collectionName);
 
     const selectedCollectionData = collections.find(
-      (c) => c.name === collectionName
+      (c: Collection) => c.name === collectionName
     );
     console.log("Selected collection data:", selectedCollectionData);
     if (selectedCollectionData) {
       const formattedProducts = selectedCollectionData.products.map(
-        (product: any) => ({
+        (product: Product) => ({
           id: product._id,
           name: product.name,
           price: product.price,

@@ -3,10 +3,7 @@ import connect from "@/lib/data";
 import Blog from "@/models/blogs";
 import { getStoreId } from "@/middleWare/storeId";
 
-export const GET = async (
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) => {
+export async function GET(request: NextRequest) {
   await connect();
   if (!connect) {
     return new NextResponse("Database connection error", { status: 500 });
@@ -18,9 +15,10 @@ export const GET = async (
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    // Find the specific blog by its _id and storeId
+    const id = request.nextUrl.pathname.split('/')[3];
+    
     const blog = await Blog.findOne({
-      _id: params.id,
+      _id: id,
       storeId: storeId,
     });
 
@@ -35,4 +33,4 @@ export const GET = async (
       { status: 500 }
     );
   }
-};
+}

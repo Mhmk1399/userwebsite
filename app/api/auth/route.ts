@@ -2,14 +2,10 @@ import { NextResponse } from "next/server";
 import connect from "@/lib/data";
 import StoreUsers from "../../../models/storesUsers";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 import fs from "fs";
 
-interface CustomJwtPayload extends jwt.JwtPayload {
-  storeId: string;
-}
 
-export async function GET(request: Request) {
+export async function GET() {
   await connect();
   if (!connect) {
     return NextResponse.json({ error: "Connection failed!" });

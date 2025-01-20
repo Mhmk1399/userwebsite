@@ -1,71 +1,31 @@
-import { promises as fs } from "fs";
-import path from "path";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
+import { fetchGitHubFile } from "@/utils/githubFetcher";
 
 export async function GET(request: Request) {
   try {
     const headersList = await headers();
-    const userAgent = headersList.get("user-agent") || "";
+    const userAgent =  headersList.get("user-agent") || "";
     const isMobile = /mobile|android|iphone|ipad|phone/i.test(userAgent);
 
     console.log("User Agent:", userAgent);
 
     const url = new URL(request.url);
-    const routePath = url.href.split("?").pop() || "home";
+    const routePath = url.href.split("?").pop()?.replace("=", "") || "home";
+
 
     console.log("routePath:", routePath);
 
-    const templateDir = path.join(process.cwd(), "public", "template");
-    let fileNames: string[];
-    
-    try {
-      fileNames = await fs.readdir(templateDir);
-    } catch (error) {
-      return NextResponse.json(
-        { error: 'Failed to read template directory' },
-        { status: 500 }
-      );
-    }
-    
-    const templateMap: Record<string, { lg: string; sm: string }> = {};
-    
-    fileNames
-      .filter(name => name.endsWith('.json'))
-      .forEach(fileName => {
-        const baseName = fileName.replace(/lg\.json$|sm\.json$/, '');
-        
-        if (!templateMap[baseName]) {
-          templateMap[baseName] = { lg: '', sm: '' };
-        }
-        
-        if (fileName.includes('lg.json')) {
-          templateMap[baseName].lg = fileName;
-        } else if (fileName.includes('sm.json')) {
-          templateMap[baseName].sm = fileName;
-        }
-      });
-    
-    console.log("templateMap:", templateMap);
+    // Construct file paths based on routePath and isMobile
+    const filePath = `public/template/${routePath}${isMobile ? "sm" : "lg"}.json`;
 
-    const template = templateMap[routePath] || {
-      lg: "null.json",
-      sm: "nullSm.json",
-    };
+    console.log("Fetching file from GitHub:", filePath);
 
-    console.log("Template:", template);
-    const jsonPath = path.join(
-      process.cwd(),
-      "public",
-      "template",
-      isMobile ? template.sm : template.lg
-    );
-    console.log("jsonPath:", jsonPath);
-
-    const jsonData = await fs.readFile(jsonPath, "utf-8");
+    // Fetch JSON file content from GitHub
+    const jsonData = await fetchGitHubFile(filePath);
     const parsedData = JSON.parse(jsonData);
 
-    const sections: Record<string, any[]> = {
+    const sections: Record<string, Array<object>> = {
       Banner: [],
       SlideShow: [],
       RichText: [],
@@ -83,6 +43,7 @@ export async function GET(request: Request) {
       BlogList: [],
       BlogDetail: [],
     };
+
     if (routePath === "home") {
       parsedData.sections.children.sections.forEach(
         (section: { type: string }) => {
@@ -105,20 +66,35 @@ export async function GET(request: Request) {
     } else {
       Children = parsedData.children;
     }
-    return NextResponse.json({
-      Children,
-      isMobile,
-      currentRoute: routePath,
-      template: isMobile ? template.sm : template.lg,
-    });
+
+    // Add CORS headers to the response
+    return NextResponse.json(
+      {
+        Children,
+        isMobile,
+        currentRoute: routePath,
+        template: isMobile ? `${routePath}sm.json` : `${routePath}lg.json`,
+      },
+      {
+        headers: {
+          "Access-Control-Allow-Origin": "*", // Allow all origins
+          "Access-Control-Allow-Methods": "GET, OPTIONS", // Allow only GET and OPTIONS
+          "Access-Control-Allow-Headers": "Content-Type", // Allow Content-Type header
+        },
+      }
+    );
   } catch (error) {
     console.error("Error:", error);
     return NextResponse.json(
       {
         error: "Internal Server Error",
-        details: error instanceof Error ? error.message : "Unknown error",
       },
-      { status: 500 }
+      {
+        status: 500,
+        headers: {
+          "Access-Control-Allow-Origin": "*", // Allow all origins
+        },
+      }
     );
   }
 }

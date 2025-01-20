@@ -108,7 +108,7 @@ const BlogCard = styled.div<{
   }
 `;
 
-const BlogList: React.FC<BlogListProps> = ({ isMobile, sections, componentName }) => {
+const BlogList: React.FC<BlogListProps> = ({  sections, componentName }) => {
   const [blogs, setBlogs] = useState<BlogData[]>([]);
   const [loading, setLoading] = useState(true);
 

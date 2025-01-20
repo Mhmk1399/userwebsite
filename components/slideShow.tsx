@@ -132,7 +132,7 @@ const Button = styled.button<{
 
 const SlideShow: React.FC<SlideShowProps> = ({ sections, isMobile , componentName}) => {
   console.log(componentName);
-  
+  const [currentIndex, setCurrentIndex] = useState(0);
   const sectionData = sections.find(
     (section) => section.type === componentName
   );
@@ -140,7 +140,7 @@ const SlideShow: React.FC<SlideShowProps> = ({ sections, isMobile , componentNam
   if (!sectionData) {
     return <div>No data available</div>;
   }
-  const [currentIndex, setCurrentIndex] = useState(0);
+  
 
   const { blocks } = sectionData;
 
