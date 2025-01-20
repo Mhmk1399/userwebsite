@@ -513,6 +513,7 @@
         }
       ],
       "order": [
+        "Banner-cad8f9bb-fbd9-4474-94f4-2f1b1980a0fa",
         "RichText",
         "ImageText",
         "Video",
@@ -523,8 +524,7 @@
         "MultiRow",
         "NewsLetter-1",
         "Collection",
-        "Banner-65757aba-d7b7-499b-930c-a78d8fbc6563",
-        "Banner-cad8f9bb-fbd9-4474-94f4-2f1b1980a0fa"
+        "Banner-65757aba-d7b7-499b-930c-a78d8fbc6563"
       ]
     },
     "sectionFooter": {
