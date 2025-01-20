@@ -1,8 +1,10 @@
 "use client";
 import { CollectionBlockSetting, CollectionSection } from "@/lib/types";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import styled from "styled-components";
 import Link from "next/link";
+import pro2 from "@/public/assets/images/pro2.jpg";
+import { set } from "mongoose";
 
 
 interface CollectionProps {
@@ -116,7 +118,7 @@ export const Collection: React.FC<CollectionProps> = ({
   // const [products, setProducts] = useState<ProductData[]>([]);
 
   const [collections, setCollections] = useState<any[]>([]);
-  const [selectedCollection, setSelectedCollection] = useState("all");
+  const [selectedCollection, setSelectedCollection] = useState("");
   const [filteredProducts, setFilteredProducts] = useState<ProductData[]>([]);
 
   useEffect(() => {
@@ -136,25 +138,20 @@ export const Collection: React.FC<CollectionProps> = ({
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-
+          setCollections(data);          
         if (!data || !data.collections) {
           console.warn("No collections data received");
           return;
         }
 
-        const collectionData = data.collections || [];
-        setCollections(collectionData);
-        // Set initial filtered products from 'all' collection
-        const allCollection = data.collections.find(
-          (c: any) => c.name === "all"
-        );
+        const allCollection = data.collections
         if (allCollection && allCollection.products) {
           const formattedProducts = allCollection.products.map(
             (product: any) => ({
               id: product._id,
               name: product.name,
               price: product.price,
-              imageSrc: product.images?.imageSrc || "/assets/images/pro2.jpg",
+              imageSrc: product.images?.imageSrc || pro2.src,
               imageAlt: product.images?.imageAlt || product.name,
               btnText: "خرید محصول",
             })
@@ -173,7 +170,26 @@ export const Collection: React.FC<CollectionProps> = ({
     };
 
     fetchProducts();
+   
+
   }, []);
+  useEffect(() => {
+    if (collections.length > 0) {
+      setSelectedCollection(collections[0].name);
+      const firstCollectionData = collections[0];
+      const formattedProducts = firstCollectionData.products.map((product: any) => ({
+        id: product._id,
+        name: product.name,
+        price: product.price,
+        imageSrc: product.images?.imageSrc || pro2.src,
+        imageAlt: product.images?.imageAlt || product.name,
+        btnText: "خرید محصول",
+      }));
+      setFilteredProducts(formattedProducts);
+    }
+  }, [collections]);
+  
+
   const handleCollectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const collectionName = e.target.value;
     setSelectedCollection(collectionName);
@@ -181,13 +197,14 @@ export const Collection: React.FC<CollectionProps> = ({
     const selectedCollectionData = collections.find(
       (c) => c.name === collectionName
     );
+    console.log("Selected collection data:", selectedCollectionData);
     if (selectedCollectionData) {
       const formattedProducts = selectedCollectionData.products.map(
         (product: any) => ({
           id: product._id,
           name: product.name,
           price: product.price,
-          imageSrc: product.images?.imageSrc || "/assets/images/pro2.jpg",
+          imageSrc: product.images?.imageSrc || pro2.src,
           imageAlt: product.images?.imageAlt || product.name,
           btnText: "خرید محصول",
         })
@@ -201,8 +218,6 @@ export const Collection: React.FC<CollectionProps> = ({
     return <div>No data available</div>;
   }
 
-  // console.log(sectionData);
-
   return (
     <>
       <Heading $setting={sectionData.setting}>
@@ -211,7 +226,9 @@ export const Collection: React.FC<CollectionProps> = ({
       <div className="flex justify-center px-6 my-4">
         <select
           value={selectedCollection}
-          onChange={handleCollectionChange}
+                  onChange={(e) => {
+                    handleCollectionChange(e)
+                  }}
           className="p-2 border rounded-lg bg-white shadow-sm"
           style={{
             color: sectionData.setting.headingColor,
@@ -219,6 +236,7 @@ export const Collection: React.FC<CollectionProps> = ({
           }}
         >
           {collections.map((collection) => (
+            
             <option key={collection._id} value={collection.name}>
               {collection.name}
             </option>
@@ -243,7 +261,9 @@ export const Collection: React.FC<CollectionProps> = ({
               }
             >
               <ProductImage
-                src={product.imageSrc || "/assets/images/pro2.jpg"}
+                // src={product.imageSrc || pro2.src}
+                src={ pro2.src}
+                
                 alt={product.imageAlt}
                 $setting={sectionData.setting}
               />
