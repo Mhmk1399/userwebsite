@@ -1,5 +1,5 @@
 
-import { fetchGitHubFile } from "@/utilities/github";
+import { fetchGitHubFile } from "../../utils/githubFetcher";
 
 export default async function test2Page() {
     const lgData = await fetchGitHubFile('public/template/test2lg.json');
