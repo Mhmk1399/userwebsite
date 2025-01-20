@@ -444,6 +444,72 @@
             "marginBottom": "20px",
             "backgroundColor": "#FCA311"
           }
+        },
+        {
+          "type": "Banner-65757aba-d7b7-499b-930c-a78d8fbc6563",
+          "blocks": {
+            "imageSrc": "/assets/images/ban.jpg",
+            "imageAlt": "",
+            "heading": "",
+            "description": " توضیحات بنر",
+            "text": "lggggg",
+            "setting": {
+              "descriptionColor": "#E5E5E5",
+              "descriptionFontSize": "22",
+              "descriptionFontWeight": "bold",
+              "textColor": "#FCA311",
+              "textFontSize": "71",
+              "textFontWeight": "bold",
+              "backgroundColorBox": "#14213d",
+              "backgroundBoxRadious": "54",
+              "opacityImage": "1",
+              "opacityTextBox": "0.7",
+              "imageRadious": "14",
+              "imageBehavior": "cover"
+            }
+          },
+          "setting": {
+            "paddingTop": "30",
+            "paddingBottom": "30",
+            "marginTop": "20",
+            "marginBottom": "20",
+            "imageBehavior": "cover",
+            "paddingLeft": "10",
+            "paddingRight": "10"
+          }
+        },
+        {
+          "type": "Banner-cad8f9bb-fbd9-4474-94f4-2f1b1980a0fa",
+          "blocks": {
+            "imageSrc": "/assets/images/ban.jpg",
+            "imageAlt": "",
+            "heading": "",
+            "description": " توضیحات بنر",
+            "text": "lggggg",
+            "setting": {
+              "descriptionColor": "#E5E5E5",
+              "descriptionFontSize": "22",
+              "descriptionFontWeight": "bold",
+              "textColor": "#FCA311",
+              "textFontSize": "71",
+              "textFontWeight": "bold",
+              "backgroundColorBox": "#14213d",
+              "backgroundBoxRadious": "54",
+              "opacityImage": "1",
+              "opacityTextBox": "0.7",
+              "imageRadious": "14",
+              "imageBehavior": "cover"
+            }
+          },
+          "setting": {
+            "paddingTop": "30",
+            "paddingBottom": "30",
+            "marginTop": "20",
+            "marginBottom": "20",
+            "imageBehavior": "cover",
+            "paddingLeft": "10",
+            "paddingRight": "10"
+          }
         }
       ],
       "order": [
@@ -456,7 +522,9 @@
         "MultiColumn",
         "MultiRow",
         "NewsLetter-1",
-        "Collection"
+        "Collection",
+        "Banner-65757aba-d7b7-499b-930c-a78d8fbc6563",
+        "Banner-cad8f9bb-fbd9-4474-94f4-2f1b1980a0fa"
       ]
     },
     "sectionFooter": {
