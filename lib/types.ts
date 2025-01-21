@@ -988,3 +988,29 @@ export interface SpecialOfferSection {
   blocks: SpecialOfferBlock;
   setting: SpecialOfferBlockSetting;
 }
+export interface StoryBlockSetting extends CommonSettings {
+  storyRingColor: string;
+  viewedRingColor: string;
+  titleColor: string;
+  titleFontSize: string;
+  titleFontWeight: string;
+  imageWidth: string;
+  imageHeight: string;
+  imageRadius: string;
+}
+
+export interface StoryBlock {
+  stories: {
+    id: string;
+    imageUrl: string;
+    title: string;
+    link: string;
+  }[];
+  setting: StoryBlockSetting;
+}
+
+export interface StorySection {
+  type: "Story";
+  blocks: StoryBlock;
+  setting: CommonSettings;
+}
