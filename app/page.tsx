@@ -13,6 +13,7 @@ import Video from "@/components/video";
 import { Collection } from "@/components/collection";
 import RichText from "@/components/richText";
 import ProductList from "@/components/productList";
+import { SpecialOffer } from "@/components/specialOffer";
 
 export default function Page() {
   const [data, setData] = useState(null);
@@ -34,6 +35,7 @@ export default function Page() {
     MultiRow,
     ProductList,
     Collection,
+    SpecialOffer
   };
 
   useEffect(() => {
