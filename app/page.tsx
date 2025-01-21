@@ -67,9 +67,10 @@ export default function Page() {
     return <div>{error}</div>;
   }
 
-  if (!data) {
-    return <div>Loading...</div>;
+  if (data===null) {
+    return <div className="mt-28">Loading...</div>;
   }
+
 
   return (
     <>

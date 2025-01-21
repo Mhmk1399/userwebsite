@@ -77,6 +77,7 @@ export default function Page() {
     <>
       {data && (
         <div className="grid grid-cols-1 gap-4">
+          
           {orders.map((componentName, index) => {
             const baseComponentName = componentName;
             const Component =

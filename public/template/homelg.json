@@ -510,7 +510,37 @@
             "paddingLeft": "10",
             "paddingRight": "10"
           }
+        },
+        {
+          "type": "specialOffer",
+          "blocks": {
+            "textHeading": "پیشنهاد شگفت‌ انگیز",
+            "setting": {
+              "headingColor": "#FFFFFF",
+              "headingFontSize": "32",
+              "headingFontWeight": "bold",
+              "productNameColor": "#000000",
+              "priceColor": "#EF394E",
+              "descriptionColor": "#666666",
+              "btnBackgroundColor": "#EF394E",
+              "btnTextColor": "#FFFFFF",
+              "cardBackground": "#FFFFFF",
+              "cardBorderRadius": "8",
+              "imageRadius": "8",
+              "gridColumns": "4"
+            }
+          },
+          "setting": {
+            "paddingTop": "30",
+            "paddingBottom": "30",
+            "marginTop": "20",
+            "marginBottom": "20",
+            "backgroundColor": "#EF394E",
+            "paddingLeft": "10",
+            "paddingRight": "10"
+          }
         }
+        
       ],
       "order": [
         "Banner-cad8f9bb-fbd9-4474-94f4-2f1b1980a0fa",
@@ -524,7 +554,8 @@
         "MultiRow",
         "NewsLetter-1",
         "Collection",
-        "Banner-65757aba-d7b7-499b-930c-a78d8fbc6563"
+        "Banner-65757aba-d7b7-499b-930c-a78d8fbc6563",
+        "specialOffer"
       ]
     },
     "sectionFooter": {

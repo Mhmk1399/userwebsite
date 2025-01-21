@@ -283,7 +283,8 @@ export interface Section {
     | ImageTextBlock
     | MultiColumnBlock
     | NewsLetterBlock
-    | RichTextBlock;
+    | RichTextBlock
+    |SpecialOfferBlock
   type: string;
 }
 export interface ImageTextBlockSetting extends CommonSettings {
@@ -957,4 +958,33 @@ export interface BlogDetailChildren {
   type: "BlogDetail";
   sections: BlogDetailSection[];
   order: string[];
+}
+// Add these interfaces for SpecialOffer component
+export interface SpecialOfferBlockSetting extends CommonSettings {
+  gridColumns: number;
+  imageRadius: string;
+  productNameColor: string;
+  priceColor: string;
+  descriptionColor: string;
+  btnBackgroundColor: string;
+  btnTextColor: string;
+  cardBackground: string;
+  cardBorderRadius: string;
+  paddingTop: string;
+  paddingBottom: string;
+  marginTop: string;
+  marginBottom: string;
+
+}
+
+export interface SpecialOfferBlock {
+  textHeading: string;
+  products: SpecialOfferSection[];
+  setting: SpecialOfferBlockSetting;
+}
+
+export interface SpecialOfferSection {
+  type: "SpecialOffer";
+  blocks: SpecialOfferBlock;
+  setting: SpecialOfferBlockSetting;
 }

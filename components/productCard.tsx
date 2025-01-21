@@ -9,7 +9,7 @@ interface ProductCardProps {
 }
 const defaultSetting = {
   cardBorderRadius: "10px",
-  cardBackground: "#fff",
+  cardBackground: "#ffffff",
   imageWidth: "100%",
   imageheight: "200px",
   imageRadius: "8px",
@@ -39,7 +39,7 @@ const Card = styled.div<{
   padding: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   height: 400px;
-
+  width: 450px;
   @media (max-width: 425px) {
     margin: 10px 5px;
     height: 350px;
@@ -108,6 +108,7 @@ const BuyButton = styled.button<{
 }>`
   display: inline-block;
   padding: 10px 20px;
+  
   background-color: ${(props) =>
     props.$settings?.btnBackgroundColor || defaultSetting.btnBackgroundColor};
   color: ${(props) => props.$settings?.btnColor || defaultSetting.btnColor};
@@ -144,7 +145,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData }) => {
   console.log(setCurrentImageIndex);
 
   return (
-    <Card dir="rtl">
+    <Card dir="rtl" className="min-w-[250px]">
       <ProductImage
         $productData={safeProductData}
         src={currentImage.imageSrc}
