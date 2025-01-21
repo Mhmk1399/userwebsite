@@ -514,7 +514,7 @@
         {
           "type": "SpecialOffer",
           "blocks": {
-            "textHeading": "پیشنهاد شگفت‌ انگیز",
+            "§": "پیشنهاد شگفت‌ انگیز",
             "setting": {
               "headingColor": "#FFFFFF",
               "headingFontSize": "32",
@@ -522,9 +522,9 @@
               "productNameColor": "#000000",
               "priceColor": "#EF394E",
               "descriptionColor": "#666666",
-              "btnBackgroundColor": "#EF394E",
-              "btnTextColor": "#FFFFFF",
-              "cardBackground": "#FFFFFF",
+              "btnBg": "#EF394E",
+              "btnTextColor": "#ffffff",
+              "cardBackground": "#EF394E",
               "cardBorderRadius": "8",
               "imageRadius": "8",
               "gridColumns": "4"
