@@ -569,8 +569,8 @@
               "titleColor": "#666666",
               "titleFontSize": "12",
               "titleFontWeight": "normal",
-              "imageWidth": "64",
-              "imageHeight": "64",
+              "imageWidth": "80",
+              "imageHeight": "80",
               "imageRadius": "50"
             }
           },
