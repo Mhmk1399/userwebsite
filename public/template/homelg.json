@@ -181,6 +181,53 @@
             "borderRadious": "20"
           }
         },
+         {
+          "type": "SlideBanner",
+          "setting": {
+            "marginTop": "20",
+            "marginBottom": "0",
+            "paddingTop": "0",
+            "paddingBottom": "0",
+            "paddingLeft": "0",
+            "paddingRight": "0"
+          },
+          "blocks": {
+            "slides": [
+              {
+                "imageSrc": "/assets/images/banner1.jpg",
+                "imageAlt": "Slide 1",
+                "heading": "عنوان اسلاید اول",
+                "description": "توضیحات اسلاید اول",
+                "link": "#"
+              },
+              {
+                "imageSrc": "/assets/images/pro3.jpg",
+                "imageAlt": "Slide 2",
+                "heading": "عنوان اسلاید دوم",
+                "description": "توضیحات اسلاید دوم",
+                "link": "#"
+              },
+              {
+                "imageSrc": "/assets/images/ban.jpg",
+                "imageAlt": "Slide 3",
+                "heading": "عنوان اسلاید سوم",
+                "description": "توضیحات اسلاید سوم",
+                "link": "#"
+              }
+            ],
+            "setting": {
+              "autoplay": true,
+              "autoplaySpeed": 3000,
+              "slideTransition": "fade",
+              "navigationStyle": "arrows",
+              "arrowsPosition": "bottom-right",
+              "height": "500",
+              "bgArrow": "#ffffff",
+              "activeDotColor":"#ffffff",
+              "inactiveDotColor":"#000000"
+            }
+          }
+        },
         {
           "type": "MultiColumn",
           "blocks": [
@@ -503,6 +550,7 @@
       ],
       "order": [
         "Story",
+        "SlideBanner",
         "Banner-cad8f9bb-fbd9-4474-94f4-2f1b1980a0fa",
         "SpecialOffer",
         "Collection",
