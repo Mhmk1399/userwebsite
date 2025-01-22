@@ -87,6 +87,67 @@
             "paddinLeft": "0"
           }
         },
+         {
+          "type": "Gallery",
+          "blocks": {
+            "title": "گالری تصاویر",
+            "description": "مجموعه ای از بهترین تصاویر ما",
+            "images": [
+              {
+                "imageSrc": "/assets/images/banner.jpg",
+                "imageAlt": "Gallery Image 1",
+                "imageLink": "#"
+              },
+              {
+                "imageSrc": "/assets/images/banner1.jpg",
+                "imageAlt": "Gallery Image 2",
+                "imageLink": "#"
+              },
+              {
+                "imageSrc": "/assets/images/banner.jpg",
+                "imageAlt": "Gallery Image 1",
+                "imageLink": "#"
+              },
+              {
+                "imageSrc": "/assets/images/banner1.jpg",
+                "imageAlt": "Gallery Image 2",
+                "imageLink": "#"
+              },
+              {
+                "imageSrc": "/assets/images/banner.jpg",
+                "imageAlt": "Gallery Image 1",
+                "imageLink": "#"
+              },
+              {
+                "imageSrc": "/assets/images/banner1.jpg",
+                "imageAlt": "Gallery Image 2",
+                "imageLink": "#"
+              }
+            ],
+            "setting": {
+              "titleColor": "#333333",
+              "titleFontSize": "32",
+              "titleFontWeight": "bold",
+              "descriptionColor": "#666666",
+              "descriptionFontSize": "16",
+              "descriptionFontWeight": "normal",
+              "background": "#ffffff",
+              "imageWidth": "300",
+              "imageHeight": "200",
+              "imageRadius": "8",
+              "gridColumns": "3",
+              "gridGap": "20"
+            }
+          },
+          "setting": {
+            "paddingTop": "40",
+            "paddingBottom": "40",
+            "marginTop": "20",
+            "marginBottom": "20",
+            "paddingRight": "0",
+            "paddingLeft": "0"
+          }
+        },
         {
           "type": "NewsLetter",
           "blocks": {
@@ -551,6 +612,7 @@
       "order": [
         "Story",
         "SlideBanner",
+        "Gallery",
         "Banner-cad8f9bb-fbd9-4474-94f4-2f1b1980a0fa",
         "SpecialOffer",
         "Collection",
