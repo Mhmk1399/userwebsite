@@ -23,7 +23,7 @@ const StoryContainer = styled.div<{
 
 const StoriesWrapper = styled.section`
   display: flex;
-  justify-content: end;
+  justify-content: center;
   overflow-x: scroll;
   gap: 12px;
   padding: 10px;
@@ -51,8 +51,6 @@ const StoryItem = styled.div<{
   }
 
   .story-image {
-    width: ${props => props.$data.blocks.setting.imageWidth}px;
-    height: ${props => props.$data.blocks.setting.imageHeight}px;
     border-radius: ${props => props.$data.blocks.setting.imageRadius}%;
     object-fit: cover;
   }
@@ -88,9 +86,9 @@ export const Story: React.FC<StoryProps> = ({ sections, componentName }) => {
                 <Image 
                   src={story.imageUrl} 
                   alt={story.title} 
-                  className="story-image"
-                  width={200}
-                  height={200}
+                  className="story-image w-[100px] h-[100px] object-"
+                  width={100}
+                  height={100}
                 />
               </div>
               <span className="story-title">{story.title}</span>
@@ -110,7 +108,7 @@ export const Story: React.FC<StoryProps> = ({ sections, componentName }) => {
     onClick={() => setSelectedStory(null)}
   >
     <motion.div
-      className=" w-fit max-w-lg  "
+      className="relative w-fit max-w-lg  "
       initial={{ scale: 0.8, y: 100 }}
       animate={{ scale: 1, y: 0 }}
       exit={{ scale: 0.8, y: 100 }}
@@ -118,7 +116,7 @@ export const Story: React.FC<StoryProps> = ({ sections, componentName }) => {
       onClick={(e) => e.stopPropagation()}
     >
       <button
-        className="absolute top-2 right-2 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white/20 backdrop-blur-sm text-white text-2xl hover:bg-white/30 transition-all"
+        className="absolute -top-20 right-3 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white/20 backdrop-blur-sm text-white text-2xl hover:bg-white/30 transition-all"
         onClick={() => setSelectedStory(null)}
       >
         ×

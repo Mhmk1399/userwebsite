@@ -182,13 +182,24 @@
                 "imageUrl": "/assets/images/pro3.jpg", 
                 "title": "پیشنهاد روز",
                 "link": "/daily-deals"
+              }, {
+                "id": "3",
+                "imageUrl": "/assets/images/pro3.jpg", 
+                "title": "پیشنهاد روز",
+                "link": "/daily-deals"
+              },
+              {
+                "id": "3",
+                "imageUrl": "/assets/images/pro3.jpg", 
+                "title": "پیشنهاد روز",
+                "link": "/daily-deals"
               }
             ],
             "setting": {
               "storyRingColor": "#ef394e",
               "viewedRingColor": "#e0e0e0",
               "titleColor": "#666666",
-              "titleFontSize": "12",
+              "titleFontSize": "14",
               "titleFontWeight": "normal",
               "imageWidth": "70px",
               "imageHeight": "70px",
