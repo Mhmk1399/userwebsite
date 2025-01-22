@@ -65,7 +65,7 @@ const ScrollContainer = styled.div<{
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background: ${props => props.$data.blocks?.setting?.cardBackground || "#FFFFFF"};
+    background:"#FFFFFF";
     color: ${props => props.$data.blocks?.setting?.btnTextColor || "#000000"};
     border: none;
     border-radius: 50%;
@@ -141,13 +141,13 @@ const ScrollContainer = styled.div<{
           ))}
         </SpecialOfferSection>
   
-        <ScrollButton className="left" onClick={() => handleScroll('left')} $data={sectionData}>
+        <ScrollButton className="left bg-white" onClick={() => handleScroll('left')} $data={sectionData}>
           <svg width="24" height="24" viewBox="0 0 24 24">
             <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/>
           </svg>
         </ScrollButton>
   
-        <ScrollButton className="right" onClick={() => handleScroll('right')} $data={sectionData}>
+        <ScrollButton className="right bg-white" onClick={() => handleScroll('right')} $data={sectionData}>
           <svg width="24" height="24" viewBox="0 0 24 24">
             <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
           </svg>
