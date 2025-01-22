@@ -588,6 +588,47 @@
             "paddinRight": "0",
             "paddinLeft": "0"
           }
+        },
+        {
+          "type": "Collection-1cc24f10-0891-4746-9193-98ee7526c2db",
+          "blocks": {
+            "imageSrc": "",
+            "imageAlt": "",
+            "heading": "محصولات ما",
+            "description": "",
+            "products": [
+              {
+                "id": "1",
+                "imageSrc": "/assets/images/product1.jpg",
+                "imageAlt": "Product 1",
+                "name": "محصول اول",
+                "description": "توضیحات محصول اول",
+                "price": "۱۰۰,۰۰۰ تومان",
+                "btnText": "افزودن به سبد خرید",
+                "btnLink": "/product/1"
+              }
+            ],
+            "setting": {
+              "headingColor": "#000000",
+              "headingFontSize": "32px",
+              "headingFontWeight": "bold",
+              "productNameColor": "#000000",
+              "priceColor": "#FCA311",
+              "descriptionColor": "#666666",
+              "btnBackgroundColor": "#14213D",
+              "btnTextColor": "#FFFFFF",
+              "cardBackground": "#14213D",
+              "cardBorderRadius": "8px",
+              "imageRadius": "8px"
+            }
+          },
+          "setting": {
+            "paddingTop": "40px",
+            "paddingBottom": "40px",
+            "marginTop": "20px",
+            "marginBottom": "20px",
+            "backgroundColor": "#FCA311"
+          }
         }
       ],
       "order": [
@@ -604,7 +645,8 @@
         "MultiRow",
         "NewsLetter-1",
         "Collection",
-        "Video-4ebb7877-ba73-45c4-95cf-cd89db89d308"
+        "Video-4ebb7877-ba73-45c4-95cf-cd89db89d308",
+        "Collection-1cc24f10-0891-4746-9193-98ee7526c2db"
       ]
     },
     "sectionFooter": {
