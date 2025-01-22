@@ -13,7 +13,7 @@ interface StoryProps {
 const StoryContainer = styled.div<{
   $data: StorySection;
 }>`
-  width: 100%;
+  
   padding-top: ${props => props.$data.setting?.paddingTop || "20"}px;
   padding-bottom: ${props => props.$data.setting?.paddingBottom || "20"}px;
   margin-top: ${props => props.$data.setting?.marginTop || "10"}px;
@@ -23,11 +23,13 @@ const StoryContainer = styled.div<{
 
 const StoriesWrapper = styled.section`
   display: flex;
-  justify-content: center;
-  overflow-x: scroll;
+  direction: rtl;
+  justify-content: flex-start; // Changed from center
+  overflow-x: auto;
   gap: 12px;
   padding: 10px;
   scroll-behavior: smooth;
+  width: 100%;
   
   &::-webkit-scrollbar {
     display: none;
@@ -43,6 +45,8 @@ const StoryItem = styled.div<{
   flex-direction: column;
   align-items: center;
   cursor: pointer;
+  flex-shrink: 0; // Add this line
+  width: 104px; // Add fixed width (100px + 4px padding)
 
   .story-ring {
     padding: 2px;
@@ -74,11 +78,11 @@ export const Story: React.FC<StoryProps> = ({ sections, componentName }) => {
 
   return (
     <>
-      <StoryContainer $data={sectionData}>
-        <StoriesWrapper ref={containerRef}>
-          {sectionData.blocks.stories.map((story) => (
+      <StoryContainer $data={sectionData} className="story-container">
+        <StoriesWrapper ref={containerRef} className="overflow-x-auto">
+          {sectionData.blocks.stories.map((story,idx) => (
             <StoryItem 
-              key={story.id} 
+              key={story.id+idx} 
               $data={sectionData}
               onClick={() => setSelectedStory(story.imageUrl)}
             >
@@ -101,14 +105,14 @@ export const Story: React.FC<StoryProps> = ({ sections, componentName }) => {
 
 {selectedStory && (
   <motion.div 
-    className="fixed w-fit inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm "
+    className="fixed w-full inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm "
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
     exit={{ opacity: 0 }}
     onClick={() => setSelectedStory(null)}
   >
     <motion.div
-      className="relative w-fit max-w-lg  "
+      className="relative w-full max-w-lg "
       initial={{ scale: 0.8, y: 100 }}
       animate={{ scale: 1, y: 0 }}
       exit={{ scale: 0.8, y: 100 }}
