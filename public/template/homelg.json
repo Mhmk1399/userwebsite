@@ -514,7 +514,7 @@
         {
           "type": "SpecialOffer",
           "blocks": {
-            "§": "پیشنهاد شگفت‌ انگیز",
+            "textHeading": "پیشنهاد شگفت‌ انگیز",
             "setting": {
               "headingColor": "#FFFFFF",
               "headingFontSize": "32",
@@ -569,9 +569,9 @@
               "titleColor": "#666666",
               "titleFontSize": "12",
               "titleFontWeight": "normal",
-              "imageWidth": "80",
-              "imageHeight": "80",
-              "imageRadius": "50"
+              "imageWidth": "70px",
+              "imageHeight": "70px",
+              "imageRadius": "500"
             }
           },
           "setting": {

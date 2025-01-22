@@ -162,6 +162,48 @@
           }
         },
         {
+          "type": "Story",
+          "blocks": {
+            "stories": [
+              {
+                "id": "1",
+                "imageUrl": "/assets/images/pro1.jpg",
+                "title": "تخفیف ویژه",
+                "link": "/special-offers"
+              },
+              {
+                "id": "2", 
+                "imageUrl": "/assets/images/pro2.jpg",
+                "title": "جدیدترین‌ها",
+                "link": "/new-arrivals"
+              },
+              {
+                "id": "3",
+                "imageUrl": "/assets/images/pro3.jpg", 
+                "title": "پیشنهاد روز",
+                "link": "/daily-deals"
+              }
+            ],
+            "setting": {
+              "storyRingColor": "#ef394e",
+              "viewedRingColor": "#e0e0e0",
+              "titleColor": "#666666",
+              "titleFontSize": "12",
+              "titleFontWeight": "normal",
+              "imageWidth": "70px",
+              "imageHeight": "70px",
+              "imageRadius": "500"
+            }
+          },
+          "setting": {
+            "paddingTop": "20",
+            "paddingBottom": "20", 
+            "marginTop": "10",
+            "marginBottom": "10",
+            "backgroundColor": "#ffffff"
+          }
+        },
+        {
           "type": "ImageText",
           "blocks": {
             "imageSrc": "/assets/images/banner3.jpg",
@@ -549,6 +591,7 @@
         }
       ],
       "order": [
+        "Story",
         "Banner",
         "SlideShow",
         "RichText",
