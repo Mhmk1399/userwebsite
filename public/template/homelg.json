@@ -87,6 +87,67 @@
             "paddinLeft": "0"
           }
         },
+         {
+          "type": "Gallery",
+          "blocks": {
+            "title": "گالری تصاویر",
+            "description": "مجموعه ای از بهترین تصاویر ما",
+            "images": [
+              {
+                "imageSrc": "/assets/images/banner.jpg",
+                "imageAlt": "Gallery Image 1",
+                "imageLink": "#"
+              },
+              {
+                "imageSrc": "/assets/images/banner1.jpg",
+                "imageAlt": "Gallery Image 2",
+                "imageLink": "#"
+              },
+              {
+                "imageSrc": "/assets/images/banner.jpg",
+                "imageAlt": "Gallery Image 1",
+                "imageLink": "#"
+              },
+              {
+                "imageSrc": "/assets/images/banner1.jpg",
+                "imageAlt": "Gallery Image 2",
+                "imageLink": "#"
+              },
+              {
+                "imageSrc": "/assets/images/banner.jpg",
+                "imageAlt": "Gallery Image 1",
+                "imageLink": "#"
+              },
+              {
+                "imageSrc": "/assets/images/banner1.jpg",
+                "imageAlt": "Gallery Image 2",
+                "imageLink": "#"
+              }
+            ],
+            "setting": {
+              "titleColor": "#333333",
+              "titleFontSize": "32",
+              "titleFontWeight": "bold",
+              "descriptionColor": "#666666",
+              "descriptionFontSize": "16",
+              "descriptionFontWeight": "normal",
+              "background": "#ffffff",
+              "imageWidth": "300",
+              "imageHeight": "200",
+              "imageRadius": "8",
+              "gridColumns": "3",
+              "gridGap": "20"
+            }
+          },
+          "setting": {
+            "paddingTop": "40",
+            "paddingBottom": "40",
+            "marginTop": "20",
+            "marginBottom": "20",
+            "paddingRight": "0",
+            "paddingLeft": "0"
+          }
+        },
         {
           "type": "NewsLetter",
           "blocks": {
@@ -179,6 +240,53 @@
             "headingFontWeight": "bold",
             "background": "#14213D",
             "borderRadious": "20"
+          }
+        },
+         {
+          "type": "SlideBanner",
+          "setting": {
+            "marginTop": "20",
+            "marginBottom": "0",
+            "paddingTop": "0",
+            "paddingBottom": "0",
+            "paddingLeft": "0",
+            "paddingRight": "0"
+          },
+          "blocks": {
+            "slides": [
+              {
+                "imageSrc": "/assets/images/banner1.jpg",
+                "imageAlt": "Slide 1",
+                "heading": "عنوان اسلاید اول",
+                "description": "توضیحات اسلاید اول",
+                "link": "#"
+              },
+              {
+                "imageSrc": "/assets/images/pro3.jpg",
+                "imageAlt": "Slide 2",
+                "heading": "عنوان اسلاید دوم",
+                "description": "توضیحات اسلاید دوم",
+                "link": "#"
+              },
+              {
+                "imageSrc": "/assets/images/ban.jpg",
+                "imageAlt": "Slide 3",
+                "heading": "عنوان اسلاید سوم",
+                "description": "توضیحات اسلاید سوم",
+                "link": "#"
+              }
+            ],
+            "setting": {
+              "autoplay": true,
+              "autoplaySpeed": 3000,
+              "slideTransition": "fade",
+              "navigationStyle": "arrows",
+              "arrowsPosition": "bottom-right",
+              "height": "500",
+              "bgArrow": "#ffffff",
+              "activeDotColor":"#ffffff",
+              "inactiveDotColor":"#000000"
+            }
           }
         },
         {
@@ -503,6 +611,8 @@
       ],
       "order": [
         "Story",
+        "SlideBanner",
+        "Gallery",
         "Banner-cad8f9bb-fbd9-4474-94f4-2f1b1980a0fa",
         "SpecialOffer",
         "Collection",
