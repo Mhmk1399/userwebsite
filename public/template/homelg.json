@@ -46,8 +46,8 @@
           "itemColor": "#14213D",
           "itemFontSize": "15",
           "itemFontWeight": "bold",
-          "itemHoverColor": "#ffffff",
-          "backgroundColorNavbar": "#FCA311"
+          "itemHoverColor": "#f70202",
+          "backgroundColorNavbar": "#ffffff"
         }
       },
       "setting": {
@@ -65,99 +65,6 @@
     },
     "children": {
       "sections": [
-        {
-          "type": "RichText",
-          "blocks": {
-            "textHeading": "سربرل",
-            "description": "توضیحات درباره محصول",
-            "btnText": "دکمه",
-            "btnLink": "/",
-            "setting": {
-              "textHeadingColor": "#FCA311",
-              "textHeadingFontSize": "40",
-              "textHeadingFontWeight": "bold",
-              "descriptionColor": "#E5E5E5",
-              "descriptionFontSize": "18",
-              "descriptionFontWeight": "normal",
-              "background": "#14213D",
-              "btnTextColor": "#ffffff",
-              "btnBackgroundColor": "#FCA311"
-            }
-          },
-          "setting": {
-            "paddingTop": "30",
-            "paddingBottom": "30",
-            "marginTop": "20",
-            "marginBottom": "20",
-            "paddinRight": "0",
-            "paddinLeft": "0"
-          }
-        },
-        {
-          "type": "ImageText",
-          "blocks": {
-            "imageSrc": "/assets/images/banner3.jpg",
-            "imageAlt": "",
-            "heading": "سربرگufcjvjchxhx محصول",
-            "description": "توضیحات درباره محصول",
-            "btnLink": "/",
-            "btnText": "دکمه",
-            "setting": {
-              "headingColor": "#FCA311",
-              "headingFontSize": "60",
-              "headingFontWeight": "bold",
-              "descriptionColor": "#E5E5E5",
-              "descriptionFontSize": "29",
-              "descriptionFontWeight": "normal",
-              "btnTextColor": "#14213D",
-              "btnBackgroundColor": "#FFFFFF",
-              "backgroundColorBox": "",
-              "backgroundBoxOpacity": 0.9,
-              "boxRadiuos": "20",
-              "opacityImage": 1,
-              "imageWidth": "85",
-              "imageHeight": "50",
-              "background": "#14213D"
-            }
-          },
-          "setting": {
-            "paddingTop": "30",
-            "paddingBottom": "30",
-            "marginTop": "20",
-            "marginBottom": "20",
-            "paddinRight": "0",
-            "paddinLeft": "0"
-          }
-        },
-        {
-          "type": "Video",
-          "blocks": {
-            "heading": "سربرگ ویدیو",
-            "videoUrl": "/assets/video/video.mp4",
-            "videoAlt": "",
-            "setting": {
-              "headingColor": "#FCA311",
-              "headingFontSize": "40",
-              "headingFontWeight": "bold",
-              "videoWidth": "1000px",
-              "videoHeight": "700px",
-              "videoRadious": "30",
-              "videoLoop": true,
-              "videoMute": false,
-              "videoAutoplay": true,
-              "videoPoster": "/assets/images/banner2.webp",
-              "backgroundVideoSection": "#FFFFFF"
-            }
-          },
-          "setting": {
-            "paddingTop": "30",
-            "paddingBottom": "30",
-            "marginTop": "20",
-            "marginBottom": "20",
-            "paddinRight": "0",
-            "paddinLeft": "0"
-          }
-        },
         {
           "type": "ContactForm",
           "blocks": {
@@ -438,11 +345,20 @@
             }
           },
           "setting": {
-            "paddingTop": "40px",
-            "paddingBottom": "40px",
-            "marginTop": "20px",
-            "marginBottom": "20px",
-            "backgroundColor": "#FCA311"
+            "paddingTop": "0",
+            "paddingBottom": "-14",
+            "marginTop": "-77",
+            "marginBottom": "0",
+            "backgroundColor": "#f3f0ec",
+            "headingFontSize": "0",
+            "headingFontWeight": "bold",
+            "productNameColor": "#0d0d0d",
+            "btnTextColor": "#0a0a0a",
+            "btnBackgroundColor": "#7e2525",
+            "cardBorderRadius": "30",
+            "imageRadius": "30",
+            "paddingLeft": "0",
+            "paddingRight": "0"
           }
         },
         {
@@ -488,27 +404,27 @@
             "text": "lggggg",
             "setting": {
               "descriptionColor": "#E5E5E5",
-              "descriptionFontSize": "22",
+              "descriptionFontSize": "0",
               "descriptionFontWeight": "bold",
               "textColor": "#FCA311",
-              "textFontSize": "71",
+              "textFontSize": "0",
               "textFontWeight": "bold",
               "backgroundColorBox": "#14213d",
               "backgroundBoxRadious": "54",
               "opacityImage": "1",
-              "opacityTextBox": "0.7",
+              "opacityTextBox": "0",
               "imageRadious": "14",
               "imageBehavior": "cover"
             }
           },
           "setting": {
-            "paddingTop": "30",
-            "paddingBottom": "30",
-            "marginTop": "20",
+            "paddingTop": "-2",
+            "paddingBottom": "0",
+            "marginTop": "10",
             "marginBottom": "20",
             "imageBehavior": "cover",
-            "paddingLeft": "10",
-            "paddingRight": "10"
+            "paddingLeft": "-17",
+            "paddingRight": "-11"
           }
         },
         {
@@ -531,13 +447,15 @@
             }
           },
           "setting": {
-            "paddingTop": "30",
-            "paddingBottom": "30",
-            "marginTop": "20",
+            "paddingTop": "-11",
+            "paddingBottom": "-15",
+            "marginTop": "15",
             "marginBottom": "20",
             "backgroundColor": "#EF394E",
-            "paddingLeft": "10",
-            "paddingRight": "10"
+            "paddingLeft": "3",
+            "paddingRight": "-7",
+            "marginLeft": "0",
+            "marginRight": "0"
           }
         },
         {
@@ -551,14 +469,14 @@
                 "link": "/special-offers"
               },
               {
-                "id": "2", 
+                "id": "2",
                 "imageUrl": "/assets/images/pro2.jpg",
                 "title": "جدیدترین‌ها",
                 "link": "/new-arrivals"
               },
               {
                 "id": "3",
-                "imageUrl": "/assets/images/pro3.jpg", 
+                "imageUrl": "/assets/images/pro3.jpg",
                 "title": "پیشنهاد روز",
                 "link": "/daily-deals"
               }
@@ -575,73 +493,77 @@
             }
           },
           "setting": {
-            "paddingTop": "20",
-            "paddingBottom": "20", 
+            "paddingTop": "-6",
+            "paddingBottom": "-6",
             "marginTop": "10",
             "marginBottom": "10",
             "backgroundColor": "#ffffff"
           }
         }
-        
-        
       ],
       "order": [
+        "Story",
         "Banner-cad8f9bb-fbd9-4474-94f4-2f1b1980a0fa",
-        "RichText",
-        "ImageText",
-        "Video",
+        "SpecialOffer",
+        "Collection",
         "ContactForm",
         "NewsLetter",
         "CollapseFaq",
         "MultiColumn",
         "MultiRow",
         "NewsLetter-1",
-        "Collection",
-        "Banner-65757aba-d7b7-499b-930c-a78d8fbc6563",
-        "SpecialOffer",
-        "Story"
+        "Banner-65757aba-d7b7-499b-930c-a78d8fbc6563"
       ]
     },
     "sectionFooter": {
-      "type": "Footer",
+      "type": "Collection",
       "blocks": {
-        "setting": {
-          "textColor": "#000000",
-          "textFontSize": "25",
-          "textFontWeight": "bold",
-          "descriptionColor": "#000000",
-          "descriptionFontSize": "18",
-          "descriptionFontWeight": "normal",
-          "linkColor": "#0077b6",
-          "logoWidth": "80px",
-          "logoHeight": "80px",
-          "logoRadius": "10px"
-        },
-        "text": "سربرگ قسمت پایین سایت",
-        "description": "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد",
-        "instagramLink": "#",
-        "telegramLink": "#",
-        "whatsappLink": "#",
-        "logo": "/assets/images/logo.webp",
-        "links": [
+        "heading": "محصولات ما",
+        "products": [
           {
-            "url": "/privacy-policy",
-            "label": "Privacy Policy"
-          },
-          {
-            "url": "/terms-of-service",
-            "label": "Terms of Service"
+            "id": "1",
+            "imageSrc": "/assets/images/product1.jpg",
+            "imageAlt": "Product 1",
+            "name": "محصول اول",
+            "description": "توضیحات محصول اول",
+            "price": "۱۰۰,۰۰۰ تومان",
+            "btnText": "افزودن به سبد خرید",
+            "btnLink": "/product/1"
           }
-        ]
+        ],
+        "setting": {
+          "headingColor": "#000000",
+          "headingFontSize": "32px",
+          "headingFontWeight": "bold",
+          "productNameColor": "#000000",
+          "priceColor": "#FCA311",
+          "descriptionColor": "#d31d1d",
+          "btnBackgroundColor": "#14213D",
+          "btnTextColor": "#FFFFFF",
+          "cardBackground": "#14213D",
+          "cardBorderRadius": "8px",
+          "imageRadius": "8px",
+          "textColor": "#ffffff",
+          "textFontSize": "30",
+          "descriptionFontSize": "19",
+          "descriptionFontWeight": "normal"
+        }
       },
       "setting": {
-        "paddingTop": "30",
-        "paddingBottom": "30",
-        "marginTop": "20",
-        "marginBottom": "20",
-        "paddinRight": "0",
-        "paddinLeft": "0",
-        "backgroundColor": "#ffffff"
+        "paddingTop": "0",
+        "paddingBottom": "-14",
+        "marginTop": "-77",
+        "marginBottom": "0",
+        "backgroundColor": "#f3f0ec",
+        "headingFontSize": "0",
+        "headingFontWeight": "bold",
+        "productNameColor": "#0d0d0d",
+        "btnTextColor": "#0a0a0a",
+        "btnBackgroundColor": "#7e2525",
+        "cardBorderRadius": "30",
+        "imageRadius": "30",
+        "paddingLeft": "0",
+        "paddingRight": "0"
       }
     }
   },
