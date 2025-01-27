@@ -2,7 +2,6 @@ import Image from "next/image";
 import styled from "styled-components";
 import { productCard, ProductCardData } from "@/lib/types";
 import { useState } from "react";
-import Link from "next/link";
 
 interface ProductCardProps {
   productData: ProductCardData;
@@ -101,29 +100,29 @@ const ProductPrice = styled.span<{
   margin: 8px 0;
 `;
 
-const BuyButton = styled.button<{
-  $settings?: productCard;
-  $productData?: ProductCardData;
-  onClick?: () => void;
-}>`
-  display: inline-block;
-  padding: 10px 20px;
+// const BuyButton = styled.button<{
+//   $settings?: productCard;
+//   $productData?: ProductCardData;
+//   onClick?: () => void;
+// }>`
+//   display: inline-block;
+//   padding: 10px 20px;
   
-  background-color: ${(props) =>
-    props.$settings?.btnBackgroundColor || defaultSetting.btnBackgroundColor};
-  color: ${(props) => props.$settings?.btnColor || defaultSetting.btnColor};
-  border-radius: 4px;
-  font-size: 0.9rem;
-  font-weight: bold;
-  margin-top: auto;
-  text-align: center;
-  transition: all 0.3s ease;
+//   background-color: ${(props) =>
+//     props.$settings?.btnBackgroundColor || defaultSetting.btnBackgroundColor};
+//   color: ${(props) => props.$settings?.btnColor || defaultSetting.btnColor};
+//   border-radius: 4px;
+//   font-size: 0.9rem;
+//   font-weight: bold;
+//   margin-top: auto;
+//   text-align: center;
+//   transition: all 0.3s ease;
 
-  &:hover {
-    background-color: #d5d5d5;
-    transform: translateY(-2px);
-  }
-`;
+//   &:hover {
+//     background-color: #d5d5d5;
+//     transform: translateY(-2px);
+//   }
+// `;
 
 const ProductCard: React.FC<ProductCardProps> = ({ productData }) => {
   const safeProductData = {
