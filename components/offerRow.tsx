@@ -2,31 +2,36 @@
 import styled from "styled-components";
 import { useRef } from "react";
 import Image from "next/image";
+import { OfferRowSection } from "../lib/types";
 
 interface OfferRowProps {
-  sections: any[];
+  sections: OfferRowSection[];
   isMobile: boolean;
   componentName: string;
 }
 
 const OffersContainer = styled.div<{
-  $data: any;
+  $data: OfferRowSection;
+  $isMobile: boolean;
 }>`
   margin-top: ${props => props.$data.setting?.marginTop || "10"}px;
   margin-bottom: ${props => props.$data.setting?.marginBottom || "10"}px;
   padding-top: ${props => props.$data.setting?.paddingTop || "20"}px;
   padding-bottom: ${props => props.$data.setting?.paddingBottom || "20"}px;
+  width: ${props => props.$isMobile ? '100%' : '90%'};
+  margin: ${props => props.$isMobile ? '0 auto' : '0 auto'};
 `;
 
 const OffersWrapper = styled.section<{
-  $data: any;
+  $data: OfferRowSection;
+  $isMobile: boolean;
 }>`
   direction: rtl;
   justify-content: flex-center;
   align-items: center;
   overflow-x: auto;
-  gap: 30px;
-  padding: 8px;
+  gap: ${props => props.$isMobile ? '15px' : '30px'};
+  padding: ${props => props.$isMobile ? '4px' : '8px'};
   scroll-behavior: smooth;
   background: linear-gradient(to right, 
     ${props => props.$data.setting?.gradientFromColor || '#e5e7eb'}, 
@@ -34,6 +39,7 @@ const OffersWrapper = styled.section<{
   );
   border-radius: 0.75rem;
 `;
+
 
 const OfferItem = styled.div`
   display: flex;
@@ -106,8 +112,8 @@ export const OfferRow: React.FC<OfferRowProps> = ({ sections, isMobile, componen
   ];
 
   return (
-    <OffersContainer $data={sectionData}>
-      <OffersWrapper ref={containerRef} $data={sectionData} className="flex gap-4 flex-col lg:flex-row">
+    <OffersContainer $data={sectionData} $isMobile={isMobile}>
+      <OffersWrapper ref={containerRef} $data={sectionData} $isMobile={isMobile}>
         <div className="flex items-center justify-start gap-4 lg:flex-row flex-col">
           <Image src={"/assets/images/fresh.webp"} alt="Offer" width={80} height={50} />
           <h2

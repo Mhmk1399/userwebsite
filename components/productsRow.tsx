@@ -1,16 +1,17 @@
 "use client";
 import styled from "styled-components";
 import ProductCard from "./productCard";
-import { use, useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
+import { ProductCardData, Section, SpecialOfferBlock, SpecialOfferSection } from "@/lib/types";
 
 interface ProductsRowProps {
-  sections: any[];
+  sections: Section[];  // Using Section interface from types.ts
   isMobile: boolean;
   componentName: string;
 }
 
 const ScrollContainer = styled.div<{
-  $data: any;
+  $data: SpecialOfferSection;
 }>`
   position: relative;
   width: 100%;
@@ -22,7 +23,7 @@ const ScrollContainer = styled.div<{
 `;
 
 const ProductsRowSection = styled.section<{
-  $data: any;
+  $data: SpecialOfferSection;
   $isMobile: boolean;
 }>`
   display: flex;
@@ -48,7 +49,7 @@ const ProductsRowSection = styled.section<{
 `;
 
 const Heading = styled.h2<{
-  $data: any;
+  $data: SpecialOfferSection;
   $isMobile: boolean;
 }>`
   color: ${props => props.$data.blocks?.setting?.headingColor || "#000000"};
@@ -59,7 +60,7 @@ const Heading = styled.h2<{
 `;
 
 const ScrollButton = styled.button<{
-  $data: any;
+  $data: SpecialOfferSection;
 }>`
   position: absolute;
   top: 50%;
@@ -85,14 +86,18 @@ const ScrollButton = styled.button<{
     right: 10px;
   }
 `;
+const isSpecialOfferBlock = (blocks: unknown): blocks is SpecialOfferBlock => {
+  return blocks !== null && typeof blocks === 'object' && 'textHeading' in blocks;
+};
 
 
 
 export const ProductsRow: React.FC<ProductsRowProps> = ({ sections, isMobile, componentName }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-const [products, setProducts] = useState([]);
-const sectionData = sections.find((section) => section.type === componentName);
-const [Loading, setLoading] = useState(true);
+  const [products, setProducts] = useState<ProductCardData[]>([]); // Using ProductCardData from types.ts
+  const sectionData = sections.find((section: Section) => section.type === componentName) as SpecialOfferSection;
+
+  const [Loading, setLoading] = useState(true);
 useEffect(() => {
     const fetchProducts = async () => {
     try {
@@ -125,9 +130,9 @@ if (Loading) {
   return (
     <div className="px-2">
     <ScrollContainer $data={sectionData} className="border rounded-lg">
-      <Heading $data={sectionData} $isMobile={isMobile} className="px-4">
-        {sectionData.blocks?.textHeading}
-      </Heading>
+    <Heading $data={sectionData} $isMobile={isMobile} className="px-4">
+  {isSpecialOfferBlock(sectionData.blocks) ? sectionData.blocks.textHeading : ''}
+</Heading>
 
       <ProductsRowSection ref={containerRef} $data={sectionData} $isMobile={isMobile}>
         {products.map((product,idx) => (

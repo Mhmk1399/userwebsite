@@ -286,6 +286,7 @@ export interface Section {
     | RichTextBlock
     |SpecialOfferBlock
   type: string;
+  textHeading: string;
 }
 export interface ImageTextBlockSetting extends CommonSettings {
   headingColor: string;
@@ -987,6 +988,7 @@ export interface SpecialOfferSection {
   type: "SpecialOffer";
   blocks: SpecialOfferBlock;
   setting: SpecialOfferBlockSetting;
+  textHeading: string;
 }
 export interface StoryBlockSetting extends CommonSettings {
   storyRingColor: string;
@@ -1061,4 +1063,29 @@ export interface SlideBannerSection {
   type: "SlideBanner";
   blocks: SlideBannerBlock;
   setting: CommonSettings;
+}
+export interface OfferRowBlockSetting extends CommonSettings {
+  titleColor?: string;
+  titleText?: string;
+  buttonColor?: string;
+  buttonTextColor?: string;
+  gradientFromColor?: string;
+  gradientToColor?: string;
+}
+
+export interface OfferRowBlock {
+  setting: OfferRowBlockSetting;
+}
+
+export interface OfferRowSection {
+  type: "OfferRow";
+  blocks: OfferRowBlock;
+  setting: CommonSettings & {
+    buttonText?: string;
+    buttonLink?: string;
+    buttonColor?: string;
+    buttonTextColor?: string;
+    gradientFromColor?: string;
+    gradientToColor?: string;
+  };
 }
