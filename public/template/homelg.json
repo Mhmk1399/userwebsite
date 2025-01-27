@@ -930,7 +930,7 @@
               "imageWidth": "680",
               "imageHeight": "250",
               "imageRadius": "8",
-              "gridColumns": "2",
+              "gridColumns": "1",
               "gridGap": "20"
             }
           },
