@@ -127,7 +127,7 @@ const ScrollContainer = styled.div<{
     return (
       <ScrollContainer $data={sectionData} className=" rounded-lg">
         <SpecialOfferSection ref={containerRef} $data={sectionData} $isMobile={isMobile}>
-          <div className="flex flex-col items-center justify-center gap-y-10 px-10">
+          <div className="flex flex-col items-center justify-center gap-y-10 lg:px-10">
             <Heading $data={sectionData} $isMobile={isMobile}>
               {sectionData.blocks?.textHeading}
             </Heading>

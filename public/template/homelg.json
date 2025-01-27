@@ -68,7 +68,7 @@
         {
           "type": "SlideBanner",
           "setting": {
-            "marginTop": "20",
+            "marginTop": "0",
             "marginBottom": "0",
             "paddingTop": "0",
             "paddingBottom": "0",
@@ -105,7 +105,7 @@
               "slideTransition": "fade",
               "navigationStyle": "arrows",
               "arrowsPosition": "bottom-right",
-              "height": "500",
+              "height": "600",
               "bgArrow": "#ffffff",
               "activeDotColor": "#ffffff",
               "inactiveDotColor": "#000000"
@@ -930,7 +930,7 @@
               "imageWidth": "680",
               "imageHeight": "250",
               "imageRadius": "8",
-              "gridColumns": "1",
+              "gridColumns": "2",
               "gridGap": "20"
             }
           },

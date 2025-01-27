@@ -4,6 +4,7 @@ import { useRef } from "react";
 import Image from "next/image";
 import { OfferRowSection } from "../lib/types";
 
+
 interface OfferRowProps {
   sections: OfferRowSection[];
   isMobile: boolean;
@@ -26,6 +27,9 @@ const OffersWrapper = styled.section<{
   $data: OfferRowSection;
   $isMobile: boolean;
 }>`
+display: flex;
+  flex-direction: row;
+  width: 100%;
   direction: rtl;
   justify-content: flex-center;
   align-items: center;
@@ -113,9 +117,9 @@ export const OfferRow: React.FC<OfferRowProps> = ({ sections, isMobile, componen
 
   return (
     <OffersContainer $data={sectionData} $isMobile={isMobile}>
-      <OffersWrapper ref={containerRef} $data={sectionData} $isMobile={isMobile}>
-        <div className="flex items-center justify-start gap-4 lg:flex-row flex-col">
-          <Image src={"/assets/images/fresh.webp"} alt="Offer" width={80} height={50} />
+      <OffersWrapper  ref={containerRef} $data={sectionData} $isMobile={isMobile}>
+        <div className="flex items-center justify-start ">
+          <Image src={"/assets/images/fresh.webp"} alt="Offer" width={50} height={50} />
           <h2
             className="text-lg font-bold lg:text-2xl lg:w-1/4 w-full text-nowrap"
             style={{ color: sectionData.blocks.setting?.titleColor || '#059669' }}
@@ -131,7 +135,7 @@ export const OfferRow: React.FC<OfferRowProps> = ({ sections, isMobile, componen
                 alt={offer.title}
                 width={80}
                 height={80}
-                className="offer-image rounded-full"
+                className="offer-image rounded-full "
               />
               <span className="discount-badge bottom-0 text-xs absolute">{offer.discount}%</span>
             </OfferItem>

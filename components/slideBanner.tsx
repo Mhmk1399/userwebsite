@@ -21,13 +21,13 @@ const SlideBannerSections = styled.section<{
   padding-bottom: ${(props) => props.$data.setting?.paddingBottom || "20"}px;
   padding-left: ${(props) => props.$data.setting?.paddingLeft || "20"}px;
   padding-right: ${(props) => props.$data.setting?.paddingRight || "20"}px;
-  height: ${(props) => props.$data.blocks.setting?.height || "200"}px;
+  height: ${300}px;
   margin-top: ${(props) => props.$data.setting?.marginTop || "30"}px;
   margin-bottom: ${(props) => props.$data.setting?.marginBottom || "20"}px;
   overflow: hidden;
 `;
 
-const SlideContainer = styled.div`
+const SlideContainer = styled.div<{ $isMobile: boolean }>`
   position: relative;
   width: 100%;
   height: 100%;
@@ -37,12 +37,12 @@ const SlideContainer = styled.div`
   justify-content: center;
 `;
 
-const Slide = styled.div<{ $active: boolean; $data: SlideBannerSection }>`
+const Slide = styled.div<{ $active: boolean; $data: SlideBannerSection; $isMobile: boolean }>`
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height:100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -125,16 +125,16 @@ const SlideBanner: React.FC<SlideBannerProps> = ({ sections, isMobile, component
 
   return (
     <SlideBannerSections $data={sectionData} $isMobile={isMobile} dir="rtl">
-      <SlideContainer>
+      <SlideContainer $isMobile={isMobile}> 
         {sectionData.blocks.slides.map((slide, index) => (
-          <Slide key={index} $active={currentSlide === index} $data={sectionData}>
+          <Slide key={index} $active={currentSlide === index} $data={sectionData} $isMobile={isMobile}>
             <Image
               src={slide.imageSrc}
               alt={slide.imageAlt}
-              width={isMobile ? 300 : 10000}
-              height={isMobile ? 300 : 2000}
-              className="w-full h-full object-cover"
-              style={{ objectFit: 'cover' }}
+              width={isMobile ? 100 : 1000}
+              height={isMobile ? 200 : 3000}
+              className="w-full h-full "
+              style={{ objectFit: 'cover'}}
             />
           </Slide>
         ))}

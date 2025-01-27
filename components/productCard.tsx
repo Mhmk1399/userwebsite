@@ -164,9 +164,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData }) => {
           ? safeProductData.price
           : "Price not available"}
       </ProductPrice>
-      <BuyButton $productData={safeProductData}>
-        <Link href={`/store/${productData._id}`}>خرید</Link>
-      </BuyButton>
+     
+     
     </Card>
   );
 };
