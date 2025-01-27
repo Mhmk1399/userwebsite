@@ -1014,3 +1014,51 @@ export interface StorySection {
   blocks: StoryBlock;
   setting: CommonSettings;
 }
+export interface GallerySection {
+  type: string;
+  setting: CommonSettings;
+  blocks: {
+    title: string;
+    description: string;
+    setting: {
+      titleColor: string;
+      titleFontSize: string;
+      titleFontWeight: string;
+      descriptionColor: string;
+      descriptionFontSize: string;
+      descriptionFontWeight: string;
+      gridColumns: number;
+      gridGap: string;
+      imageHeight: string;
+      imageWidth: string;
+      imageRadius: string;
+    };
+    images: {
+      imageSrc: string;
+      imageAlt: string;
+      imageLink: string;
+    }[];
+  };
+}
+export interface SlideBannerBlockSetting extends CommonSettings {
+  height?: string;
+  bgArrow?: string;
+  activeDotColor?: string;
+  inactiveDotColor?: string;
+}
+
+export interface SlideBannerSlide {
+  imageSrc: string;
+  imageAlt: string;
+}
+
+export interface SlideBannerBlock {
+  slides: SlideBannerSlide[];
+  setting: SlideBannerBlockSetting;
+}
+
+export interface SlideBannerSection {
+  type: "SlideBanner";
+  blocks: SlideBannerBlock;
+  setting: CommonSettings;
+}

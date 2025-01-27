@@ -15,6 +15,10 @@ import RichText from "@/components/richText";
 import ProductList from "@/components/productList";
 import { SpecialOffer } from "@/components/specialOffer";
 import { Story } from "@/components/story";
+import { OfferRow } from "@/components/offerRow";
+import Gallery from "@/components/gallery";
+import SlideBanner from "@/components/slideBanner";
+import { ProductsRow } from "@/components/productsRow";
 
 export default function Page() {
   const [data, setData] = useState(null);
@@ -38,6 +42,10 @@ export default function Page() {
     Collection,
     SpecialOffer,
     Story,
+    OfferRow,
+    Gallery,
+    SlideBanner,
+    ProductsRow
   };
 
   useEffect(() => {
@@ -78,7 +86,7 @@ export default function Page() {
 
   return (
     <>
-      <div className="grid grid-cols-1 pt-28">
+      <div className="grid grid-cols-1 pt-28 px-2">
         {orders.map((componentName, index) => {
           const baseComponentName = componentName.split("-")[0];
           const Component =

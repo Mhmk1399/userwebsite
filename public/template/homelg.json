@@ -863,8 +863,8 @@
             }
           },
           "setting": {
-            "paddingTop": "30",
-            "paddingBottom": "30",
+            "paddingTop": "10",
+            "paddingBottom": "10",
             "marginTop": "20",
             "marginBottom": "20",
             "backgroundColor": "#ffffff",
@@ -942,6 +942,35 @@
             "paddingRight": "0",
             "paddingLeft": "0"
           }
+        },
+        {
+          "type": "ProductsRow-3",
+          "blocks": {
+            "textHeading": " موبایل های پرفروش ",
+            "setting": {
+              "headingColor": "#000000",
+              "headingFontSize": "22",
+              "headingFontWeight": "bold",
+              "productNameColor": "#000000",
+              "priceColor": "#EF394E",
+              "descriptionColor": "#666666",
+              "btnBg": "#EF394E",
+              "btnTextColor": "#ffffff",
+              "cardBackground": "#EF394E",
+              "cardBorderRadius": "8",
+              "imageRadius": "8",
+              "gridColumns": "4"
+            }
+          },
+          "setting": {
+            "paddingTop": "10",
+            "paddingBottom": "10",
+            "marginTop": "20",
+            "marginBottom": "20",
+            "backgroundColor": "#ffffff",
+            "paddingLeft": "10",
+            "paddingRight": "10"
+          }
         }
       ],
       "order": [
@@ -953,7 +982,8 @@
         "Gallery",
         "Brands",
         "ProductsRow",
-        "Gallery-2"
+        "Gallery-2",
+        "ProductsRow-3"
 
       ]
     },
