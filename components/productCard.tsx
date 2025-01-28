@@ -38,10 +38,11 @@ const Card = styled.div<{
   padding: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   height: 400px;
-  width: 450px;
+  width: 350px;
+  min-height: 400px;
   @media (max-width: 425px) {
     margin: 10px 5px;
-    height: 350px;
+    height: 450px;
   }
 `;
 
@@ -144,7 +145,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData }) => {
   console.log(setCurrentImageIndex);
 
   return (
-    <Card dir="rtl" className="min-w-[250px]">
+    <Card dir="rtl" className="min-w-[220px] min-h-[350px]">
       <ProductImage
         $productData={safeProductData}
         src={currentImage.imageSrc}

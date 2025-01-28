@@ -10,7 +10,6 @@
   },
   "sections": {
     "sectionHeader": {
-      "type": "header",
       "blocks": {
         "imageLogo": "",
         "imageAlt": "",
@@ -41,53 +40,108 @@
           }
         ],
         "setting": {
-          "imageWidth": "80",
-          "imageHeight": "80",
+          "imageWidth": "60",
+          "imageHeight": "60",
           "imageRadius": "30",
-          "itemColor": "#000000",
+          "itemColor": "#14213D",
           "itemFontSize": "15",
           "itemFontWeight": "bold",
-          "itemHoverColor": "#1d6bdf",
-          "backgroundColorNavbar": "#e5e5e5"
+          "itemHoverColor": "#ffffff",
+          "backgroundColorNavbar": "#FCA311"
         }
       },
       "setting": {
         "paddingTop": "20",
         "paddingBottom": "20",
-        "marginTop": "0",
-        "marginBottom": "10",
+        "marginTop": "20",
+        "marginBottom": "20",
+        "marginRight": "0",
+        "marginLeft": "0",
+        "paddinRight": "0",
+        "paddinLeft": "0",
         "navbarPosition": "fixed"
-      }
+      },
+      "type": "header"
     },
     "children": {
       "sections": [
+        {
+          "type": "SlideBanner",
+          "setting": {
+            "marginTop": "20",
+            "marginBottom": "0",
+            "paddingTop": "0",
+            "paddingBottom": "0",
+            "paddingLeft": "0",
+            "paddingRight": "0"
+          },
+          "blocks": {
+            "slides": [
+              {
+                "imageSrc": "/assets/images/bannerdigi.webp",
+                "imageAlt": "Slide 1",
+                "heading": "عنوان اسلاید اول",
+                "description": "توضیحات اسلاید اول",
+                "link": "#"
+              },
+              {
+                "imageSrc": "/assets/images/bannerdigi1.webp",
+                "imageAlt": "Slide 2",
+                "heading": "عنوان اسلاید دوم",
+                "description": "توضیحات اسلاید دوم",
+                "link": "#"
+              },
+              {
+                "imageSrc": "/assets/images/bannerdigi2.webp",
+                "imageAlt": "Slide 3",
+                "heading": "عنوان اسلاید سوم",
+                "description": "توضیحات اسلاید سوم",
+                "link": "#"
+              }
+            ],
+            "setting": {
+              "autoplay": true,
+              "autoplaySpeed": 3000,
+              "slideTransition": "fade",
+              "navigationStyle": "arrows",
+              "arrowsPosition": "bottom-right",
+              "height": "200",
+              "bgArrow": "#ffffff",
+              "activeDotColor": "#ffffff",
+              "inactiveDotColor": "#000000"
+            }
+          }
+        },
         {
           "type": "Banner",
           "blocks": {
             "imageSrc": "/assets/images/ban.jpg",
             "imageAlt": "",
-            "text": "سربرگ  smبنر",
+            "text": "lggggg",
             "description": " توضیحات بنر",
             "setting": {
-              "descriptionColor": "#000000",
-              "descriptionFontSize": "15",
-              "descriptionFontWeight": "normal",
-              "textColor": "#1d6bdf",
-              "textFontSize": "30",
+              "descriptionColor": "#E5E5E5",
+              "descriptionFontSize": "22",
+              "descriptionFontWeight": "bold",
+              "textColor": "#FCA311",
+              "textFontSize": "71",
               "textFontWeight": "bold",
-              "backgroundColorBox": "#ffffff",
-              "backgroundBoxRadious": "10",
-              "opacityImage": 1,
-              "opacityTextBox": 0.8,
+              "backgroundColorBox": "#14213d",
+              "backgroundBoxRadious": "54",
+              "opacityImage": "1",
+              "opacityTextBox": "0.7",
               "imageRadious": "14",
               "imageBehavior": "cover"
             }
           },
           "setting": {
-            "paddingTop": "0",
-            "paddingBottom": "0",
+            "paddingTop": "30",
+            "paddingBottom": "30",
             "marginTop": "20",
-            "marginBottom": "20"
+            "marginBottom": "20",
+            "imageBehavior": "cover",
+            "paddingLeft": "10",
+            "paddingRight": "10"
           }
         },
         {
@@ -117,15 +171,15 @@
             "marginBottom": "10",
             "paddinRight": "0",
             "paddinLeft": "0",
-            "descriptionColor": "#000000",
+            "descriptionColor": "#E5E5E5",
             "descriptionFontSize": "16",
             "descriptionFontWeight": "normal",
-            "textColor": "#000000",
+            "textColor": "#FFFFFF",
             "textFontSize": "24",
             "textFontWeight": "bold",
-            "btnTextColor": "#ffffff",
-            "btnBackgroundColor": "#1d6bdf",
-            "backgroundColorBox": "#ffffff",
+            "btnTextColor": "#ee2020",
+            "btnBackgroundColor": "#FCA311",
+            "backgroundColorBox": "#14213D",
             "backgroundBoxRadius": "40",
             "opacityImage": 1,
             "imageWidth": "700",
@@ -136,20 +190,20 @@
         {
           "type": "RichText",
           "blocks": {
-            "textHeading": "سربرگ محصول",
+            "textHeading": "سربرل",
             "description": "توضیحات درباره محصول",
             "btnText": "دکمه",
             "btnLink": "/",
             "setting": {
-              "textHeadingColor": "#1d6bdf",
+              "textHeadingColor": "#FCA311",
               "textHeadingFontSize": "40",
               "textHeadingFontWeight": "bold",
-              "descriptionColor": "#000000",
+              "descriptionColor": "#E5E5E5",
               "descriptionFontSize": "18",
               "descriptionFontWeight": "normal",
-              "background": "#ffffff",
+              "background": "#14213D",
               "btnTextColor": "#ffffff",
-              "btnBackgroundColor": "#1d6bdf"
+              "btnBackgroundColor": "#FCA311"
             }
           },
           "setting": {
@@ -162,83 +216,30 @@
           }
         },
         {
-          "type": "Story",
-          "blocks": {
-            "stories": [
-              {
-                "id": "1",
-                "imageUrl": "/assets/images/pro1.jpg",
-                "title": "تخفیف ویژه",
-                "link": "/special-offers"
-              },
-              {
-                "id": "2", 
-                "imageUrl": "/assets/images/pro2.jpg",
-                "title": "جدیدترین‌ها",
-                "link": "/new-arrivals"
-              },
-              {
-                "id": "3",
-                "imageUrl": "/assets/images/pro3.jpg", 
-                "title": "پیشنهاد روز",
-                "link": "/daily-deals"
-              }, {
-                "id": "31",
-                "imageUrl": "/assets/images/pro3.jpg", 
-                "title": "پیشنهاد روز",
-                "link": "/daily-deals"
-              },
-              {
-                "id": "32",
-                "imageUrl": "/assets/images/pro3.jpg", 
-                "title": "پیشنهاد روز",
-                "link": "/daily-deals"
-              }
-            ],
-            "setting": {
-              "storyRingColor": "#ef394e",
-              "viewedRingColor": "#e0e0e0",
-              "titleColor": "#666666",
-              "titleFontSize": "14",
-              "titleFontWeight": "normal",
-              "imageWidth": "70px",
-              "imageHeight": "70px",
-              "imageRadius": "500"
-            }
-          },
-          "setting": {
-            "paddingTop": "20",
-            "paddingBottom": "20", 
-            "marginTop": "10",
-            "marginBottom": "10",
-            "backgroundColor": "#ffffff"
-          }
-        },
-        {
           "type": "ImageText",
           "blocks": {
             "imageSrc": "/assets/images/banner3.jpg",
             "imageAlt": "",
-            "heading": "سربرگ محصول",
+            "heading": "سربرگufcjvjchxhx محصول",
             "description": "توضیحات درباره محصول",
             "btnLink": "/",
             "btnText": "دکمه",
             "setting": {
-              "headingColor": "#ffffff",
+              "headingColor": "#FCA311",
               "headingFontSize": "60",
               "headingFontWeight": "bold",
-              "descriptionColor": "#000000",
+              "descriptionColor": "#E5E5E5",
               "descriptionFontSize": "29",
               "descriptionFontWeight": "normal",
-              "btnTextColor": "#000000",
-              "btnBackgroundColor": "#ffffff",
-              "backgroundColorBox": "#1d6bdf",
+              "btnTextColor": "#14213D",
+              "btnBackgroundColor": "#FFFFFF",
+              "backgroundColorBox": "",
               "backgroundBoxOpacity": 0.9,
               "boxRadiuos": "20",
               "opacityImage": 1,
               "imageWidth": "85",
               "imageHeight": "50",
-              "background": "#ffffff"
+              "background": "#14213D"
             }
           },
           "setting": {
@@ -257,17 +258,17 @@
             "videoUrl": "/assets/video/video.mp4",
             "videoAlt": "",
             "setting": {
-              "headingColor": "#1d6bdf",
+              "headingColor": "#FCA311",
               "headingFontSize": "40",
               "headingFontWeight": "bold",
-              "videoWidth": "1000",
-              "videoHeight": "700",
+              "videoWidth": "1000px",
+              "videoHeight": "700px",
               "videoRadious": "30",
               "videoLoop": true,
               "videoMute": false,
               "videoAutoplay": true,
               "videoPoster": "/assets/images/banner2.webp",
-              "backgroundVideoSection": "#ffffff"
+              "backgroundVideoSection": "#FFFFFF"
             }
           },
           "setting": {
@@ -284,12 +285,12 @@
           "blocks": {
             "heading": "فرم ارتباط با ما",
             "setting": {
-              "headingColor": "#1d6bdf",
+              "headingColor": "#000000",
               "headingFontSize": "35",
               "headingFontWeight": "bold",
-              "btnBackgroundColor": "#1d6bdf",
+              "btnBackgroundColor": "#14213D",
               "btnTextColor": "#ffffff",
-              "formBackground": "#ffffff"
+              "formBackground": "#FCA311"
             }
           },
           "setting": {
@@ -308,15 +309,15 @@
             "description": "توضیحات درباره خبرنامه",
             "btnText": "ثبت نام",
             "setting": {
-              "headingColor": "#ffffff",
+              "headingColor": "#FCA311",
               "headingFontSize": "27",
               "headingFontWeight": "bold",
-              "descriptionColor": "#e4e4e4",
+              "descriptionColor": "#000000",
               "descriptionFontSize": "18",
               "descriptionFontWeight": "normal",
-              "btnBackgroundColor": "#ffffff",
-              "btnTextColor": "#000000",
-              "formBackground": "#1d6bdf"
+              "btnBackgroundColor": "#FCA311",
+              "btnTextColor": "#14213D",
+              "formBackground": "#E5E5E5"
             }
           },
           "setting": {
@@ -336,10 +337,10 @@
               "text1": "سوال متداول 1",
               "content1": "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد ",
               "setting": {
-                "textColor1": "#000000",
+                "textColor1": "#ffffff",
                 "textFontSize1": "20px",
                 "textFontWeight1": "bold",
-                "contentColor1": "#1d6bdf",
+                "contentColor1": "#E5E5E5",
                 "contentFontSize1": "16px",
                 "contentFontWeight1": "normal"
               }
@@ -348,10 +349,10 @@
               "text2": "سوال متداول 2",
               "content2": "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد ",
               "setting": {
-                "textColor2": "#000000",
+                "textColor2": "#FCA311",
                 "textFontSize2": "20px",
                 "textFontWeight2": "bold",
-                "contentColor2": "#1d6bdf",
+                "contentColor2": "#E5E5E5",
                 "contentFontSize2": "16px",
                 "contentFontWeight2": "normal"
               }
@@ -360,10 +361,10 @@
               "text3": "سوال متداول سوم",
               "content3": "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد",
               "setting": {
-                "textColor3": "#000000",
+                "textColor3": "#ffffff",
                 "textFontSize3": "20px",
                 "textFontWeight3": "bold",
-                "contentColor3": "#1d6bdf",
+                "contentColor3": "#E5E5E5",
                 "contentFontSize3": "16px",
                 "contentFontWeight3": "normal"
               }
@@ -372,10 +373,10 @@
               "text4": "سوال متداول چهارم",
               "content4": "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد",
               "setting": {
-                "textColor4": "#000000",
+                "textColor4": "#FCA311",
                 "textFontSize4": "20px",
                 "textFontWeight4": "bold",
-                "contentColor4": "#1d6bdf",
+                "contentColor4": "#E5E5E5",
                 "contentFontSize4": "16px",
                 "contentFontWeight4": "normal"
               }
@@ -388,10 +389,10 @@
             "marginBottom": "20",
             "paddinRight": "0",
             "paddinLeft": "0",
-            "headingColor": "#1d6bdf",
+            "headingColor": "#ffffff",
             "headingFontSize": "30",
             "headingFontWeight": "bold",
-            "background": "#ffffff",
+            "background": "#14213D",
             "borderRadious": "20"
           }
         },
@@ -434,18 +435,69 @@
             "backgroundColorBox": "#E5E5E5",
             "headingFontSize": "40",
             "headingFontWeight": "bold",
-            "headingColor": "#1d6bdf",
+            "headingColor": "#14213D",
             "imageRadious": "10",
-            "imageWidth": "400",
-            "imageHeight": "300",
-            "titleColor": "#ffffff",
+            "imageWidth": "400px",
+            "imageHeight": "300px",
+            "titleColor": "#ffa62b",
             "titleFontSize": "25",
             "titleFontWeight": "bold",
-            "descriptionColor": "#000000",
+            "descriptionColor": "#14213D",
             "descriptionFontSize": "18",
             "descriptionFontWeight": "normal",
             "btnColor": "#ffffff",
-            "btnBackgroundColor": "#1d6bdf"
+            "btnBackgroundColor": "#FCA311"
+          }
+        },
+        {
+          "type": "Gallery",
+          "blocks": {
+            "title": " ",
+            "description": " ",
+            "images": [
+              {
+                "imageSrc": "/assets/images/digi4baners.webp",
+                "imageAlt": "Gallery Image 1",
+                "imageLink": "#"
+              },
+              {
+                "imageSrc": "/assets/images/digi 4 banners4.webp",
+                "imageAlt": "Gallery Image 2",
+                "imageLink": "#"
+              },
+              {
+                "imageSrc": "/assets/images/digi4banners2.webp",
+                "imageAlt": "Gallery Image 1",
+                "imageLink": "#"
+              },
+              {
+                "imageSrc": "/assets/images/digi4banners3.webp",
+                "imageAlt": "Gallery Image 2",
+                "imageLink": "#"
+              }
+            ],
+            "setting": {
+              "titleColor": "#333333",
+              "titleFontSize": "32",
+              "titleFontWeight": "bold",
+              "descriptionColor": "#666666",
+              "descriptionFontSize": "16",
+              "descriptionFontWeight": "normal",
+              "background": "#ffffff",
+              "imageWidth": "170",
+              "imageHeight": "100",
+              "imageRadius": "8",
+              "gridColumns": "2",
+              "gridGap": "10"
+            }
+          },
+          "setting": {
+            "paddingTop": "0",
+            "paddingBottom": "0",
+            "marginTop": "0",
+            "marginBottom": "0",
+            "paddingRight": "0",
+            "paddingLeft": "0"
           }
         },
         {
@@ -478,7 +530,7 @@
             }
           ],
           "setting": {
-            "titleColor": "#1d6bdf",
+            "titleColor": "#000000",
             "titleFontWeight": "bold",
             "titleFontSize": "35",
             "paddingTop": "30",
@@ -487,19 +539,19 @@
             "marginBottom": "20",
             "paddinRight": "0",
             "paddinLeft": "0",
-            "backgroundColorMultiRow": "#ffffff",
-            "backgroundColorBox": "#e4e4e4",
+            "backgroundColorMultiRow": "#FCA311",
+            "backgroundColorBox": "#14213D",
             "imageWidth": "500",
             "imageHeight": "300",
             "imageRadius": "45",
-            "headingColor": "#000000",
+            "headingColor": "#FCA311",
             "headingFontSize": "30",
             "headingFontWeight": "bold",
-            "descriptionColor": "#000000",
+            "descriptionColor": "#e4e4e4",
             "descriptionFontSize": "15",
             "descriptionFontWeight": "normal",
-            "btnColor": "#ffffff",
-            "btnBackgroundColor": "#1d6bdf",
+            "btnColor": "#000000",
+            "btnBackgroundColor": "#E5E5E5",
             "imageAlign": "row"
           }
         },
@@ -510,103 +562,28 @@
             "description": "توضیحات درباره خبرنامه",
             "btnText": "ثبت نام",
             "setting": {
-              "headingColor": "#ffffff",
+              "headingColor": "#14213D",
               "headingFontSize": "27",
               "headingFontWeight": "bold",
-              "descriptionColor": "#e4e4e4",
+              "descriptionColor": "#ffffff",
               "descriptionFontSize": "18",
               "descriptionFontWeight": "normal",
-              "btnBackgroundColor": "#ffffff",
-              "btnTextColor": "#000000",
-              "formBackground": "#1d6bdf"
+              "btnBackgroundColor": "#FCA311",
+              "btnTextColor": "#ffffff",
+              "formBackground": "#E5E5E5"
             }
           },
           "setting": {
-            "paddingTop": "30",
-            "paddingBottom": "30",
+            "paddingTop": "20",
+            "paddingBottom": "20",
             "marginTop": "20",
-            "marginBottom": "20",
-            "paddinRight": "0",
-            "paddinLeft": "0"
+            "marginBottom": "20"
           }
         },
         {
           "type": "Collection",
           "blocks": {
             "heading": "محصولات ما",
-            "products": [
-              {
-                "id": "1",
-                "imageSrc": "/assets/images/product1.jpg",
-                "imageAlt": "Product 1",
-                "name": "محصول اول",
-                "description": "توضیحات محصول اول",
-                "price": "۱۰۰,۰۰۰ تومان",
-                "btnText": "افزودن به سبد خرید",
-                "btnLink": "/product/1"
-              }
-            ],
-            "setting": {
-              "headingColor": "#000000",
-              "headingFontSize": "32",
-              "headingFontWeight": "bold",
-              "productNameColor": "#000000",
-              "priceColor": "#000000",
-              "descriptionColor": "#000000",
-              "btnBackgroundColor": "#1d6bdf",
-              "btnTextColor": "#FFFFFF",
-              "cardBackground": "#e4e4e4",
-              "cardBorderRadius": "8",
-              "imageRadius": "8"
-            }
-          },
-          "setting": {
-            "paddingTop": "40px",
-            "paddingBottom": "40px",
-            "marginTop": "20px",
-            "marginBottom": "20px",
-            "backgroundColor": "#ffffff"
-          }
-        },
-        {
-          "type": "Video-4ebb7877-ba73-45c4-95cf-cd89db89d308",
-          "blocks": {
-            "imageSrc": "",
-            "imageAlt": "",
-            "heading": "سربرگ ویدیو",
-            "description": "",
-            "videoUrl": "/assets/video/video.mp4",
-            "videoAlt": "",
-            "setting": {
-              "headingColor": "#FCA311",
-              "headingFontSize": "40",
-              "headingFontWeight": "bold",
-              "videoWidth": "1000px",
-              "videoHeight": "700px",
-              "videoRadious": "79",
-              "videoLoop": true,
-              "videoMute": false,
-              "videoAutoplay": true,
-              "videoPoster": "/assets/images/banner2.webp",
-              "backgroundVideoSection": "#FFFFFF"
-            }
-          },
-          "setting": {
-            "paddingTop": "30",
-            "paddingBottom": "30",
-            "marginTop": "20",
-            "marginBottom": "20",
-            "paddinRight": "0",
-            "paddinLeft": "0"
-          }
-        },
-        {
-          "type": "Collection-1cc24f10-0891-4746-9193-98ee7526c2db",
-          "blocks": {
-            "imageSrc": "",
-            "imageAlt": "",
-            "heading": "محصولات ما",
-            "description": "",
             "products": [
               {
                 "id": "1",
@@ -640,24 +617,344 @@
             "marginBottom": "20px",
             "backgroundColor": "#FCA311"
           }
+        },
+        {
+          "type": "Banner-65757aba-d7b7-499b-930c-a78d8fbc6563",
+          "blocks": {
+            "imageSrc": "/assets/images/ban.jpg",
+            "imageAlt": "",
+            "heading": "",
+            "description": " توضیحات بنر",
+            "text": "lggggg",
+            "setting": {
+              "descriptionColor": "#E5E5E5",
+              "descriptionFontSize": "22",
+              "descriptionFontWeight": "bold",
+              "textColor": "#FCA311",
+              "textFontSize": "71",
+              "textFontWeight": "bold",
+              "backgroundColorBox": "#14213d",
+              "backgroundBoxRadious": "54",
+              "opacityImage": "1",
+              "opacityTextBox": "0.7",
+              "imageRadious": "14",
+              "imageBehavior": "cover"
+            }
+          },
+          "setting": {
+            "paddingTop": "30",
+            "paddingBottom": "30",
+            "marginTop": "20",
+            "marginBottom": "20",
+            "imageBehavior": "cover",
+            "paddingLeft": "10",
+            "paddingRight": "10"
+          }
+        },
+        {
+          "type": "Banner-cad8f9bb-fbd9-4474-94f4-2f1b1980a0fa",
+          "blocks": {
+            "imageSrc": "/assets/images/ban.jpg",
+            "imageAlt": "",
+            "heading": "",
+            "description": " توضیحات بنر",
+            "text": "lggggg",
+            "setting": {
+              "descriptionColor": "#E5E5E5",
+              "descriptionFontSize": "22",
+              "descriptionFontWeight": "bold",
+              "textColor": "#FCA311",
+              "textFontSize": "71",
+              "textFontWeight": "bold",
+              "backgroundColorBox": "#14213d",
+              "backgroundBoxRadious": "54",
+              "opacityImage": "1",
+              "opacityTextBox": "0.7",
+              "imageRadious": "14",
+              "imageBehavior": "cover"
+            }
+          },
+          "setting": {
+            "paddingTop": "30",
+            "paddingBottom": "30",
+            "marginTop": "20",
+            "marginBottom": "20",
+            "imageBehavior": "cover",
+            "paddingLeft": "10",
+            "paddingRight": "10"
+          }
+        },
+        {
+          "type": "SpecialOffer",
+          "blocks": {
+            "textHeading": "پیشنهاد شگفت‌ انگیز",
+            "setting": {
+              "headingColor": "#FFFFFF",
+              "headingFontSize": "32",
+              "headingFontWeight": "bold",
+              "productNameColor": "#000000",
+              "priceColor": "#EF394E",
+              "descriptionColor": "#666666",
+              "btnBg": "#EF394E",
+              "btnTextColor": "#ffffff",
+              "cardBackground": "#EF394E",
+              "cardBorderRadius": "8",
+              "imageRadius": "8",
+              "gridColumns": "4"
+            }
+          },
+          "setting": {
+            "paddingTop": "30",
+            "paddingBottom": "30",
+            "marginTop": "20",
+            "marginBottom": "20",
+            "backgroundColor": "#EF394E",
+            "paddingLeft": "10",
+            "paddingRight": "10"
+          }
+        },
+        {
+          "type": "Story",
+          "blocks": {
+            "stories": [
+              {
+                "id": "1",
+                "imageUrl": "/assets/images/pro1.jpg",
+                "title": "تخفیف ویژه",
+                "link": "/special-offers"
+              },
+              {
+                "id": "2",
+                "imageUrl": "/assets/images/pro2.jpg",
+                "title": "جدیدترین‌ها",
+                "link": "/new-arrivals"
+              },
+              {
+                "id": "3",
+                "imageUrl": "/assets/images/pro3.jpg",
+                "title": "پیشنهاد روز",
+                "link": "/daily-deals"
+              },
+              {
+                "id": "4",
+                "imageUrl": "/assets/images/pro4.jpg",
+                "title": "پیشنهاد روز",
+                "link": "/daily-deals"
+              }
+            ],
+            "setting": {
+              "storyRingColor": "#ef394e",
+              "viewedRingColor": "#e0e0e0",
+              "titleColor": "#666666",
+              "titleFontSize": "12",
+              "titleFontWeight": "normal",
+              "imageWidth": "70px",
+              "imageHeight": "70px",
+              "imageRadius": "500"
+            }
+          },
+          "setting": {
+            "paddingTop": "20",
+            "paddingBottom": "20",
+            "marginTop": "10",
+            "marginBottom": "10",
+            "backgroundColor": "#ffffff"
+          }
+        },
+        {
+          "type": "OfferRow",
+          "blocks": {
+            "offers": [],
+            "setting": {
+              "titleColor": "#22C55E",
+              "titleText": "شگفت‌انگیز سوپرمارکتی",
+              "buttonColor": "#ffffff",
+              "buttonTextColor": "#000000",
+              "gradientFromColor": "#f3f4f6",
+              "gradientToColor": "#e5e7eb"
+            }
+          },
+          "setting": {
+            "paddingTop": "20",
+            "paddingBottom": "20",
+            "marginTop": "10",
+            "marginBottom": "10",
+            "backgroundColor": "#ffffff",
+            "buttonText": "مشاهده همه"
+          }
+        },
+        {
+          "type": "Brands",
+          "blocks": {
+            "heading": "محبوب‌ترین برندها",
+            "brands": [
+              {
+                "id": 1,
+                "name": "سامسونگ",
+                "logo": "/assets/images/samsung.jpg"
+              },
+              {
+                "id": 2,
+                "name": "اپل",
+                "logo": "/assets/images/icons8-apple-logo.svg"
+              },
+              {
+                "id": 3,
+                "name": "هواوی",
+                "logo": "/assets/images/huawei.png"
+              },
+              {
+                "id": 4,
+                "name": "شیائومی",
+                "logo": "/assets/images/mi.png"
+              },
+              {
+                "id": 6,
+                "name": "مای",
+                "logo": "/assets/images/my.png"
+              },
+              {
+                "id": 7,
+                "name": "کینگ استار",
+                "logo": "/assets/images/king.png"
+              }
+            ],
+            "setting": {
+              "headingColor": "#14213D",
+              "headingFontSize": "32",
+              "headingFontWeight": "bold",
+              "brandNameColor": "#666666",
+              "brandNameFontSize": "16",
+              "brandNameFontWeight": "normal",
+              "cardBackground": "#FFFFFF",
+              "cardBorderRadius": "8",
+              "cardHoverShadow": "lg",
+              "gridColumns": "6",
+              "logoWidth": "96",
+              "logoHeight": "96"
+            }
+          },
+          "setting": {
+            "paddingTop": "5",
+            "paddingBottom": "5",
+            "marginTop": "20",
+            "marginBottom": "20",
+            "backgroundColor": "#FFFFFF"
+          }
+        },
+        {
+          "type": "ProductsRow",
+          "blocks": {
+            "textHeading": " محصولات جدید ",
+           
+            "setting": {
+              "headingColor": "#000000",
+              "headingFontSize": "22",
+              "headingFontWeight": "bold",
+              "productNameColor": "#000000",
+              "priceColor": "#EF394E",
+              "descriptionColor": "#666666",
+              "btnBg": "#EF394E",
+              "btnTextColor": "#ffffff",
+              "cardBackground": "#EF394E",
+              "cardBorderRadius": "8",
+              "imageRadius": "8",
+              "gridColumns": "4"
+            }
+          },
+          "setting": {
+            "paddingTop": "30",
+            "paddingBottom": "30",
+            "marginTop": "20",
+            "marginBottom": "20",
+            "backgroundColor": "#ffffff",
+            "paddingLeft": "10",
+            "paddingRight": "10"
+          }
+        },
+        {
+          "type": "ProductsRow-2",
+          "blocks": {
+            "textHeading": " محصولات پرفروش ",
+            "setting": {
+              "headingColor": "#000000",
+              "headingFontSize": "22",
+              "headingFontWeight": "bold",
+              "productNameColor": "#000000",
+              "priceColor": "#EF394E",
+              "descriptionColor": "#666666",
+              "btnBg": "#EF394E",
+              "btnTextColor": "#ffffff",
+              "cardBackground": "#EF394E",
+              "cardBorderRadius": "8",
+              "imageRadius": "8",
+              "gridColumns": "4"
+            }
+          },
+          "setting": {
+            "paddingTop": "30",
+            "paddingBottom": "30",
+            "marginTop": "20",
+            "marginBottom": "20",
+            "backgroundColor": "#ffffff",
+            "paddingLeft": "10",
+            "paddingRight": "10"
+          }
+        },
+        {
+          "type": "Gallery-2",
+          "blocks": {
+            "title": " ",
+            "description": " ",
+            "images": [
+              {
+                "imageSrc": "/assets/images/twinbanner2.webp",
+                "imageAlt": "Gallery Image 1",
+                "imageLink": "#"
+              },
+              {
+                "imageSrc": "/assets/images/twinbanner.webp",
+                "imageAlt": "Gallery Image 2",
+                "imageLink": "#"
+              }
+            
+            ],
+            "setting": {
+              "titleColor": "#333333",
+              "titleFontSize": "32",
+              "titleFontWeight": "bold",
+              "descriptionColor": "#666666",
+              "descriptionFontSize": "16",
+              "descriptionFontWeight": "normal",
+              "background": "#ffffff",
+              "imageWidth": "360",
+              "imageHeight": "165",
+              "imageRadius": "8",
+              "gridColumns": "1",
+              "gridGap": "20"
+            }
+          },
+          "setting": {
+            "paddingTop": "10",
+            "paddingBottom": "10",
+            "marginTop": "5",
+            "marginBottom": "5",
+            "paddingRight": "0",
+            "paddingLeft": "0"
+          }
         }
       ],
       "order": [
         "Story",
-        "Banner",
-        "SlideShow",
-        "RichText",
-        "ImageText",
-        "Video",
-        "ContactForm",
-        "NewsLetter",
-        "CollapseFaq",
-        "MultiColumn",
-        "MultiRow",
-        "NewsLetter-1",
-        "Collection",
-        "Video-4ebb7877-ba73-45c4-95cf-cd89db89d308",
-        "Collection-1cc24f10-0891-4746-9193-98ee7526c2db"
+        "SlideBanner",
+        "SpecialOffer",
+        "OfferRow",
+        "ProductsRow-2",
+        "Gallery",
+        "Brands",
+        "ProductsRow",
+        "Gallery-2"
+
       ]
     },
     "sectionFooter": {
@@ -671,9 +968,9 @@
           "descriptionFontSize": "18",
           "descriptionFontWeight": "normal",
           "linkColor": "#0077b6",
-          "logoWidth": "80",
-          "logoHeight": "80",
-          "logoRadius": "10"
+          "logoWidth": "80px",
+          "logoHeight": "80px",
+          "logoRadius": "10px"
         },
         "text": "سربرگ قسمت پایین سایت",
         "description": "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد",
@@ -693,17 +990,15 @@
         ]
       },
       "setting": {
-        "paddingTop": "20",
-        "paddingBottom": "20",
-        "marginBottom": "10",
+        "paddingTop": "30",
+        "paddingBottom": "30",
         "marginTop": "20",
+        "marginBottom": "20",
+        "paddinRight": "0",
+        "paddinLeft": "0",
         "backgroundColor": "#ffffff"
       }
     }
   },
-  "order": [
-    "section-header",
-    "children",
-    "section-footer"
-  ]
+  "order": ["section-header", "children", "section-footer"]
 }
