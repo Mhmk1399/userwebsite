@@ -54,7 +54,7 @@
       "setting": {
         "paddingTop": "20",
         "paddingBottom": "20",
-        "marginTop": "10",
+        "marginTop": "0",
         "marginBottom": "10",
         "navbarPosition": "fixed"
       }
