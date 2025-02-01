@@ -846,7 +846,6 @@
           "type": "ProductsRow",
           "blocks": {
             "textHeading": " محصولات جدید ",
-           
             "setting": {
               "headingColor": "#000000",
               "headingFontSize": "22",
@@ -888,7 +887,8 @@
               "cardBackground": "#EF394E",
               "cardBorderRadius": "8",
               "imageRadius": "8",
-              "gridColumns": "4"
+              "gridColumns": "4",
+              "selectedCollection": "679e070c216fde7c1cdc1d94"
             }
           },
           "setting": {
@@ -917,7 +917,6 @@
                 "imageAlt": "Gallery Image 2",
                 "imageLink": "#"
               }
-            
             ],
             "setting": {
               "titleColor": "#333333",
@@ -984,7 +983,6 @@
         "ProductsRow",
         "Gallery-2",
         "ProductsRow-3"
-
       ]
     },
     "sectionFooter": {
@@ -1030,5 +1028,9 @@
       }
     }
   },
-  "order": ["section-header", "children", "section-footer"]
+  "order": [
+    "section-header",
+    "children",
+    "section-footer"
+  ]
 }
