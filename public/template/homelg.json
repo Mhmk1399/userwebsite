@@ -700,7 +700,8 @@
               "cardBackground": "#EF394E",
               "cardBorderRadius": "8",
               "imageRadius": "8",
-              "gridColumns": "4"
+              "gridColumns": "4",
+              "selectedCollection": "67724b87ba6f18debeb2f32c"
             }
           },
           "setting": {
@@ -843,10 +844,9 @@
           }
         },
         {
-          "type": "ProductsRow",
+          "type": "ProductsRow-2",
           "blocks": {
-            "textHeading": " محصولات جدید ",
-           
+            "textHeading": " محصولات پرفروش ",
             "setting": {
               "headingColor": "#000000",
               "headingFontSize": "22",
@@ -859,12 +859,13 @@
               "cardBackground": "#EF394E",
               "cardBorderRadius": "8",
               "imageRadius": "8",
-              "gridColumns": "4"
+              "gridColumns": "4",
+              "selectedCollection": "679e070c216fde7c1cdc1d94"
             }
           },
           "setting": {
-            "paddingTop": "10",
-            "paddingBottom": "10",
+            "paddingTop": "30",
+            "paddingBottom": "30",
             "marginTop": "20",
             "marginBottom": "20",
             "backgroundColor": "#ffffff",
@@ -889,7 +890,8 @@
               "cardBackground": "#EF394E",
               "cardBorderRadius": "8",
               "imageRadius": "8",
-              "gridColumns": "4"
+              "gridColumns": "4",
+              "selectedCollection": "679e070c216fde7c1cdc1d94"
             }
           },
           "setting": {
@@ -918,7 +920,6 @@
                 "imageAlt": "Gallery Image 2",
                 "imageLink": "#"
               }
-            
             ],
             "setting": {
               "titleColor": "#333333",
@@ -960,7 +961,8 @@
               "cardBackground": "#EF394E",
               "cardBorderRadius": "8",
               "imageRadius": "8",
-              "gridColumns": "4"
+              "gridColumns": "4",
+              "selectedCollection": "679e0724216fde7c1cdc1d99"
             }
           },
           "setting": {
@@ -985,7 +987,6 @@
         "ProductsRow",
         "Gallery-2",
         "ProductsRow-3"
-
       ]
     },
     "sectionFooter": {
@@ -1031,5 +1032,9 @@
       }
     }
   },
-  "order": ["section-header", "children", "section-footer"]
+  "order": [
+    "section-header",
+    "children",
+    "section-footer"
+  ]
 }
