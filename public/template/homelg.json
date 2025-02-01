@@ -877,6 +877,7 @@
           "blocks": {
             "textHeading": " محصولات پرفروش ",
             "setting": {
+              
               "headingColor": "#000000",
               "headingFontSize": "22",
               "headingFontWeight": "bold",

@@ -96,7 +96,7 @@ const ScrollContainer = styled.div<{
     useEffect(() => {
       const fetchSpecialOffers = async () => {
         try {
-          const response = await fetch("/api/store");
+          const response = await fetch("/api/collections");
           const data = await response.json();
           if (data?.products) {
             setSpecialOfferProducts(data.products);
