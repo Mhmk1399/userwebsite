@@ -3,6 +3,7 @@ import { Interpolation } from "styled-components";
 import { Substitute } from "styled-components/dist/types";
 
 export interface Link {
+  megaMenu: MegaMenuItem[];
   name: string;
   url: string;
 }
@@ -54,7 +55,7 @@ export interface CollapseBlock {
 export interface CollapseSection {
   blocks: CollapseBlock[];
   setting: CollapseBlockSetting;
-  type: "CollapseFaq";
+  type: "collapse";
 }
 
 export interface CommonSettings {
@@ -103,6 +104,8 @@ export interface CommonSettings {
   paddingLeft?: string;
   marginRight?: string;
   marginLeft?: string;
+  borderRadius?: string;
+  border: string;
 }
 
 export interface HeaderBlockSettings extends CommonSettings {
@@ -114,7 +117,22 @@ export interface HeaderBlockSettings extends CommonSettings {
   itemFontWeight: string;
   itemHoverColor: string;
   backgroundColorNavbar: string;
-  titleColor: string;
+  searchBarBorderColor: string;
+  searchBarBorderRadius: string;
+  buttonBorderColor: string;
+  buttonBorderRadius: string;
+  locationButtonBgColor: string;
+  locationButtonTextColor: string;
+  announcementText: string;
+  announcementBgColor: string;
+  announcementTextColor: string;
+  announcementFontSize: string;
+  bgColor: string;
+  gap: string;
+  megaMenuBg: string;
+  categoryItemColor: string;
+  categoryItemSize: string;
+  categoryItemHoverColor: string;
 }
 export interface HeaderBlock {
   imageLogo: string;
@@ -130,9 +148,28 @@ export interface HeaderSection {
     navbarPosition: string;
     paddingTop: string;
     paddingBottom: string;
+    paddingLeft: string;
+    paddingRight: string;
+    marginTop: string;
     marginBottom: string;
+    bgColor: string;
   };
 }
+
+interface MegaMenuItem {
+  title: string;
+  items: {
+    name: string;
+    url: string;
+    image?: string;
+  }[];
+}
+
+// interface LinkHeader {
+//   name: string;
+//   url: string;
+//   megaMenu?: MegaMenuItem[];
+// }
 export interface BannerBlockSettings extends CommonSettings {
   descriptionColor: string;
   descriptionFontSize: string;
@@ -156,7 +193,7 @@ export interface BannerBlock {
   setting: CommonSettings;
 }
 export interface BannerSection {
-  type: "Banner";
+  type: "banner";
   blocks: BannerBlock;
   setting: CommonSettings;
 }
@@ -199,7 +236,7 @@ export interface MultiColumnSection {
     [key: number]: MultiColumnBlock;
   };
   setting: MultiColumnBlockSetting;
-  type: "MultiColumn";
+  type: "multicolumn";
 }
 
 // Add these new interfaces for Newsletter component
@@ -231,7 +268,7 @@ export interface NewsLetterBlock {
 export interface NewsLetterSection {
   blocks: NewsLetterBlock;
   setting: CommonSettings;
-  type: "NewsLetter";
+  type: "newsletter";
 }
 // Add these new interfaces for RichText component
 
@@ -272,7 +309,48 @@ export interface RichTextBlock {
 export interface RichTextSection {
   blocks: RichTextBlock;
   setting: CommonSettings;
-  type: "RichText";
+  type: "rich-text";
+}
+export interface StoreSection {
+  type: "store";
+  blocks: {
+    productId: number;
+    imageSrc: string;
+    imageAlt: string;
+    name: string;
+    description: string;
+    price: string;
+    btnText: string;
+    btnLink: string;
+    setting: {
+      imageWidth: string;
+      imageHeight: string;
+      imageRadius: string;
+      productNameColor: string;
+      productNameFontSize: string;
+      productNameFontWeight: string;
+      priceColor: string;
+      priceFontSize: string;
+      descriptionColor: string;
+      descriptionFontSize: string;
+      btnBackgroundColor: string;
+      btnTextColor: string;
+    };
+  }[];
+  setting: {
+    gridColumns: number;
+    paddingTop: string; // Changed from number to string
+    paddingBottom: string;
+    paddingLeft: string;
+    paddingRight: string;
+    marginTop: string;
+    marginBottom: string;
+    marginLeft: string;
+    marginRight: string;
+    backgroundColor: string;
+    cardBackgroundColor: string;
+    cardBorderRadius: string;
+  };
 }
 
 export interface Section {
@@ -284,10 +362,14 @@ export interface Section {
     | MultiColumnBlock
     | NewsLetterBlock
     | RichTextBlock
-    |SpecialOfferBlock
+    | GalleryBlock
+    | StoreSection["blocks"] // Add store blocks
+    | BlogSection["blocks"] // Add blog blocks
+    | BlogDetailSection["blocks"] // Add blog detail blocks
+    | DetailPageSection["blocks"]; // Add detail page blocks
   type: string;
-  textHeading: string;
 }
+
 export interface ImageTextBlockSetting extends CommonSettings {
   headingColor: string;
   headingFontSize: string;
@@ -321,7 +403,7 @@ export interface ImageTextBlock {
 export interface ImageTextSection {
   blocks: ImageTextBlock;
   setting: CommonSettings;
-  type: "ImageText";
+  type: "image-text";
 }
 
 export interface FooterSection {
@@ -332,6 +414,8 @@ export interface FooterSection {
     instagramLink: string;
     telegramLink: string;
     whatsappLink: string;
+    phoneNumber: string;
+    textNumber: string;
     logo: string;
     links?: { url: string; label: string }[];
     setting: FooterBlockSetting;
@@ -345,11 +429,19 @@ export interface FooterBlockSetting {
   descriptionColor: string;
   descriptionFontSize: string;
   descriptionFontWeight: string;
+  trustIconBackground: string;
+  trustIconColor: string;
+  trustItemSize: string;
+  trustItemColor: string;
+  scrollButtonBg: string;
+  scrollButtonColor: string;
+  categoryColor: string;
   linkColor: string;
   logoWidth: string;
   logoHeight: string;
   logoRadius: string;
   backgroundColor: string;
+  categoryBg: string;
 }
 
 export interface FooterLink {
@@ -408,7 +500,7 @@ export interface ContactFormProps {
 export interface ImageTextSection {
   blocks: ImageTextBlock;
   setting: CommonSettings;
-  type: "ImageText";
+  type: "image-text";
 }
 
 export interface Children {
@@ -430,10 +522,11 @@ export interface Layout {
     colorSchema: ColorSchema;
   };
   sections: {
-    find(arg0: (section:Array<Section>) => boolean): unknown;
+    find(arg0: (section: Section) => boolean): Section | undefined;
     slideshow: SlideSection;
     richtext: RichTextSection;
     sectionHeader: HeaderSection;
+
     children:
       | Children
       | AboutChildren
@@ -487,6 +580,8 @@ export interface SlideSection {
     marginTop: string;
     marginBottom: string;
     backgroundBoxRadius: string;
+    btnBackgroundColor: string;
+    btnTextColor: string;
   };
   type: "slideshow";
 }
@@ -514,7 +609,7 @@ export interface VideoBlock {
 export interface VideoSection {
   blocks: VideoBlock;
   setting: CommonSettings;
-  type: "Video";
+  type: "video";
 }
 
 export interface VideoFormProps {
@@ -550,7 +645,7 @@ export interface ContactFormDataSection {
     paddingLeft?: string;
     paddingRight?: string;
   };
-  type: "ContactForm";
+  type: "contact-form";
 }
 
 // export interface ContactFormProps {
@@ -593,7 +688,7 @@ export interface MultiRowBlock {
 }
 
 export interface MultiRowSection {
-  type: "MultiRow";
+  type: "multiRow";
   title: string;
   blocks: MultiRowBlock[];
   setting: MultiRowBlockSetting;
@@ -658,25 +753,59 @@ export interface ProductListSection {
   price: string;
   btnText: string;
   btnLink: string;
+  storeId: string;
 }
 
 export interface ProductSection {
-  type: "ProductList";
+  type: "store";
   blocks: ProductListSection[];
   setting: ProductBlockSetting;
 }
 
 export interface ProductStoreLayout {
-  type: "ProductList";
+  type: "store";
   children: {
     sections: ProductListSection[];
     order: string[];
   };
 }
-export interface StoreChildren {
-  type: "ProductList";
-  sections: ProductSection[];
-  order: string[];
+
+export interface ProductCard {
+  blocks: ProductListSection[];
+  setting: ProductBlockSetting;
+  cardBorderRadius?: string;
+  cardBackground?: string;
+  imageWidth?: string;
+  imageHeight?: string;
+  imageRadius?: string;
+  nameFontSize?: string;
+  nameFontWeight?: string;
+  nameColor?: string;
+  descriptionFontSize?: string;
+  descriptionFontWeight?: string;
+  descriptionColor?: string;
+  priceFontSize?: string;
+  priceColor?: string;
+  btnBackgroundColor?: string;
+  btnColor?: string;
+}
+export interface DetailPageBlockSettings {
+  imageWidth: string;
+  imageHeight: string;
+  imageRadius: string;
+  productNameColor: string;
+  productNameFontSize: string;
+  productNameFontWeight: string;
+  priceColor: string;
+  priceFontSize: string;
+  descriptionColor: string;
+  descriptionFontSize: string;
+  btnBackgroundColor: string;
+  btnTextColor: string;
+}
+export interface ProductImage {
+  imageSrc: string;
+  imageAlt: string;
 }
 
 export interface productCard {
@@ -696,26 +825,22 @@ export interface productCard {
   btnBackgroundColor: string;
   btnColor: string;
 }
-
-export interface ProductImage {
-  imageSrc: string;
-  imageAlt: string;
-}
 export interface ProductCardData {
   
   images: ProductImage[];
   name: string;
   description: string;
-  price: number;
-  _id: number;
+  price: string;
+  id: string;
   category?: string;
   discount?: string;
   status?: string;
   inventory?: string;
   createdAt?: string;
   updatedAt?: string;
-  imageSrc: string;
-  imageAlt: string;
+  storeId?: string;
+  _id?: string;
+  properties?: string | null;
 }
 export interface ProductCardSetting {
   cardBorderRadius?: string;
@@ -744,10 +869,10 @@ export interface DetailPageBlock {
   name: string;
   description: string;
   category: string;
-  price: number;
+  price: string;
   status: string;
   discount: string;
-  id: number;
+  id: string;
   inventory: number;
   btnText: string;
   btnLink: string;
@@ -768,7 +893,7 @@ export interface DetailPageBlock {
   };
 }
 
-export interface DetailPageSettings {
+export interface DetailPageSettings extends CommonSettings {
   imageWidth: string;
   imageHeight: string;
   imageRadius: string;
@@ -787,9 +912,18 @@ export interface DetailPageSettings {
   btnTextColor: string;
   paddingTop: string;
   paddingBottom: string;
+  paddingLeft: string;
+  paddingRight: string;
   marginTop: string;
   marginBottom: string;
+  marginLeft: string;
+  marginRight: string;
   backgroundColor: string;
+  boxRadius: string;
+  backgroundColorBox: string;
+  propertyKeyColor: string;
+  propertyValueColor: string;
+  propertyBg: string;
 }
 
 export interface DetailPageSection {
@@ -797,15 +931,6 @@ export interface DetailPageSection {
   blocks: DetailPageBlock[];
   setting: DetailPageSettings;
 }
-
-export interface DetailPageChildren {
-  type: "DetailPage";
-  sections: DetailPageSection[];
-  order: string[];
-}
-// export interface DetailPageMain {
-//   children: DetailPageChildren;
-// }
 
 export interface CollectionBlockSetting extends CommonSettings {
   headingColor: string;
@@ -839,7 +964,7 @@ export interface CollectionProduct {
 }
 
 export interface CollectionSection {
-  type: "Collection";
+  type: string;
   blocks: {
     heading: string;
     products: CollectionProduct[];
@@ -864,8 +989,12 @@ export interface BlogListSetting {
   gridColumns: number;
   paddingTop: string | number;
   paddingBottom: string | number;
+  paddingLeft: string | number;
+  paddingRight: string | number;
   marginTop: string | number;
   marginBottom: string | number;
+  marginLeft: string | number;
+  marginRight: string | number;
   backgroundColor: string;
   cardBackgroundColor: string;
   cardBorderRadius: string;
@@ -880,17 +1009,17 @@ export interface BlogListFormProps {
   selectedComponent: string;
 }
 export interface BlogListSection {
-  type: "BlogList";
+  type: string;
   blocks: BlogBlock[];
   setting: BlogListSetting;
 }
 export interface BlogChildren {
-  type: "BlogList";
-  sections: BlogListSection[];
+  type: string;
+  sections: BlogSection[];
   order: string[];
 }
 export interface BlogSection {
-  type: "BlogList"; // Changed from string to literal type
+  type: string; // Changed from string to literal type
   blocks: BlogBlock[];
   setting: BlogListSetting;
 }
@@ -949,6 +1078,8 @@ export interface BlogDetailBlockSetting extends CommonSettings {
   readTimeColor: string;
   readTimeFontSize: string;
   sectionSpacing: string;
+  metaColor: string;
+  metaFontSize: string;
 }
 
 export interface BlogDetailSection {
@@ -956,12 +1087,43 @@ export interface BlogDetailSection {
   setting: BlogDetailBlockSetting;
   type: "BlogDetail";
 }
+
+export interface DetailPageChildren {
+  type: string;
+  sections: DetailPageSection[];
+  order: string[];
+}
+
+export interface StoreChildren {
+  type: string;
+  sections: StoreSection[];
+  order: string[];
+}
+
 export interface BlogDetailChildren {
-  type: "BlogDetail";
+  type: string;
   sections: BlogDetailSection[];
   order: string[];
 }
-// Add these interfaces for SpecialOffer component
+
+// Add these new type guards
+export interface LayoutResponse {
+  children: {
+    type: string;
+    sections: Section[];
+    order: string[];
+  };
+}
+
+export interface RouteLayout {
+  about: AboutChildren;
+  contact: AboutChildren;
+  store: StoreChildren;
+  DetailPage: DetailPageChildren;
+  BlogList: BlogChildren;
+  BlogDetail: BlogDetailChildren;
+  home: Children;
+}
 export interface SpecialOfferBlockSetting extends CommonSettings {
   gridColumns: number;
   imageRadius: string;
@@ -972,11 +1134,44 @@ export interface SpecialOfferBlockSetting extends CommonSettings {
   btnTextColor: string;
   cardBackground: string;
   cardBorderRadius: string;
+  selectedCollection: string;
+}
+export interface GalleryImage {
+  imageSrc: string;
+  imageAlt: string;
+  imageLink?: string;
+}
+
+export interface GalleryBlockSetting {
+  titleColor: string;
+  titleFontSize: string;
+  titleFontWeight: string;
+  descriptionColor: string;
+  descriptionFontSize: string;
+  descriptionFontWeight: string;
+  background: string;
+  imageWidth: string;
+  imageHeight: string;
+  imageRadius: string;
+  gridColumns: string;
+  gridGap: string;
+}
+
+export interface GalleryBlock {
+  title: string;
+  description: string;
+  images: GalleryImage[];
+  setting: GalleryBlockSetting;
+}
+
+export interface GallerySectionSetting {
   paddingTop: string;
   paddingBottom: string;
   marginTop: string;
   marginBottom: string;
   selectedCollection: string;
+  paddingLeft: string;
+  paddingRight: string;
 }
 
 export interface SpecialOfferBlock {
@@ -990,7 +1185,6 @@ export interface SpecialOfferSection {
   type: "SpecialOffer";
   blocks: SpecialOfferBlock;
   setting: SpecialOfferBlockSetting;
-  textHeading: string;
 }
 export interface StoryBlockSetting extends CommonSettings {
   storyRingColor: string;
@@ -1017,47 +1211,41 @@ export interface StorySection {
   type: "Story";
   blocks: StoryBlock;
   setting: CommonSettings;
-}
-export interface GallerySection {
-  type: string;
-  setting: CommonSettings;
-  blocks: {
-    title: string;
-    description: string;
-    setting: {
-      titleColor: string;
-      titleFontSize: string;
-      titleFontWeight: string;
-      descriptionColor: string;
-      descriptionFontSize: string;
-      descriptionFontWeight: string;
-      gridColumns: number;
-      gridGap: string;
-      imageHeight: string;
-      imageWidth: string;
-      imageRadius: string;
-    };
-    images: {
-      imageSrc: string;
-      imageAlt: string;
-      imageLink: string;
-    }[];
-  };
-}
-export interface SlideBannerBlockSetting extends CommonSettings {
-  height?: string;
-  bgArrow?: string;
-  activeDotColor?: string;
-  inactiveDotColor?: string;
+
+  paddingRight: string;
+  paddingLeft: string;
 }
 
-export interface SlideBannerSlide {
+export interface GallerySection {
+  type: "Gallery";
+  blocks: GalleryBlock;
+  setting: GallerySectionSetting;
+}
+export interface SlideBannerBlockSetting extends CommonSettings {
+  autoplay: boolean;
+  autoplaySpeed: number;
+  slideTransition: string;
+  navigationStyle: string;
+  arrowsPosition: string;
+  opacityImage: string;
+  imageRadious: string;
+  imageBehavior: string;
+  height: string;
+  bgArrow: string;
+  activeDotColor: string;
+  inactiveDotColor: string;
+}
+
+export interface SlideItem {
   imageSrc: string;
   imageAlt: string;
+  heading: string;
+  description: string;
+  link: string;
 }
 
 export interface SlideBannerBlock {
-  slides: SlideBannerSlide[];
+  slides: SlideItem[];
   setting: SlideBannerBlockSetting;
 }
 
@@ -1066,17 +1254,31 @@ export interface SlideBannerSection {
   blocks: SlideBannerBlock;
   setting: CommonSettings;
 }
+
 export interface OfferRowBlockSetting extends CommonSettings {
-  titleColor?: string;
-  titleText?: string;
-  buttonColor?: string;
-  buttonTextColor?: string;
-  gradientFromColor?: string;
-  gradientToColor?: string;
+  titleColor: string;
+  titleText: string;
+  buttonColor: string;
+  buttonTextColor: string;
+  gradientFromColor: string;
+  gradientToColor: string;
+  buttonText: string;
+  buttonLink: string;
   selectedCollection: string;
+
+}
+
+export interface OfferItem {
+  id: string;
+  title: string;
+  imageUrl: string;
+  price: number;
+  originalPrice: number;
+  discount: number;
 }
 
 export interface OfferRowBlock {
+  offers: OfferItem[];
   setting: OfferRowBlockSetting;
 }
 
@@ -1092,4 +1294,64 @@ export interface OfferRowSection {
     gradientToColor?: string;
     selectedCollection?: string;
   };
+}
+export interface BrandItem {
+  id: number;
+  name: string;
+  logo: string;
+  link: string;
+}
+
+export interface BrandsBlockSetting extends CommonSettings {
+  headingColor: string;
+  headingFontSize: string;
+  headingFontWeight: string;
+  brandNameColor: string;
+  brandNameFontSize: string;
+  brandNameFontWeight: string;
+  cardBackground: string;
+  cardBorderRadius: string;
+  cardHoverShadow: string;
+  gridColumns: string;
+  logoWidth: string;
+  logoHeight: string;
+}
+
+export interface BrandsBlock {
+  heading: string;
+  brands: BrandItem[];
+  setting: BrandsBlockSetting;
+}
+
+export interface BrandsSection {
+  type: "Brands";
+  blocks: BrandsBlock;
+  setting: CommonSettings;
+}
+export interface ProductRowBlockSetting extends CommonSettings {
+  gridColumns: number;
+  imageRadius: string;
+  productNameColor: string;
+  priceColor: string;
+  descriptionColor: string;
+  btnBackgroundColor: string;
+  btnTextColor: string;
+  cardBackground: string;
+  cardBorderRadius: string;
+  headingColor: string;
+  headingFontSize: string;
+  headingFontWeight: string;
+  selectedCollection: string;
+}
+
+export interface ProductRowBlock {
+  textHeading: string;
+  products: ProductRowSection[];
+  setting: ProductRowBlockSetting;
+}
+
+export interface ProductRowSection {
+  type: "ProductRow";
+  blocks: ProductRowBlock;
+  setting: ProductRowBlockSetting;
 }
