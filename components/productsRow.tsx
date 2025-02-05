@@ -96,22 +96,35 @@ export const ProductsRow: React.FC<ProductsRowProps> = ({ sections, isMobile, co
   const containerRef = useRef<HTMLDivElement>(null);
   const [products, setProducts] = useState<ProductCardData[]>([]); // Using ProductCardData from types.ts
   const sectionData = sections.find((section: Section) => section.type === componentName) as SpecialOfferSection;
+  const CollectionId= sectionData?.blocks.setting.selectedCollection;
 
   const [Loading, setLoading] = useState(true);
-useEffect(() => {
-    const fetchProducts = async () => {
-    try {
-      const response = await fetch('/api/store');
-      const data = await response.json();
-      setProducts(data.products);
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching products:', error);
+    
+  useEffect(() => {
+    const fetchSpecialOffers = async () => {
+      try {
+        const response = await fetch("/api/collections", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "collectionId": CollectionId || "",
+          }
+        });
+        const data = await response.json();
+        if (data[0].products) {
+          setProducts(data[0].products);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.log("Error fetching special offers:", error);
+      }
+    };  
+    if(CollectionId){
+      fetchSpecialOffers();
     }
-  }
-  fetchProducts();
-},[]);
 
+    
+  }, []);
   if (!sectionData) return null;
 
   const handleScroll = (direction: 'left' | 'right') => {

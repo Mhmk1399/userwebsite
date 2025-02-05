@@ -702,6 +702,7 @@ export interface ProductImage {
   imageAlt: string;
 }
 export interface ProductCardData {
+  
   images: ProductImage[];
   name: string;
   description: string;
@@ -975,11 +976,12 @@ export interface SpecialOfferBlockSetting extends CommonSettings {
   paddingBottom: string;
   marginTop: string;
   marginBottom: string;
-
+  selectedCollection: string;
 }
 
 export interface SpecialOfferBlock {
   textHeading: string;
+  selectedCollection: string;
   products: SpecialOfferSection[];
   setting: SpecialOfferBlockSetting;
 }
@@ -1071,6 +1073,7 @@ export interface OfferRowBlockSetting extends CommonSettings {
   buttonTextColor?: string;
   gradientFromColor?: string;
   gradientToColor?: string;
+  selectedCollection: string;
 }
 
 export interface OfferRowBlock {
@@ -1087,5 +1090,6 @@ export interface OfferRowSection {
     buttonTextColor?: string;
     gradientFromColor?: string;
     gradientToColor?: string;
+    selectedCollection?: string;
   };
 }
