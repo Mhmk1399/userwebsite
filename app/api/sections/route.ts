@@ -22,7 +22,8 @@ export async function GET(request: Request) {
     console.log("Fetching file from GitHub:", filePath);
 
     // Fetch JSON file content from GitHub
-    const jsonData = await fetchGitHubFile(filePath);
+    const repoUrl = "your-repo-url"; // Replace with your actual repo URL
+    const jsonData = await fetchGitHubFile(filePath, repoUrl);
     const parsedData = JSON.parse(jsonData);
 
     const sections: Record<string, Array<object>> = {

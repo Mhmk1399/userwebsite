@@ -1172,6 +1172,7 @@ export interface GallerySectionSetting {
   selectedCollection: string;
   paddingLeft: string;
   paddingRight: string;
+  backgroundColor: string;
 }
 
 export interface SpecialOfferBlock {

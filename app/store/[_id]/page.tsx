@@ -151,7 +151,9 @@ const updateQuantity = async (newQuantity: number) => {
     
     if (newQuantity <= 0) {
       if (product) {
-        store.delete(product._id);
+        if (product?._id) {
+          store.delete(product._id);
+        }
       }
       setIsInCart(false);
       setQuantity(0);
