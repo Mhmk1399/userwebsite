@@ -90,22 +90,28 @@ const ScrollContainer = styled.div<{
   export const SpecialOffer: React.FC<SpecialOfferProps> = ({ sections, isMobile, componentName }) => {
     const [specialOfferProducts, setSpecialOfferProducts] = useState<ProductCardData[]>([]);
     const containerRef = useRef<HTMLDivElement>(null);
-  
+    
     const sectionData = sections.find((section) => section.type === componentName);
-  
+    const CollectionId= sectionData?.blocks.setting.selectedCollection;
+    
     useEffect(() => {
       const fetchSpecialOffers = async () => {
         try {
-          const response = await fetch("/api/collections");
+          const response = await fetch("/api/collections", {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "collectionId": CollectionId || "",
+            }
+          });
           const data = await response.json();
-          if (data?.products) {
-            setSpecialOfferProducts(data.products);
+          if (data[0].products) {
+            setSpecialOfferProducts(data[0].products);
           }
         } catch (error) {
           console.error("Error fetching special offers:", error);
         }
-      };
-  
+      };  
       fetchSpecialOffers();
     }, []);
   

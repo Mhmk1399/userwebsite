@@ -826,6 +826,7 @@ export interface productCard {
   btnColor: string;
 }
 export interface ProductCardData {
+  
   images: ProductImage[];
   name: string;
   description: string;
@@ -1168,12 +1169,14 @@ export interface GallerySectionSetting {
   paddingBottom: string;
   marginTop: string;
   marginBottom: string;
+  selectedCollection: string;
   paddingLeft: string;
   paddingRight: string;
 }
 
 export interface SpecialOfferBlock {
   textHeading: string;
+  selectedCollection: string;
   products: SpecialOfferSection[];
   setting: SpecialOfferBlockSetting;
 }
@@ -1261,6 +1264,8 @@ export interface OfferRowBlockSetting extends CommonSettings {
   gradientToColor: string;
   buttonText: string;
   buttonLink: string;
+  selectedCollection: string;
+
 }
 
 export interface OfferItem {
@@ -1281,10 +1286,13 @@ export interface OfferRowSection {
   type: "OfferRow";
   blocks: OfferRowBlock;
   setting: CommonSettings & {
-    buttonText: string;
-    buttonLink: string;
-    gradientFromColor: string;
-    gradientToColor: string;
+    buttonText?: string;
+    buttonLink?: string;
+    buttonColor?: string;
+    buttonTextColor?: string;
+    gradientFromColor?: string;
+    gradientToColor?: string;
+    selectedCollection?: string;
   };
 }
 export interface BrandItem {

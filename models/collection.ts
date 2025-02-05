@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const CollectionSchema = new mongoose.Schema(
-    {
+    {   _id: { type: mongoose.Schema.Types.ObjectId, required: true },
         name: { type: String, required: true },
         description: { type: String, required: true },
         storeId: { type: String, required: true },
