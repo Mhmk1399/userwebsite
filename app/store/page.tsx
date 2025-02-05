@@ -41,7 +41,7 @@ export default function Page() {
 
   useEffect(() => {
     const getData = async () => {
-      console.log(setIsMobile, setError,loading);
+      console.log(setIsMobile, setError, loading);
       if (!process.env.NEXT_PUBLIC_API_URL) {
         throw new Error("NEXT_PUBLIC_API_URL is not set");
       }
@@ -77,7 +77,6 @@ export default function Page() {
     <>
       {data && (
         <div className="grid grid-cols-1 gap-4">
-          
           {orders.map((componentName, index) => {
             const baseComponentName = componentName;
             const Component =
@@ -88,7 +87,11 @@ export default function Page() {
                 style={{ order: index }}
                 className="w-full"
               >
-                <Component sections={data} isMobile={isMobile} componentName={componentName} />
+                <Component
+                  sections={data}
+                  isMobile={isMobile}
+                  componentName={componentName}
+                />
               </div>
             ) : null;
           })}

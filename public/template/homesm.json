@@ -11,58 +11,142 @@
   "sections": {
     "sectionHeader": {
       "blocks": {
-        "imageLogo": "",
-        "imageAlt": "",
+        "imageLogo": "/assets/images/logo.webp",
+        "imageAlt": "دیجی‌کالا",
         "links": [
           {
-            "name": "خانه",
-            "url": "/"
+            "name": "دسته‌بندی کالاها",
+            "url": "/categories",
+            "megaMenu": [
+              {
+                "title": "کالای دیجیتال",
+                "items": [
+                  {
+                    "name": "گوشی موبایل",
+                    "url": "/mobile"
+                  },
+                  {
+                    "name": "لپ تاپ",
+                    "url": "/laptop"
+                  },
+                  {
+                    "name": "تبلت",
+                    "url": "/tablet"
+                  }
+                ]
+              },
+              {
+                "title": "لوازم خانگی",
+                "items": [
+                  {
+                    "name": "یخچال",
+                    "url": "/refrigerator",
+                    "image": "/assets/images/fridge.jpg"
+                  },
+                  {
+                    "name": "ماشین لباسشویی",
+                    "url": "/washing-machine",
+                    "image": "/assets/images/washer.jpg"
+                  }
+                ]
+              },
+              {
+                "title": "لوازم خانگی",
+                "items": [
+                  {
+                    "name": "یخچال",
+                    "url": "/refrigerator",
+                    "image": "/assets/images/fridge.jpg"
+                  },
+                  {
+                    "name": "ماشین لباسشویی",
+                    "url": "/washing-machine",
+                    "image": "/assets/images/washer.jpg"
+                  }
+                ]
+              },
+              {
+                "title": "لوازم خانگی",
+                "items": [
+                  {
+                    "name": "یخچال",
+                    "url": "/refrigerator",
+                    "image": "/assets/images/fridge.jpg"
+                  },
+                  {
+                    "name": "ماشین لباسشویی",
+                    "url": "/washing-machine",
+                    "image": "/assets/images/washer.jpg"
+                  }
+                ]
+              }
+            ]
           },
           {
-            "name": "درباره ",
-            "url": "/about"
+            "name": "شگفت‌انگیزها",
+            "url": "/offers"
           },
           {
-            "name": "ارتباط  ",
-            "url": "/contact"
+            "name": "سوپرمارکت",
+            "url": "/supermarket"
           },
           {
-            "name": "بلاگ",
-            "url": "/blog"
+            "name": "پرفروش‌ترین‌ها",
+            "url": "/best-sellers"
           },
           {
-            "name": "فروشگاه",
-            "url": "/shop"
+            "name": "تخفیف‌ها و پیشنهادها",
+            "url": "/discounts"
           },
           {
-            "name": "ورود/عضویت",
-            "url": "/login"
+            "name": "سوالی دارید؟",
+            "url": "/faq"
+          },
+          {
+            "name": "فروشنده شوید",
+            "url": "/become-seller"
           }
         ],
         "setting": {
           "imageWidth": "60",
           "imageHeight": "60",
           "imageRadius": "30",
-          "itemColor": "#14213D",
-          "itemFontSize": "15",
-          "itemFontWeight": "bold",
-          "itemHoverColor": "#ffffff",
-          "backgroundColorNavbar": "#FCA311"
+          "itemColor": "#6c757d",
+          "itemFontSize": "14",
+          "itemFontWeight": "normal",
+          "itemHoverColor": "#e4e4e4",
+          "backgroundColorNavbar": "#FCA311",
+          "searchBarBorderColor": "#E5E7EB",
+          "searchBarBorderRadius": "9999",
+          "buttonBorderColor": "#E5E7EB",
+          "buttonBorderRadius": "8",
+          "locationButtonBgColor": "#FFF7ED",
+          "locationButtonTextColor": "#EA580C",
+          "announcementText": "ارسال رایگان برای خرید‌های بالای ۵۰۰ هزار تومان!",
+          "announcementBgColor": "#f1b80c",
+          "announcementTextColor": "#ffffff",
+          "announcementFontSize": "14",
+          "bgColor": "#ffffff",
+          "gap": "10",
+          "megaMenuBg": "#ffffff",
+          "categoryItemColor":"ffffff",
+          "categoryItemSize": "14",
+          "categoryItemHoverColor": "#000000"
         }
       },
       "setting": {
-        "paddingTop": "20",
-        "paddingBottom": "20",
+        "paddingTop": "0",
+        "paddingBottom": "0",
+        "paddingLeft": "0",
+        "paddingRight": "0",
         "marginTop": "20",
-        "marginBottom": "20",
-        "marginRight": "0",
-        "marginLeft": "0",
-        "paddinRight": "0",
-        "paddinLeft": "0",
-        "navbarPosition": "fixed"
+        "marginBottom": "0",
+        "navbarPosition": "fixed",
+        "bgColor": "#d7163c"
       },
       "type": "header"
     },
+
     "children": {
       "sections": [
         {
@@ -105,7 +189,7 @@
               "slideTransition": "fade",
               "navigationStyle": "arrows",
               "arrowsPosition": "bottom-right",
-              "height": "200",
+              "height": "500",
               "bgArrow": "#ffffff",
               "activeDotColor": "#ffffff",
               "inactiveDotColor": "#000000"
@@ -484,11 +568,11 @@
               "descriptionFontSize": "16",
               "descriptionFontWeight": "normal",
               "background": "#ffffff",
-              "imageWidth": "170",
-              "imageHeight": "100",
+              "imageWidth": "330",
+              "imageHeight": "200",
               "imageRadius": "8",
-              "gridColumns": "2",
-              "gridGap": "10"
+              "gridColumns": "4",
+              "gridGap": "20"
             }
           },
           "setting": {
@@ -754,10 +838,10 @@
             }
           },
           "setting": {
-            "paddingTop": "20",
-            "paddingBottom": "20",
-            "marginTop": "10",
-            "marginBottom": "10",
+            "paddingTop": "0",
+            "paddingBottom": "0",
+            "marginTop": "0",
+            "marginBottom": "0",
             "backgroundColor": "#ffffff"
           }
         },
@@ -771,7 +855,9 @@
               "buttonColor": "#ffffff",
               "buttonTextColor": "#000000",
               "gradientFromColor": "#f3f4f6",
-              "gradientToColor": "#e5e7eb"
+              "gradientToColor": "#e5e7eb",
+              "buttonText": "مشاهده همه",
+              "buttonLink": "/special-offers"
             }
           },
           "setting": {
@@ -846,8 +932,9 @@
           "type": "ProductsRow",
           "blocks": {
             "textHeading": " محصولات جدید ",
-           
+
             "setting": {
+              "selectedCollection": "",
               "headingColor": "#000000",
               "headingFontSize": "22",
               "headingFontWeight": "bold",
@@ -856,10 +943,7 @@
               "descriptionColor": "#666666",
               "btnBg": "#EF394E",
               "btnTextColor": "#ffffff",
-              "cardBackground": "#EF394E",
-              "cardBorderRadius": "8",
-              "imageRadius": "8",
-              "gridColumns": "4"
+              "cardBorderRadius": "8"
             }
           },
           "setting": {
@@ -877,6 +961,7 @@
           "blocks": {
             "textHeading": " محصولات پرفروش ",
             "setting": {
+              "selectedCollection": "",
               "headingColor": "#000000",
               "headingFontSize": "22",
               "headingFontWeight": "bold",
@@ -917,7 +1002,6 @@
                 "imageAlt": "Gallery Image 2",
                 "imageLink": "#"
               }
-            
             ],
             "setting": {
               "titleColor": "#333333",
@@ -927,10 +1011,10 @@
               "descriptionFontSize": "16",
               "descriptionFontWeight": "normal",
               "background": "#ffffff",
-              "imageWidth": "360",
-              "imageHeight": "165",
+              "imageWidth": "680",
+              "imageHeight": "250",
               "imageRadius": "8",
-              "gridColumns": "1",
+              "gridColumns": "2",
               "gridGap": "20"
             }
           },
@@ -946,6 +1030,15 @@
       ],
       "order": [
         "Story",
+        "MultiRow",
+        "MultiColumn",
+        "CollapseFaq",
+        "NewsLetter",
+        "Video",
+        "Collection",
+        "Banner",
+        "SlideShow",
+        "ImageText",
         "SlideBanner",
         "SpecialOffer",
         "OfferRow",
@@ -954,7 +1047,6 @@
         "Brands",
         "ProductsRow",
         "Gallery-2"
-
       ]
     },
     "sectionFooter": {
@@ -967,16 +1059,26 @@
           "descriptionColor": "#000000",
           "descriptionFontSize": "18",
           "descriptionFontWeight": "normal",
+          "trustIconBackground": "#e4e4e4",
+          "trustIconColor": "#ffffff",
+          "trustItemSize": "15",
+          "trustItemColor": "bold",
+          "scrollButtonBg": "#e4e4e4",
+          "scrollButtonColor": "#000000",
+          "categoryColor": "#000000",
           "linkColor": "#0077b6",
-          "logoWidth": "80px",
-          "logoHeight": "80px",
-          "logoRadius": "10px"
+          "logoWidth": "80",
+          "logoHeight": "80",
+          "logoRadius": "10",
+          "categoryBg": "#ffffff"
         },
         "text": "سربرگ قسمت پایین سایت",
         "description": "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد",
         "instagramLink": "#",
         "telegramLink": "#",
         "whatsappLink": "#",
+        "textNumber": "با این شماره تماس بگیرید",
+        "phoneNumber": "09123456789",
         "logo": "/assets/images/logo.webp",
         "links": [
           {

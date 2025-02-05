@@ -9,7 +9,7 @@ const GITHUB_REPO = "userwebsite";
  * @param filePath - Path of the file in the repository (e.g., "public/template/homesm.json").
  * @returns The raw content of the file as a string.
  */
-export async function fetchGitHubFile(filePath: string): Promise<string> {
+export async function fetchGitHubFile(filePath: string, repoUrl: string): Promise<string> {
     const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${filePath}`;
     console.log("Fetching URL:", url);
 
