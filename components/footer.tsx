@@ -92,7 +92,7 @@ const SocialLinks = styled.div`
   gap: 30px;
   transition: all 0.3s ease-in-out;
 `;
-const FooterLinks = styled.div<{}>`
+const FooterLinks = styled.div`
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
@@ -206,7 +206,7 @@ const Logo = styled(Image)<{
   border-radius: ${(props) =>
     props.$data?.blocks?.setting?.logoRadius || "6"}px;
 `;
-const CategoryGrid = styled.div<{}>`
+const CategoryGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 24px;
