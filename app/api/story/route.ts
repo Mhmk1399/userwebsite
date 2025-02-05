@@ -1,7 +1,7 @@
 import Story from "../../../models/story";
 import { NextRequest, NextResponse } from "next/server";
 import connect from "@/lib/data";
-import { GetStoreId } from "../../api/test/route";
+import { GetStoreId } from "../../../utils/getStoreId";
 
 export async function GET(req: NextRequest) {
   try {
