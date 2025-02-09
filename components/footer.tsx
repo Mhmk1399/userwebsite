@@ -265,7 +265,7 @@ const ChildCategoryLink = styled(Link)<{
 
 const Footer = () => {
   const [categories, setCategories] = useState<Category[]>([]);
-
+  const [hasMounted, setHasMounted] = useState(false);
   const scrollToTop = () => {
     if (typeof window !== "undefined") {
       window.scrollTo({
@@ -275,6 +275,8 @@ const Footer = () => {
     }
   };
   useEffect(() => {
+    setHasMounted(true);
+
     const fetchCategories = async () => {
       try {
         const response = await fetch("/api/category");
@@ -334,6 +336,9 @@ const Footer = () => {
 
     fetchCategories();
   }, []);
+  if (!hasMounted) {
+    return null; // Or a loading skeleton
+  }
 
   const sectionData = data.sections.sectionFooter as unknown as FooterSection;
 
@@ -434,40 +439,43 @@ const Footer = () => {
             />
           </Link>
         </SocialLinks>
+        {hasMounted && (
+          <CategoryGrid>
+            {categories
+              .filter((category) => category.children.length > 0)
+              .map((category) => (
+                <div key={category._id} className="flex flex-col gap-3">
+                  <ParentCategoryLink
+                    href={`/store?category=${encodeURIComponent(
+                      category.name
+                    )}`}
+                    $data={sectionData}
+                  >
+                    {category.name}
+                  </ParentCategoryLink>
 
-        <CategoryGrid>
-          {categories
-            .filter((category) => category.children.length > 0)
-            .map((category) => (
-              <div key={category._id} className="flex flex-col gap-3">
-                <ParentCategoryLink
-                  href={`/store?category=${encodeURIComponent(category.name)}`}
-                  $data={sectionData}
-                >
-                  {category.name}
-                </ParentCategoryLink>
-
-                <div className="flex flex-col gap-2 pr-4 border-r-2 border-gray-200">
-                  {category.children.map((childId, index) => {
-                    const childCategory = categories.find(
-                      (cat) => cat._id === childId
-                    );
-                    return childCategory ? (
-                      <ChildCategoryLink
-                        key={`${category._id}-${childId}-${index}`}
-                        href={`/store?category=${encodeURIComponent(
-                          childCategory.name
-                        )}`}
-                        $data={sectionData}
-                      >
-                        {childCategory.name}
-                      </ChildCategoryLink>
-                    ) : null;
-                  })}
+                  <div className="flex flex-col gap-2 pr-4 border-r-2 border-gray-200">
+                    {category.children.map((childId, index) => {
+                      const childCategory = categories.find(
+                        (cat) => cat._id === childId
+                      );
+                      return childCategory ? (
+                        <ChildCategoryLink
+                          key={`${category._id}-${childId}-${index}`}
+                          href={`/store?category=${encodeURIComponent(
+                            childCategory.name
+                          )}`}
+                          $data={sectionData}
+                        >
+                          {childCategory.name}
+                        </ChildCategoryLink>
+                      ) : null;
+                    })}
+                  </div>
                 </div>
-              </div>
-            ))}
-        </CategoryGrid>
+              ))}
+          </CategoryGrid>
+        )}
       </div>
 
       {links && Array.isArray(links) && links.length > 0 && (

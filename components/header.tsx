@@ -10,8 +10,6 @@ import styled from "styled-components";
 import { Search, ShoppingCart, User, MapPin } from "lucide-react";
 import data from "@/public/template/homelg.json";
 
-
-
 interface Category {
   _id: string;
   name: string;
@@ -28,11 +26,11 @@ const HeaderWrapper = styled.header<{
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   position: relative;
   margin-top: ${(props) => props.$data.setting?.marginTop || "0"}px;
-  margin-bottom: ${(props) => props.$data?.setting?.marginBottom}px;
-  padding-top: ${(props) => props.$data?.setting?.paddingTop}px;
-  padding-bottom: ${(props) => props.$data?.setting?.paddingBottom}px;
-  padding-left: ${(props) => props.$data?.setting?.paddingLeft}px;
-  padding-right: ${(props) => props.$data?.setting?.paddingRight};
+  margin-bottom: ${(props) => props.$data?.setting?.marginBottom || "0"}px;
+  padding-top: ${(props) => props.$data?.setting?.paddingTop || "0"}px;
+  padding-bottom: ${(props) => props.$data?.setting?.paddingBottom || "0"}px;
+  padding-left: ${(props) => props.$data?.setting?.paddingLeft || "0"}px;
+  padding-right: ${(props) => props.$data?.setting?.paddingRight || "0"};
   background-color: ${(props) =>
     props.$data?.blocks?.setting?.bgColor || "#000"};
 `;
@@ -254,18 +252,12 @@ const MobileMenuButton = styled.button<{
 const MobileMenu = styled.div<{
   $isOpen: boolean;
 }>`
-  display: ${(props) =>
-   props.$isOpen ? "inline" : "none"};
-  position: ${(props) =>
-    props.$isOpen ? "absolute" : "none"};
-  top: ${(props) =>
-    props.$isOpen ? "0" : "-100%"};
-  right: ${(props) =>
-     props.$isOpen ? "0" : "-100%"};
-  width: ${(props) =>
-     props.$isOpen ? "80%" : "0"};
-  height: ${(props) =>
-     props.$isOpen ? "100vh" : "0"};
+  display: ${(props) => (props.$isOpen ? "inline" : "none")};
+  position: ${(props) => (props.$isOpen ? "absolute" : "static")};
+  top: ${(props) => (props.$isOpen ? "0" : "-100%")};
+  right: ${(props) => (props.$isOpen ? "0" : "-100%")};
+  width: ${(props) => (props.$isOpen ? "80%" : "0")};
+  height: ${(props) => (props.$isOpen ? "100vh" : "0")};
   transition: right 0.3s ease-in-out;
   @media (max-width: 768px) {
     display: inline;
@@ -313,11 +305,11 @@ const Overlay = styled.div<{ $isOpen: boolean }>`
 `;
 
 const Header = () => {
+  const [mounted, setMounted] = useState(false);
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [hoverd, setHoverd] = useState(0);
   const [categories, setCategories] = useState<Category[]>([]);
-
-  
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -378,10 +370,12 @@ const Header = () => {
 
     fetchCategories();
   }, []);
-
- 
-
-
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  if (!mounted) {
+    return null; // Or a loading skeleton
+  }
   const sectionData = data?.sections?.sectionHeader as HeaderSection;
   const isHeaderSection = (section: SectionType): section is HeaderSection => {
     return section?.type === "header" && "blocks" in section;
@@ -409,14 +403,9 @@ const Header = () => {
   }
 
   return (
-    <HeaderWrapper
-      $data={sectionData}
-     
-    >
-    
+    <HeaderWrapper $data={sectionData}>
       <AnnouncementBar $data={sectionData}>
-        {sectionData.blocks.setting?.announcementText ||
-          "ارسال رایگان برای خرید‌های بالای ۵۰۰ هزار تومان!"}
+        {sectionData.blocks.setting?.announcementText}
       </AnnouncementBar>
 
       <MainSection>
@@ -452,10 +441,7 @@ const Header = () => {
             </LoginButton>
           </div>
 
-          <MobileMenuButton
-            $isOpen={isMenuOpen}
-            onClick={toggleMenu}
-          >
+          <MobileMenuButton $isOpen={isMenuOpen} onClick={toggleMenu}>
             {isMenuOpen ? (
               <svg
                 width="24"
@@ -516,16 +502,12 @@ const Header = () => {
                           <Link
                             href={`/category`}
                             key={category._id}
-                            className="block"
+                            className={`py-3 px-4 rounded-md ml-4 cursor-pointer transition-all duration-200 ${
+                              idx === hoverd ? "bg-gray-100 font-bold" : ""
+                            }`}
+                            onMouseEnter={() => setHoverd(idx)}
                           >
-                            <div
-                              className={`py-3 px-4 rounded-md ml-4 cursor-pointer transition-all duration-200 ${
-                                idx === hoverd ? "bg-gray-100 font-bold" : ""
-                              }`}
-                              onMouseEnter={() => setHoverd(idx)}
-                            >
-                              <MegaMenuTitle>{category.name}</MegaMenuTitle>
-                            </div>
+                            <MegaMenuTitle>{category.name}</MegaMenuTitle>
                           </Link>
                         ))}
                     </div>

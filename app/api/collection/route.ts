@@ -1,5 +1,4 @@
 import connect from "@/lib/data";
-// import { getStoreId } from "@/middleWare/storeId";
 import {  NextRequest, NextResponse } from "next/server";
 import Collections from "@/models/collection";
 export async function GET(req:NextRequest) {

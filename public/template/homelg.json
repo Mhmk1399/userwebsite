@@ -122,7 +122,7 @@
           "buttonBorderRadius": "8",
           "locationButtonBgColor": "#FFF7ED",
           "locationButtonTextColor": "#EA580C",
-          "announcementText": "ارسال رایگان برای خرید‌های بالای ۵۰۰ هزار تومان!",
+          "announcementText": "ارسال رایگان برای خرید‌ بالای ۵۰۰ هزار تومان!",
           "announcementBgColor": "#f1b80c",
           "announcementTextColor": "#ffffff",
           "announcementFontSize": "14",
@@ -784,7 +784,8 @@
               "cardBackground": "#EF394E",
               "cardBorderRadius": "8",
               "imageRadius": "8",
-              "gridColumns": "4"
+              "gridColumns": "4",
+              "selectedCollection":"679e0724216fde7c1cdc1d99"
             }
           },
           "setting": {
@@ -857,7 +858,8 @@
               "gradientFromColor": "#f3f4f6",
               "gradientToColor": "#e5e7eb",
               "buttonText": "مشاهده همه",
-              "buttonLink": "/special-offers"
+              "buttonLink": "/special-offers",
+              "selectedCollection": "679e0724216fde7c1cdc1d99"
             }
           },
           "setting": {
@@ -934,7 +936,7 @@
             "textHeading": " محصولات جدید ",
 
             "setting": {
-              "selectedCollection": "",
+              "selectedCollection": "679e070c216fde7c1cdc1d94",
               "headingColor": "#000000",
               "headingFontSize": "22",
               "headingFontWeight": "bold",
@@ -961,7 +963,7 @@
           "blocks": {
             "textHeading": " محصولات پرفروش ",
             "setting": {
-              "selectedCollection": "",
+              "selectedCollection": "679e070c216fde7c1cdc1d94",
               "headingColor": "#000000",
               "headingFontSize": "22",
               "headingFontWeight": "bold",

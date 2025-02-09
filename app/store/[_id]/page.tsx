@@ -150,10 +150,8 @@ const updateQuantity = async (newQuantity: number) => {
     const store = transaction.objectStore('cart');
     
     if (newQuantity <= 0) {
-      if (product) {
-        if (product?._id) {
-          store.delete(product._id);
-        }
+      if (product?._id) {
+        store.delete(product._id);
       }
       setIsInCart(false);
       setQuantity(0);
