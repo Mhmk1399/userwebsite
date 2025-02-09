@@ -784,7 +784,8 @@
               "cardBackground": "#EF394E",
               "cardBorderRadius": "8",
               "imageRadius": "8",
-              "gridColumns": "4"
+              "gridColumns": "4",
+              "selectedCollection":"679e070c216fde7c1cdc1d94"
             }
           },
           "setting": {
@@ -961,7 +962,7 @@
           "blocks": {
             "textHeading": " محصولات پرفروش ",
             "setting": {
-              "selectedCollection": "",
+              "selectedCollection": "679e070c216fde7c1cdc1d94",
               "headingColor": "#000000",
               "headingFontSize": "22",
               "headingFontWeight": "bold",

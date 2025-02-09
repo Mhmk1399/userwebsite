@@ -47,7 +47,7 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile, component
         if (data?.products) {
           const productInfo = data.products.map((product: { _id: string }) => ({
             ...product,
-            _id: product._id, // Ensure _id is preserved
+            _id: product._id,
           }));
           console.log(productInfo);
           setProductData(data.products);
@@ -63,7 +63,6 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile, component
   const sectionData = sections.find(
     (section) => section.type === componentName
   );
-console.log(sectionData);
 
   if (!sectionData) {
     return <div>No data available</div>;

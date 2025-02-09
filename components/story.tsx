@@ -87,9 +87,7 @@ export const Story: React.FC<StoryProps> = ({ sections, componentName }) => {
     const fetchAllStories = async () => {
       try {
         const response = await fetch("/api/story", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+        method: "GET",
         });
         const data = await response.json();
         setStories(data);
@@ -119,7 +117,7 @@ export const Story: React.FC<StoryProps> = ({ sections, componentName }) => {
               >
                 <div className="story-ring">
                   <Image
-                    src={"image" in story ? story.image : story.imageUrl}
+                    src={'/assets/images/pro1.jpg'}
                     alt={story.title}
                     className="story-image w-[100px] h-[100px] object-"
                     width={100}
