@@ -126,7 +126,7 @@ export const OfferRow: React.FC<OfferRowProps> = ({ sections, isMobile, componen
           ))}
           <button
             onClick={() => router.push(`/collection/${CollectionId}`)}
-            className="rounded-full px-4 py-2 my-4 text-lg mr-auto font-semibold hidden lg:flex flex-row-reverse gap-x-2 items-center"
+            className="rounded-full px-4 py-2 my-4 text-lg mr-auto font-semibold lg:hidden flex flex-row-reverse gap-x-2 items-center"
             style={{
               background: sectionData.blocks.setting?.buttonColor || '#ffffff',
               color: sectionData.blocks.setting?.buttonTextColor || '#000000'
@@ -149,6 +149,8 @@ export const OfferRow: React.FC<OfferRowProps> = ({ sections, isMobile, componen
             background: sectionData.blocks.setting?.buttonColor || '#ffffff',
             color: sectionData.blocks.setting?.buttonTextColor || '#000000'
           }}
+          onClick={() => router.push(`/collection/${CollectionId}`)}
+
         >
           <svg
             fill={sectionData.blocks.setting?.buttonTextColor || '#000000'}
