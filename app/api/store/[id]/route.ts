@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
     await connect();
     const productId = request.nextUrl.pathname.split('/')[3];
     
-    const product = await Products.findOne({ _id: productId });
+    const product = await Products.findOne({ _id: productId }).populate("category");
     if (!product) {
       return NextResponse.json(
         { message: "Product not found" },

@@ -826,13 +826,20 @@ export interface productCard {
   btnColor: string;
 }
 export interface ProductCardData {
-  
   images: ProductImage[];
+  colors: {
+    code: string;
+    quantity: string;
+    _id: string;
+  }[];
   name: string;
   description: string;
   price: string;
   id: string;
-  category?: string;
+  category: {
+    name: string;
+    _id: string;
+  };
   discount?: string;
   status?: string;
   inventory?: string;
@@ -840,7 +847,10 @@ export interface ProductCardData {
   updatedAt?: string;
   storeId?: string;
   _id: string;
-  properties?: string | null;
+  properties: {
+    name: string;
+    value: string;
+  };
 }
 export interface ProductCardSetting {
   cardBorderRadius?: string;
@@ -1266,7 +1276,6 @@ export interface OfferRowBlockSetting extends CommonSettings {
   buttonText: string;
   buttonLink: string;
   selectedCollection: string;
-
 }
 
 export interface OfferItem {

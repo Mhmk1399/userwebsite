@@ -19,7 +19,6 @@ export async function GET(request: NextRequest) {
     
     const blog = await Blog.findOne({
       _id: id,
-      storeId: storeId,
     });
 
     if (!blog) {

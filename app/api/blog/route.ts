@@ -1,33 +1,8 @@
 import {  NextResponse } from "next/server";
 import connect from "@/lib/data";
 import Blog from "@/models/blogs";
-import blogs from "@/models/blogs";
 import { getStoreId } from "@/middleWare/storeId";
 
-
-
-export async function POST(req: Request) {
-  const BlogData = await req.json();
-
-  try {
-    await connect();
-    if (!connect) {
-      console.log("POST_ERROR", "Database connection failed");
-      return new NextResponse("Database connection error", { status: 500 });
-    }
-    const newBlog = new blogs(BlogData);
-    console.log(newBlog);
-
-    await newBlog.save();
-    console.log("POST_SUCCESS", "Blog created successfully");
-    return NextResponse.json(newBlog, { status: 201 });
-  } catch (error) {
-    return NextResponse.json(
-      { message: "Error logging in", error },
-      { status: 500 }
-    );
-  }
-}
 
 export const GET = async () => {
   await connect();
@@ -42,7 +17,7 @@ export const GET = async () => {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const blogs = await Blog.findOne({ storeId: sotreId });
+    const blogs = await Blog.find();
     return NextResponse.json({ blogs }, { status: 200 });
   } catch (error) {
     return NextResponse.json(

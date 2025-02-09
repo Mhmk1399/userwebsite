@@ -266,8 +266,8 @@ const ChildCategoryLink = styled(Link)<{
 const Footer = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [hasMounted, setHasMounted] = useState(false);
-  const [enamadExists, setEnamadExists] = useState(false);
-  const [enamad, setEnamad] = useState({});
+  const [enamadExists] = useState(false);
+  const [enamad] = useState({});
   const scrollToTop = () => {
     if (typeof window !== "undefined") {
       window.scrollTo({

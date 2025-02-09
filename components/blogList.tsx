@@ -120,7 +120,6 @@ const BlogList: React.FC<BlogListProps> = ({  sections, componentName }) => {
           throw new Error("Failed to fetch blogs");
         }
         const data = await response.json();
-        
         // Handle null blogs response
         setBlogs(data.blogs ? Array.isArray(data.blogs) ? data.blogs : [data.blogs] : []);
         setLoading(false);
@@ -221,7 +220,7 @@ const BlogList: React.FC<BlogListProps> = ({  sections, componentName }) => {
               </span>
             </div>
 
-            <Link href={`/blogs/${blog._id}`} className="read-more">
+            <Link href={`/blog/${blog._id}`} className="read-more">
               {blog.btnText || "مطالعه بیشتر"}
             </Link>
           </div>

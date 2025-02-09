@@ -53,7 +53,7 @@ export default function Page() {
         }
       );
       const data = await response.json();
-
+console.log(data , "data")
       setData(data.Children.sections);
       setOrders(data.Children.order);
 

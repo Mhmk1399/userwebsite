@@ -29,10 +29,10 @@
           }
         ],
         "setting": {
-          "imageWidth": "500",
+          "imageWidth": "400",
           "imageHeight": "350",
           "imageRadius": "20",
-          "productNameColor": "#FCA311",
+          "productNameColor": "#000000",
           "productNameFontSize": "30",
           "productNameFontWeight": "bold",
           "priceColor": "#2ECC71",
@@ -41,7 +41,7 @@
           "categoryFontSize": "16",
           "statusFontSize": "16",
           "priceFontSize": "24",
-          "descriptionColor": "#e4e4e4",
+          "descriptionColor": "#000000",
           "descriptionFontSize": "16",
           "btnBackgroundColor": "#3498DB",
           "btnTextColor": "#FFFFFF",
