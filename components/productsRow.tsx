@@ -3,7 +3,7 @@ import styled from "styled-components";
 import ProductCard from "./productCard";
 import { useRef, useState, useEffect } from "react";
 import { ProductCardData, Section, SpecialOfferBlock, SpecialOfferSection } from "@/lib/types";
-import router from "next/router";
+import { useRouter } from "next/navigation";
 
 interface ProductsRowProps {
   sections: Section[];  // Using Section interface from types.ts
@@ -94,6 +94,7 @@ const isSpecialOfferBlock = (blocks: unknown): blocks is SpecialOfferBlock => {
 
 
 export const ProductsRow: React.FC<ProductsRowProps> = ({ sections, isMobile, componentName }) => {
+  const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
   const [products, setProducts] = useState<ProductCardData[]>([]); // Using ProductCardData from types.ts
   const sectionData = sections.find((section: Section) => section.type === componentName) as SpecialOfferSection;
