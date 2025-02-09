@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { ProductSection, ProductCardData } from "@/lib/types";
 import ProductCard from "./productCard";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 interface ProductListProps {
   sections: ProductSection[];
@@ -37,9 +38,17 @@ const SectionProductList = styled.section<{
 
 const ProductList: React.FC<ProductListProps> = ({ sections, isMobile, componentName }) => {
   const [productData, setProductData] = useState<ProductCardData[]>([]);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
+    const pathname = usePathname();
+    console.log(pathname. split("/")[2]);
+    const getCollection = async () => {
+      const collectionId = pathname.split("/").pop();
+      const response = await fetch(`/api/collection/${collectionId}`, {
+        cache: "no-store",
+      });
+      const data = await response.json();
+      setProductData(data.products);
+    };
+   const fetchProducts = async () => {
       try {
         const response = await fetch("/api/store");
         const data = await response.json();
@@ -57,7 +66,12 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile, component
       }
     };
 
-    fetchProducts();
+  useEffect(() => {
+ if (pathname. split("/")[1] === "store") {
+    fetchProducts();}
+    else {
+      getCollection();
+    }
   }, []);
 
   const sectionData = sections.find(

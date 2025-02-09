@@ -137,7 +137,7 @@ export const Collection: React.FC<CollectionProps> = ({
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        console.log("Fetching collections from:", "/api/collections");
+        console.log("Fetching collections from:", "/api/collection");
 
         const response = await fetch("/api/collections", {
           method: "GET",

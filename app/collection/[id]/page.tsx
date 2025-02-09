@@ -13,7 +13,7 @@ import Video from "@/components/video";
 import { Collection } from "@/components/collection";
 import RichText from "@/components/richText";
 import ProductList from "@/components/productList";
-import DetailPage from "../store/[_id]/page";
+import DetailPage from "../../store/[_id]/page";
 
 export default function Page() {
   const [data, setData] = useState(null);
@@ -34,8 +34,8 @@ export default function Page() {
     MultiColumn,
     SlideShow,
     MultiRow,
-    ProductList,
     Collection,
+    ProductList,
     DetailPage,
   };
 
@@ -45,7 +45,8 @@ export default function Page() {
       if (!process.env.NEXT_PUBLIC_API_URL) {
         throw new Error("NEXT_PUBLIC_API_URL is not set");
       }
-      const routePath = pathname.split("/").pop() || "home";
+      const routePath = pathname.split("/")[1]
+console.log(routePath);
 
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/sections?${routePath}`,
@@ -64,7 +65,17 @@ export default function Page() {
     };
     getData();
   }, [pathname]);
-
+  const getCollection = async () => {
+    const collectionId = pathname.split("/").pop();
+    const response = await fetch(`/api/collection/${collectionId}`, {
+      cache: "no-store",
+    });
+    const data = await response.json();
+    setData(data);
+  };
+  useEffect(() => {
+    getCollection();
+  }, []);
   if (error) {
     return <div>{error}</div>;
   }
@@ -92,6 +103,7 @@ export default function Page() {
                   isMobile={isMobile}
                   componentName={componentName}
                 />
+
               </div>
             ) : null;
           })}

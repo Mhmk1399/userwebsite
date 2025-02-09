@@ -785,7 +785,7 @@
               "cardBorderRadius": "8",
               "imageRadius": "8",
               "gridColumns": "4",
-              "selectedCollection":"679e070c216fde7c1cdc1d94"
+              "selectedCollection":"679e0724216fde7c1cdc1d99"
             }
           },
           "setting": {
@@ -858,7 +858,8 @@
               "gradientFromColor": "#f3f4f6",
               "gradientToColor": "#e5e7eb",
               "buttonText": "مشاهده همه",
-              "buttonLink": "/special-offers"
+              "buttonLink": "/special-offers",
+              "selectedCollection": "679e0724216fde7c1cdc1d99"
             }
           },
           "setting": {

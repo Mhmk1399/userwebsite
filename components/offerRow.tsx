@@ -1,16 +1,15 @@
 "use client";
 import styled from "styled-components";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { OfferRowSection } from "../lib/types";
-
+import { OfferRowSection, ProductCardData } from "../lib/types";
+import { useRouter } from "next/navigation";
 
 interface OfferRowProps {
   sections: OfferRowSection[];
   isMobile: boolean;
   componentName: string;
 }
-
 const OffersContainer = styled.div<{
   $data: OfferRowSection;
   $isMobile: boolean;
@@ -67,57 +66,40 @@ const OfferItem = styled.div`
 `;
 
 export const OfferRow: React.FC<OfferRowProps> = ({ sections, isMobile, componentName }) => {
+  const [offerProducts, setOfferProducts] = useState<ProductCardData[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+
   const sectionData = sections.find((section) => section.type === componentName);
+  const CollectionId = sectionData?.blocks.setting.selectedCollection;
+
+  useEffect(() => {
+    if (!sectionData) return;
+    
+    const fetchOffers = async () => {
+      try {
+        const response = await fetch("/api/collection", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "collectionId": CollectionId || "",
+          }
+        });
+        const data = await response.json();
+        if (data[0].products) {
+          setOfferProducts(data[0].products);
+        }
+      } catch (error) {
+        console.error("Error fetching offers:", error);
+      }
+    };
+    fetchOffers();
+  }, [CollectionId, sectionData]);
 
   if (!sectionData) return null;
-
-  const offers = [
-    {
-      id: 2,
-      title: "برنج طبیعت",
-      imageUrl: "/assets/images/pro1.jpg",
-      price: 450000,
-      originalPrice: 520000,
-      discount: 15,
-    },
-    {
-      id: 3,
-      title: "برنج طبیعت",
-      imageUrl: "/assets/images/pro1.jpg",
-      price: 450000,
-      originalPrice: 520000,
-      discount: 15,
-    },
-    {
-      id: 4,
-      title: "برنج طبیعت",
-      imageUrl: "/assets/images/pro1.jpg",
-      price: 450000,
-      originalPrice: 520000,
-      discount: 15,
-    },
-    {
-      id: 5,
-      title: "برنج طبیعت",
-      imageUrl: "/assets/images/pro1.jpg",
-      price: 450000,
-      originalPrice: 520000,
-      discount: 15,
-    },
-    {
-      id: 6,
-      title: "برنج طبیعت",
-      imageUrl: "/assets/images/pro1.jpg",
-      price: 450000,
-      originalPrice: 520000,
-      discount: 15,
-    }
-  ];
-
   return (
     <OffersContainer $data={sectionData} $isMobile={isMobile}>
-      <OffersWrapper  ref={containerRef} $data={sectionData} $isMobile={isMobile}>
+      <OffersWrapper ref={containerRef} $data={sectionData} $isMobile={isMobile}>
         <div className="flex items-center justify-start ">
           <Image src={"/assets/images/fresh.webp"} alt="Offer" width={50} height={50} />
           <h2
@@ -128,19 +110,28 @@ export const OfferRow: React.FC<OfferRowProps> = ({ sections, isMobile, componen
           </h2>
         </div>
         <div className="flex flex-wrap mr-2 items-center justify-center gap-4">
-          {offers.map((offer) => (
-            <OfferItem key={offer.id} className="relative">
+          {offerProducts.map((product) => (
+            <OfferItem key={product._id} className="relative">
               <Image
-                src={offer.imageUrl}
-                alt={offer.title}
+                src={product.images[0].imageSrc || '/assets/images/placeholder.jpg'}
+                alt={product.name}
                 width={80}
                 height={80}
-                className="offer-image rounded-full "
+                className="offer-image rounded-full"
               />
-              <span className="discount-badge bottom-0 text-xs absolute">{offer.discount}%</span>
+              <span className="discount-badge bottom-0 text-xs absolute">
+                {product.discount}%
+              </span>
             </OfferItem>
           ))}
-          <button className="lg:hidden bg-white rounded-full px-4 py-2 my-4 mr-8 text-lg items-center">
+          <button
+            onClick={() => router.push(`/collection/${CollectionId}`)}
+            className="rounded-full px-4 py-2 my-4 text-lg mr-auto font-semibold hidden lg:flex flex-row-reverse gap-x-2 items-center"
+            style={{
+              background: sectionData.blocks.setting?.buttonColor || '#ffffff',
+              color: sectionData.blocks.setting?.buttonTextColor || '#000000'
+            }}
+          >
             <svg
               fill={sectionData.blocks.setting?.buttonTextColor || '#000000'}
               xmlns="http://www3.org/2000/svg"
@@ -154,9 +145,9 @@ export const OfferRow: React.FC<OfferRowProps> = ({ sections, isMobile, componen
         </div>
         <button
           className="rounded-full px-4 py-2 my-4 text-lg mr-auto font-semibold hidden lg:flex flex-row-reverse gap-x-2 items-center"
-          style={{ 
-            background: sectionData.blocks.setting?.buttonColor || '#ffffff', 
-            color: sectionData.blocks.setting?.buttonTextColor || '#000000' 
+          style={{
+            background: sectionData.blocks.setting?.buttonColor || '#ffffff',
+            color: sectionData.blocks.setting?.buttonTextColor || '#000000'
           }}
         >
           <svg
