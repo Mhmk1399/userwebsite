@@ -839,7 +839,7 @@ export interface ProductCardData {
   createdAt?: string;
   updatedAt?: string;
   storeId?: string;
-  _id?: string;
+  _id: string;
   properties?: string | null;
 }
 export interface ProductCardSetting {

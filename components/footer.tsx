@@ -266,6 +266,8 @@ const ChildCategoryLink = styled(Link)<{
 const Footer = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [hasMounted, setHasMounted] = useState(false);
+  const [enamadExists, setEnamadExists] = useState(false);
+  const [enamad, setEnamad] = useState({});
   const scrollToTop = () => {
     if (typeof window !== "undefined") {
       window.scrollTo({
@@ -492,6 +494,18 @@ const Footer = () => {
             </FooterLink>
           ))}
         </FooterLinks>
+      )}
+      {enamadExists && (
+        <div>
+          <Link href={enamad} target="_blank">
+            <Image
+              src="/assets/images/enamad.jpg"
+              alt="Enamad Certification"
+              width={100}
+              height={50}
+            />
+          </Link>
+        </div>
       )}
     </FooterContainer>
   );
