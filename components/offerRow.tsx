@@ -113,7 +113,7 @@ export const OfferRow: React.FC<OfferRowProps> = ({ sections, isMobile, componen
           {offerProducts.map((product) => (
             <OfferItem key={product._id} className="relative">
               <Image
-                src={product.images[0].imageSrc || '/assets/images/placeholder.jpg'}
+                src={ '/assets/images/placeholder.jpg'}
                 alt={product.name}
                 width={80}
                 height={80}
