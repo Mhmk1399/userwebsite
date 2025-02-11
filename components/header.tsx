@@ -24,7 +24,6 @@ type MobileCategoryState = string | null;
 
 // Event handler types
 
-
 // Styled components
 const HeaderWrapper = styled.header<{
   $data: HeaderSection;
@@ -521,7 +520,7 @@ const Header = () => {
                         )
                         .map((category, idx) => (
                           <Link
-                            href={`/category/${category._id}`}
+                            href={`/store?categoryId=${category._id}`}
                             key={category._id}
                             className={`py-3 px-4 rounded-md ml-4 cursor-pointer transition-all duration-200 ${
                               idx === hoverd ? "bg-gray-100 font-bold" : ""
@@ -545,7 +544,7 @@ const Header = () => {
                           return activeParent.children.map(
                             (child: CategoryChild) => (
                               <Link
-                                href={`/category/${child._id}`}
+                                href={`/store?categoryId=${child._id}`}
                                 key={child._id}
                                 className="p-1 hover:translate-x-[2px] rounded-md transition-all duration-200 text-right"
                               >
@@ -667,7 +666,7 @@ const Header = () => {
                                 }`}
                               >
                                 <Link
-                                  href={`/category/${category._id}`}
+                                  href={`/store?categoryId=${category._id}`}
                                   className="block py-2 pr-4 text-right text-sky-400 font-bold hover:bg-gray-50 rounded"
                                   onClick={() => setIsMenuOpen(false)}
                                 >
@@ -676,7 +675,7 @@ const Header = () => {
                                 {category.children.map(
                                   (child: CategoryChild) => (
                                     <Link
-                                      href={`/category/${child._id}`}
+                                      href={`/store?categoryId=${child._id}`}
                                       key={child._id}
                                       className="block py-2 pr-4 text-right text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded"
                                       onClick={() => setIsMenuOpen(false)}

@@ -454,21 +454,17 @@ const Footer = () => {
               .map((category) => (
                 <div key={category._id} className="flex flex-col gap-3">
                   <ParentCategoryLink
-                    href={`/store?category=${encodeURIComponent(
-                      category.name
-                    )}`}
+                    href={`/store?categoryId=${category._id}`}
                     $data={sectionData}
                   >
                     {category.name}
                   </ParentCategoryLink>
 
                   <div className="flex flex-col gap-2 pr-4 border-r-2 border-gray-200">
-                    {category.children.map((child: CategoryChild) => (
+                    {category.children.map((child) => (
                       <ChildCategoryLink
                         key={child._id}
-                        href={`/store?category=${encodeURIComponent(
-                          child.name
-                        )}`}
+                        href={`/store?categoryId=${child._id}`}
                         $data={sectionData}
                       >
                         {child.name}

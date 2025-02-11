@@ -4,7 +4,7 @@ import { DetailPageSection, ProductCardData, ProductImage } from "@/lib/types";
 import Image from "next/image";
 import { styled } from "styled-components";
 import dataLg from "../../../public/template/detaillg.json";
-import dataSm from "../../../public/template/detailSm.json";
+import dataSm from "../../../public/template/detailsm.json";
 import { useParams } from "next/navigation";
 
 const defaultProperties = [
