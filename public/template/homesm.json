@@ -129,7 +129,7 @@
           "bgColor": "#ffffff",
           "gap": "10",
           "megaMenuBg": "#ffffff",
-          "categoryItemColor":"ffffff",
+          "categoryItemColor": "ffffff",
           "categoryItemSize": "14",
           "categoryItemHoverColor": "#000000"
         }
@@ -139,7 +139,7 @@
         "paddingBottom": "0",
         "paddingLeft": "0",
         "paddingRight": "0",
-        "marginTop": "20",
+        "marginTop": "0",
         "marginBottom": "0",
         "navbarPosition": "fixed",
         "bgColor": "#d7163c"

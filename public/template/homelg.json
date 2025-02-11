@@ -139,7 +139,7 @@
         "paddingBottom": "0",
         "paddingLeft": "0",
         "paddingRight": "0",
-        "marginTop": "20",
+        "marginTop": "",
         "marginBottom": "0",
         "navbarPosition": "fixed",
         "bgColor": "#d7163c"
