@@ -462,15 +462,8 @@
       ],
       "order": [
         "Story",
-        "MultiRow",
-        "MultiColumn",
-        "CollapseFaq",
-        "NewsLetter",
-        "Video",
-        "Collection",
-        "Banner",
-        "SlideShow",
-        "ImageText",
+       
+     
         "SlideBanner",
         "SpecialOffer",
         "OfferRow",
