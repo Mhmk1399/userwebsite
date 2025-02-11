@@ -86,7 +86,7 @@ export default function Page() {
 
   return (
     <>
-      <div className="grid grid-cols-1 pt-28 px-2">
+      <div className="grid grid-cols-1 pt-4 px-2">
         {orders.map((componentName, index) => {
           const baseComponentName = componentName.split("-")[0];
           const Component =

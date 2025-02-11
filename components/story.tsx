@@ -87,7 +87,7 @@ export const Story: React.FC<StoryProps> = ({ sections, componentName }) => {
     const fetchAllStories = async () => {
       try {
         const response = await fetch("/api/story", {
-        method: "GET",
+          method: "GET",
         });
         const data = await response.json();
         setStories(data);
@@ -103,7 +103,7 @@ export const Story: React.FC<StoryProps> = ({ sections, componentName }) => {
   return (
     <>
       <StoryContainer $data={sectionData} className="story-container">
-      <StoriesWrapper ref={containerRef} className="overflow-x-auto">
+        <StoriesWrapper ref={containerRef} className="overflow-x-auto">
           {(stories.length > 0 ? stories : sectionData.blocks.stories).map(
             (story, idx) => (
               <StoryItem
@@ -117,7 +117,7 @@ export const Story: React.FC<StoryProps> = ({ sections, componentName }) => {
               >
                 <div className="story-ring">
                   <Image
-                    src={'/assets/images/pro1.jpg'}
+                    src={"/assets/images/pro1.jpg"}
                     alt={story.title}
                     className="story-image w-[100px] h-[100px] object-"
                     width={100}
