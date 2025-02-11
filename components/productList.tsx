@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { ProductSection, ProductCardData } from "@/lib/types";
 import ProductCard from "./productCard";
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import React from "react";
 import { FiFilter } from "react-icons/fi";
 
@@ -128,7 +128,7 @@ const SectionProductList = styled.section<{
   display: flex;
   flex-wrap: wrap;
   overflow-x: auto;
-  width: 75%;
+  width: 80%;
   direction: ltr;
   padding-top: ${(props) => props.$data?.setting?.paddingTop}px;
   padding-bottom: ${(props) => props.$data?.setting?.paddingBottom}px;
@@ -226,7 +226,28 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile, component
 
     setFilteredProducts(sortedFiltered);
   };
-
+  const searchParams = useSearchParams();
+  const urlString = searchParams.toString();
+  const categoryParam = urlString.split('=')[1];
+  
+  useEffect(() => {
+    const loadInitialData = async () => {
+      if (pathname.split("/")[1] === "store") {
+        await fetchProducts();
+        if (categoryParam) {
+          setSelectedFilters(prev => ({
+            ...prev,
+            category: categoryParam
+          }));
+        }
+      } else {
+        await getCollection();
+      }
+    };
+  
+    loadInitialData();
+  }, [searchParams]);
+  
 
 
   // const getAllChildCategories = (category: CategoryWithChildren): string[] => {

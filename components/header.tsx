@@ -520,7 +520,7 @@ const Header = () => {
                         )
                         .map((category, idx) => (
                           <Link
-                            href={`/store?categoryId=${category._id}`}
+                            href={`/store?name=${category.name}`}
                             key={category._id}
                             className={`py-3 px-4 rounded-md ml-4 cursor-pointer transition-all duration-200 ${
                               idx === hoverd ? "bg-gray-100 font-bold" : ""
@@ -544,7 +544,7 @@ const Header = () => {
                           return activeParent.children.map(
                             (child: CategoryChild) => (
                               <Link
-                                href={`/store?categoryId=${child._id}`}
+                                href={`/store?name=${child.name}`}
                                 key={child._id}
                                 className="p-1 hover:translate-x-[2px] rounded-md transition-all duration-200 text-right"
                               >
