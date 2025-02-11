@@ -29,15 +29,15 @@
           }
         ],
         "setting": {
-          "imageWidth": "400",
-          "imageHeight": "350",
+          "imageWidth": "30",
+          "imageHeight": "25",
           "imageRadius": "20",
           "productNameColor": "#000000",
           "productNameFontSize": "30",
           "productNameFontWeight": "bold",
           "priceColor": "#2ECC71",
-          "statusColor": "#000",
-          "categoryColor": "#000",
+          "statusColor": "#000000",
+          "categoryColor": "#000000",
           "categoryFontSize": "16",
           "statusFontSize": "16",
           "priceFontSize": "24",
@@ -49,7 +49,7 @@
           "paddingBottom": "20",
           "marginTop": "10",
           "marginBottom": "10",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#e4e4e4"
         }
       }
     ],

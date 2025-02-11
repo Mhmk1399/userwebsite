@@ -16,9 +16,13 @@ import {
 interface Category {
   _id: string;
   name: string;
-  children: string[];
+  children: CategoryChild[];
   storeId: string;
   slug: string;
+}
+interface CategoryChild {
+  _id: string;
+  name: string;
 }
 
 const trustItems = [
@@ -266,6 +270,8 @@ const ChildCategoryLink = styled(Link)<{
 const Footer = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [hasMounted, setHasMounted] = useState(false);
+  const [enamadExists] = useState(false);
+  const [enamad] = useState({});
   const scrollToTop = () => {
     if (typeof window !== "undefined") {
       window.scrollTo({
@@ -442,35 +448,28 @@ const Footer = () => {
         {hasMounted && (
           <CategoryGrid>
             {categories
-              .filter((category) => category.children.length > 0)
+              .filter(
+                (category) => category.children && category.children.length > 0
+              )
               .map((category) => (
                 <div key={category._id} className="flex flex-col gap-3">
                   <ParentCategoryLink
-                    href={`/store?category=${encodeURIComponent(
-                      category.name
-                    )}`}
+                    href={`/store?categoryId=${category._id}`}
                     $data={sectionData}
                   >
                     {category.name}
                   </ParentCategoryLink>
 
                   <div className="flex flex-col gap-2 pr-4 border-r-2 border-gray-200">
-                    {category.children.map((childId, index) => {
-                      const childCategory = categories.find(
-                        (cat) => cat._id === childId
-                      );
-                      return childCategory ? (
-                        <ChildCategoryLink
-                          key={`${category._id}-${childId}-${index}`}
-                          href={`/store?category=${encodeURIComponent(
-                            childCategory.name
-                          )}`}
-                          $data={sectionData}
-                        >
-                          {childCategory.name}
-                        </ChildCategoryLink>
-                      ) : null;
-                    })}
+                    {category.children.map((child) => (
+                      <ChildCategoryLink
+                        key={child._id}
+                        href={`/store?categoryId=${child._id}`}
+                        $data={sectionData}
+                      >
+                        {child.name}
+                      </ChildCategoryLink>
+                    ))}
                   </div>
                 </div>
               ))}
@@ -492,6 +491,18 @@ const Footer = () => {
             </FooterLink>
           ))}
         </FooterLinks>
+      )}
+      {enamadExists && (
+        <div>
+          <Link href={enamad} target="_blank">
+            <Image
+              src="/assets/images/enamad.jpg"
+              alt="Enamad Certification"
+              width={100}
+              height={50}
+            />
+          </Link>
+        </div>
       )}
     </FooterContainer>
   );

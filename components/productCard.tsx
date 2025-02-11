@@ -2,6 +2,7 @@ import Image from "next/image";
 import styled from "styled-components";
 import { productCard, ProductCardData } from "@/lib/types";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface ProductCardProps {
   productData: ProductCardData;
@@ -101,31 +102,8 @@ const ProductPrice = styled.span<{
   margin: 8px 0;
 `;
 
-// const BuyButton = styled.button<{
-//   $settings?: productCard;
-//   $productData?: ProductCardData;
-//   onClick?: () => void;
-// }>`
-//   display: inline-block;
-//   padding: 10px 20px;
-  
-//   background-color: ${(props) =>
-//     props.$settings?.btnBackgroundColor || defaultSetting.btnBackgroundColor};
-//   color: ${(props) => props.$settings?.btnColor || defaultSetting.btnColor};
-//   border-radius: 4px;
-//   font-size: 0.9rem;
-//   font-weight: bold;
-//   margin-top: auto;
-//   text-align: center;
-//   transition: all 0.3s ease;
-
-//   &:hover {
-//     background-color: #d5d5d5;
-//     transform: translateY(-2px);
-//   }
-// `;
-
 const ProductCard: React.FC<ProductCardProps> = ({ productData }) => {
+  const router = useRouter();
   const safeProductData = {
     ...productData,
     images: productData.images || [
@@ -137,15 +115,22 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData }) => {
   };
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
+  const handleNavigate = (id : string) => {
+    router.push(`/store/${id}`);
+  };
+
   const currentImage = safeProductData.images[currentImageIndex] || {
-    
     imageSrc: "/assets/images/pro2.jpg",
     imageAlt: "Product Image",
   };
   console.log(setCurrentImageIndex);
 
   return (
-    <Card dir="rtl" className="min-w-[220px] min-h-[350px]">
+    <Card
+      onClick={() => handleNavigate(productData._id)}
+      dir="rtl"
+      className="min-w-[220px] min-h-[350px]"
+    >
       <ProductImage
         $productData={safeProductData}
         src={currentImage.imageSrc}
@@ -164,8 +149,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData }) => {
           ? safeProductData.price
           : "Price not available"}
       </ProductPrice>
-     
-     
     </Card>
   );
 };

@@ -113,7 +113,7 @@ export const SpecialOffer: React.FC<SpecialOfferProps> = ({ sections, isMobile, 
           setSpecialOfferProducts(data[0].products);
         }
       } catch (error) {
-        console.error("Error fetching special offers:", error);
+        console.log("Error fetching special offers:", error);
       }
     };
     fetchSpecialOffers();

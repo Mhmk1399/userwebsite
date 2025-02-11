@@ -5,7 +5,7 @@ import Image from "next/image";
 import styled from "styled-components";
 import { BlogDetailSection } from "@/lib/types";
 import largeBlogData from "../../../public/template/blogdetaillg.json";
-import smallBlogData from "../../../public/template/blogDetailSm.json";
+import smallBlogData from "../../../public/template/blogdetailsm.json";
 interface BlogDetailData {
   _id: string;
   title: string;
@@ -107,11 +107,12 @@ export default function BlogDetailPage() {
   useEffect(() => {
     const fetchBlogDetail = async () => {
       try {
-        const response = await fetch(`/api/blogs/${params.id}`);
+        const response = await fetch(`/api/blog/${params.id}`);
         if (!response.ok) {
           throw new Error("Failed to fetch blog details");
         }
         const data = await response.json();
+
         setBlog(data.blog);
         setLoading(false);
       } catch (error) {

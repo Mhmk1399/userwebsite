@@ -13,10 +13,10 @@
           "btnText": "دکمه",
           "setting": {
             "headingColor": "#ffffff",
-            "headingFontSize": "24",
+            "headingFontSize": "16",
             "headingFontWeight": "bold",
             "descriptionColor": "#000000",
-            "descriptionFontSize": "16",
+            "descriptionFontSize": "10",
             "descriptionFontWeight": "normal",
             "btnTextColor": "#000000",
             "btnBackgroundColor": "#ffffff",

@@ -6,7 +6,7 @@ import { getStoreId } from "../../../middleWare/storeId";
 export async function GET() {
   try {
     await connect();
-    const storeId = getStoreId();
+    const storeId = await getStoreId();
     console.log(storeId, "storeId");
 
     const products = await Products.find().populate("category");

@@ -20,10 +20,10 @@ interface Story {
 const StoryContainer = styled.div<{
   $data: StorySection;
 }>`
-  padding-top: ${(props) => props.$data.setting?.paddingTop || "20"}px;
-  padding-bottom: ${(props) => props.$data.setting?.paddingBottom || "20"}px;
-  margin-top: ${(props) => props.$data.setting?.marginTop || "10"}px;
-  margin-bottom: ${(props) => props.$data.setting?.marginBottom || "10"}px;
+  padding-top: ${(props) => props.$data.setting?.paddingTop || "0"}px;
+  padding-bottom: ${(props) => props.$data.setting?.paddingBottom || "0"}px;
+  margin-top: ${(props) => props.$data.setting?.marginTop || "0"}px;
+  margin-bottom: ${(props) => props.$data.setting?.marginBottom || "0"}px;
   background-color: ${(props) =>
     props.$data.setting?.backgroundColor || "#ffffff"};
 `;
@@ -87,7 +87,7 @@ export const Story: React.FC<StoryProps> = ({ sections, componentName }) => {
     const fetchAllStories = async () => {
       try {
         const response = await fetch("/api/story", {
-        method: "GET",
+          method: "GET",
         });
         const data = await response.json();
         setStories(data);
@@ -103,7 +103,7 @@ export const Story: React.FC<StoryProps> = ({ sections, componentName }) => {
   return (
     <>
       <StoryContainer $data={sectionData} className="story-container">
-      <StoriesWrapper ref={containerRef} className="overflow-x-auto">
+        <StoriesWrapper ref={containerRef} className="overflow-x-auto">
           {(stories.length > 0 ? stories : sectionData.blocks.stories).map(
             (story, idx) => (
               <StoryItem
@@ -117,7 +117,7 @@ export const Story: React.FC<StoryProps> = ({ sections, componentName }) => {
               >
                 <div className="story-ring">
                   <Image
-                    src={'/assets/images/pro1.jpg'}
+                    src={"/assets/images/pro1.jpg"}
                     alt={story.title}
                     className="story-image w-[100px] h-[100px] object-"
                     width={100}
