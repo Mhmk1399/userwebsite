@@ -742,7 +742,12 @@ export interface ProductBlockSetting extends CommonSettings {
   btnBackgroundColor: string;
   btnTextColor: string;
   gridColumns: number;
+  filterRowBg: string;
+  filterRowTextColor: string;
+  filterNameColor: string;
+  filterCardBg: string;
 }
+
 
 export interface ProductListSection {
   productId: number;
@@ -754,12 +759,22 @@ export interface ProductListSection {
   btnText: string;
   btnLink: string;
   storeId: string;
+  filterRowBg: string;
+  filterRowTextColor: string;
+  filterNameColor: string;
 }
 
 export interface ProductSection {
   type: "store";
   blocks: ProductListSection[];
   setting: ProductBlockSetting;
+  filterRowBg: string;
+  filterRowTextColor: string;
+  filterNameColor: string;
+  filterCardBg: string;
+  filterButtonBg: string;
+  filterButtonTextColor: string;
+  
 }
 
 export interface ProductStoreLayout {
@@ -832,13 +847,21 @@ export interface ProductCardData {
   description: string;
   price: string;
   id: string;
-  category?: string;
+  category: {
+    name: string;
+    _id: string;
+    children: {
+      name: string;
+      _id: string;
+    }[]
+  }
   discount?: string;
   status?: string;
   inventory?: string;
   createdAt?: string;
   updatedAt?: string;
   storeId?: string;
+  colors:{code:string,quantity:number}[];
   _id?: string;
   properties?: string | null;
 }

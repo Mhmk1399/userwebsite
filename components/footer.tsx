@@ -142,14 +142,14 @@ const TrustItem = styled.div<{
   align-items: center;
   gap: 1rem;
   text-align: center;
-  width: 120px;
+  width: 60px;
 `;
 
 const IconBox = styled(SvgBox)`
   background: ${(props) =>
     props.$data?.blocks?.setting?.trustIconBackground || "#f8f9fa"};
   color: ${(props) => props.$data?.blocks?.setting?.trustIconColor || "red"};
-  padding: 1rem;
+  padding: 0.5rem;
 `;
 
 const TrustText = styled.span<{
@@ -390,14 +390,14 @@ const Footer = () => {
         {trustItems.map((item, index) => (
           <TrustItem key={index} $data={sectionData}>
             <IconBox $data={sectionData}>
-              <item.icon size={32} />
+              <item.icon size={30} />
             </IconBox>
             <TrustText $data={sectionData}>{item.text}</TrustText>
           </TrustItem>
         ))}
       </TrustIconsContainer>
 
-      <div className="flex flex-col-reverse gap-6 lg:flex-col-reverse items-center justify-center w-full ">
+      <div className="flex flex-col-reverse gap-6 lg:flex-col-reverse items-center justify-center w-[98%] ">
         <SocialLinks className="flex flex-row gap-4 my-4">
           <Link
             href={instagramLink ? instagramLink : "/"}

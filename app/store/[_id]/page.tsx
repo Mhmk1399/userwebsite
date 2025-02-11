@@ -334,8 +334,8 @@ const updateQuantity = async (newQuantity: number) => {
                   <span className="font-semibold product-category">
                     دسته‌بندی:
                   </span>
-                  <span className="product-category">{product.category}</span>
-                </div>
+                  <span className="product-category">{product.category?.name}</span>
+                  </div>
               )}
             </div>
             <div className="flex  gap-2">

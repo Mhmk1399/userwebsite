@@ -9,7 +9,8 @@ export async function GET() {
     const storeId = getStoreId();
     console.log(storeId, "storeId");
 
-    const products = await Products.find();
+    const products = await Products.find().populate("category");
+    
     return NextResponse.json({ products }, { status: 200 });
   } catch (error) {
     console.error("Error fetching products:", error);
