@@ -16,9 +16,13 @@ import {
 interface Category {
   _id: string;
   name: string;
-  children: string[];
+  children: CategoryChild[];
   storeId: string;
   slug: string;
+}
+interface CategoryChild {
+  _id: string;
+  name: string;
 }
 
 const trustItems = [
@@ -444,7 +448,9 @@ const Footer = () => {
         {hasMounted && (
           <CategoryGrid>
             {categories
-              .filter((category) => category.children.length > 0)
+              .filter(
+                (category) => category.children && category.children.length > 0
+              )
               .map((category) => (
                 <div key={category._id} className="flex flex-col gap-3">
                   <ParentCategoryLink
@@ -457,22 +463,17 @@ const Footer = () => {
                   </ParentCategoryLink>
 
                   <div className="flex flex-col gap-2 pr-4 border-r-2 border-gray-200">
-                    {category.children.map((childId, index) => {
-                      const childCategory = categories.find(
-                        (cat) => cat._id === childId
-                      );
-                      return childCategory ? (
-                        <ChildCategoryLink
-                          key={`${category._id}-${childId}-${index}`}
-                          href={`/store?category=${encodeURIComponent(
-                            childCategory.name
-                          )}`}
-                          $data={sectionData}
-                        >
-                          {childCategory.name}
-                        </ChildCategoryLink>
-                      ) : null;
-                    })}
+                    {category.children.map((child: CategoryChild) => (
+                      <ChildCategoryLink
+                        key={child._id}
+                        href={`/store?category=${encodeURIComponent(
+                          child.name
+                        )}`}
+                        $data={sectionData}
+                      >
+                        {child.name}
+                      </ChildCategoryLink>
+                    ))}
                   </div>
                 </div>
               ))}

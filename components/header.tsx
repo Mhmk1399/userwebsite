@@ -13,9 +13,17 @@ import data from "@/public/template/homelg.json";
 interface Category {
   _id: string;
   name: string;
-  children: string[];
+  children: CategoryChild[];
   storeId: string;
 }
+interface CategoryChild {
+  _id: string;
+  name: string;
+}
+type MobileCategoryState = string | null;
+
+// Event handler types
+
 
 // Styled components
 const HeaderWrapper = styled.header<{
@@ -215,7 +223,7 @@ const ActionButtons = styled.div`
   }
 `;
 
-const LoginButton = styled.button`
+const LoginButton = styled(Link)`
   display: flex;
   align-items: center;
   gap: 0.25rem;
@@ -229,6 +237,7 @@ const LoginButton = styled.button`
 const LocationButton = styled.button`
   display: flex;
   align-items: center;
+  justify-content: end;
   gap: 0.25rem;
   padding: 0.25rem 0.75rem;
   background-color: #fff7ed;
@@ -288,6 +297,14 @@ const MobileNavItem = styled(NavItem)`
   width: 100%;
   display: block;
 `;
+const MobileDropdown = styled.div<{ $isOpen: boolean }>`
+  height: ${(props) => (props.$isOpen ? "auto" : "0")};
+  overflow: hidden;
+  transition: height 0.3s ease-in-out;
+  background: #f8f9fa;
+  border-radius: 8px;
+  margin-top: ${(props) => (props.$isOpen ? "10px" : "0")};
+`;
 
 const Overlay = styled.div<{ $isOpen: boolean }>`
   display: none;
@@ -305,11 +322,12 @@ const Overlay = styled.div<{ $isOpen: boolean }>`
 `;
 
 const Header = () => {
-  const [mounted, setMounted] = useState(false);
-
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [hoverd, setHoverd] = useState(0);
+  const [mounted, setMounted] = useState<boolean>(false);
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+  const [hoverd, setHoverd] = useState<number>(0);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [activeMobileCategory, setActiveMobileCategory] =
+    useState<MobileCategoryState>(null);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -321,7 +339,7 @@ const Header = () => {
       try {
         const response = await fetch("/api/category");
         const data = await response.json();
-
+        console.log(data, "ccccccccccccccc");
         setCategories(data);
       } catch (error) {
         console.log("Error fetching categories", error);
@@ -409,7 +427,7 @@ const Header = () => {
       </AnnouncementBar>
 
       <MainSection>
-        <div className="flex flex-row-reverse items-center gap-6 justify-end w-full">
+        <div className="flex flex-row-reverse items-center gap-6 justify-between w-full">
           <LogoContainer>
             <Logo
               $data={sectionData}
@@ -436,7 +454,7 @@ const Header = () => {
         <ActionButtons>
           <div className="flex items-center gap-2">
             <ShoppingCart className="text-gray-400" size={24} />
-            <LoginButton>
+            <LoginButton href="/login">
               <User size={18} /> ورود | ثبت‌نام
             </LoginButton>
           </div>
@@ -497,10 +515,13 @@ const Header = () => {
                   <MegaMenu $data={sectionData}>
                     <div className="flex flex-col w-1/4 border-l border-gray-200">
                       {categories
-                        .filter((category) => category.children.length > 0)
+                        .filter(
+                          (category) =>
+                            category.children && category.children.length > 0
+                        )
                         .map((category, idx) => (
                           <Link
-                            href={`/category`}
+                            href={`/category/${category._id}`}
                             key={category._id}
                             className={`py-3 px-4 rounded-md ml-4 cursor-pointer transition-all duration-200 ${
                               idx === hoverd ? "bg-gray-100 font-bold" : ""
@@ -513,26 +534,28 @@ const Header = () => {
                     </div>
                     <div className="flex-1 p-4">
                       <div className="grid grid-cols-3 gap-4">
-                        {categories
-                          .filter((category) => category.children.length > 0)
-                          [hoverd]?.children.map((childId) => {
-                            const childCategory = categories.find(
-                              (cat) => cat._id === childId
-                            );
-                            return (
-                              childCategory && (
-                                <Link
-                                  href={`/category`}
-                                  key={childCategory._id}
-                                  className="p-1 hover:translate-x-[2px] rounded-md transition-all duration-200 text-right"
-                                >
-                                  <CategoryItem $data={sectionData}>
-                                    {childCategory.name}
-                                  </CategoryItem>
-                                </Link>
-                              )
-                            );
-                          })}
+                        {(() => {
+                          const parentCategories = categories.filter(
+                            (cat) => cat.children && cat.children.length > 0
+                          );
+                          const activeParent = parentCategories[hoverd];
+
+                          if (!activeParent) return null;
+
+                          return activeParent.children.map(
+                            (child: CategoryChild) => (
+                              <Link
+                                href={`/category/${child._id}`}
+                                key={child._id}
+                                className="p-1 hover:translate-x-[2px] rounded-md transition-all duration-200 text-right"
+                              >
+                                <CategoryItem $data={sectionData}>
+                                  {child.name}
+                                </CategoryItem>
+                              </Link>
+                            )
+                          );
+                        })()}
                       </div>
                     </div>
                   </MegaMenu>
@@ -557,14 +580,127 @@ const Header = () => {
               <MapPin size={16} /> شهر خود را انتخاب کنید
             </LocationButton>
             {sectionData.blocks.links?.map((link, index) => (
-              <MobileNavItem
-                key={index}
-                href={link.url}
-                $data={sectionData}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {link.name}
-              </MobileNavItem>
+              <div key={index}>
+                {link.name === "دسته‌بندی کالاها" ? (
+                  <>
+                    <MobileNavItem
+                      href="#"
+                      $data={sectionData}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setActiveMobileCategory(
+                          activeMobileCategory === null ? "main" : null
+                        );
+                      }}
+                    >
+                      <div className="flex flex-row-reverse justify-between items-center w-full">
+                        {link.name}
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          style={{
+                            transform: `rotate(${
+                              activeMobileCategory ? "180deg" : "0deg"
+                            })`,
+                            transition: "transform 0.3s ease",
+                          }}
+                        >
+                          <path d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </div>
+                    </MobileNavItem>
+                    <MobileDropdown $isOpen={activeMobileCategory !== null}>
+                      <div className="p-4">
+                        {categories
+                          .filter(
+                            (category) =>
+                              category.children && category.children.length > 0
+                          )
+                          .map((category) => (
+                            <div
+                              key={category._id}
+                              className="mb-4 border-b pb-2"
+                            >
+                              <div className="flex flex-row-reverse items-center justify-between">
+                                <span className="font-bold">
+                                  {category.name}
+                                </span>
+                                <button
+                                  className="p-2 hover:bg-gray-100 rounded-full transition-all"
+                                  onClick={() =>
+                                    setActiveMobileCategory(
+                                      activeMobileCategory === category._id
+                                        ? null
+                                        : category._id
+                                    )
+                                  }
+                                >
+                                  <svg
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    style={{
+                                      transform: `rotate(${
+                                        activeMobileCategory === category._id
+                                          ? "180deg"
+                                          : "0deg"
+                                      })`,
+                                      transition: "transform 0.3s ease",
+                                    }}
+                                  >
+                                    <path d="M19 9l-7 7-7-7" />
+                                  </svg>
+                                </button>
+                              </div>
+                              <div
+                                className={`overflow-hidden transition-all duration-300 ${
+                                  activeMobileCategory === category._id
+                                    ? "max-h-96 mt-3"
+                                    : "max-h-0"
+                                }`}
+                              >
+                                <Link
+                                  href={`/category/${category._id}`}
+                                  className="block py-2 pr-4 text-right text-sky-400 font-bold hover:bg-gray-50 rounded"
+                                  onClick={() => setIsMenuOpen(false)}
+                                >
+                                  ← مشاهده همه {category.name}
+                                </Link>
+                                {category.children.map(
+                                  (child: CategoryChild) => (
+                                    <Link
+                                      href={`/category/${child._id}`}
+                                      key={child._id}
+                                      className="block py-2 pr-4 text-right text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded"
+                                      onClick={() => setIsMenuOpen(false)}
+                                    >
+                                      {child.name}
+                                    </Link>
+                                  )
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                      </div>
+                    </MobileDropdown>
+                  </>
+                ) : (
+                  <MobileNavItem
+                    href={link.url}
+                    $data={sectionData}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {link.name}
+                  </MobileNavItem>
+                )}
+              </div>
             ))}
           </MobileNavList>
         </MobileMenu>
