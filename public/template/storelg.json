@@ -47,7 +47,7 @@
           }
         ],
         "setting": {
-          "gridColumns": 4,
+          "gridColumns": 3,
           "paddingTop": "90",
           "paddingBottom": "20",
           "paddingLeft": "20",

@@ -128,7 +128,7 @@ const SectionProductList = styled.section<{
   display: flex;
   flex-wrap: wrap;
   overflow-x: auto;
-  width: 80%;
+  width: 75%;
   direction: ltr;
   padding-top: ${(props) => props.$data?.setting?.paddingTop}px;
   padding-bottom: ${(props) => props.$data?.setting?.paddingBottom}px;
@@ -136,7 +136,7 @@ const SectionProductList = styled.section<{
   padding-right: ${(props) => props.$data?.setting?.paddingRight}px;
   margin-top: ${(props) => props.$data?.setting?.marginTop}px;
   margin-bottom: ${(props) => props.$data?.setting?.marginBottom}px;
-  background-color: ${(props) => props.$data?.setting?.backgroundColor};
+  background-color: #ffffff;
 
   ${(props) =>
     props.$previewWidth === "default" &&
@@ -154,7 +154,7 @@ const SectionProductList = styled.section<{
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
     justify-content: center;
-    width:100%;
+    width:10%;
    
   }
 `;
@@ -677,7 +677,7 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile, component
             </div>
           </FilterBgRow>
 
-          {!isMobile && (
+          {isMobile && (
             <button
               className="bg-blue-500 text-black p-2 rounded mt-20 mr-auto z-50 shadow-md"
               onClick={() => setIsMobileFilterOpen(true)}
