@@ -1,7 +1,7 @@
 import { fetchGitHubFile } from "@/utils/githubFetcher";
 
 export async function GetStoreId() {
-  const repoUrl = "https://github.com/Mhmk1399/userwebsite";
+  const repoUrl = "https://github.com/Mhmk1399/mehran12";
   if (!repoUrl) {
     return new Response("Repository URL not provided", { status: 400 });
   }

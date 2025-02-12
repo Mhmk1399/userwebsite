@@ -26,7 +26,7 @@ const FilterBgRow = styled.div<{ $data: ProductSection }>`
   background-color: ${props => props.$data?.setting?.filterCardBg || '#f3f4f6'};
   position: absolute;
   min-width: 100%;
-  top: 2px;
+  top: px;
   right: 0;
   z-index: 20;
   box-shadow: 0 1px 2px rgba(0,0,0,0.05);
@@ -128,7 +128,7 @@ const SectionProductList = styled.section<{
   display: flex;
   flex-wrap: wrap;
   overflow-x: auto;
-  width: 80%;
+  width: 78%;
   direction: ltr;
   padding-top: ${(props) => props.$data?.setting?.paddingTop}px;
   padding-bottom: ${(props) => props.$data?.setting?.paddingBottom}px;
@@ -143,7 +143,7 @@ const SectionProductList = styled.section<{
     `
     display: grid;
     grid-template-columns: repeat(${props.$data.setting?.gridColumns}, 1fr);
-    overflow-x: hidden;
+    overflow-x: auto;
   `}
 
   @media (max-width: 426px) {
@@ -154,7 +154,7 @@ const SectionProductList = styled.section<{
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
     justify-content: center;
-    width:10%;
+    width:100%;
    
   }
 `;
@@ -349,16 +349,16 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile, component
 
   return (
     <>
-      {isMobile && (
+      {!isMobile && (
         <button
-          className="bg-blue-500 text-black p-2 rounded absolute top-[60px] right-4 z-50 shadow-md"
+          className="bg-blue-500 text-black p-2 rounded absolute top-[70px]  right-4 z-50 shadow-md lg:hidden"
           onClick={() => setIsMobileFilterOpen(true)}
         >
-          <FiFilter size={50} />
+          <FiFilter size={20} />
         </button>
       )}
-      <div className="flex gap-4 relative ">
-        <div className="flex-1">
+      <div className=" gap-3 relative ">
+        <div className="flex-1 ">
           { isMobileFilterOpen && (
             <div className="fixed inset-0 bg-black bg-opacity-50 z-50  flex items-center justify-center">
               <div className="bg-white/60 backdrop-blur-sm border p-6 mx-10 rounded-lg min-w-[80%] overflow-x-hidden" dir="rtl">
@@ -520,7 +520,7 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile, component
               </div>
             </div>
           )}
-          <FilterCardBg $data={sectionData} className=" top-0 right-2 absolute hidden ">
+          <FilterCardBg $data={sectionData} className=" top-0 right-2 absolute  ">
             <div className="p-6">
               <div className="grid gap-4">
                 <div>
@@ -668,7 +668,7 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile, component
             </div>
           </FilterCardBg>
           <FilterBgRow $data={sectionData}>
-            <div className="flex w-[100%] items-center gap-6 p-4 border-b">
+            <div className="flex w-[100%] items-center gap-4 lg:gap-6 p-4 border-b">
               <FilteNameRow $data={sectionData} className="opacity-70 font-semibold text-xs lg:text-lg">
                 مرتب‌سازی بر اساس :
               </FilteNameRow>
@@ -690,15 +690,8 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile, component
             </div>
           </FilterBgRow>
 
-          {isMobile && (
-            <button
-              className="bg-blue-500 text-black p-2 rounded mt-20 mr-auto z-50 shadow-md"
-              onClick={() => setIsMobileFilterOpen(true)}
-            >
-              <FiFilter size={24} />
-            </button>
-          )}
-          <SectionProductList $data={sectionData} $isMobile={isMobile} $previewWidth="default">
+         
+          <SectionProductList $data={sectionData} $isMobile={isMobile} $previewWidth="default" className="mt-20">
             {(filteredProducts.length > 0 ? filteredProducts : productData).map((product) => (
               <ProductCard key={product._id} productData={product} />
             ))}

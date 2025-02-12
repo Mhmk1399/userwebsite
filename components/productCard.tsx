@@ -39,7 +39,7 @@ const Card = styled.div<{
   padding: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   height: 400px;
-  width: 350px;
+  width: 320px;
   min-height: 400px;
   @media (max-width: 425px) {
     margin: 10px 5px;
@@ -128,7 +128,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData }) => {
     <Card
       onClick={() => handleNavigate(productData._id)}
       dir="rtl"
-      className="min-w-[220px] min-h-[350px]"
+      className="min-w-[200px] min-h-[350px]"
     >
       <ProductImage
         $productData={safeProductData}

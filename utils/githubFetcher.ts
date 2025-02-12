@@ -2,14 +2,13 @@ import axios from "axios";
 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN; // Add this to your .env file
 const GITHUB_OWNER = "Mhmk1399";
-const GITHUB_REPO = "userwebsite";
 
 /**
  * Fetches the raw content of a file from the GitHub repository.
  * @param filePath - Path of the file in the repository (e.g., "public/template/homesm.json").
  * @returns The raw content of the file as a string.
  */
-export async function fetchGitHubFile(filePath: string, repoUrl: string): Promise<string> {
+export async function fetchGitHubFile(filePath: string, GITHUB_REPO: string): Promise<string> {
     const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${filePath}`;
     console.log("Fetching URL:", url);
 

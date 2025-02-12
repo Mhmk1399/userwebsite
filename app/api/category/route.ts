@@ -1,6 +1,6 @@
 import connect from "@/lib/data";
 import Category from "@/models/category";
-import { GetStoreId } from "@/utils/getStoreId";
+import { getStoreId } from "../../../middleWare/storeId";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -11,14 +11,19 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Failed to connect to database" });
     }
     console.log(req);
-    const storeId =  await GetStoreId();
+    
+    const storeId = await getStoreId();
 
     if (!storeId) {
       return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
+    
     const categories = await Category.find({storeId:storeId}).populate("children");
 
     return NextResponse.json(categories);
+    
+ 
+    
   } catch (error) {
     console.log(error);
 
