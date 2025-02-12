@@ -17,7 +17,7 @@ export const GET = async () => {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const blogs = await Blog.find();
+    const blogs = await Blog.find({sotreId:sotreId});;
     return NextResponse.json({ blogs }, { status: 200 });
   } catch (error) {
     return NextResponse.json(

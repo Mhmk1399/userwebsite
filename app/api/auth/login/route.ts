@@ -30,13 +30,15 @@ export async function POST(request: Request) {
       { userId: user._id, storeId: user.storeId },
       jwtSecret,
       {
-        expiresIn: "1h",
+        expiresIn: "10h",
       }
     );
     console.log(token, "token");
-
+    const decodedToken = jwt.decode(token) as { userId: string; storeId: string };
+    console.log(decodedToken, "decodedToken");
     return NextResponse.json({
       token,
+      userId:decodedToken.userId,
       message: "Login successful",
     });
   } catch (error) {

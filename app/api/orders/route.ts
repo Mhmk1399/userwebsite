@@ -19,10 +19,17 @@ export async function POST(req: Request) {
   if (!body) {
     return NextResponse.json({ error: "Data is required" }, { status: 400 });
   }
+const token = req.headers.get("Authorization")?.split(" ")[1];
+console.log("Received token:", token);
+
+if (!token) {
+  return NextResponse.json({ message: "No token provided" }, { status: 401 });
+}
 
   try {
     const storeId = getStoreId();
     const orderData = { ...body, storeId };
+    console.log("Order Data:", orderData);
     const order = await Order.create(orderData);
     return NextResponse.json(order, { status: 201 });
   } catch (error) {
@@ -48,7 +55,8 @@ export async function GET(request: NextRequest) {
         { status: 401 }
       );
     }
-
+    console.log("Token:", token);
+    
     const verifiedToken = jwt.verify(
       token,
       process.env.JWT_SECRET!

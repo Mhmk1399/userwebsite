@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Search, ShoppingCart, User, MapPin } from "lucide-react";
 import data from "@/public/template/homelg.json";
-
+import { useRouter } from "next/navigation";
 interface Category {
   _id: string;
   name: string;
@@ -327,8 +327,8 @@ const Header = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [activeMobileCategory, setActiveMobileCategory] =
     useState<MobileCategoryState>(null);
-
-  const toggleMenu = () => {
+    const router = useRouter();
+    const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
     // Prevent body scroll when menu is open
     document.body.style.overflow = !isMenuOpen ? "hidden" : "unset";
@@ -413,7 +413,9 @@ const Header = () => {
       Array.isArray(block.links)
     );
   };
-
+  const handleNavigate = () => {
+    router.push(`/cart`);
+  };
   if (!isHeaderBlock(blocks)) {
     console.error("Blocks data is missing or invalid.");
     return null;
@@ -452,7 +454,7 @@ const Header = () => {
 
         <ActionButtons>
           <div className="flex items-center gap-2">
-            <ShoppingCart className="text-gray-400" size={24} />
+            <ShoppingCart className="text-gray-400 cursor-pointer hover:text-black" size={24} onClick={handleNavigate} />
             <LoginButton href="/login">
               <User size={18} /> ورود | ثبت‌نام
             </LoginButton>

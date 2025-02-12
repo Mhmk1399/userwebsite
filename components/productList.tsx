@@ -250,15 +250,7 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile, component
   
 
 
-  // const getAllChildCategories = (category: CategoryWithChildren): string[] => {
-  //   let categories = [category.name];
-  //   if (category.children) {
-  //     category.children.forEach((child) => {
-  //       categories = [...categories, ...getAllChildCategories(child)];
-  //     });
-  //   }
-  //   return categories;
-  // };
+
 
   useEffect(() => {
     if (productData.length > 0) {
@@ -528,7 +520,7 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile, component
               </div>
             </div>
           )}
-          <FilterCardBg $data={sectionData} className=" top-0 right-2 absolute ">
+          <FilterCardBg $data={sectionData} className=" top-0 right-2 absolute hidden ">
             <div className="p-6">
               <div className="grid gap-4">
                 <div>

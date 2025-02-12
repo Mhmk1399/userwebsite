@@ -11,20 +11,12 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Failed to connect to database" });
     }
     console.log(req);
+    const storeId =  await GetStoreId();
 
-    // Call GetStoreId as a normal async function.
-    const storeIdResult = await GetStoreId();
-
-    // If GetStoreId returns a Response (indicating an error) handle it:
-    if (storeIdResult instanceof Response) {
-      return storeIdResult;
-    }
-
-    const storeId = storeIdResult;
     if (!storeId) {
       return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
-    const categories = await Category.find().populate("children");
+    const categories = await Category.find({storeId:storeId}).populate("children");
 
     return NextResponse.json(categories);
   } catch (error) {

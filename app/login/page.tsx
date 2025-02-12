@@ -2,13 +2,8 @@
 import React, { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import Jwt, { JwtPayload } from "jsonwebtoken";
 
-interface DecodedToken extends JwtPayload {
-  userId: string;
-  phone: string;
-  role: string;
-}
+
 
 const Auth: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -81,10 +76,8 @@ const Auth: React.FC = () => {
           });
           const data = await response.json();
           if (response.ok && data.token) {
-            localStorage.setItem("tokenUser", data.token);
-            const token = localStorage.getItem("token");
-            const decoded = Jwt.decode(token as string) as DecodedToken;
-            const userId = decoded.userId;
+            localStorage.setItem("tokenUser", data.token);            
+            const userId = data.userId;
             localStorage.setItem("userId", userId);
             router.push(`/`);
           } else {
@@ -121,10 +114,6 @@ const Auth: React.FC = () => {
             localStorage.setItem("tokenUser", data.token);
             localStorage.setItem("userId", data.userId);
           } else {
-            const token = localStorage.getItem("token");
-            const decoded = Jwt.decode(token as string) as DecodedToken;
-            const userId = decoded.userId;
-            console.log(userId);
             router.push(`/`);
           }
         }, 3000);
@@ -133,7 +122,7 @@ const Auth: React.FC = () => {
       }
     } catch (error) {
       setModalError(true);
-      console.error("Error:", error);
+      console.log("Error:", error);
     } finally {
       setLoading(false);
     }

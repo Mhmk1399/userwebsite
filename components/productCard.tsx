@@ -113,7 +113,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData }) => {
       },
     ],
   };
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [currentImageIndex] = useState(0);
 
   const handleNavigate = (id : string) => {
     router.push(`/store/${id}`);
@@ -123,7 +123,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData }) => {
     imageSrc: "/assets/images/pro2.jpg",
     imageAlt: "Product Image",
   };
-  console.log(setCurrentImageIndex);
 
   return (
     <Card

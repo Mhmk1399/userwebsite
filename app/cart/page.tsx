@@ -3,8 +3,6 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Toaster, toast } from "react-hot-toast";
-
-
 interface CartItem {
   id: string;
   name: string;
@@ -44,7 +42,6 @@ export default function CartPage() {
       };
       setLoading(false);
     };
-  
     const updateQuantity = async (itemId: string, change: number) => {
       const db = await openDB();
       const transaction = (db as IDBDatabase).transaction('cart', 'readwrite');
@@ -97,6 +94,7 @@ export default function CartPage() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify(orderData),
       });
@@ -113,11 +111,10 @@ export default function CartPage() {
       setCartItems([]);
       toast.success("سفارش با موفقیت ثبت شد");
     } catch (error) {
-      console.error('Error submitting order:', error);
-      toast.error('خطا در ثبت سفارش');
+      console.log('Error submitting order:', error);
+      toast.error('خطا در ثبت سفارش'+ error);
     }
   };
-  
 
   const submitOrder = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault();

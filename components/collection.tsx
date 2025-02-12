@@ -293,7 +293,7 @@ export const Collection: React.FC<CollectionProps> = ({
                   {product.price || "Price"}
                 </ProductPrice>
                 <BuyButton
-                  href={`/detailpages/${product.id}`}
+                  href={`/store/${product.id}`}
                   $setting={sectionData.setting}
                 >
                   {product.btnText}
