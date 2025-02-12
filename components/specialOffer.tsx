@@ -117,7 +117,7 @@ export const SpecialOffer: React.FC<SpecialOfferProps> = ({ sections, isMobile, 
       }
     };
     fetchSpecialOffers();
-  }, []);
+  }, [CollectionId]);
 
   if (!sectionData) {
     return <div>No special offers available</div>;

@@ -86,7 +86,7 @@ const Dashboard = () => {
       }
     };
     fetchUserData();
-  }, []);
+  }, [loading]);
 
   const validateForm = () => {
     let valid = true;

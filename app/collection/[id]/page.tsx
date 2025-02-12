@@ -64,7 +64,7 @@ console.log(routePath);
       }
     };
     getData();
-  }, [pathname]);
+  }, [pathname,loading]);
   const getCollection = async () => {
     const collectionId = pathname.split("/").pop();
     const response = await fetch(`/api/collection/${collectionId}`, {
@@ -75,7 +75,7 @@ console.log(routePath);
   };
   useEffect(() => {
     getCollection();
-  }, []);
+  }, [getCollection]);
   if (error) {
     return <div>{error}</div>;
   }

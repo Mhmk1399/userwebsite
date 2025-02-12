@@ -126,7 +126,7 @@ export const ProductsRow: React.FC<ProductsRowProps> = ({ sections, isMobile, co
     }
 
     
-  }, []);
+  }, [CollectionId]);
   if (!sectionData) return null;
 
   const handleScroll = (direction: 'left' | 'right') => {

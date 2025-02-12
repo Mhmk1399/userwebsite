@@ -230,6 +230,14 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile, component
   const urlString = searchParams.toString();
   const categoryParam = urlString.split('=')[1];
   
+  const getCollection = async () => {
+    const collectionId = pathname.split("/").pop();
+    const response = await fetch(`/api/collection/${collectionId}`, {
+      cache: "no-store",
+    });
+    const data = await response.json();
+    setProductData(data.products);
+  };
   useEffect(() => {
     const loadInitialData = async () => {
       if (pathname.split("/")[1] === "store") {
@@ -246,7 +254,7 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile, component
     };
   
     loadInitialData();
-  }, [searchParams]);
+  }, [searchParams,categoryParam,getCollection]);
   
 
 
@@ -286,14 +294,7 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile, component
 
   const pathname = usePathname();
   console.log(pathname.split("/")[2]);
-  const getCollection = async () => {
-    const collectionId = pathname.split("/").pop();
-    const response = await fetch(`/api/collection/${collectionId}`, {
-      cache: "no-store",
-    });
-    const data = await response.json();
-    setProductData(data.products);
-  };
+
   const fetchProducts = async () => {
     try {
       const response = await fetch("/api/store");
@@ -321,7 +322,7 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile, component
     };
 
     loadInitialData();
-  }, []); // Empty dependency array for initial load only
+  }, [getCollection,pathname]); // Empty dependency array for initial load only
   useEffect(() => {
     if (productData.length > 0) {
       handleFilter();

@@ -63,7 +63,7 @@ export default function Page() {
       }
     };
     getData();
-  }, [pathname]);
+  }, [pathname,loading]);
 
   if (error) {
     return <div>{error}</div>;
