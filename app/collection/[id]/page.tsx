@@ -73,6 +73,7 @@ console.log(routePath);
     const data = await response.json();
     setData(data);
   };
+  
   useEffect(() => {
     getCollection();
   }, [getCollection]);

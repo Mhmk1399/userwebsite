@@ -254,7 +254,7 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile, component
     };
   
     loadInitialData();
-  }, [searchParams,categoryParam,getCollection]);
+  }, [searchParams,categoryParam,getCollection,]);
   
 
 
@@ -322,12 +322,12 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile, component
     };
 
     loadInitialData();
-  }, [getCollection,pathname]); // Empty dependency array for initial load only
+  }); // Empty dependency array for initial load only
   useEffect(() => {
     if (productData.length > 0) {
       handleFilter();
     }
-  }, [selectedFilters, sortBy]); // Only re-run when filters or sort changes
+  }, [selectedFilters, sortBy,handleFilter,productData.length]); // Only re-run when filters or sort changes
 
 
 
