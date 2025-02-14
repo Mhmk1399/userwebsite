@@ -327,8 +327,8 @@ const Header = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [activeMobileCategory, setActiveMobileCategory] =
     useState<MobileCategoryState>(null);
-    const router = useRouter();
-    const toggleMenu = () => {
+  const router = useRouter();
+  const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
     // Prevent body scroll when menu is open
     document.body.style.overflow = !isMenuOpen ? "hidden" : "unset";
@@ -454,7 +454,11 @@ const Header = () => {
 
         <ActionButtons>
           <div className="flex items-center gap-2">
-            <ShoppingCart className="text-gray-400 cursor-pointer hover:text-black" size={24} onClick={handleNavigate} />
+            <ShoppingCart
+              className="text-gray-400 cursor-pointer hover:text-black"
+              size={24}
+              onClick={handleNavigate}
+            />
             <LoginButton href="/login">
               <User size={18} /> ورود | ثبت‌نام
             </LoginButton>
@@ -515,50 +519,53 @@ const Header = () => {
                   </NavItem>
                   <MegaMenu $data={sectionData}>
                     <div className="flex flex-col w-1/4 border-l border-gray-200">
-                      {categories
-                        .filter(
-                          (category) =>
-                            category.children && category.children.length > 0
-                        )
-                        .map((category, idx) => (
-                          <Link
-                            href={`/store?name=${category.name}`}
-                            key={category._id}
-                            className={`py-3 px-4 rounded-md ml-4 cursor-pointer transition-all duration-200 ${
-                              idx === hoverd ? "bg-gray-100 font-bold" : ""
-                            }`}
-                            onMouseEnter={() => setHoverd(idx)}
-                          >
-                            <MegaMenuTitle>{category.name}</MegaMenuTitle>
-                          </Link>
-                        ))}
+                      {Array.isArray(categories) &&
+                        categories
+                          .filter(
+                            (category) =>
+                              category.children && category.children.length > 0
+                          )
+                          .map((category, idx) => (
+                            <Link
+                              href={`/store?name=${category.name}`}
+                              key={category._id}
+                              className={`py-3 px-4 rounded-md ml-4 cursor-pointer transition-all duration-200 ${
+                                idx === hoverd ? "bg-gray-100 font-bold" : ""
+                              }`}
+                              onMouseEnter={() => setHoverd(idx)}
+                            >
+                              <MegaMenuTitle>{category.name}</MegaMenuTitle>
+                            </Link>
+                          ))}
                     </div>
-                    <div className="flex-1 p-4">
-                      <div className="grid grid-cols-3 gap-4">
-                        {(() => {
-                          const parentCategories = categories.filter(
-                            (cat) => cat.children && cat.children.length > 0
-                          );
-                          const activeParent = parentCategories[hoverd];
+                    {mounted && Array.isArray(categories) && (
+                      <div className="flex-1 p-4">
+                        <div className="grid grid-cols-3 gap-4">
+                          {(() => {
+                            const parentCategories = categories.filter(
+                              (cat) => cat.children && cat.children.length > 0
+                            );
+                            const activeParent = parentCategories[hoverd];
 
-                          if (!activeParent) return null;
+                            if (!activeParent) return null;
 
-                          return activeParent.children.map(
-                            (child: CategoryChild) => (
-                              <Link
-                                href={`/store?name=${child.name}`}
-                                key={child._id}
-                                className="p-1 hover:translate-x-[2px] rounded-md transition-all duration-200 text-right"
-                              >
-                                <CategoryItem $data={sectionData}>
-                                  {child.name}
-                                </CategoryItem>
-                              </Link>
-                            )
-                          );
-                        })()}
+                            return activeParent.children.map(
+                              (child: CategoryChild) => (
+                                <Link
+                                  href={`/store?name=${child.name}`}
+                                  key={child._id}
+                                  className="p-1 hover:translate-x-[2px] rounded-md transition-all duration-200 text-right"
+                                >
+                                  <CategoryItem $data={sectionData}>
+                                    {child.name}
+                                  </CategoryItem>
+                                </Link>
+                              )
+                            );
+                          })()}
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </MegaMenu>
                 </>
               ) : (
@@ -616,79 +623,82 @@ const Header = () => {
                     </MobileNavItem>
                     <MobileDropdown $isOpen={activeMobileCategory !== null}>
                       <div className="p-4">
-                        {categories
-                          .filter(
-                            (category) =>
-                              category.children && category.children.length > 0
-                          )
-                          .map((category) => (
-                            <div
-                              key={category._id}
-                              className="mb-4 border-b pb-2"
-                            >
-                              <div className="flex flex-row-reverse items-center justify-between">
-                                <span className="font-bold">
-                                  {category.name}
-                                </span>
-                                <button
-                                  className="p-2 hover:bg-gray-100 rounded-full transition-all"
-                                  onClick={() =>
-                                    setActiveMobileCategory(
-                                      activeMobileCategory === category._id
-                                        ? null
-                                        : category._id
-                                    )
-                                  }
-                                >
-                                  <svg
-                                    width="16"
-                                    height="16"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    style={{
-                                      transform: `rotate(${
-                                        activeMobileCategory === category._id
-                                          ? "180deg"
-                                          : "0deg"
-                                      })`,
-                                      transition: "transform 0.3s ease",
-                                    }}
-                                  >
-                                    <path d="M19 9l-7 7-7-7" />
-                                  </svg>
-                                </button>
-                              </div>
+                        {Array.isArray(categories) &&
+                          categories
+                            .filter(
+                              (category) =>
+                                category.children &&
+                                category.children.length > 0
+                            )
+                            .map((category) => (
                               <div
-                                className={`overflow-hidden transition-all duration-300 ${
-                                  activeMobileCategory === category._id
-                                    ? "max-h-96 mt-3"
-                                    : "max-h-0"
-                                }`}
+                                key={category._id}
+                                className="mb-4 border-b pb-2"
                               >
-                                <Link
-                                  href={`/store?categoryId=${category._id}`}
-                                  className="block py-2 pr-4 text-right text-sky-400 font-bold hover:bg-gray-50 rounded"
-                                  onClick={() => setIsMenuOpen(false)}
-                                >
-                                  ← مشاهده همه {category.name}
-                                </Link>
-                                {category.children.map(
-                                  (child: CategoryChild) => (
-                                    <Link
-                                      href={`/store?categoryId=${child._id}`}
-                                      key={child._id}
-                                      className="block py-2 pr-4 text-right text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded"
-                                      onClick={() => setIsMenuOpen(false)}
+                                assName="mb-4 border-b pb-2"
+                                <div className="flex flex-row-reverse items-center justify-between">
+                                  <span className="font-bold">
+                                    {category.name}
+                                  </span>
+                                  <button
+                                    className="p-2 hover:bg-gray-100 rounded-full transition-all"
+                                    onClick={() =>
+                                      setActiveMobileCategory(
+                                        activeMobileCategory === category._id
+                                          ? null
+                                          : category._id
+                                      )
+                                    }
+                                  >
+                                    <svg
+                                      width="16"
+                                      height="16"
+                                      viewBox="0 0 24 24"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      strokeWidth="2"
+                                      style={{
+                                        transform: `rotate(${
+                                          activeMobileCategory === category._id
+                                            ? "180deg"
+                                            : "0deg"
+                                        })`,
+                                        transition: "transform 0.3s ease",
+                                      }}
                                     >
-                                      {child.name}
-                                    </Link>
-                                  )
-                                )}
+                                      <path d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                  </button>
+                                </div>
+                                <div
+                                  className={`overflow-hidden transition-all duration-300 ${
+                                    activeMobileCategory === category._id
+                                      ? "max-h-96 mt-3"
+                                      : "max-h-0"
+                                  }`}
+                                >
+                                  <Link
+                                    href={`/store?categoryId=${category._id}`}
+                                    className="block py-2 pr-4 text-right text-sky-400 font-bold hover:bg-gray-50 rounded"
+                                    onClick={() => setIsMenuOpen(false)}
+                                  >
+                                    ← مشاهده همه {category.name}
+                                  </Link>
+                                  {category.children.map(
+                                    (child: CategoryChild) => (
+                                      <Link
+                                        href={`/store?categoryId=${child._id}`}
+                                        key={child._id}
+                                        className="block py-2 pr-4 text-right text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded"
+                                        onClick={() => setIsMenuOpen(false)}
+                                      >
+                                        {child.name}
+                                      </Link>
+                                    )
+                                  )}
+                                </div>
                               </div>
-                            </div>
-                          ))}
+                            ))}
                       </div>
                     </MobileDropdown>
                   </>

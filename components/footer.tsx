@@ -445,7 +445,7 @@ const Footer = () => {
             />
           </Link>
         </SocialLinks>
-        {hasMounted && (
+        {hasMounted && Array.isArray(categories) && (
           <CategoryGrid>
             {categories
               .filter(
