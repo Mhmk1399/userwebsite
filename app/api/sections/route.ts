@@ -1,6 +1,8 @@
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { fetchGitHubFile } from "@/utils/githubFetcher";
+import storeConfig from '../../../store-config.json';
+
 
 export async function GET(request: Request) {
   try {
@@ -22,7 +24,7 @@ export async function GET(request: Request) {
     console.log("Fetching file from GitHub:", filePath);
 
     // Fetch JSON file content from GitHub
-    const GITHUB_REPO =  "userwebsite";
+    const GITHUB_REPO = storeConfig.repoUrl.split('/').pop() || "userwebsite";
     console.log("GITHUB_REPO:", GITHUB_REPO);
     const jsonData = await fetchGitHubFile(filePath, GITHUB_REPO);
     const parsedData = JSON.parse(jsonData);

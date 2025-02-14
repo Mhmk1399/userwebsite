@@ -52,13 +52,11 @@ export default function Page() {
     const getData = async () => {
       console.log(setIsMobile);
       console.log(setError);
-      if (!process.env.NEXT_PUBLIC_API_URL) {
-        throw new Error("NEXT_PUBLIC_API_URL is not set");
-      }
+     
       const routePath = pathname.split("/").pop() || "home";
 
       const response = await fetch(
-        process.env.NEXT_PUBLIC_API_URL + "/api/sections?" + routePath,
+        "/api/sections?" + routePath,
         {
           cache: "no-store",
         }
