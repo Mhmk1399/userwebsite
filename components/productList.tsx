@@ -23,47 +23,48 @@ interface ColorBoxProps {
 }
 
 const FilterBgRow = styled.div<{ $data: ProductSection }>`
-  background-color: ${props => props.$data?.setting?.filterCardBg || '#f3f4f6'};
+  background-color: ${(props) =>
+    props.$data?.setting?.filterCardBg || "#f3f4f6"};
   position: absolute;
   min-width: 100%;
   top: px;
   right: 0;
   z-index: 20;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-direction: rtl;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  direction: rtl;
 `;
 
 const FilteNameRow = styled.div<{ $data: ProductSection }>`
-  color: ${props => props.$data?.setting?.textColor};
+  color: ${(props) => props.$data?.setting?.textColor};
   padding-top: 1px;
-  padding-right: ${props => props.$data?.setting?.paddingRight}px;
- 
-  `;
-
+  padding-right: ${(props) => props.$data?.setting?.paddingRight}px;
+`;
 
 const FilterCardBg = styled.div<{ $data: ProductSection }>`
-  background-color: ${props => props.$data?.setting?.filterCardBg || '#f3f4f6'};
+  background-color: ${(props) =>
+    props.$data?.setting?.filterCardBg || "#f3f4f6"};
   border-radius: 10px;
   height: fit-content;
-  box-shadow: 1px 1px 2px 2px rgba(0,0,0,0.1);
+  box-shadow: 1px 1px 2px 2px rgba(0, 0, 0, 0.1);
   margin-top: 7rem;
 
   width: 280px;
-  
+
   @media (max-width: 426px) {
     display: none;
   }
 `;
 
 const FilterBtn = styled.div<{ $data: ProductSection }>`
-  background-color: ${props => props.$data?.setting?.btnBackgroundColor || '#2563eb'};
-  color: ${props => props.$data?.setting?.btnTextColor || 'white'};
+  background-color: ${(props) =>
+    props.$data?.setting?.btnBackgroundColor || "#2563eb"};
+  color: ${(props) => props.$data?.setting?.btnTextColor || "white"};
   padding: 0.5rem 1rem;
   border-radius: 0.375rem;
   text-align: center;
   cursor: pointer;
   transition: opacity 0.2s;
-  
+
   &:hover {
     opacity: 0.8;
   }
@@ -81,7 +82,6 @@ const ColorBox = styled.div<ColorBoxProps>`
     transform: scale(1.1);
   }
 `;
-
 
 const RangeSliderContainer = styled.div`
   position: relative;
@@ -119,7 +119,6 @@ const RangeSlider = styled.input`
   }
 `;
 
-
 const SectionProductList = styled.section<{
   $data: ProductSection;
   $previewWidth: "sm" | "default";
@@ -154,16 +153,23 @@ const SectionProductList = styled.section<{
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
     justify-content: center;
-    width:100%;
-   
+    width: 100%;
   }
 `;
 
-const ProductList: React.FC<ProductListProps> = ({ sections, isMobile, componentName }) => {
+const ProductList: React.FC<ProductListProps> = ({
+  sections,
+  isMobile,
+  componentName,
+}) => {
   const [productData, setProductData] = useState<ProductCardData[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<ProductCardData[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<ProductCardData[]>(
+    []
+  );
   const [categories, setCategories] = useState<CategoryWithChildren[]>([]);
-  const [sortBy, setSortBy] = useState<"newest" | "price-asc" | "price-desc" | "name">("newest");
+  const [sortBy, setSortBy] = useState<
+    "newest" | "price-asc" | "price-desc" | "name"
+  >("newest");
   const [colors, setColors] = useState<string[]>([]);
   const [showColorModal, setShowColorModal] = useState(false);
   const [selectedColors, setSelectedColors] = useState<string[]>([]);
@@ -176,6 +182,8 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile, component
     { value: "price-desc", label: "گران‌ترین" },
     { value: "name", label: "نام محصول" },
   ];
+  const pathname = usePathname();
+  console.log(pathname.split("/")[2]);
   const [selectedFilters, setSelectedFilters] = useState({
     category: "",
     priceMin: 0,
@@ -185,12 +193,18 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile, component
     switch (sortBy) {
       case "newest":
         return [...products].sort(
-          (a, b) => new Date(b?.createdAt || 0).getTime() - new Date(a?.createdAt || 0).getTime()
+          (a, b) =>
+            new Date(b?.createdAt || 0).getTime() -
+            new Date(a?.createdAt || 0).getTime()
         );
       case "price-asc":
-        return [...products].sort((a, b) => parseInt(a.price) - parseInt(b.price));
+        return [...products].sort(
+          (a, b) => parseInt(a.price) - parseInt(b.price)
+        );
       case "price-desc":
-        return [...products].sort((a, b) => parseInt(b.price) - parseInt(a.price));
+        return [...products].sort(
+          (a, b) => parseInt(b.price) - parseInt(a.price)
+        );
       case "name":
         return [...products].sort((a, b) => a.name.localeCompare(b.name));
       default:
@@ -203,8 +217,8 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile, component
 
     // Color filter
     if (selectedColors.length > 0) {
-      filtered = filtered.filter(product =>
-        product.colors?.some(color => selectedColors.includes(color.code))
+      filtered = filtered.filter((product) =>
+        product.colors?.some((color) => selectedColors.includes(color.code))
       );
     }
 
@@ -218,7 +232,9 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile, component
     // Price filter
     filtered = filtered.filter((product) => {
       const price = parseInt(product.price);
-      return price >= selectedFilters.priceMin && price <= selectedFilters.priceMax;
+      return (
+        price >= selectedFilters.priceMin && price <= selectedFilters.priceMax
+      );
     });
 
     // Apply current sorting
@@ -228,8 +244,8 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile, component
   };
   const searchParams = useSearchParams();
   const urlString = searchParams.toString();
-  const categoryParam = urlString.split('=')[1];
-  
+  const categoryParam = urlString.split("=")[1];
+
   const getCollection = async () => {
     const collectionId = pathname.split("/").pop();
     const response = await fetch(`/api/collection/${collectionId}`, {
@@ -243,99 +259,91 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile, component
       if (pathname.split("/")[1] === "store") {
         await fetchProducts();
         if (categoryParam) {
-          setSelectedFilters(prev => ({
+          setSelectedFilters((prev) => ({
             ...prev,
-            category: categoryParam
+            category: categoryParam,
           }));
         }
       } else {
         await getCollection();
       }
     };
-  
+
     loadInitialData();
-  }, [searchParams,categoryParam,getCollection,]);
-  
-
-
-
+  }, [pathname, categoryParam]);
 
   useEffect(() => {
     if (productData.length > 0) {
       const prices = productData.map((product) => parseInt(product.price));
-      const minPrice = Math.min(...prices);
-      const maxPrice = Math.max(...prices);
-
-      setPriceRange({ min: minPrice, max: maxPrice });
-      setSelectedFilters(prev => ({
-        ...prev,
-        priceMin: minPrice,
-        priceMax: maxPrice,
-      }));
+      setPriceRange({
+        min: Math.min(...prices),
+        max: Math.max(...prices)
+      });
     }
   }, [productData]);
   useEffect(() => {
     if (productData.length > 0) {
-      const allColors = [...new Set(productData.flatMap(product => (product.colors || []).map(color => color.code)))];
+      const allColors = [
+        ...new Set(
+          productData.flatMap((product) =>
+            (product.colors || []).map((color) => color.code)
+          )
+        ),
+      ];
       setColors(allColors);
     }
   }, [productData]);
-
 
   useEffect(() => {
     const fetchCategories = async () => {
       const response = await fetch("/api/category");
       const data = await response.json();
       setCategories(data);
-
     };
     fetchCategories();
   }, []);
 
-  const pathname = usePathname();
-  console.log(pathname.split("/")[2]);
+
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch("/api/store");
-      const data = await response.json();
+      const token = localStorage.getItem("sectionsToken");
+      if (!token) {
+        throw new Error("No token found");
+      }
 
+      const response = await fetch("/api/store", {
+        cache: "no-store",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
       if (data?.products) {
-        const productInfo = data.products.map((product: { _id: string }) => ({
-          ...product,
-          _id: product._id,
-        }));
-        console.log(productInfo);
         setProductData(data.products);
       }
     } catch (error) {
       console.error("Error fetching products:", error);
     }
   };
-  useEffect(() => {
-    const loadInitialData = async () => {
-      if (pathname.split("/")[1] === "store") {
-        await fetchProducts();
-      } else {
-        await getCollection();
-      }
-    };
 
-    loadInitialData();
-  }); // Empty dependency array for initial load only
+ // Empty dependency array for initial load only
   useEffect(() => {
     if (productData.length > 0) {
       handleFilter();
     }
-  }, [selectedFilters, sortBy,handleFilter,productData.length]); // Only re-run when filters or sort changes
-
-
+  }, [selectedFilters, sortBy, productData.length]); // Only re-run when filters or sort changes
 
   useEffect(() => {
     if (pathname.split("/")[1] === "store") {
       fetchProducts();
-    }
-    else {
+    } else {
       getCollection();
     }
   }, []);
@@ -360,9 +368,12 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile, component
       )}
       <div className=" gap-3 relative ">
         <div className="flex-1 ">
-          { isMobileFilterOpen && (
+          {isMobileFilterOpen && (
             <div className="fixed inset-0 bg-black bg-opacity-50 z-50  flex items-center justify-center">
-              <div className="bg-white/60 backdrop-blur-sm border p-6 mx-10 rounded-lg min-w-[80%] overflow-x-hidden" dir="rtl">
+              <div
+                className="bg-white/60 backdrop-blur-sm border p-6 mx-10 rounded-lg min-w-[80%] overflow-x-hidden"
+                dir="rtl"
+              >
                 <div className="flex justify-between items-center mb-4">
                   <h3 className="text-lg font-bold">فیلترها</h3>
                   <button
@@ -379,7 +390,12 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile, component
                     </label>
                     <select
                       className="w-full border rounded-md p-2"
-                      onChange={(e) => setSelectedFilters(prev => ({ ...prev, category: e.target.value }))}
+                      onChange={(e) =>
+                        setSelectedFilters((prev) => ({
+                          ...prev,
+                          category: e.target.value,
+                        }))
+                      }
                     >
                       <option value="">همه</option>
                       {categories.map((category) => (
@@ -439,7 +455,6 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile, component
                                   style={{ backgroundColor: colorCode }}
                                   className="w-12 h-12"
                                 />
-
                               </div>
                             ))}
                           </div>
@@ -521,7 +536,10 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile, component
               </div>
             </div>
           )}
-          <FilterCardBg $data={sectionData} className=" top-0 right-2 absolute  ">
+          <FilterCardBg
+            $data={sectionData}
+            className=" top-0 right-2 absolute  "
+          >
             <div className="p-6">
               <div className="grid gap-4">
                 <div>
@@ -530,14 +548,17 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile, component
                   </label>
                   <select
                     className="w-full border rounded-md p-2"
-                    onChange={(e) => setSelectedFilters(prev => ({ ...prev, category: e.target.value }))}
+                    onChange={(e) =>
+                      setSelectedFilters((prev) => ({
+                        ...prev,
+                        category: e.target.value,
+                      }))
+                    }
                   >
                     <option value="">همه</option>
                     {categories.map((category) => (
-
                       <option key={category._id} value={category.name}>
                         {category.name}
-
                       </option>
                     ))}
                   </select>
@@ -592,7 +613,6 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile, component
                                 style={{ backgroundColor: colorCode }}
                                 className="w-12 h-12"
                               />
-
                             </div>
                           ))}
                         </div>
@@ -670,7 +690,10 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile, component
           </FilterCardBg>
           <FilterBgRow $data={sectionData}>
             <div className="flex w-[100%] items-center gap-4 lg:gap-6 p-4 border-b">
-              <FilteNameRow $data={sectionData} className="opacity-70 font-semibold text-xs lg:text-lg">
+              <FilteNameRow
+                $data={sectionData}
+                className="opacity-70 font-semibold text-xs lg:text-lg"
+              >
                 مرتب‌سازی بر اساس :
               </FilteNameRow>
               <div className="flex gap-6">
@@ -678,11 +701,20 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile, component
                   <FilteNameRow
                     $data={sectionData}
                     key={option.value}
-                    onClick={() => setSortBy(option.value as "newest" | "price-asc" | "price-desc" | "name")}
-                    className={`pb-1  text-xs lg:text-lg relative cursor-pointer transition-all duration-200 ease-in-out ${sortBy === option.value
-                      ? 'text-blue-500 after:content-[""] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-blue-500'
-                      : " hover:text-blue-500"
-                      }`}
+                    onClick={() =>
+                      setSortBy(
+                        option.value as
+                          | "newest"
+                          | "price-asc"
+                          | "price-desc"
+                          | "name"
+                      )
+                    }
+                    className={`pb-1  text-xs lg:text-lg relative cursor-pointer transition-all duration-200 ease-in-out ${
+                      sortBy === option.value
+                        ? 'text-blue-500 after:content-[""] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-blue-500'
+                        : " hover:text-blue-500"
+                    }`}
                   >
                     {option.label}
                   </FilteNameRow>
@@ -691,19 +723,22 @@ const ProductList: React.FC<ProductListProps> = ({ sections, isMobile, component
             </div>
           </FilterBgRow>
 
-         
-          <SectionProductList $data={sectionData} $isMobile={isMobile} $previewWidth="default" className="mt-20">
-            {(filteredProducts.length > 0 ? filteredProducts : productData).map((product) => (
-              <ProductCard key={product._id} productData={product} />
-            ))}
+          <SectionProductList
+            $data={sectionData}
+            $isMobile={isMobile}
+            $previewWidth="default"
+            className="mt-20"
+          >
+            {(filteredProducts.length > 0 ? filteredProducts : productData).map(
+              (product) => (
+                <ProductCard key={product._id} productData={product} />
+              )
+            )}
           </SectionProductList>
-
-
         </div>
       </div>
     </>
   );
-
 };
 
 export default ProductList;

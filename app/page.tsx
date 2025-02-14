@@ -62,6 +62,8 @@ export default function Page() {
         }
       );
       const data = await response.json();
+      localStorage.setItem('sectionsToken', data.sectionsToken);
+      console.log(data.sectionsToken);
 
       setData(data.Children.sections);
       setOrders(data.Children.order);
@@ -76,6 +78,7 @@ export default function Page() {
   if (error) {
     return <div>{error}</div>;
   }
+  
 
   if (data===null) {
     return <div className="mt-28">Loading...</div>;

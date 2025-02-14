@@ -2,12 +2,13 @@ import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { fetchGitHubFile } from "@/utils/githubFetcher";
 import storeConfig from '../../../store-config.json';
+import jwt, { JwtPayload } from "jsonwebtoken";
 
 
 export async function GET(request: Request) {
   try {
     const headersList = await headers();
-    const userAgent =  headersList.get("user-agent") || "";
+    const userAgent = headersList.get("user-agent") || "";
     const isMobile = /mobile|android|iphone|ipad|phone/i.test(userAgent);
 
     console.log("User Agent:", userAgent);
@@ -26,8 +27,32 @@ export async function GET(request: Request) {
     // Fetch JSON file content from GitHub
     const GITHUB_REPO = storeConfig.repoUrl.split('/').pop() || "userwebsite";
     console.log("GITHUB_REPO:", GITHUB_REPO);
+    console.log("GITHUB_REPO:", GITHUB_REPO);
     const jsonData = await fetchGitHubFile(filePath, GITHUB_REPO);
     const parsedData = JSON.parse(jsonData);
+
+    const StoreConfigFilepath = `store-config.json`;
+    const storeConfigData = await fetchGitHubFile(StoreConfigFilepath, GITHUB_REPO);
+    const parsedStoreConfig = JSON.parse(storeConfigData);
+    const storeId = parsedStoreConfig.storeId;
+    const repoUrl = parsedStoreConfig.repoUrl;
+
+    // Generate a unique token for sections
+    const secret = process.env.JWT_SECRET;
+    const sectionsToken = jwt.sign(
+      { 
+        storeId, 
+        repoUrl, 
+        
+        timestamp: Date.now() 
+      } as JwtPayload, 
+      secret!, 
+      {
+        expiresIn: "1h", // Short-lived token
+        algorithm: "HS256" // Specify the algorithm
+      }
+    );
+
 
     const sections: Record<string, Array<object>> = {
       Banner: [],
@@ -78,6 +103,7 @@ export async function GET(request: Request) {
         isMobile,
         currentRoute: routePath,
         template: isMobile ? `${routePath}sm.json` : `${routePath}lg.json`,
+        sectionsToken,
       },
       {
         headers: {
