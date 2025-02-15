@@ -42,17 +42,12 @@ export default function Page() {
   useEffect(() => {
     const getData = async () => {
       console.log(setIsMobile, setError, loading);
-      if (!process.env.NEXT_PUBLIC_API_URL) {
-        throw new Error("NEXT_PUBLIC_API_URL is not set");
-      }
+
       const routePath = pathname.split("/").pop() || "home";
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/sections?${routePath}`,
-        {
-          cache: "no-store",
-        }
-      );
+      const response = await fetch(`$/api/sections?${routePath}`, {
+        cache: "no-store",
+      });
       const data = await response.json();
       setLoading(false);
       setData(data.Children.sections);
@@ -63,7 +58,7 @@ export default function Page() {
       }
     };
     getData();
-  }, [pathname,loading]);
+  }, [pathname, loading]);
 
   if (error) {
     return <div>{error}</div>;
