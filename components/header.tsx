@@ -635,7 +635,6 @@ const Header = () => {
                                 key={category._id}
                                 className="mb-4 border-b pb-2"
                               >
-                                assName="mb-4 border-b pb-2"
                                 <div className="flex flex-row-reverse items-center justify-between">
                                   <span className="font-bold">
                                     {category.name}

@@ -14,6 +14,7 @@ import { Collection } from "@/components/collection";
 import RichText from "@/components/richText";
 import ProductList from "@/components/productList";
 import DetailPage from "../../store/[_id]/page";
+import { get } from "http";
 
 export default function Page() {
   const [data, setData] = useState(null);
@@ -45,8 +46,8 @@ export default function Page() {
       if (!process.env.NEXT_PUBLIC_API_URL) {
         throw new Error("NEXT_PUBLIC_API_URL is not set");
       }
-      const routePath = pathname.split("/")[1]
-console.log(routePath);
+      const routePath = pathname.split("/")[1];
+      console.log(routePath);
 
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/sections?${routePath}`,
@@ -64,19 +65,23 @@ console.log(routePath);
       }
     };
     getData();
-  }, [pathname,loading]);
-  const getCollection = async () => {
-    const collectionId = pathname.split("/").pop();
-    const response = await fetch(`/api/collection/${collectionId}`, {
-      cache: "no-store",
-    });
-    const data = await response.json();
-    setData(data);
-  };
-  
+  }, [pathname, loading]);
+
   useEffect(() => {
+    const getCollection = async () => {
+      const collectionId = pathname.split("/").pop();
+      const response = await fetch(`/api/collection/${collectionId}`, {
+        cache: "no-store",
+      });
+      const data = await response.json();
+      setData(data);
+    };
     getCollection();
-  }, [getCollection]);
+  }, []);
+
+  // useEffect(() => {
+  //   getCollection();
+  // }, [getCollection]);
   if (error) {
     return <div>{error}</div>;
   }
@@ -104,7 +109,6 @@ console.log(routePath);
                   isMobile={isMobile}
                   componentName={componentName}
                 />
-
               </div>
             ) : null;
           })}

@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import React from "react";
 import { FiFilter } from "react-icons/fi";
+import { get } from "http";
 
 interface ProductListProps {
   sections: ProductSection[];
@@ -270,14 +271,14 @@ const ProductList: React.FC<ProductListProps> = ({
     };
 
     loadInitialData();
-  }, [pathname, categoryParam]);
+  }, [pathname, categoryParam, getCollection]);
 
   useEffect(() => {
     if (productData.length > 0) {
       const prices = productData.map((product) => parseInt(product.price));
       setPriceRange({
         min: Math.min(...prices),
-        max: Math.max(...prices)
+        max: Math.max(...prices),
       });
     }
   }, [productData]);
@@ -302,8 +303,6 @@ const ProductList: React.FC<ProductListProps> = ({
     };
     fetchCategories();
   }, []);
-
-
 
   const fetchProducts = async () => {
     try {
@@ -333,12 +332,12 @@ const ProductList: React.FC<ProductListProps> = ({
     }
   };
 
- // Empty dependency array for initial load only
+  // Empty dependency array for initial load only
   useEffect(() => {
     if (productData.length > 0) {
       handleFilter();
     }
-  }, [selectedFilters, sortBy, productData.length]); // Only re-run when filters or sort changes
+  }, [selectedFilters, sortBy, productData.length, handleFilter]); // Only re-run when filters or sort changes
 
   useEffect(() => {
     if (pathname.split("/")[1] === "store") {
@@ -346,7 +345,7 @@ const ProductList: React.FC<ProductListProps> = ({
     } else {
       getCollection();
     }
-  }, []);
+  }, [getCollection, pathname]);
 
   const sectionData = sections.find(
     (section) => section.type === componentName
