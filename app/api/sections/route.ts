@@ -49,7 +49,7 @@ export async function GET(request: Request) {
       secret!, 
       {
         expiresIn: "1h", // Short-lived token
-        algorithm: "HS256" // Specify the algorithm
+        // algorithm: "HS256" // Specify the algorithm
       }
     );
 

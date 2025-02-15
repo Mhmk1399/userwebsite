@@ -130,7 +130,7 @@ const TrustIconsContainer = styled.div`
   width: 100%;
   padding: 2rem 0;
   flex-wrap: nowrap;
-  gap: 2px;
+  gap: 20px;
   justify-content: center;
   @media (min-width: 768px) {
     justify-content: space-around;
@@ -153,7 +153,7 @@ const IconBox = styled(SvgBox)`
   background: ${(props) =>
     props.$data?.blocks?.setting?.trustIconBackground || "#f8f9fa"};
   color: ${(props) => props.$data?.blocks?.setting?.trustIconColor || "red"};
-  padding: 0.5rem;
+  padding: 5px;
 `;
 
 const TrustText = styled.span<{
@@ -396,7 +396,7 @@ const Footer = () => {
         {trustItems.map((item, index) => (
           <TrustItem key={index} $data={sectionData}>
             <IconBox $data={sectionData}>
-              <item.icon size={30} />
+              <item.icon size={25} />
             </IconBox>
             <TrustText $data={sectionData}>{item.text}</TrustText>
           </TrustItem>
