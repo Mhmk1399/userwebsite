@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import React from "react";
 import { FiFilter } from "react-icons/fi";
-import { get } from "http";
 
 interface ProductListProps {
   sections: ProductSection[];

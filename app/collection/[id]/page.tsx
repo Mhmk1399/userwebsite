@@ -14,7 +14,6 @@ import { Collection } from "@/components/collection";
 import RichText from "@/components/richText";
 import ProductList from "@/components/productList";
 import DetailPage from "../../store/[_id]/page";
-import { get } from "http";
 
 export default function Page() {
   const [data, setData] = useState(null);
