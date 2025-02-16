@@ -1,9 +1,9 @@
 import connect from "@/lib/data";
 import Category from "@/models/category";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import StoreConfig from "../../../store-config.json";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     await connect();
     console.log("Connected to MongoDB");
