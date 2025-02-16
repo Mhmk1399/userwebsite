@@ -1,9 +1,30 @@
 "use client";
 import { useEffect, useState } from "react";
+
+import {
+  BannerSection,
+  CollapseSection,
+  CollectionSection,
+  ContactFormDataSection,
+  DetailPageSection,
+  GallerySection,
+  ImageTextSection,
+  MultiColumnSection,
+  MultiRowSection,
+  NewsLetterSection,
+  OfferRowSection,
+  ProductListSection,
+  RichTextSection,
+  Section,
+  SlideBannerSection,
+  SlideSection,
+  SpecialOfferSection,
+  StorySection,
+  VideoSection,
+} from "@/lib/types";
 import ImageText from "@/components/imageText";
 import ContactForm from "@/components/contactForm";
 import NewsLetter from "@/components/newsLetter";
-import { usePathname } from "next/navigation";
 import Banner from "@/components/banner";
 import CollapseFaq from "@/components/collapseFaq";
 import MultiColumn from "@/components/multiColumn";
@@ -13,15 +34,38 @@ import Video from "@/components/video";
 import { Collection } from "@/components/collection";
 import RichText from "@/components/richText";
 import ProductList from "@/components/productList";
+import { OfferRow } from "@/components/offerRow";
+import { SpecialOffer } from "@/components/specialOffer";
+import { Story } from "@/components/story";
 import DetailPage from "../store/[_id]/page";
+import collectionLgTemplate from "@/public/template/collectionlg.json";
+import collectionSmTemplate from "@/public/template/collectionsm.json";
+
+type AllSections = Section &
+  RichTextSection &
+  BannerSection &
+  ImageTextSection &
+  VideoSection &
+  ContactFormDataSection &
+  NewsLetterSection &
+  CollapseSection &
+  MultiColumnSection &
+  SlideSection &
+  MultiRowSection &
+  ProductListSection &
+  CollectionSection &
+  SpecialOfferSection &
+  StorySection &
+  OfferRowSection &
+  GallerySection &
+  SlideBannerSection &
+  ProductListSection &
+  DetailPageSection;
 
 export default function Page() {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<AllSections[]>([]);
   const [isMobile, setIsMobile] = useState(false);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [orders, setOrders] = useState([]);
-  const pathname = usePathname();
+  const [orders, setOrders] = useState<string[]>([]);
 
   const componentMap = {
     RichText,
@@ -37,66 +81,46 @@ export default function Page() {
     Collection,
     ProductList,
     DetailPage,
+    OfferRow,
+    SpecialOffer,
+    Story,
   };
-
   useEffect(() => {
-    const getData = async () => {
-      console.log(setIsMobile, setError, loading);
-      if (!process.env.NEXT_PUBLIC_API_URL) {
-        throw new Error("NEXT_PUBLIC_API_URL is not set");
-      }
-      const routePath = pathname.split("/").pop() || "home";
+    const handleResize = () => {
+      const isMobileView = window.innerWidth < 430;
+      setIsMobile(isMobileView);
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/sections?${routePath}`,
-        {
-          cache: "no-store",
-        }
-      );
-      const data = await response.json();
-      setLoading(false);
-      setData(data.Children.sections);
-      setOrders(data.Children.order);
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch data");
-      }
+      const template = isMobileView
+        ? collectionSmTemplate
+        : collectionLgTemplate;
+      console.log(template);
+      const testData = template.children.sections as AllSections[];
+      setData(testData);
+      setOrders(template.children.order);
     };
-    getData();
-  }, [pathname,loading]);
 
-  if (error) {
-    return <div>{error}</div>;
-  }
-
-  if (!data) {
-    return <div>Loading...</div>;
-  }
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
-    <>
-      {data && (
-        <div className="grid grid-cols-1 gap-4">
-          {orders.map((componentName, index) => {
-            const baseComponentName = componentName;
-            const Component =
-              componentMap[baseComponentName as keyof typeof componentMap];
-            return Component ? (
-              <div
-                key={componentName} // Using the full componentName which includes the UUID
-                style={{ order: index }}
-                className="w-full"
-              >
-                <Component
-                  sections={data}
-                  isMobile={isMobile}
-                  componentName={componentName}
-                />
-              </div>
-            ) : null;
-          })}
-        </div>
-      )}
-    </>
+    <div className="grid grid-cols-1 pt-4 px-1">
+      {orders.map((componentName, index) => {
+        const baseComponentName = componentName.split("-")[0];
+        const Component =
+          componentMap[baseComponentName as keyof typeof componentMap];
+
+        return Component ? (
+          <div key={componentName} style={{ order: index }} className="w-full">
+            <Component
+              sections={data}
+              isMobile={isMobile}
+              componentName={componentName}
+            />
+          </div>
+        ) : null;
+      })}
+    </div>
   );
 }

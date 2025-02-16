@@ -131,8 +131,8 @@ const SlideBanner: React.FC<SlideBannerProps> = ({ sections, isMobile, component
             <Image
               src={slide.imageSrc}
               alt={slide.imageAlt}
-              width={isMobile ? 100 : 1000}
-              height={isMobile ? 200 : 3000}
+              width={isMobile ? 2000 : 2000}
+              height={isMobile ? 2000 : 2000}
               className="w-full h-full "
               style={{ objectFit: 'cover'}}
             />
