@@ -5,10 +5,13 @@ import storeConfig from "../../../store-config.json";
 export async function GET() {
   try {
     const storeId = storeConfig.storeId;
+    console.log(storeId, "ssssssssssssss");
     const repoUrl = storeConfig.repoUrl;
 
     // Generate a unique token for sections
     const secret = process.env.JWT_SECRET;
+    console.log(secret, "secret");
+
     const sectionsToken = jwt.sign(
       {
         storeId,
@@ -22,21 +25,19 @@ export async function GET() {
         // algorithm: "HS256" // Specify the algorithm
       }
     );
+    console.log(sectionsToken, "sectionsToken");
 
     // Add CORS headers to the response
     return NextResponse.json(
-      {
-        sectionsToken,
-        storeId,
-        repoUrl,
-      },
-      {
-        headers: {
-          "Access-Control-Allow-Origin": "*", // Allow all origins
-          "Access-Control-Allow-Methods": "GET, OPTIONS", // Allow only GET and OPTIONS
-          "Access-Control-Allow-Headers": "Content-Type", // Allow Content-Type header
-        },
-      }
+      sectionsToken
+
+      //   {
+      //     headers: {
+      //       "Access-Control-Allow-Origin": "*", // Allow all origins
+      //       "Access-Control-Allow-Methods": "GET, OPTIONS", // Allow only GET and OPTIONS
+      //       "Access-Control-Allow-Headers": "Content-Type", // Allow Content-Type header
+      //     },
+      //   }
     );
   } catch (error) {
     console.error("Error:", error);
