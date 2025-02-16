@@ -41,7 +41,6 @@ import SlideBanner from "@/components/slideBanner";
 import { ProductsRow } from "@/components/productsRow";
 import homeLgTemplate from "@/public/template/homelg.json";
 import homeSmTemplate from "@/public/template/homesm.json";
-import { GenerateToken } from "@/utils/generateToken";
 
 type AllSections = Section &
   RichTextSection &
