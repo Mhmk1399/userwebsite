@@ -336,14 +336,37 @@ const Header = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch("/api/category");
-        const data = await response.json();
-        console.log(data, "ccccccccccccccc");
-        setCategories(data);
+        const token = localStorage.getItem("sectionToken");
+        console.log(
+          "Token from localStorage:",
+          token?.substring(0, 20) + "..."
+        ); // Debug log
+
+        if (!token) {
+          throw new Error("No section token found");
+        }
+
+        const response = await fetch("/api/category", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`, // Note the capital A in Authorization
+            "Content-Type": "application/json",
+          },
+          credentials: "include", // Add this to handle cookies if needed
+        });
+        console.log("Response status:", response.status);
+        console.log("Response headers:", Object.fromEntries(response.headers));
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const cateData = await response.json();
+        console.log("Received categories:", cateData); // Debug log
+        setCategories(cateData);
       } catch (error) {
         console.log("Error fetching categories", error);
-
-        // Default categories if fetch fails
+        // Default categories remain as fallback
         setCategories([
           {
             _id: "1",
@@ -387,6 +410,7 @@ const Header = () => {
 
     fetchCategories();
   }, []);
+
   useEffect(() => {
     setMounted(true);
   }, []);

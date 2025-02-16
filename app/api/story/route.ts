@@ -1,7 +1,7 @@
 import Story from "../../../models/story";
 import { NextResponse } from "next/server";
 import connect from "@/lib/data";
-import { GetStoreId } from "../../../utils/getStoreId";
+import StoreConfig from "../../../store-config.json";
 
 export async function GET() {
   try {
@@ -11,13 +11,15 @@ export async function GET() {
       return NextResponse.json({ error: "Failed to connect to database" });
     }
 
-    const storeId = GetStoreId();
-    console.log("Store ID:", storeId);
-    
+    const storeId = StoreConfig.storeId;
     if (!storeId) {
       return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
-    const stories = await Story.find();
+
+    if (!storeId) {
+      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+    }
+    const stories = await Story.find({ storeId: storeId });
     return NextResponse.json(stories);
   } catch (error) {
     console.error("Error fetching stories:", error);

@@ -1,8 +1,7 @@
-import {  NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import connect from "@/lib/data";
 import Blog from "@/models/blogs";
-import { getStoreId } from "@/middleWare/storeId";
-
+import StoreConfig from "../../../store-config.json";
 
 export const GET = async () => {
   await connect();
@@ -11,13 +10,12 @@ export const GET = async () => {
   }
 
   try {
-    const sotreId = await getStoreId();
-
-    if (!sotreId) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    const storeId = StoreConfig.storeId;
+    if (!storeId) {
+      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
 
-    const blogs = await Blog.find({sotreId:sotreId});;
+    const blogs = await Blog.find({ sotreId: storeId });
     return NextResponse.json({ blogs }, { status: 200 });
   } catch (error) {
     return NextResponse.json(

@@ -282,17 +282,29 @@ const Footer = () => {
   };
   useEffect(() => {
     setHasMounted(true);
-
+  
     const fetchCategories = async () => {
       try {
-        const response = await fetch("/api/category");
-        const data = await response.json();
-
-        setCategories(data);
+        const token = localStorage.getItem("sectionToken");
+        console.log("Footer token:", token);
+  
+        const response = await fetch("/api/category", {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+  
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+  
+        const cateData = await response.json();
+        setCategories(cateData);
+        
       } catch (error) {
         console.log("Error fetching categories", error);
-
-        // Default categories if fetch fails
         setCategories([
           {
             _id: "1",
@@ -339,9 +351,10 @@ const Footer = () => {
         ]);
       }
     };
-
+  
     fetchCategories();
   }, []);
+  
   if (!hasMounted) {
     return null; // Or a loading skeleton
   }
