@@ -129,7 +129,7 @@
           "bgColor": "#ffffff",
           "gap": "10",
           "megaMenuBg": "#ffffff",
-          "categoryItemColor":"ffffff",
+          "categoryItemColor": "ffffff",
           "categoryItemSize": "14",
           "categoryItemHoverColor": "#000000"
         }
@@ -196,8 +196,7 @@
             }
           }
         },
-   
-       
+
         {
           "type": "SpecialOffer",
           "blocks": {
@@ -215,7 +214,7 @@
               "cardBorderRadius": "8",
               "imageRadius": "8",
               "gridColumns": "4",
-              "selectedCollection":"679e0724216fde7c1cdc1d99"
+              "selectedCollection": "679e0724216fde7c1cdc1d99"
             }
           },
           "setting": {
@@ -462,8 +461,7 @@
       ],
       "order": [
         "Story",
-       
-     
+
         "SlideBanner",
         "SpecialOffer",
         "OfferRow",
