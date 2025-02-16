@@ -190,7 +190,7 @@
               "navigationStyle": "arrows",
               "arrowsPosition": "bottom-right",
               "height": "500",
-              "bgArrow": "#000000",
+              "bgArrow": "#ffffff",
               "activeDotColor": "#ffffff",
               "inactiveDotColor": "#000000"
             }

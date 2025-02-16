@@ -8,8 +8,11 @@ export async function GET(request: NextRequest) {
     await connect();
     const authHeader = request.headers.get("Authorization");
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json({ error: "Invalid token format" }, { status: 401 });
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return NextResponse.json(
+        { error: "Invalid token format" },
+        { status: 401 }
+      );
     }
 
     const token = authHeader.split(" ")[1];
@@ -25,11 +28,16 @@ export async function GET(request: NextRequest) {
     console.log("Token:", token); // Add this for debugging
     console.log("Decoded:", decodedToken); // Add this for debugging
 
-    const products = await Products.find({ storeId: storeId }).populate("category");
+    const products = await Products.find({ storeId: storeId }).populate(
+      "category"
+    );
 
     return NextResponse.json({ products }, { status: 200 });
   } catch (error) {
     console.error("Token verification error:", error);
-    return NextResponse.json({ error: "Authentication failed" }, { status: 401 });
+    return NextResponse.json(
+      { error: "Authentication failed" },
+      { status: 401 }
+    );
   }
 }
