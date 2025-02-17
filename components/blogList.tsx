@@ -140,7 +140,7 @@ const BlogList: React.FC<BlogListProps> = ({ sections, componentName }) => {
   }, []);
   if (!blogs || blogs.length === 0) {
     return (
-      <div className="min-h-[400px] flex flex-col items-center justify-center p-8 bg-gradient-to-r from-blue-50 to-indigo-50 mt-28">
+      <div className="min-h-[400px] flex flex-col items-center justify-center p-8 bg-white">
         <div className=" mb-6">
           <svg
             className="w-24 h-24 text-indigo-500"
@@ -163,10 +163,10 @@ const BlogList: React.FC<BlogListProps> = ({ sections, componentName }) => {
           به زودی با مطالب جذاب و خواندنی برمیگردیم
         </p>
         <div className="relative">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-indigo-500 blur-lg opacity-30 animate-pulse"></div>
+          <div className="absolute inset-0  bg-gradient-to-r from-blue-50 to-indigo-50 blur-lg opacity-30 animate-pulse"></div>
           <Link
             href="/"
-            className="relative px-6 py-3 bg-white text-indigo-600 rounded-lg font-medium shadow-md hover:shadow-lg transition-all duration-300"
+            className="relative px-6 py-3 bg-white border border-blue-300 text-indigo-600 rounded-lg font-medium shadow-md hover:shadow-lg transition-all duration-300"
           >
             بازگشت به صفحه اصلی
           </Link>
