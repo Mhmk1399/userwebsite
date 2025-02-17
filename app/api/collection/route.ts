@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import connect from "@/lib/data";
 import { NextRequest, NextResponse } from "next/server";
 import collections from "@/models/collection";

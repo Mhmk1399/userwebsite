@@ -66,7 +66,7 @@ export default function Page() {
   const [data, setData] = useState<AllSections[]>([]);
   const [isMobile, setIsMobile] = useState(false);
   const [orders, setOrders] = useState<string[]>([]);
-
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     const fetchToken = async () => {
       const response = await fetch(`/api/generateToken`);
@@ -107,13 +107,22 @@ export default function Page() {
       const testData = template.sections.children.sections as AllSections[];
       setData(testData);
       setOrders(template.sections.children.order);
+      setIsLoading(false);
     };
 
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
+  if(isLoading) {
+    return <div className="flex justify-center items-center h-screen">
+<div className="flex flex-row gap-2">
+  <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce"></div>
+  <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce [animation-delay:-.3s]"></div>
+  <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce [animation-delay:-.5s]"></div>
+</div>
+    </div>;
+  }
   return (
     <div className="grid grid-cols-1 pt-4 px-1">
       {orders.map((componentName, index) => {

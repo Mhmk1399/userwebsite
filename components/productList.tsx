@@ -2,7 +2,7 @@
 import styled from "styled-components";
 import { ProductSection, ProductCardData } from "@/lib/types";
 import ProductCard from "./productCard";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import React from "react";
 import { FiFilter } from "react-icons/fi";
@@ -175,6 +175,7 @@ const ProductList: React.FC<ProductListProps> = ({
   const [selectedColors, setSelectedColors] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState({ min: 0, max: 0 });
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const sortOptions = [
     { value: "newest", label: "جدیدترین" },
@@ -186,8 +187,8 @@ const ProductList: React.FC<ProductListProps> = ({
   console.log(pathname.split("/")[2]);
   const [selectedFilters, setSelectedFilters] = useState({
     category: "",
-    priceMin: 0,
-    priceMax: 100000000,
+    priceMin: 1000,
+    priceMax: 1000000000,
   });
   const getSortedProducts = (products: ProductCardData[]) => {
     switch (sortBy) {
@@ -212,7 +213,7 @@ const ProductList: React.FC<ProductListProps> = ({
     }
   };
 
-  const handleFilter = () => {
+  const handleFilter = useCallback(() => {
     let filtered = [...productData];
 
     // Color filter
@@ -241,10 +242,12 @@ const ProductList: React.FC<ProductListProps> = ({
     const sortedFiltered = getSortedProducts(filtered);
 
     setFilteredProducts(sortedFiltered);
-  };
+  }, [productData, selectedColors, selectedFilters, sortBy]);
+
   const searchParams = useSearchParams();
   const urlString = searchParams.toString();
-  const categoryParam = urlString.split("=")[1];
+  const categoryParam = decodeURIComponent(urlString.split("=")[1]?.replace(/\+/g, " "));
+console.log("categoryParam", categoryParam);
 
   const getCollection = async () => {
     const collectionId = pathname.split("/").pop();
@@ -255,22 +258,28 @@ const ProductList: React.FC<ProductListProps> = ({
     setProductData(data.products);
   };
   useEffect(() => {
-    const loadInitialData = async () => {
-      if (pathname.split("/")[1] === "store") {
-        await fetchProducts();
-        if (categoryParam) {
-          setSelectedFilters((prev) => ({
-            ...prev,
-            category: categoryParam,
-          }));
-        }
-      } else {
-        await getCollection();
-      }
-    };
+    if (pathname.split("/")[1] === "store") {
+      fetchProducts();
+    } else {
+      getCollection();
+    }
+  }, [categoryParam]);
 
-    loadInitialData();
-  }, [pathname, categoryParam, getCollection]);
+ useEffect(() => {
+  const loadInitialData = async () => {
+    const isStoreRoute = pathname.split("/")[1] === "store";
+    if (isStoreRoute) {
+      await fetchProducts();
+      setFilteredProducts(productData); // Initialize filtered products
+    } else {
+      await getCollection();
+      setFilteredProducts(productData); // Initialize filtered products
+    }
+  };
+
+  loadInitialData();
+}, [pathname]);
+
 
   useEffect(() => {
     if (productData.length > 0) {
@@ -299,6 +308,7 @@ const ProductList: React.FC<ProductListProps> = ({
       const response = await fetch("/api/category");
       const data = await response.json();
       setCategories(data);
+      setLoading(false);
     };
     fetchCategories();
   }, []);
@@ -316,6 +326,7 @@ const ProductList: React.FC<ProductListProps> = ({
       const data = await response.json();
       if (data?.products) {
         setProductData(data.products);
+        setLoading(false);
       }
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -329,20 +340,26 @@ const ProductList: React.FC<ProductListProps> = ({
     }
   }, [selectedFilters, sortBy, productData.length, handleFilter]); // Only re-run when filters or sort changes
 
-  useEffect(() => {
-    if (pathname.split("/")[1] === "store") {
-      fetchProducts();
-    } else {
-      getCollection();
-    }
-  }, [getCollection, pathname]);
-
+  
   const sectionData = sections.find(
     (section) => section.type === componentName
   );
 
   if (!sectionData) {
     return <div>No data available</div>;
+  }
+
+  const handleSortChange = (value: "newest" | "price-asc" | "price-desc" | "name") => {
+    setSortBy(value);
+  };
+  if(loading) {
+    return <div className="flex justify-center items-center h-screen">
+<div className="flex flex-row gap-2">
+  <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce"></div>
+  <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce [animation-delay:-.3s]"></div>
+  <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce [animation-delay:-.5s]"></div>
+</div>
+    </div>;
   }
 
   return (
@@ -691,7 +708,7 @@ const ProductList: React.FC<ProductListProps> = ({
                     $data={sectionData}
                     key={option.value}
                     onClick={() =>
-                      setSortBy(
+                      handleSortChange(
                         option.value as
                           | "newest"
                           | "price-asc"
@@ -699,7 +716,7 @@ const ProductList: React.FC<ProductListProps> = ({
                           | "name"
                       )
                     }
-                    className={`pb-1  text-xs lg:text-lg relative cursor-pointer transition-all duration-200 ease-in-out ${
+                    className={`pb-1 text-center text-xs lg:text-lg relative cursor-pointer transition-all duration-200 ease-in-out ${
                       sortBy === option.value
                         ? 'text-blue-500 after:content-[""] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-blue-500'
                         : " hover:text-blue-500"

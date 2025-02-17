@@ -486,7 +486,7 @@
           "descriptionFontWeight": "normal",
           "trustIconBackground": "#e4e4e4",
           "trustIconColor": "#ffffff",
-          "trustItemSize": "15",
+          "trustItemSize": "10",
           "trustItemColor": "bold",
           "scrollButtonBg": "#e4e4e4",
           "scrollButtonColor": "#000000",

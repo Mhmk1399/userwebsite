@@ -18,6 +18,11 @@ const CollectionSchema = new mongoose.Schema(
             status: { type: String, required: true },
             discount: { type: String, required: true },
             storeId: { type: String, required: true }, 
+            colors: [
+                {
+                  code: { type: String, required: true },
+                  quantity: { type: String, required: true } 
+                }]
         }]
         
     },

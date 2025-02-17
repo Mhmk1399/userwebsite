@@ -146,14 +146,14 @@ const TrustItem = styled.div<{
   align-items: center;
   gap: 1rem;
   text-align: center;
-  width: 60px;
+  width: 52px;
 `;
 
 const IconBox = styled(SvgBox)`
   background: ${(props) =>
     props.$data?.blocks?.setting?.trustIconBackground || "#f8f9fa"};
   color: ${(props) => props.$data?.blocks?.setting?.trustIconColor || "red"};
-  padding: 5px;
+  padding: 4px;
 `;
 
 const TrustText = styled.span<{
