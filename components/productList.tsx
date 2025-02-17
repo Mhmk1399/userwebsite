@@ -305,18 +305,9 @@ const ProductList: React.FC<ProductListProps> = ({
 
   const fetchProducts = async () => {
     try {
-      const token = localStorage.getItem("sectionsToken");
-      if (!token) {
-        throw new Error("No token found");
-      }
+   
 
-      const response = await fetch("/api/store", {
-        cache: "no-store",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+        const response = await fetch("/api/store");
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

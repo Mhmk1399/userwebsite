@@ -1,19 +1,24 @@
+import mongoose from "mongoose";
 import connect from "@/lib/data";
 import { NextRequest, NextResponse } from "next/server";
-import Collections from "@/models/collection";
+import collections from "@/models/collection";
+
 export async function GET(req: NextRequest) {
   await connect();
-  if (!connect) {
-    return NextResponse.json({ error: "Connection failed!" });
-  }
-  const collectionId = req.headers.get("collectionId");
+  const collectionId = req.headers.get("CollectionId");
+
   try {
-    const collection = await Collections.find({ _id: collectionId });
+    const collection = await collections.findById(collectionId);
+    
+    if (!collection) {
+      return NextResponse.json({ error: "Collection not found" }, { status: 404 });
+    }
+    
     return NextResponse.json(collection, { status: 200 });
   } catch (error) {
-    console.log(error);
+    console.log("Detailed error:", error);
     return NextResponse.json(
-      { error: "Failed to fetch collections" },
+      { error: "Failed to fetch collection", details: error },
       { status: 500 }
     );
   }

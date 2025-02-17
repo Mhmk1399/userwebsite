@@ -102,22 +102,28 @@ export const SpecialOffer: React.FC<SpecialOfferProps> = ({ sections, isMobile, 
     const fetchSpecialOffers = async () => {
       try {
         const response = await fetch("/api/collection", {
-          method: "GET",
+          method: "GET", 
           headers: {
             "Content-Type": "application/json",
-            "collectionId": CollectionId || "",
+            collectionId: CollectionId||""  // Remove extra quotes
           }
         });
+        
         const data = await response.json();
-        if (data[0].products) {
-          setSpecialOfferProducts(data[0].products);
+        console.log('data', data);
+        
+        if (data && data.products) {
+          setSpecialOfferProducts(data.products);
+
+        } else {
+          console.log("No products found in collection");
         }
       } catch (error) {
         console.log("Error fetching special offers:", error);
       }
-    };
+    };    
     fetchSpecialOffers();
-  }, [CollectionId]);
+  }, []);
 
   if (!sectionData) {
     return <div>No special offers available</div>;

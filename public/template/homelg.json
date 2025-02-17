@@ -214,7 +214,7 @@
               "cardBorderRadius": "8",
               "imageRadius": "8",
               "gridColumns": "4",
-              "selectedCollection": "679e0724216fde7c1cdc1d99"
+              "selectedCollection": "67b1a1455e69469d91947679"
             }
           },
           "setting": {
@@ -288,7 +288,7 @@
               "gradientToColor": "#e5e7eb",
               "buttonText": "مشاهده همه",
               "buttonLink": "/special-offers",
-              "selectedCollection": "679e0724216fde7c1cdc1d99"
+              "selectedCollection": "67b1a19b5e69469d919476f4"
             }
           },
           "setting": {
@@ -365,7 +365,7 @@
             "textHeading": " محصولات جدید ",
 
             "setting": {
-              "selectedCollection": "679e070c216fde7c1cdc1d94",
+              "selectedCollection": "67b1a19b5e69469d919476f4",
               "headingColor": "#000000",
               "headingFontSize": "22",
               "headingFontWeight": "bold",
@@ -392,7 +392,7 @@
           "blocks": {
             "textHeading": " محصولات پرفروش ",
             "setting": {
-              "selectedCollection": "679e070c216fde7c1cdc1d94",
+              "selectedCollection": "67b1a19b5e69469d919476f4",
               "headingColor": "#000000",
               "headingFontSize": "22",
               "headingFontWeight": "bold",

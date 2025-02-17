@@ -85,15 +85,15 @@ export const OfferRow: React.FC<OfferRowProps> = ({
     const fetchOffers = async () => {
       try {
         const response = await fetch("/api/collection", {
-          method: "GET",
+          method: "GET", 
           headers: {
             "Content-Type": "application/json",
-            collectionId: CollectionId || "",
-          },
+            CollectionId: CollectionId||"" // Remove extra quotes
+          }
         });
         const data = await response.json();
-        if (data[0].products) {
-          setOfferProducts(data[0].products);
+        if (data.products) {
+          setOfferProducts(data.products);
         }
       } catch (error) {
         console.log("Error fetching offers:", error);

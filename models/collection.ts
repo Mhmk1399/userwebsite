@@ -7,19 +7,19 @@ const CollectionSchema = new mongoose.Schema(
         storeId: { type: String, required: true },
         products: [{
             _id: { type: mongoose.Schema.Types.ObjectId, ref: 'Products' },
-            name: String,
+            name: { type: String, required: true },
             images: {
-                imageSrc: String,
-                imageAlt: String
+                imageSrc: { type: String, required: true },
+                imageAlt: { type: String, required: true }
             },
-            price: String,
-            description: String,
-            category: String,
-            status: String,
-            discount: String,
-            innventory: String,
-            storeId:String,
+            price: { type: String, required: true },
+            description: { type: String, required: true },
+            category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category' },
+            status: { type: String, required: true },
+            discount: { type: String, required: true },
+            storeId: { type: String, required: true }, 
         }]
+        
     },
     { timestamps: true }
 );

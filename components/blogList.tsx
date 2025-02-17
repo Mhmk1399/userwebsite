@@ -108,7 +108,7 @@ const BlogCard = styled.div<{
   }
 `;
 
-const BlogList: React.FC<BlogListProps> = ({  sections, componentName }) => {
+const BlogList: React.FC<BlogListProps> = ({ sections, componentName }) => {
   const [blogs, setBlogs] = useState<BlogData[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -120,8 +120,15 @@ const BlogList: React.FC<BlogListProps> = ({  sections, componentName }) => {
           throw new Error("Failed to fetch blogs");
         }
         const data = await response.json();
+        console.log(data , "bbbbbbbbb")
         // Handle null blogs response
-        setBlogs(data.blogs ? Array.isArray(data.blogs) ? data.blogs : [data.blogs] : []);
+        setBlogs(
+          data.blogs
+            ? Array.isArray(data.blogs)
+              ? data.blogs
+              : [data.blogs]
+            : []
+        );
         setLoading(false);
       } catch (error) {
         console.error("Error fetching blogs:", error);
@@ -133,29 +140,33 @@ const BlogList: React.FC<BlogListProps> = ({  sections, componentName }) => {
   }, []);
   if (!blogs || blogs.length === 0) {
     return (
-      <div className="min-h-[400px] flex flex-col items-center justify-center p-8 bg-gradient-to-r from-blue-50 to-indigo-50 mt-28">
+      <div className="min-h-[400px] flex flex-col items-center justify-center p-8 bg-white">
         <div className=" mb-6">
-          <svg 
+          <svg
             className="w-24 h-24 text-indigo-500"
-            fill="none" 
-            viewBox="0 0 24 24" 
+            fill="none"
+            viewBox="0 0 24 24"
             stroke="currentColor"
           >
-            <path 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              strokeWidth={2} 
-              d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9.5a2 2 0 00-2-2h-2" 
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9.5a2 2 0 00-2-2h-2"
             />
           </svg>
         </div>
-        <h3 className="text-2xl font-bold text-gray-800 mb-2">!!هنوز مطلبی منتشر نشده</h3>
-        <p className="text-gray-600 text-center max-w-md mb-6">به زودی با مطالب جذاب و خواندنی برمیگردیم</p>
+        <h3 className="text-2xl font-bold text-gray-800 mb-2">
+          !!هنوز مطلبی منتشر نشده
+        </h3>
+        <p className="text-gray-600 text-center max-w-md mb-6">
+          به زودی با مطالب جذاب و خواندنی برمیگردیم
+        </p>
         <div className="relative">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-indigo-500 blur-lg opacity-30 animate-pulse"></div>
-          <Link 
+          <div className="absolute inset-0  bg-gradient-to-r from-blue-50 to-indigo-50 blur-lg opacity-30 animate-pulse"></div>
+          <Link
             href="/"
-            className="relative px-6 py-3 bg-white text-indigo-600 rounded-lg font-medium shadow-md hover:shadow-lg transition-all duration-300"
+            className="relative px-6 py-3 bg-white border border-blue-300 text-indigo-600 rounded-lg font-medium shadow-md hover:shadow-lg transition-all duration-300"
           >
             بازگشت به صفحه اصلی
           </Link>
@@ -163,7 +174,9 @@ const BlogList: React.FC<BlogListProps> = ({  sections, componentName }) => {
       </div>
     );
   }
-  const sectionData = sections?.find((section) => section.type === componentName);
+  const sectionData = sections?.find(
+    (section) => section.type === componentName
+  );
 
   if (!sectionData) {
     return null;
@@ -177,13 +190,12 @@ const BlogList: React.FC<BlogListProps> = ({  sections, componentName }) => {
     );
   }
 
-
   console.log("Section data:", sectionData);
 
   if (!sectionData) {
     return null;
   }
-  
+
   return (
     <SectionBlogList dir="rtl" $data={sectionData}>
       {blogs.map((blog, index) => (
@@ -197,7 +209,7 @@ const BlogList: React.FC<BlogListProps> = ({  sections, componentName }) => {
               src={blog.imageSrc || "/assets/images/pro2.jpg"}
               alt={blog.imageAlt || "Blog image"}
               width={1000}
-              height={800}
+              height={1000}
             />
           ) : null}
           <div className="content text-right">
