@@ -15,7 +15,11 @@ export const GET = async () => {
       return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
 
-    const blogs = await Blog.find({ sotreId: storeId });
+    const blogs = await Blog.find({ storeId : storeId });
+    if (!blogs) {
+      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+    }
+
     return NextResponse.json({ blogs }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
