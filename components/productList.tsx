@@ -215,35 +215,33 @@ const ProductList: React.FC<ProductListProps> = ({
 
   const handleFilter = useCallback(() => {
     let filtered = [...productData];
-
-    // Color filter
-    if (selectedColors.length > 0) {
-      filtered = filtered.filter((product) =>
-        product.colors?.some((color) => selectedColors.includes(color.code))
-      );
-    }
-
+  
     // Category filter
     if (selectedFilters.category) {
       filtered = filtered.filter(
         (product) => product.category?.name === selectedFilters.category
       );
     }
-
+  
+    // Color filter
+    if (selectedColors.length > 0) {
+      filtered = filtered.filter((product) =>
+        product.colors?.some((color) => selectedColors.includes(color.code))
+      );
+    }
+  
     // Price filter
     filtered = filtered.filter((product) => {
       const price = parseInt(product.price);
-      return (
-        price >= selectedFilters.priceMin && price <= selectedFilters.priceMax
-      );
+      return price >= selectedFilters.priceMin && price <= selectedFilters.priceMax;
     });
-
+  
     // Apply current sorting
     const sortedFiltered = getSortedProducts(filtered);
-
+  
     setFilteredProducts(sortedFiltered);
   }, [productData, selectedColors, selectedFilters, sortBy]);
-
+  
   const searchParams = useSearchParams();
   const urlString = searchParams.toString();
   const categoryParam = decodeURIComponent(urlString.split("=")[1]?.replace(/\+/g, " "));
@@ -730,17 +728,16 @@ console.log("categoryParam", categoryParam);
           </FilterBgRow>
 
           <SectionProductList
-            $data={sectionData}
-            $isMobile={isMobile}
-            $previewWidth="default"
-            className="mt-20"
-          >
-            {(filteredProducts.length > 0 ? filteredProducts : productData).map(
-              (product) => (
-                <ProductCard key={product._id} productData={product} />
-              )
-            )}
-          </SectionProductList>
+  $data={sectionData}
+  $isMobile={isMobile}
+  $previewWidth="default"
+  className="mt-20"
+>
+  {filteredProducts.map((product) => (
+    <ProductCard key={product._id} productData={product} />
+  ))}
+</SectionProductList>
+
         </div>
       </div>
     </>
