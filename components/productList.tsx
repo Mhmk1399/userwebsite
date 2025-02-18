@@ -731,7 +731,7 @@ console.log("categoryParam", categoryParam);
   $data={sectionData}
   $isMobile={isMobile}
   $previewWidth="default"
-  className="mt-20"
+  className="mt-20 min-h-[500px]"
 >
   {filteredProducts.map((product) => (
     <ProductCard key={product._id} productData={product} />

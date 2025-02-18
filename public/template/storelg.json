@@ -1,6 +1,10 @@
 {
   "type": "store",
   "children": {
+     "metaData":{
+      "title":"juju",
+      "description":"juju page"
+    },
     "sections": [
       {
         "type": "ProductList",

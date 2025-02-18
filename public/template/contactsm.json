@@ -1,6 +1,10 @@
 {
   "children": {
     "type": "contact",
+     "metaData":{
+      "title":"juju",
+      "description":"juju page"
+    },
     "sections": [
       {
         "type": "ImageText",

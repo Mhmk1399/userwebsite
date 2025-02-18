@@ -146,8 +146,11 @@
       },
       "type": "header"
     },
-
     "children": {
+       "metaData":{
+      "title":"juju",
+      "description":"juju page"
+    },
       "sections": [
         {
           "type": "SlideBanner",
@@ -196,7 +199,6 @@
             }
           }
         },
-
         {
           "type": "SpecialOffer",
           "blocks": {
@@ -214,7 +216,7 @@
               "cardBorderRadius": "8",
               "imageRadius": "8",
               "gridColumns": "4",
-              "selectedCollection": "67b1a1455e69469d91947679"
+              "selectedCollection": "67b341e8193d4de634d00fec"
             }
           },
           "setting": {
@@ -257,10 +259,10 @@
               }
             ],
             "setting": {
-              "storyRingColor": "#ef394e",
+              "storyRingColor": "#1447e1",
               "viewedRingColor": "#e0e0e0",
               "titleColor": "#666666",
-              "titleFontSize": "12",
+              "titleFontSize": "19",
               "titleFontWeight": "normal",
               "imageWidth": "70px",
               "imageHeight": "70px",
@@ -288,7 +290,7 @@
               "gradientToColor": "#e5e7eb",
               "buttonText": "مشاهده همه",
               "buttonLink": "/special-offers",
-              "selectedCollection": "67b1a19b5e69469d919476f4"
+              "selectedCollection": "67b341e8193d4de634d00fec"
             }
           },
           "setting": {
@@ -363,9 +365,8 @@
           "type": "ProductsRow",
           "blocks": {
             "textHeading": " محصولات جدید ",
-
             "setting": {
-              "selectedCollection": "67b1a19b5e69469d919476f4",
+              "selectedCollection": "67b341e8193d4de634d00fec",
               "headingColor": "#000000",
               "headingFontSize": "22",
               "headingFontWeight": "bold",
@@ -392,7 +393,7 @@
           "blocks": {
             "textHeading": " محصولات پرفروش ",
             "setting": {
-              "selectedCollection": "67b1a19b5e69469d919476f4",
+              "selectedCollection": "67b341e8193d4de634d00fec",
               "headingColor": "#000000",
               "headingFontSize": "22",
               "headingFontWeight": "bold",
@@ -461,7 +462,6 @@
       ],
       "order": [
         "Story",
-
         "SlideBanner",
         "SpecialOffer",
         "OfferRow",
@@ -482,7 +482,7 @@
           "descriptionColor": "#000000",
           "descriptionFontSize": "18",
           "descriptionFontWeight": "normal",
-          "trustIconBackground": "#e4e4e4",
+          "trustIconBackground": "#1a54db",
           "trustIconColor": "#ffffff",
           "trustItemSize": "15",
           "trustItemColor": "bold",
@@ -521,9 +521,13 @@
         "marginBottom": "20",
         "paddinRight": "0",
         "paddinLeft": "0",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#ffad8a"
       }
     }
   },
-  "order": ["section-header", "children", "section-footer"]
+  "order": [
+    "section-header",
+    "children",
+    "section-footer"
+  ]
 }

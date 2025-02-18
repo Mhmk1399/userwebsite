@@ -1,6 +1,10 @@
 {
   "children": {
     "type": "about",
+     "metaData":{
+      "title":"juju",
+      "description":"juju page"
+    },
     "sections": [
       {
         "type": "NewsLetter",
