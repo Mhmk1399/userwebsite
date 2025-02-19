@@ -1,8 +1,8 @@
 "use client";
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-const Auth = () => {
+const Auth: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [formData, setFormData] = useState<{ [key: string]: string }>({});
@@ -10,6 +10,14 @@ const Auth = () => {
   const [modalSuccess, setModalSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    document.title = "صفحه ورود";
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute("content", "صفحه ورود");
+    }
+  }, []);
 
   const fields = isLogin
     ? [
@@ -180,7 +188,7 @@ const Auth = () => {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center p-10 lg:p-0 "
+      className="min-h-screen bg-gradient-to-b from-white to-indigo-200 flex items-center justify-center p-10 lg:p-0 "
       dir="rtl"
     >
       {modalSuccess && (
