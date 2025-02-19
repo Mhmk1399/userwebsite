@@ -264,6 +264,17 @@ export default function Page() {
     }
   }, []);
 
+  useEffect(() => {
+    document.title = Data.children.metaData.title;
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute(
+        "content",
+        Data.children.metaData.description
+      );
+    }
+  }, []);
+
   const componentMap = {
     RichText,
     Banner,
