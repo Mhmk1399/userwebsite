@@ -31,7 +31,7 @@ const StoryContainer = styled.div<{
 const StoriesWrapper = styled.section`
   display: flex;
   direction: rtl;
-  justify-content: flex-start; // Changed from center
+  justify-content: center;
   overflow-x: auto;
   gap: 12px;
   padding: 10px;
@@ -53,7 +53,7 @@ const StoryItem = styled.div<{
   align-items: center;
   cursor: pointer;
   flex-shrink: 0; // Add this line
-  width: 104px; // Add fixed width (100px + 4px padding)
+  // width: 80px; // Add fixed width (100px + 4px padding)
 
   .story-ring {
     padding: 2px;
@@ -103,12 +103,16 @@ export const Story: React.FC<StoryProps> = ({ sections, componentName }) => {
   return (
     <>
       <StoryContainer $data={sectionData} className="story-container">
-        <StoriesWrapper ref={containerRef} className="overflow-x-auto">
+        <StoriesWrapper
+          ref={containerRef}
+          className="overflow-x-auto scroll-smooth"
+        >
           {(stories.length > 0 ? stories : sectionData.blocks.stories).map(
             (story, idx) => (
               <StoryItem
                 key={"id" in story ? story.id + idx : idx}
                 $data={sectionData}
+                className=""
                 onClick={() =>
                   setSelectedStory(
                     "image" in story ? story.image : story.imageUrl
@@ -119,9 +123,9 @@ export const Story: React.FC<StoryProps> = ({ sections, componentName }) => {
                   <Image
                     src={"/assets/images/pro1.jpg"}
                     alt={story.title}
-                    className="story-image w-[100px] h-[100px] object-"
-                    width={100}
-                    height={100}
+                    className="story-image w-[60px] h-[60px] object-"
+                    width={1000}
+                    height={1000}
                   />
                 </div>
                 <span className="story-title">{story.title}</span>

@@ -85,11 +85,11 @@ export const OfferRow: React.FC<OfferRowProps> = ({
     const fetchOffers = async () => {
       try {
         const response = await fetch("/api/collection", {
-          method: "GET", 
+          method: "GET",
           headers: {
             "Content-Type": "application/json",
-            CollectionId: CollectionId||"" // Remove extra quotes
-          }
+            CollectionId: CollectionId || "", // Remove extra quotes
+          },
         });
         const data = await response.json();
         if (data.products) {
@@ -155,6 +155,7 @@ export const OfferRow: React.FC<OfferRowProps> = ({
               height="24px"
               viewBox="0 -960 960 960"
               width="24px"
+              aria-label="offer-button"
             >
               <path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z" />
             </svg>
@@ -162,6 +163,7 @@ export const OfferRow: React.FC<OfferRowProps> = ({
         </div>
         <button
           className="rounded-full px-4 py-2 my-4 text-lg mr-auto font-semibold hidden lg:flex flex-row-reverse gap-x-2 items-center"
+          aria-label="offer-button"
           style={{
             background: sectionData.blocks.setting?.buttonColor || "#ffffff",
             color: sectionData.blocks.setting?.buttonTextColor || "#000000",
@@ -174,6 +176,7 @@ export const OfferRow: React.FC<OfferRowProps> = ({
             height="24px"
             viewBox="0 -960 960 960"
             width="24px"
+            aria-label="offer-button"
           >
             <path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z" />
           </svg>

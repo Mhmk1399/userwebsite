@@ -33,7 +33,7 @@ import Video from "@/components/video";
 import { Collection } from "@/components/collection";
 import RichText from "@/components/richText";
 import ProductList from "@/components/productList";
-import { SpecialOffer } from "@/components/specialOffer";
+// import { SpecialOffer } from "@/components/specialOffer";
 import { Story } from "@/components/story";
 import { OfferRow } from "@/components/offerRow";
 import Gallery from "@/components/gallery";
@@ -89,7 +89,7 @@ export default function Page() {
     MultiRow,
     ProductList,
     Collection,
-    SpecialOffer,
+    // SpecialOffer,
     Story,
     OfferRow,
     Gallery,
