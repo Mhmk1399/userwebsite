@@ -83,28 +83,28 @@
             ]
           },
           {
-            "name": "شگفت‌انگیزها",
-            "url": "/offers"
+            "name": "درباره ما",
+            "url": "/about"
           },
           {
-            "name": "سوپرمارکت",
-            "url": "/supermarket"
+            "name": "وبلاگ",
+            "url": "/blog"
           },
           {
-            "name": "پرفروش‌ترین‌ها",
-            "url": "/best-sellers"
+            "name": "تماس با ما",
+            "url": "/contact"
           },
           {
-            "name": "تخفیف‌ها و پیشنهادها",
+            "name": "تخفیف‌ها",
             "url": "/discounts"
           },
           {
-            "name": "سوالی دارید؟",
+            "name": "سوالات متداول",
             "url": "/faq"
           },
           {
-            "name": "فروشنده شوید",
-            "url": "/become-seller"
+            "name": "تبلیغات",
+            "url": "/ads"
           }
         ],
         "setting": {
@@ -123,13 +123,13 @@
           "locationButtonBgColor": "#FFF7ED",
           "locationButtonTextColor": "#EA580C",
           "announcementText": "ارسال رایگان برای خرید‌ بالای ۵۰۰ هزار تومان!",
-          "announcementBgColor": "#f1b80c",
+          "announcementBgColor": "#e51542",
           "announcementTextColor": "#ffffff",
           "announcementFontSize": "14",
           "bgColor": "#ffffff",
           "gap": "10",
           "megaMenuBg": "#ffffff",
-          "categoryItemColor":"ffffff",
+          "categoryItemColor": "ffffff",
           "categoryItemSize": "14",
           "categoryItemHoverColor": "#000000"
         }
@@ -146,12 +146,7 @@
       },
       "type": "header"
     },
-
     "children": {
-       "metaData":{
-      "title":"juju",
-      "description":"juju page"
-    },
       "sections": [
         {
           "type": "SlideBanner",
@@ -200,8 +195,6 @@
             }
           }
         },
-   
-       
         {
           "type": "SpecialOffer",
           "blocks": {
@@ -219,7 +212,7 @@
               "cardBorderRadius": "8",
               "imageRadius": "8",
               "gridColumns": "4",
-              "selectedCollection":"67b1a1455e69469d91947679"
+              "selectedCollection": "67b341e8193d4de634d00fec"
             }
           },
           "setting": {
@@ -262,7 +255,7 @@
               }
             ],
             "setting": {
-              "storyRingColor": "#ef394e",
+              "storyRingColor": "#fd0de9",
               "viewedRingColor": "#e0e0e0",
               "titleColor": "#666666",
               "titleFontSize": "12",
@@ -285,15 +278,15 @@
           "blocks": {
             "offers": [],
             "setting": {
-              "titleColor": "#22C55E",
+              "titleColor": "#0c2c18",
               "titleText": "شگفت‌انگیز سوپرمارکتی",
-              "buttonColor": "#ffffff",
+              "buttonColor": "#d91717",
               "buttonTextColor": "#000000",
               "gradientFromColor": "#f3f4f6",
               "gradientToColor": "#e5e7eb",
               "buttonText": "مشاهده همه",
               "buttonLink": "/special-offers",
-              "selectedCollection": "67b1a19b5e69469d919476f4"
+              "selectedCollection": "67b341e8193d4de634d00fec"
             }
           },
           "setting": {
@@ -342,8 +335,8 @@
               }
             ],
             "setting": {
-              "headingColor": "#14213D",
-              "headingFontSize": "32",
+              "headingColor": "#1052e0",
+              "headingFontSize": "70",
               "headingFontWeight": "bold",
               "brandNameColor": "#666666",
               "brandNameFontSize": "16",
@@ -368,9 +361,8 @@
           "type": "ProductsRow",
           "blocks": {
             "textHeading": " محصولات جدید ",
-
             "setting": {
-              "selectedCollection": "67b1a19b5e69469d919476f4",
+              "selectedCollection": "67b341e8193d4de634d00fec",
               "headingColor": "#000000",
               "headingFontSize": "22",
               "headingFontWeight": "bold",
@@ -397,7 +389,7 @@
           "blocks": {
             "textHeading": " محصولات پرفروش ",
             "setting": {
-              "selectedCollection": "67b1a19b5e69469d919476f4",
+              "selectedCollection": "67b341e8193d4de634d00fec",
               "headingColor": "#000000",
               "headingFontSize": "22",
               "headingFontWeight": "bold",
@@ -466,16 +458,14 @@
       ],
       "order": [
         "Story",
-       
-     
         "SlideBanner",
         "SpecialOffer",
         "OfferRow",
         "ProductsRow-2",
         "Gallery",
         "Brands",
-        "ProductsRow",
-        "Gallery-2"
+        "Gallery-2",
+        "ProductsRow"
       ]
     },
     "sectionFooter": {
@@ -490,10 +480,10 @@
           "descriptionFontWeight": "normal",
           "trustIconBackground": "#e4e4e4",
           "trustIconColor": "#ffffff",
-          "trustItemSize": "10",
+          "trustItemSize": "15",
           "trustItemColor": "bold",
-          "scrollButtonBg": "#e4e4e4",
-          "scrollButtonColor": "#000000",
+          "scrollButtonBg": "#8684f1",
+          "scrollButtonColor": "#fffafa",
           "categoryColor": "#000000",
           "linkColor": "#0077b6",
           "logoWidth": "80",
@@ -509,16 +499,7 @@
         "textNumber": "با این شماره تماس بگیرید",
         "phoneNumber": "09123456789",
         "logo": "/assets/images/logo.webp",
-        "links": [
-          {
-            "url": "/privacy-policy",
-            "label": "Privacy Policy"
-          },
-          {
-            "url": "/terms-of-service",
-            "label": "Terms of Service"
-          }
-        ]
+        "links": []
       },
       "setting": {
         "paddingTop": "30",
@@ -527,7 +508,7 @@
         "marginBottom": "20",
         "paddinRight": "0",
         "paddinLeft": "0",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#e30d0d"
       }
     }
   },

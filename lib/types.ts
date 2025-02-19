@@ -365,7 +365,7 @@ export interface Section {
     | GalleryBlock
     | StoreSection["blocks"] // Add store blocks
     | BlogSection["blocks"] // Add blog blocks
-    | BlogDetailSection["blocks"] // Add blog detail blocks
+    | BlogDetailSection["blocks"] 
     | DetailPageSection["blocks"]; // Add detail page blocks
   type: string;
 }

@@ -378,14 +378,16 @@ const Footer = () => {
 
   return (
     <FooterContainer dir="rtl" $data={sectionData}>
-      <Logo
-        $data={sectionData}
-        src={logo || "/assets/images/logo.webp"}
-        width={100}
-        height={100}
-        alt="Logo"
-        className="ml-auto mr-6"
-      />
+      <Link href="/" className="ml-auto">
+        <Logo
+          $data={sectionData}
+          src={logo || "/assets/images/logo.webp"}
+          width={100}
+          height={100}
+          alt="Logo"
+          className="ml-auto mr-6"
+        />
+      </Link>
       <NumberPart $data={sectionData} className="ml-auto  mt-4 mr-6">
         <Link href={`tel:${phoneNumber || "123123123"}`}>{phoneNumber} | </Link>
         <span className="text-sm text-gray-500 mr-1">{textNumber}</span>

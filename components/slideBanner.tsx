@@ -37,12 +37,16 @@ const SlideContainer = styled.div<{ $isMobile: boolean }>`
   justify-content: center;
 `;
 
-const Slide = styled.div<{ $active: boolean; $data: SlideBannerSection; $isMobile: boolean }>`
+const Slide = styled.div<{
+  $active: boolean;
+  $data: SlideBannerSection;
+  $isMobile: boolean;
+}>`
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height:100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -62,7 +66,8 @@ const NavigationButtons = styled.div`
 const NavButton = styled.button<{
   $data: SlideBannerSection;
 }>`
-  background: ${(props) => props.$data.blocks.setting?.bgArrow || "rgba(255, 255, 255, 0.8)"};
+  background: ${(props) =>
+    props.$data.blocks.setting?.bgArrow || "rgba(255, 255, 255, 0.8)"};
   border: none;
   border-radius: 50%;
   width: 40px;
@@ -95,7 +100,8 @@ const Dot = styled.button<{ $active: boolean; $data: SlideBannerSection }>`
   background: ${(props) =>
     props.$active
       ? props.$data.blocks.setting?.activeDotColor || "#ffffff"
-      : props.$data.blocks.setting?.inactiveDotColor || "rgba(255, 255, 255, 0.5)"};
+      : props.$data.blocks.setting?.inactiveDotColor ||
+        "rgba(255, 255, 255, 0.5)"};
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -105,9 +111,15 @@ const Dot = styled.button<{ $active: boolean; $data: SlideBannerSection }>`
   }
 `;
 
-const SlideBanner: React.FC<SlideBannerProps> = ({ sections, isMobile, componentName }) => {
+const SlideBanner: React.FC<SlideBannerProps> = ({
+  sections,
+  isMobile,
+  componentName,
+}) => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const sectionData = sections.find((section) => section.type === componentName);
+  const sectionData = sections.find(
+    (section) => section.type === componentName
+  );
 
   if (!sectionData) return null;
 
@@ -125,26 +137,39 @@ const SlideBanner: React.FC<SlideBannerProps> = ({ sections, isMobile, component
 
   return (
     <SlideBannerSections $data={sectionData} $isMobile={isMobile} dir="rtl">
-      <SlideContainer $isMobile={isMobile}> 
+      <SlideContainer $isMobile={isMobile}>
         {sectionData.blocks.slides.map((slide, index) => (
-          <Slide key={index} $active={currentSlide === index} $data={sectionData} $isMobile={isMobile}>
+          <Slide
+            key={index}
+            $active={currentSlide === index}
+            $data={sectionData}
+            $isMobile={isMobile}
+          >
             <Image
               src={slide.imageSrc}
               alt={slide.imageAlt}
               width={isMobile ? 2000 : 2000}
               height={isMobile ? 2000 : 2000}
               className="w-full h-full "
-              style={{ objectFit: 'cover'}}
+              style={{ objectFit: "cover" }}
             />
           </Slide>
         ))}
       </SlideContainer>
 
       <NavigationButtons>
-        <NavButton onClick={prevSlide} $data={sectionData}>
+        <NavButton
+          aria-label="previous button"
+          onClick={prevSlide}
+          $data={sectionData}
+        >
           <BsChevronRight size={20} />
         </NavButton>
-        <NavButton onClick={nextSlide} $data={sectionData}>
+        <NavButton
+          aria-label="next button"
+          onClick={nextSlide}
+          $data={sectionData}
+        >
           <BsChevronLeft size={20} />
         </NavButton>
       </NavigationButtons>
@@ -153,6 +178,7 @@ const SlideBanner: React.FC<SlideBannerProps> = ({ sections, isMobile, component
         {sectionData.blocks.slides.map((_, index) => (
           <Dot
             $data={sectionData}
+            aria-label="dot"
             key={index}
             $active={currentSlide === index}
             onClick={() => setCurrentSlide(index)}

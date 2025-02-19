@@ -30,20 +30,27 @@ const Card = styled.div<{
 }>`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   border-radius: ${(props) =>
     props.$setting?.cardBorderRadius || defaultSetting.cardBorderRadius};
   background: ${(props) =>
     props.$setting?.cardBackground || defaultSetting.cardBackground};
-  margin: 10px;
-  padding: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 12px;
   height: 400px;
   width: 320px;
   min-height: 400px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+  }
+
   @media (max-width: 425px) {
     margin: 10px 5px;
-    height: 450px;
+    width: 100%;
   }
 `;
 
@@ -58,8 +65,9 @@ const ProductImage = styled(Image)<{
   border-radius: ${(props) =>
     props.$settings?.imageRadius || defaultSetting.imageRadius};
   transition: all 0.3s ease;
+
   &:hover {
-    transform: scale(1.01);
+    transform: scale(1.05);
   }
 `;
 
@@ -72,8 +80,8 @@ const ProductName = styled.h3<{
   font-weight: ${(props) =>
     props.$settings?.nameFontWeight || defaultSetting.nameFontWeight};
   color: ${(props) => props.$settings?.nameColor || defaultSetting.nameColor};
-  margin: 8px 0;
-  text-align: center;
+  margin: 12px 0 8px;
+  line-height: 1.4;
 `;
 
 const ProductDescription = styled.p<{
@@ -87,8 +95,12 @@ const ProductDescription = styled.p<{
   font-weight: ${(props) =>
     props.$settings?.descriptionFontWeight ||
     defaultSetting.descriptionFontWeight};
-  text-align: center;
-  margin: 8px 0;
+  line-height: 1.6;
+  margin: 8px 0 16px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 `;
 
 const ProductPrice = styled.span<{
@@ -99,7 +111,17 @@ const ProductPrice = styled.span<{
     props.$settings?.priceFontSize || defaultSetting.priceFontSize};
   font-weight: ${(props) =>
     props.$settings?.pricecolor || defaultSetting.pricecolor};
-  margin: 8px 0;
+
+  padding: 4px 0;
+  display: block;
+  text-align: center;
+  width: 100%;
+  border-radius: 6px;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.02);
+  }
 `;
 
 const ProductCard: React.FC<ProductCardProps> = ({ productData }) => {
@@ -115,7 +137,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData }) => {
   };
   const [currentImageIndex] = useState(0);
 
-  const handleNavigate = (id : string) => {
+  const handleNavigate = (id: string) => {
     router.push(`/store/${id}`);
   };
 
@@ -137,17 +159,24 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData }) => {
         width={4000}
         height={4000}
       />
-      <ProductName $productData={safeProductData}>
-        {safeProductData.name || "Unnamed Product"}
-      </ProductName>
-      <ProductDescription $productData={safeProductData}>
-        {safeProductData.description || "No description available"}
-      </ProductDescription>
-      <ProductPrice $productData={safeProductData}>
-        {safeProductData.price !== undefined
-          ? safeProductData.price
-          : "Price not available"}
-      </ProductPrice>
+      <div className="flex flex-col p-2 w-full">
+        <ProductName className="" $productData={safeProductData}>
+          {safeProductData.name || "Unnamed Product"}
+        </ProductName>
+        <ProductDescription $productData={safeProductData}>
+          {safeProductData.description || "No description available"}
+        </ProductDescription>
+        <div className=" w-full  border-[#e51542] border-x-2 bg-red-50 hover:bg-red-100 transition-all duration-200 flex justify-center items-center  p-2">
+          <ProductPrice
+            className="text-black font-extralight leading-4 text-center w-full"
+            $productData={safeProductData}
+          >
+            {safeProductData.price !== undefined
+              ? safeProductData.price
+              : "Price not available"}
+          </ProductPrice>
+        </div>
+      </div>
     </Card>
   );
 };

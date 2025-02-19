@@ -30,7 +30,6 @@ const HeaderWrapper = styled.header<{
 }>`
   width: 100%;
   border-bottom: 1px solid #e5e7eb;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   position: relative;
   margin-top: ${(props) => props.$data.setting?.marginTop || "0"}px;
   margin-bottom: ${(props) => props.$data?.setting?.marginBottom || "0"}px;
@@ -50,10 +49,34 @@ const AnnouncementBar = styled.div<{
     props.$data.blocks?.setting?.announcementBgColor || "#f1b80c"};
   color: ${(props) =>
     props.$data.blocks?.setting?.announcementTextColor || "#ffffff"};
-  padding: 17px 16px;
+  padding: 6px 16px;
   text-align: center;
   font-size: ${(props) =>
     props.$data.blocks.setting?.announcementFontSize || "14"}px;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+
+  /* Marquee animation */
+  .marquee-content {
+    display: inline-block;
+    animation: marquee 15s linear infinite;
+    padding-left: 100%;
+  }
+
+  @keyframes marquee {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+
+  /* Hover pause effect */
+  &:hover .marquee-content {
+    animation-play-state: paused;
+  }
 
   @media (max-width: 768px) {
     font-size: 12px;
@@ -101,7 +124,7 @@ const SearchContainer = styled.div`
   // flex: 1;
   @media (min-width: 768px) {
     margin-right: 1rem;
-    // margin-left: 500px;
+    margin-left: 150px;
   }
 `;
 
@@ -152,12 +175,33 @@ const NavItem = styled(Link)<{
     props.$data.blocks.setting?.itemFontWeight || "normal"};
   cursor: pointer;
   text-align: right;
+  position: relative;
+  padding: 4px 0;
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    right: 0;
+    width: 0;
+    height: 2px;
+    background: ${(props) =>
+      props.$data.blocks.setting?.itemHoverColor || "#FCA311"};
+    transition: width 0.3s cubic-bezier(0.65, 0, 0.35, 1);
+    border-radius: 2px;
+  }
+
+  &:hover::after {
+    width: 100%;
+    left: 0;
+  }
 
   &:hover {
     color: ${(props) =>
       props.$data.blocks.setting?.itemHoverColor || "#FCA311"};
   }
 `;
+
 const MegaMenu = styled.div<{ isVisible?: boolean; $data: HeaderSection }>`
   position: absolute;
   top: 100%;
@@ -354,15 +398,12 @@ const Header = () => {
           },
           credentials: "include", // Add this to handle cookies if needed
         });
-        console.log("Response status:", response.status);
-        console.log("Response headers:", Object.fromEntries(response.headers));
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const cateData = await response.json();
-        console.log("Received categories:", cateData); // Debug log
         setCategories(cateData);
       } catch (error) {
         console.log("Error fetching categories", error);
@@ -441,24 +482,30 @@ const Header = () => {
     router.push(`/cart`);
   };
   if (!isHeaderBlock(blocks)) {
-    console.error("Blocks data is missing or invalid.");
     return null;
   }
 
   return (
     <HeaderWrapper $data={sectionData}>
-      <AnnouncementBar $data={sectionData}>
-        {sectionData.blocks.setting?.announcementText}
+      <AnnouncementBar
+        className="border-b border-[#e5e7eb]"
+        $data={sectionData}
+      >
+        <div className="marquee-content">
+          {sectionData.blocks.setting?.announcementText}
+        </div>
       </AnnouncementBar>
 
       <MainSection>
-        <div className="flex flex-row-reverse items-center gap-6 justify-between w-full">
+        <div className="flex flex-row-reverse items-center  justify-between w-full">
           <LogoContainer>
-            <Logo
-              $data={sectionData}
-              src={sectionData.blocks.imageLogo || "/assets/images/logo.webp"}
-              alt={sectionData.blocks.imageAlt}
-            />
+            <Link href="/">
+              <Logo
+                $data={sectionData}
+                src={sectionData.blocks.imageLogo || "/assets/images/logo.webp"}
+                alt={sectionData.blocks.imageAlt}
+              />
+            </Link>
           </LogoContainer>
 
           <SearchContainer>
@@ -477,12 +524,13 @@ const Header = () => {
         </div>
 
         <ActionButtons>
-          <div className="flex items-center gap-2">
+          <div className="flex  items-center gap-2">
             <ShoppingCart
               className="text-gray-400 cursor-pointer hover:text-black"
               size={24}
               onClick={handleNavigate}
             />
+            |
             <LoginButton href="/login">
               <User size={18} /> ورود | ثبت‌نام
             </LoginButton>
@@ -493,6 +541,7 @@ const Header = () => {
               <svg
                 width="24"
                 height="24"
+                aria-label="close"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -504,6 +553,7 @@ const Header = () => {
             ) : (
               <svg
                 width="24"
+                aria-label="menu"
                 height="24"
                 viewBox="0 0 24 24"
                 fill="none"

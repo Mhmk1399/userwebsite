@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import Data from "../../public/template/collectionlg.json";
 
 import {
   BannerSection,
@@ -66,6 +67,17 @@ export default function Page() {
   const [data, setData] = useState<AllSections[]>([]);
   const [isMobile, setIsMobile] = useState(false);
   const [orders, setOrders] = useState<string[]>([]);
+
+  useEffect(() => {
+    document.title = Data.children.metaData.title;
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute(
+        "content",
+        Data.children.metaData.description
+      );
+    }
+  }, []);
 
   const componentMap = {
     RichText,

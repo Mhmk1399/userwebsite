@@ -1,9 +1,6 @@
 "use client";
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-
-
-
 
 const Auth: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -13,6 +10,14 @@ const Auth: React.FC = () => {
   const [modalSuccess, setModalSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    document.title = "صفحه ورود";
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute("content", "صفحه ورود");
+    }
+  }, []);
 
   const fields = isLogin
     ? [
@@ -76,7 +81,7 @@ const Auth: React.FC = () => {
           });
           const data = await response.json();
           if (response.ok && data.token) {
-            localStorage.setItem("tokenUser", data.token);            
+            localStorage.setItem("tokenUser", data.token);
             const userId = data.userId;
             localStorage.setItem("userId", userId);
             router.push(`/`);
@@ -95,10 +100,7 @@ const Auth: React.FC = () => {
           response = await fetch("/api/auth", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name, phone, email, password }
-              
-            ),
-          
+            body: JSON.stringify({ name, phone, email, password }),
           });
           break;
         }
@@ -109,7 +111,7 @@ const Auth: React.FC = () => {
         setTimeout(async () => {
           if (!isLogin) {
             setIsLogin(true);
-            
+
             const data = await response.json();
             localStorage.setItem("tokenUser", data.token);
             localStorage.setItem("userId", data.userId);
