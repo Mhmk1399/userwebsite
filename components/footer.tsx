@@ -378,7 +378,7 @@ const Footer = () => {
 
   return (
     <FooterContainer dir="rtl" $data={sectionData}>
-      <Link href="/">
+      <Link href="/" className="ml-auto">
         <Logo
           $data={sectionData}
           src={logo || "/assets/images/logo.webp"}
