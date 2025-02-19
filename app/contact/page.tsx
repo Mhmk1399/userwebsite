@@ -241,7 +241,7 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(true);
   const [blogData, setBlogData] = useState<BlogSchemaProps>();
   useEffect(() => {
-    document.title = Data.children.metaData.title;
+    document.title = Data?.children?.metaData?.title;
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
       metaDescription.setAttribute(

@@ -147,6 +147,10 @@
       "type": "header"
     },
     "children": {
+      "metaData":{
+        "title":"صفحه اصلی",
+        "description":"juju page"
+      },
       "sections": [
         {
           "type": "SlideBanner",
