@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import Data from "../../public/template/storelg.json";
 
 import {
   BannerSection,
@@ -77,6 +78,17 @@ export default function Page() {
     Collection,
     DetailPage,
   };
+
+  useEffect(() => {
+    document.title = Data?.children?.metaData?.title;
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute(
+        "content",
+        Data?.children?.metaData?.description
+      );
+    }
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {
