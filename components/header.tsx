@@ -398,15 +398,12 @@ const Header = () => {
           },
           credentials: "include", // Add this to handle cookies if needed
         });
-        console.log("Response status:", response.status);
-        console.log("Response headers:", Object.fromEntries(response.headers));
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const cateData = await response.json();
-        console.log("Received categories:", cateData); // Debug log
         setCategories(cateData);
       } catch (error) {
         console.log("Error fetching categories", error);
@@ -485,7 +482,6 @@ const Header = () => {
     router.push(`/cart`);
   };
   if (!isHeaderBlock(blocks)) {
-    console.error("Blocks data is missing or invalid.");
     return null;
   }
 
@@ -503,11 +499,13 @@ const Header = () => {
       <MainSection>
         <div className="flex flex-row-reverse items-center  justify-between w-full">
           <LogoContainer>
-            <Logo
-              $data={sectionData}
-              src={sectionData.blocks.imageLogo || "/assets/images/logo.webp"}
-              alt={sectionData.blocks.imageAlt}
-            />
+            <Link href="/">
+              <Logo
+                $data={sectionData}
+                src={sectionData.blocks.imageLogo || "/assets/images/logo.webp"}
+                alt={sectionData.blocks.imageAlt}
+              />
+            </Link>
           </LogoContainer>
 
           <SearchContainer>
