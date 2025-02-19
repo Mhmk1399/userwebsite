@@ -63,8 +63,6 @@ interface BlogSchemaProps {
     lists?: string[];
   }[];
 }
-
-
 type AllSections = Section &
   RichTextSection &
   BannerSection &
@@ -306,7 +304,6 @@ export default function Page() {
       setData(testData);
       setOrders(template.children.order);
       const extractedBlogData = extractBlogData(template as unknown as TemplateData);
-      console.log("extractedBlogData", extractedBlogData);
       
       setBlogData(extractedBlogData);
     };
