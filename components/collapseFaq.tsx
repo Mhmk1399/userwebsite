@@ -1,6 +1,5 @@
 "use client";
 import {
-  
   CollapseSection,
   CollapseBlock,
   CollapseBlockSetting,
@@ -59,6 +58,7 @@ const Question = styled.div<{
   $block: CollapseBlock;
   $index: number;
   $isMobile: boolean;
+  $globalAnimation?: any;
 }>`
   font-size: ${(props) => {
     const baseFontSize =
@@ -81,6 +81,161 @@ const Question = styled.div<{
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  /* Apply global animation to all accordion headers */
+  ${(props) => {
+    const animation = props.$globalAnimation;
+    if (!animation) return "";
+
+    const { type, animation: animConfig } = animation;
+    const selector = type === "hover" ? "&:hover" : "&:active";
+
+    // Generate animation CSS based on type
+    if (animConfig.type === "pulse") {
+      return `
+        ${selector} {
+          animation: accordionHeaderPulse ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes accordionHeaderPulse {
+          0%, 100% { 
+            opacity: 1;
+            filter: brightness(1);
+          }
+          50% { 
+            opacity: 0.7;
+            filter: brightness(1.3);
+          }
+        }
+      `;
+    } else if (animConfig.type === "glow") {
+      return `
+        ${selector} {
+          animation: accordionHeaderGlow ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes accordionHeaderGlow {
+          0%, 100% { 
+            filter: brightness(1) drop-shadow(0 0 0px rgba(255, 255, 255, 0));
+          }
+          50% { 
+            filter: brightness(1.2) drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
+          }
+        }
+      `;
+    } else if (animConfig.type === "brightness") {
+      return `
+        ${selector} {
+          animation: accordionHeaderBrightness ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes accordionHeaderBrightness {
+          0%, 100% { 
+            filter: brightness(1);
+          }
+          50% { 
+            filter: brightness(1.4);
+          }
+        }
+      `;
+    } else if (animConfig.type === "blur") {
+      return `
+        ${selector} {
+          animation: accordionHeaderBlur ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes accordionHeaderBlur {
+          0%, 100% { 
+            filter: blur(0px);
+          }
+          50% { 
+            filter: blur(2px);
+          }
+        }
+      `;
+    } else if (animConfig.type === "saturate") {
+      return `
+        ${selector} {
+          animation: accordionHeaderSaturate ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes accordionHeaderSaturate {
+          0%, 100% { 
+            filter: saturate(1);
+          }
+          50% { 
+            filter: saturate(1.8);
+          }
+        }
+      `;
+    } else if (animConfig.type === "contrast") {
+      return `
+        ${selector} {
+          animation: accordionHeaderContrast ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes accordionHeaderContrast {
+          0%, 100% { 
+            filter: contrast(1);
+          }
+          50% { 
+            filter: contrast(1.5);
+          }
+        }
+      `;
+    } else if (animConfig.type === "opacity") {
+      return `
+        ${selector} {
+          animation: accordionHeaderOpacity ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes accordionHeaderOpacity {
+          0% { 
+            opacity: 1;
+          }
+          50% { 
+            opacity: 0.4;
+          }
+          100% { 
+            opacity: 1;
+          }
+        }
+      `;
+    } else if (animConfig.type === "shadow") {
+      return `
+        ${selector} {
+          animation: accordionHeaderShadow ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes accordionHeaderShadow {
+          0%, 100% { 
+            filter: drop-shadow(0 0 0px rgba(0, 0, 0, 0));
+          }
+          50% { 
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+          }
+        }
+      `;
+    }
+
+    return "";
+  }}
 `;
 
 const Answer = styled.div<{
@@ -114,13 +269,17 @@ const Answer = styled.div<{
   visibility: ${(props) => (props.$isOpen ? "visible" : "hidden")};
 `;
 
-const CollapseFaq: React.FC<CollapseFaqProps> = ({ sections, isMobile, componentName }) => {
+const CollapseFaq: React.FC<CollapseFaqProps> = ({
+  sections,
+  isMobile,
+  componentName,
+}) => {
   const [openIndexes, setOpenIndexes] = useState<number[]>([]);
   const [blocks, setBlocks] = useState<CollapseBlock[]>([]);
- const sectionData = sections.find(
+  const sectionData = sections.find(
     (section) => section.type === componentName
   );
-  
+
   useEffect(() => {
     if (sectionData?.blocks) {
       const blocksArray = Object.keys(sectionData.blocks)
@@ -130,7 +289,7 @@ const CollapseFaq: React.FC<CollapseFaqProps> = ({ sections, isMobile, component
     }
   }, [sectionData]);
 
- if (!sectionData) {
+  if (!sectionData) {
     return <div>No data available</div>;
   }
 
@@ -153,6 +312,7 @@ const CollapseFaq: React.FC<CollapseFaqProps> = ({ sections, isMobile, component
               $block={block}
               $index={idx}
               $isMobile={isMobile}
+              $globalAnimation={sectionData.setting?.headerAnimation}
               onClick={(e) => {
                 e.stopPropagation();
                 toggleOpen(idx);

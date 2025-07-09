@@ -27,8 +27,9 @@ export interface ColorSchema {
   secondary: string;
   text: string;
 }
+
 export interface CollapseBlockSetting extends CommonSettings {
-  headerAnimation: any;
+  headerAnimation?: AnimationEffect;
   titleFontSize: string;
   titleFontWeight: string;
   imageAlign: string;
@@ -266,6 +267,7 @@ export interface BlockSetting {
   [key: number]: string | number | boolean | CommonSettings;
 }
 // Add these new interfaces for MultiColumn component
+// Find this interface around line 95-115 and update it:
 export interface MultiColumnBlockSetting extends CommonSettings {
   headingColor?: string;
   titleColor?: string;
@@ -276,6 +278,9 @@ export interface MultiColumnBlockSetting extends CommonSettings {
   btnColor?: string;
   btnBackgroundColor?: string;
   imageRadious?: string;
+  // ADD these two lines:
+  btnAnimation?: AnimationEffect;
+  imageAnimation?: AnimationEffect;
 }
 
 export interface MultiColumnBlock {
@@ -650,7 +655,11 @@ export interface SlideBlockSetting {
   opacityImage?: string;
   imageRadious?: string;
   imageBehavior?: string;
+imageAnimation?: AnimationEffect;
+btnAnimation?: AnimationEffect;
+navAnimation?: AnimationEffect;
 }
+
 export interface SlideBlock {
   imageSrc: string;
   imageAlt: string;
@@ -679,9 +688,14 @@ export interface SlideSection {
     backgroundBoxRadius: string;
     btnBackgroundColor: string;
     btnTextColor: string;
+    // Add these animation properties:
+    imageAnimation?: AnimationEffect;
+    btnAnimation?: AnimationEffect;
+    navAnimation?: AnimationEffect;
   };
   type: "slideshow";
 }
+
 // Add these new interfaces for Video component
 export interface VideoBlockSetting extends Partial<CommonSettings> {
   headingColor?: string;
@@ -1045,7 +1059,6 @@ export interface DetailPageBlock {
     descriptionFontSize: string;
     btnBackgroundColor: string;
     btnTextColor: string;
-    // [key: string]: any; // Allows dynamic properties
   };
 }
 
@@ -1354,7 +1367,7 @@ export interface GalleryImage {
 }
 
 export interface GalleryBlockSetting {
-  imageAnimation: any;
+  imageAnimation: AnimationEffect;
   titleColor: string;
   titleFontSize: string;
   titleFontWeight: string;
@@ -1521,7 +1534,7 @@ export interface BrandItem {
 }
 
 export interface BrandsBlockSetting extends CommonSettings {
-  navAnimation: any;
+  navAnimation: AnimationEffect;
   headingColor: string;
   headingFontSize: string;
   headingFontWeight: string;
