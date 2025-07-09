@@ -56,6 +56,162 @@ const BannerTextBox = styled.div<{
   padding: ${(props) => (props.$isMobile ? "20px" : "40px")};
   border-radius: ${(props) =>
     props.$data?.blocks?.setting?.backgroundBoxRadious || "10"}px;
+
+    
+  /* Apply animations using CSS filters and properties that don't affect positioning */
+  ${(props) => {
+    const animation = props.$data.blocks.setting.animation;
+    if (!animation) return "";
+
+    const { type, animation: animConfig } = animation;
+    const selector = type === "hover" ? "&:hover" : "&:active";
+
+    // Generate animation CSS based on type
+    if (animConfig.type === "pulse") {
+      return `
+        ${selector} {
+          animation: bannerPulse ${animConfig.duration} ${animConfig.timing} ${
+        animConfig.delay || "0s"
+      } ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes bannerPulse {
+          0%, 100% { 
+            opacity: 1;
+            filter: brightness(1);
+          }
+          50% { 
+            opacity: 0.7;
+            filter: brightness(1.3);
+          }
+        }
+      `;
+    } else if (animConfig.type === "glow") {
+      return `
+        ${selector} {
+          animation: bannerGlow ${animConfig.duration} ${animConfig.timing} ${
+        animConfig.delay || "0s"
+      } ${animConfig.iterationCount || "1"};
+        }
+        
+                @keyframes bannerGlow {
+          0%, 100% { 
+            filter: brightness(1) drop-shadow(0 0 0px rgba(255, 255, 255, 0));
+          }
+          50% { 
+            filter: brightness(1.2) drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
+          }
+        }
+      `;
+    } else if (animConfig.type === "brightness") {
+      return `
+        ${selector} {
+          animation: bannerBrightness ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes bannerBrightness {
+          0%, 100% { 
+            filter: brightness(1);
+          }
+          50% { 
+            filter: brightness(1.4);
+          }
+        }
+      `;
+    } else if (animConfig.type === "blur") {
+      return `
+        ${selector} {
+          animation: bannerBlur ${animConfig.duration} ${animConfig.timing} ${
+        animConfig.delay || "0s"
+      } ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes bannerBlur {
+          0%, 100% { 
+            filter: blur(0px);
+          }
+          50% { 
+            filter: blur(2px);
+          }
+        }
+      `;
+    } else if (animConfig.type === "saturate") {
+      return `
+        ${selector} {
+          animation: bannerSaturate ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes bannerSaturate {
+          0%, 100% { 
+            filter: saturate(1);
+          }
+          50% { 
+            filter: saturate(1.8);
+          }
+        }
+      `;
+    } else if (animConfig.type === "contrast") {
+      return `
+        ${selector} {
+          animation: bannerContrast ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes bannerContrast {
+          0%, 100% { 
+            filter: contrast(1);
+          }
+          50% { 
+            filter: contrast(1.5);
+          }
+        }
+      `;
+    } else if (animConfig.type === "opacity") {
+      return `
+        ${selector} {
+          animation: bannerOpacity ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes bannerOpacity {
+          0% { 
+            opacity: 1;
+          }
+          50% { 
+            opacity: 0.4;
+          }
+          100% { 
+            opacity: 1;
+          }
+        }
+      `;
+    } else if (animConfig.type === "shadow") {
+      return `
+        ${selector} {
+          animation: bannerShadow ${animConfig.duration} ${animConfig.timing} ${
+        animConfig.delay || "0s"
+      } ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes bannerShadow {
+          0%, 100% { 
+            filter: drop-shadow(0 0 0px rgba(0, 0, 0, 0));
+          }
+          50% { 
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+          }
+        }
+      `;
+    }
+
+    return "";
+  }}
 `;
 
 const HeadingText = styled.h2<{
@@ -87,12 +243,13 @@ const DescriptionText = styled.p<{
   }
 `;
 
-const Banner: React.FC<props> = ({ sections, isMobile ,componentName}) => {
-  const sectionData = sections.find((section) => section.type === componentName);
+const Banner: React.FC<props> = ({ sections, isMobile, componentName }) => {
+  const sectionData = sections.find(
+    (section) => section.type === componentName
+  );
   if (!sectionData) {
     return <div>No data available</div>;
   }
-
 
   const { description, imageAlt, imageSrc, text } = sectionData?.blocks;
 
