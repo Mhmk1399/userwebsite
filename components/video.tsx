@@ -55,8 +55,10 @@ const VideoElement = styled.video<{
   padding: ${(props) => (props.$isMobile ? "0 10" : "10 30")}px;
 `;
 
-const Video: React.FC<VideoProps> = ({ sections, isMobile,componentName }) => {
-  const sectionData = sections.find((section) => section.type === componentName);
+const Video: React.FC<VideoProps> = ({ sections, isMobile, componentName }) => {
+  const sectionData = sections.find(
+    (section) => section.type === componentName
+  );
   if (!sectionData) {
     return <div>No data available</div>;
   }

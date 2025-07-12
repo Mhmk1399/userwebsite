@@ -250,7 +250,9 @@ const SlideDescription = styled.p<{
   margin-top: 5px;
 `;
 
-const NavButton = styled.button`
+const NavButton = styled.button<{
+  $navAnimation?: SlideSection["setting"]["navAnimation"];
+}>`
   position: absolute;
   top: 50%;
   transform: translateY(-250%);
@@ -435,6 +437,7 @@ const NextButton = styled(NavButton)`
 
 const Button = styled.button<{
   $data: SlideSection["setting"];
+  $btnAnimation?: SlideSection["setting"]["btnAnimation"];
 }>`
   text-align: center;
   background-color: ${(props) =>

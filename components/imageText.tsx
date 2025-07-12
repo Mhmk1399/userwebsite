@@ -34,9 +34,9 @@ const Section = styled.section<{
 const Image = styled.img<{
   $data: ImageTextSection;
 }>`
-  width: ${(props) => props.$data?.blocks?.setting?.imageWidth || "500"}0px;
+  width: ${(props) => props.$data?.blocks?.setting?.imageWidth || "500"}px;
   max-width: 50%;
-  height: ${(props) => props.$data?.blocks?.setting?.imageHeight || "200"}0px;
+  height: ${(props) => props.$data?.blocks?.setting?.imageHeight || "200"}px;
   opacity: ${(props) => props.$data?.blocks?.setting?.opacityImage || "1"};
   border-radius: ${(props) =>
     props.$data?.blocks?.setting?.boxRadiuos || "30"}px;

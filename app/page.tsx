@@ -53,6 +53,7 @@ import { ProductsRow } from "@/components/productsRow";
 import homeLgTemplate from "@/public/template/homelg.json";
 import homeSmTemplate from "@/public/template/homesm.json";
 import { BlogSchema } from "@/components/schema/blogSchema";
+import CanvasEditor from "@/components/canvasEditor";
 
 type AllSections = Section &
   RichTextSection &
@@ -72,7 +73,7 @@ type AllSections = Section &
   OfferRowSection &
   GallerySection &
   SlideBannerSection &
-  ProductListSection;
+  ProductListSection 
 interface TemplateData {
   sections: {
     children: {
@@ -298,6 +299,7 @@ export default function Page() {
     Gallery,
     SlideBanner,
     ProductsRow,
+    CanvasEditor,
   };
 
   useEffect(() => {

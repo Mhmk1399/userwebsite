@@ -248,7 +248,9 @@ const Banner: React.FC<props> = ({ sections, isMobile, componentName }) => {
     (section) => section.type === componentName
   );
   if (!sectionData) {
-    return <div>No data available</div>;
+    return <div>
+       داده‌ای برای این بخش وجود ندارد.
+    </div>;
   }
 
   const { description, imageAlt, imageSrc, text } = sectionData?.blocks;

@@ -135,6 +135,7 @@ const TrustIconsContainer = styled.div`
   @media (min-width: 768px) {
     justify-content: space-around;
     align-items: center;
+    gap: 1rem;
   }
 `;
 
