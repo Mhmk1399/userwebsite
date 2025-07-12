@@ -81,6 +81,160 @@ const NavButton = styled.button<{
   &:hover {
     background: rgba(255, 255, 255, 1);
   }
+  /* Apply navigation button animations */
+  ${(props) => {
+    const navAnimation = props.$data.blocks?.setting?.navAnimation;
+    if (!navAnimation) return "";
+
+    const { type, animation: animConfig } = navAnimation;
+    const selector = type === "hover" ? "&:hover" : "&:active";
+
+    // Generate animation CSS based on type
+    if (animConfig.type === "pulse") {
+      return `
+        ${selector} {
+          animation: slideNavPulse ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes slideNavPulse {
+          0%, 100% { 
+            opacity: 1;
+            filter: brightness(1);
+          }
+          50% { 
+            opacity: 0.7;
+            filter: brightness(1.3);
+          }
+        }
+      `;
+    } else if (animConfig.type === "glow") {
+      return `
+        ${selector} {
+          animation: slideNavGlow ${animConfig.duration} ${animConfig.timing} ${
+        animConfig.delay || "0s"
+      } ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes slideNavGlow {
+          0%, 100% { 
+            filter: brightness(1) drop-shadow(0 0 0px rgba(255, 255, 255, 0));
+          }
+          50% { 
+            filter: brightness(1.2) drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
+          }
+        }
+      `;
+    } else if (animConfig.type === "brightness") {
+      return `
+        ${selector} {
+          animation: slideNavBrightness ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes slideNavBrightness {
+          0%, 100% { 
+            filter: brightness(1);
+          }
+          50% { 
+            filter: brightness(1.4);
+          }
+        }
+      `;
+    } else if (animConfig.type === "blur") {
+      return `
+        ${selector} {
+          animation: slideNavBlur ${animConfig.duration} ${animConfig.timing} ${
+        animConfig.delay || "0s"
+      } ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes slideNavBlur {
+          0%, 100% { 
+            filter: blur(0px);
+          }
+          50% { 
+            filter: blur(2px);
+          }
+        }
+      `;
+    } else if (animConfig.type === "saturate") {
+      return `
+        ${selector} {
+          animation: slideNavSaturate ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes slideNavSaturate {
+          0%, 100% { 
+            filter: saturate(1);
+          }
+          50% { 
+            filter: saturate(1.8);
+          }
+        }
+      `;
+    } else if (animConfig.type === "contrast") {
+      return `
+        ${selector} {
+          animation: slideNavContrast ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes slideNavContrast {
+          0%, 100% { 
+            filter: contrast(1);
+          }
+          50% { 
+            filter: contrast(1.5);
+          }
+        }
+      `;
+    } else if (animConfig.type === "opacity") {
+      return `
+        ${selector} {
+          animation: slideNavOpacity ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes slideNavOpacity {
+                  0% { 
+            opacity: 1;
+          }
+          50% { 
+            opacity: 0.4;
+          }
+          100% { 
+            opacity: 1;
+          }
+        }
+      `;
+    } else if (animConfig.type === "shadow") {
+      return `
+        ${selector} {
+          animation: slideNavShadow ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes slideNavShadow {
+          0%, 100% { 
+            filter: drop-shadow(0 0 0px rgba(0, 0, 0, 0));
+          }
+          50% { 
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+          }
+        }
+      `;
+    }
+
+    return "";
+  }}
 `;
 
 const DotsContainer = styled.div`

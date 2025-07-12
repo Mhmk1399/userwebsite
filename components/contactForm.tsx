@@ -89,10 +89,9 @@ const TextArea = styled.textarea<{ $isMobile: boolean }>`
   }
 `;
 
-const Button = styled.button<{
+const SubmitButton = styled.button<{
   $data: ContactFormDataSection;
   $isMobile: boolean;
-  
 }>`
   padding: ${(props) => (props.$isMobile ? "12px 30px" : "15px 50px")};
   background-color: ${(props) =>
@@ -111,10 +110,169 @@ const Button = styled.button<{
       props.$data.blocks.setting?.btnBackgroundColor ? "#0056b3" : "#9c119c"};
     transform: scale(0.97);
   }
+
+  /* Apply button animations */
+  ${(props) => {
+    const btnAnimation = props.$data?.blocks?.setting?.btnAnimation;
+    if (!btnAnimation) return "";
+
+    const { type, animation: animConfig } = btnAnimation;
+    const selector = type === "hover" ? "&:hover" : "&:active";
+
+    // Generate animation CSS based on type
+    if (animConfig.type === "pulse") {
+      return `
+        ${selector} {
+          animation: contactFormBtnPulse ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes contactFormBtnPulse {
+          0%, 100% { 
+            opacity: 1;
+            filter: brightness(1);
+          }
+          50% { 
+            opacity: 0.7;
+            filter: brightness(1.3);
+          }
+        }
+      `;
+    } else if (animConfig.type === "glow") {
+      return `
+        ${selector} {
+          animation: contactFormBtnGlow ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes contactFormBtnGlow {
+          0%, 100% { 
+            filter: brightness(1) drop-shadow(0 0 0px rgba(255, 255, 255, 0));
+          }
+          50% { 
+            filter: brightness(1.2) drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
+          }
+        }
+      `;
+    } else if (animConfig.type === "brightness") {
+      return `
+        ${selector} {
+          animation: contactFormBtnBrightness ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes contactFormBtnBrightness {
+          0%, 100% { 
+            filter: brightness(1);
+          }
+          50% { 
+            filter: brightness(1.4);
+          }
+        }
+      `;
+    } else if (animConfig.type === "blur") {
+      return `
+        ${selector} {
+          animation: contactFormBtnBlur ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes contactFormBtnBlur {
+          0%, 100% { 
+            filter: blur(0px);
+          }
+          50% { 
+            filter: blur(2px);
+          }
+        }
+      `;
+    } else if (animConfig.type === "saturate") {
+      return `
+        ${selector} {
+          animation: contactFormBtnSaturate ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes contactFormBtnSaturate {
+          0%, 100% { 
+            filter: saturate(1);
+          }
+          50% { 
+            filter: saturate(1.8);
+          }
+        }
+      `;
+    } else if (animConfig.type === "contrast") {
+      return `
+        ${selector} {
+          animation: contactFormBtnContrast ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes contactFormBtnContrast {
+          0%, 100% { 
+            filter: contrast(1);
+          }
+          50% { 
+            filter: contrast(1.5);
+          }
+        }
+      `;
+    } else if (animConfig.type === "opacity") {
+      return `
+        ${selector} {
+          animation: contactFormBtnOpacity ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes contactFormBtnOpacity {
+          0% { 
+            opacity: 1;
+          }
+          50% { 
+            opacity: 0.4;
+          }
+          100% { 
+            opacity: 1;
+          }
+        }
+      `;
+    } else if (animConfig.type === "shadow") {
+      return `
+        ${selector} {
+          animation: contactFormBtnShadow ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes contactFormBtnShadow {
+          0%, 100% { 
+            filter: drop-shadow(0 0 0px rgba(0, 0, 0, 0));
+          }
+          50% { 
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+          }
+        }
+      `;
+    }
+
+    return "";
+  }}
 `;
 
 // ContactForm Component
-const ContactForm: React.FC<ContactFormProps> = ({ sections, isMobile, componentName }) => {
+const ContactForm: React.FC<ContactFormProps> = ({
+  sections,
+  isMobile,
+  componentName,
+}) => {
   const sectionData = sections.find(
     (section) => section.type === componentName
   );
@@ -134,9 +292,9 @@ const ContactForm: React.FC<ContactFormProps> = ({ sections, isMobile, component
           placeholder="متن پیام شما ..."
           required
         />
-        <Button $data={sectionData} $isMobile={isMobile} type="submit">
+        <SubmitButton $data={sectionData} $isMobile={isMobile} type="submit">
           ارسال
-        </Button>
+        </SubmitButton>
       </Form>
     </Section>
   );

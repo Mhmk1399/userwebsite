@@ -7,9 +7,10 @@ import {
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Search, ShoppingCart, User, MapPin } from "lucide-react";
+import { Search, ShoppingCart, MapPin } from "lucide-react";
 import data from "@/public/template/homelg.json";
 import { useRouter } from "next/navigation";
+import UserMenu from "./userMenu";
 interface Category {
   _id: string;
   name: string;
@@ -149,7 +150,7 @@ const SearchInput = styled.input`
 
 const NavContainer = styled.nav`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   padding: 0.5rem 1.5rem;
   @media (max-width: 768px) {
@@ -266,16 +267,7 @@ const ActionButtons = styled.div`
   }
 `;
 
-const LoginButton = styled(Link)`
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.25rem 0.75rem;
-  border: 1px solid #e4e4e4;
-  border-radius: 0.5rem;
-  color: #6c757d;
-  text-wrap: nowrap;
-`;
+
 
 const LocationButton = styled.button`
   display: flex;
@@ -531,9 +523,7 @@ const Header = () => {
               onClick={handleNavigate}
             />
             |
-            <LoginButton href="/login">
-              <User size={18} /> ورود | ثبت‌نام
-            </LoginButton>
+            <UserMenu />
           </div>
 
           <MobileMenuButton $isOpen={isMenuOpen} onClick={toggleMenu}>
@@ -568,9 +558,9 @@ const Header = () => {
       </MainSection>
 
       <NavContainer>
-        <LocationButton>
+        {/* <LocationButton>
           <MapPin size={16} /> شهر خود را انتخاب کنید
-        </LocationButton>
+        </LocationButton> */}
         <NavList $data={sectionData}>
           {sectionData.blocks.links?.map((link, index) => (
             <NavItemWrapper key={index}>

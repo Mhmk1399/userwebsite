@@ -6,6 +6,7 @@ import ProductCard from "./productCard";
 import { useEffect, useState } from "react";
 import { useRef } from "react";
 import { useRouter } from "next/navigation";
+
 interface SpecialOfferProps {
   sections: SpecialOfferSection[];
   isMobile: boolean;
@@ -94,9 +95,160 @@ const ScrollButton = styled.button<{
   &.right {
     right: 10px;
   }
-  &:hover {
-    opacity: 0.8;
-  }
+  /* Apply navigation button animations */
+  ${(props) => {
+    const navAnimation = props.$data.blocks?.setting?.navAnimation;
+    if (!navAnimation) return "";
+
+    const { type, animation: animConfig } = navAnimation;
+    const selector = type === "hover" ? "&:hover" : "&:active";
+
+    // Generate animation CSS based on type
+    if (animConfig.type === "pulse") {
+      return `
+          ${selector} {
+            animation: specialOfferNavPulse ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+          }
+          
+          @keyframes specialOfferNavPulse {
+            0%, 100% { 
+              opacity: 1;
+              filter: brightness(1);
+            }
+            50% { 
+              opacity: 0.7;
+              filter: brightness(1.3);
+            }
+          }
+        `;
+    } else if (animConfig.type === "glow") {
+      return `
+          ${selector} {
+            animation: specialOfferNavGlow ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+          }
+          
+          @keyframes specialOfferNavGlow {
+            0%, 100% { 
+              filter: brightness(1) drop-shadow(0 0 0px rgba(255, 255, 255, 0));
+            }
+            50% { 
+              filter: brightness(1.2) drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
+            }
+          }
+        `;
+    } else if (animConfig.type === "brightness") {
+      return `
+          ${selector} {
+            animation: specialOfferNavBrightness ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+          }
+          
+          @keyframes specialOfferNavBrightness {
+            0%, 100% { 
+              filter: brightness(1);
+            }
+            50% { 
+              filter: brightness(1.4);
+            }
+          }
+        `;
+    } else if (animConfig.type === "blur") {
+      return `
+          ${selector} {
+            animation: specialOfferNavBlur ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+          }
+          
+          @keyframes specialOfferNavBlur {
+            0%, 100% { 
+              filter: blur(0px);
+            }
+            50% { 
+              filter: blur(2px);
+            }
+          }
+        `;
+    } else if (animConfig.type === "saturate") {
+      return `
+          ${selector} {
+            animation: specialOfferNavSaturate ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+          }
+          
+          @keyframes specialOfferNavSaturate {
+            0%, 100% { 
+              filter: saturate(1);
+            }
+            50% { 
+              filter: saturate(1.8);
+            }
+          }
+        `;
+    } else if (animConfig.type === "contrast") {
+      return `
+          ${selector} {
+            animation: specialOfferNavContrast ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+          }
+          
+          @keyframes specialOfferNavContrast {
+            0%, 100% { 
+              filter: contrast(1);
+            }
+            50% { 
+              filter: contrast(1.5);
+            }
+          }
+        `;
+    } else if (animConfig.type === "opacity") {
+      return `
+          ${selector} {
+            animation: specialOfferNavOpacity ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+          }
+          
+          @keyframes specialOfferNavOpacity {
+            0% { 
+              opacity: 1;
+            }
+            50% { 
+              opacity: 0.4;
+            }
+            100% { 
+              opacity: 1;
+            }
+          }
+        `;
+    } else if (animConfig.type === "shadow") {
+      return `
+          ${selector} {
+            animation: specialOfferNavShadow ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+          }
+          
+          @keyframes specialOfferNavShadow {
+            0%, 100% { 
+              filter: drop-shadow(0 0 0px rgba(0, 0, 0, 0));
+            }
+            50% { 
+              filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+            }
+          }
+        `;
+    }
+
+    return "";
+  }}
 `;
 
 export const SpecialOffer: React.FC<SpecialOfferProps> = ({
@@ -142,7 +294,11 @@ export const SpecialOffer: React.FC<SpecialOfferProps> = ({
   }, []);
 
   if (!sectionData) {
-    return <div>No special offers available</div>;
+    return (
+      <div>
+        <p>بخش ویژه‌ای برای نمایش وجود ندارد.</p>
+      </div>
+    );
   }
 
   const handleScroll = (direction: "left" | "right") => {

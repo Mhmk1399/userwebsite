@@ -1,6 +1,7 @@
 "use client";
 import React, { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 const Auth: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -15,7 +16,7 @@ const Auth: React.FC = () => {
     document.title = "صفحه ورود";
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute("content", "صفحه ورود");
+      metaDescription.setAttribute("", "صفحه ورود");
     }
   }, []);
 
@@ -82,11 +83,16 @@ const Auth: React.FC = () => {
           const data = await response.json();
           if (response.ok && data.token) {
             localStorage.setItem("tokenUser", data.token);
-            const userId = data.userId;
-            localStorage.setItem("userId", userId);
+            localStorage.setItem("userId", data.userId);
+            // Store user name from the response
+            if (data.newUser && data.newUser.name) {
+              localStorage.setItem("userName", data.newUser.name);
+            }
+            toast.success("ورود با موفقیت انجام شد");
+            // Redirect to home page after successful login
             router.push(`/`);
           } else {
-            setModalError(true);
+            toast.error("ورود با موفقیت انجام نشد");
           }
           break;
         }
@@ -102,25 +108,32 @@ const Auth: React.FC = () => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ name, phone, email, password }),
           });
-          break;
-        }
-      }
 
-      if (response.ok) {
-        setModalSuccess(true);
-        setTimeout(async () => {
-          if (!isLogin) {
-            setIsLogin(true);
-
+          if (response.ok) {
             const data = await response.json();
+            // Store user data for signup but don't redirect
             localStorage.setItem("tokenUser", data.token);
             localStorage.setItem("userId", data.userId);
+            if (data.newUser && data.newUser.name) {
+              localStorage.setItem("userName", data.newUser.name);
+            }
+
+            toast.success("ثبت نام با موفقیت انجام شد");
+
+            // Switch to login form after successful signup
+            setTimeout(() => {
+              setIsLogin(true);
+              // Clear form data
+              setFormData({});
+              // Reset the form
+              const form = event.currentTarget;
+              form.reset();
+            }, 1500);
           } else {
-            router.push(`/`);
+            toast.error("ثبت نام با موفقیت انجام نشد");
           }
-        }, 3000);
-      } else {
-        setModalError(true);
+          break;
+        }
       }
     } catch (error) {
       setModalError(true);
@@ -188,7 +201,7 @@ const Auth: React.FC = () => {
 
   return (
     <div
-      className="min-h-screen bg-gradient-to-b from-white to-indigo-200 flex items-center justify-center p-10 lg:p-0 "
+      className=" bg-white flex items-center justify-center px-10 py-20 lg:p-0 "
       dir="rtl"
     >
       {modalSuccess && (
@@ -239,7 +252,7 @@ const Auth: React.FC = () => {
           <button
             type="submit"
             disabled={Object.keys(errors).length > 0}
-            className={`w-full py-3 text-white rounded-lg transition-colors
+            className={`w-full py-3 text-white rounded-lg text-xl transition-colors
               ${
                 Object.keys(errors).length > 0
                   ? "bg-gray-400 cursor-not-allowed"

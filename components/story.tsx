@@ -64,6 +64,161 @@ const StoryItem = styled.div<{
   .story-image {
     border-radius: ${(props) => props.$data.blocks.setting.imageRadius}%;
     object-fit: cover;
+
+    /* Apply story image animations */
+    ${(props) => {
+      const imageAnimation = props.$data.blocks?.setting?.imageAnimation;
+      if (!imageAnimation) return "";
+
+      const { type, animation: animConfig } = imageAnimation;
+      const selector = type === "hover" ? "&:hover" : "&:active";
+
+      // Generate animation CSS based on type
+      if (animConfig.type === "pulse") {
+        return `
+          ${selector} {
+            animation: storyImagePulse ${animConfig.duration} ${
+          animConfig.timing
+        } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+          }
+          
+          @keyframes storyImagePulse {
+            0%, 100% { 
+              opacity: 1;
+              filter: brightness(1);
+            }
+            50% { 
+              opacity: 0.7;
+              filter: brightness(1.3);
+            }
+          }
+        `;
+      } else if (animConfig.type === "glow") {
+        return `
+          ${selector} {
+            animation: storyImageGlow ${animConfig.duration} ${
+          animConfig.timing
+        } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+          }
+          
+          @keyframes storyImageGlow {
+            0%, 100% { 
+              filter: brightness(1) drop-shadow(0 0 0px rgba(255, 255, 255, 0));
+            }
+            50% { 
+              filter: brightness(1.2) drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
+            }
+          }
+        `;
+      } else if (animConfig.type === "brightness") {
+        return `
+          ${selector} {
+            animation: storyImageBrightness ${animConfig.duration} ${
+          animConfig.timing
+        } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+          }
+          
+          @keyframes storyImageBrightness {
+            0%, 100% { 
+              filter: brightness(1);
+            }
+            50% { 
+              filter: brightness(1.4);
+            }
+          }
+        `;
+      } else if (animConfig.type === "blur") {
+        return `
+          ${selector} {
+            animation: storyImageBlur ${animConfig.duration} ${
+          animConfig.timing
+        } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+          }
+          
+          @keyframes storyImageBlur {
+            0%, 100% { 
+              filter: blur(0px);
+            }
+            50% { 
+              filter: blur(2px);
+            }
+          }
+        `;
+      } else if (animConfig.type === "saturate") {
+        return `
+          ${selector} {
+            animation: storyImageSaturate ${animConfig.duration} ${
+          animConfig.timing
+        } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+          }
+          
+          @keyframes storyImageSaturate {
+            0%, 100% { 
+              filter: saturate(1);
+            }
+            50% { 
+              filter: saturate(1.8);
+            }
+          }
+        `;
+      } else if (animConfig.type === "contrast") {
+        return `
+          ${selector} {
+            animation: storyImageContrast ${animConfig.duration} ${
+          animConfig.timing
+        } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+          }
+          
+          @keyframes storyImageContrast {
+            0%, 100% { 
+              filter: contrast(1);
+            }
+            50% { 
+              filter: contrast(1.5);
+            }
+          }
+        `;
+      } else if (animConfig.type === "opacity") {
+        return `
+          ${selector} {
+            animation: storyImageOpacity ${animConfig.duration} ${
+          animConfig.timing
+        } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+          }
+          
+          @keyframes storyImageOpacity {
+            0% { 
+              opacity: 1;
+            }
+            50% { 
+              opacity: 0.4;
+            }
+            100% { 
+              opacity: 1;
+            }
+          }
+        `;
+      } else if (animConfig.type === "shadow") {
+        return `
+          ${selector} {
+            animation: storyImageShadow ${animConfig.duration} ${
+          animConfig.timing
+        } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+          }
+          
+          @keyframes storyImageShadow {
+            0%, 100% { 
+              filter: drop-shadow(0 0 0px rgba(0, 0, 0, 0));
+            }
+            50% { 
+              filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+            }
+          }
+        `;
+      }
+
+      return "";
+    }}
   }
 
   .story-title {

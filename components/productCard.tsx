@@ -1,6 +1,6 @@
 import Image from "next/image";
 import styled from "styled-components";
-import { productCard, ProductCardData } from "@/lib/types";
+import { ProductCardSetting, ProductCardData } from "@/lib/types";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -26,7 +26,7 @@ const defaultSetting = {
 };
 
 const Card = styled.div<{
-  $setting?: productCard;
+  $setting?: ProductCardSetting;
 }>`
   display: flex;
   flex-direction: column;
@@ -55,13 +55,13 @@ const Card = styled.div<{
 `;
 
 const ProductImage = styled(Image)<{
-  $settings?: productCard;
+  $settings?: ProductCardSetting;
   $productData?: ProductCardData;
 }>`
   object-fit: cover;
   width: ${(props) => props.$settings?.imageWidth || defaultSetting.imageWidth};
   height: ${(props) =>
-    props.$settings?.imageheight || defaultSetting.imageheight};
+    props.$settings?.imageHeight || defaultSetting.imageheight};
   border-radius: ${(props) =>
     props.$settings?.imageRadius || defaultSetting.imageRadius};
   transition: all 0.3s ease;
@@ -72,7 +72,7 @@ const ProductImage = styled(Image)<{
 `;
 
 const ProductName = styled.h3<{
-  $settings?: productCard;
+  $settings?: ProductCardSetting;
   $productData?: ProductCardData;
 }>`
   font-size: ${(props) =>
@@ -85,7 +85,7 @@ const ProductName = styled.h3<{
 `;
 
 const ProductDescription = styled.p<{
-  $settings?: productCard;
+  $settings?: ProductCardSetting;
   $productData?: ProductCardData;
 }>`
   font-size: ${(props) =>
@@ -104,13 +104,13 @@ const ProductDescription = styled.p<{
 `;
 
 const ProductPrice = styled.span<{
-  $settings?: productCard;
+  $settings?: ProductCardSetting;
   $productData?: ProductCardData;
 }>`
   font-size: ${(props) =>
     props.$settings?.priceFontSize || defaultSetting.priceFontSize};
   font-weight: ${(props) =>
-    props.$settings?.pricecolor || defaultSetting.pricecolor};
+    props.$settings?.priceColor || defaultSetting.pricecolor};
 
   padding: 4px 0;
   display: block;
@@ -148,7 +148,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData }) => {
 
   return (
     <Card
-      onClick={() => handleNavigate(productData._id)}
+      onClick={() => handleNavigate(productData.id)}
       dir="rtl"
       className="min-w-[200px] min-h-[350px]"
     >

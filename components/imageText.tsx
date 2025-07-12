@@ -34,9 +34,9 @@ const Section = styled.section<{
 const Image = styled.img<{
   $data: ImageTextSection;
 }>`
-  width: ${(props) => props.$data?.blocks?.setting?.imageWidth || "500"}0px;
+  width: ${(props) => props.$data?.blocks?.setting?.imageWidth || "500"}px;
   max-width: 50%;
-  height: ${(props) => props.$data?.blocks?.setting?.imageHeight || "200"}0px;
+  height: ${(props) => props.$data?.blocks?.setting?.imageHeight || "200"}px;
   opacity: ${(props) => props.$data?.blocks?.setting?.opacityImage || "1"};
   border-radius: ${(props) =>
     props.$data?.blocks?.setting?.boxRadiuos || "30"}px;
@@ -44,6 +44,160 @@ const Image = styled.img<{
   @media (max-width: 768px) {
     max-width: 100%;
   }
+  /* Apply image animations */
+  ${(props) => {
+    const imageAnimation = props.$data.blocks?.setting?.imageAnimation;
+    if (!imageAnimation) return "";
+
+    const { type, animation: animConfig } = imageAnimation;
+    const selector = type === "hover" ? "&:hover" : "&:active";
+
+    // Generate animation CSS based on type
+    if (animConfig.type === "pulse") {
+      return `
+        ${selector} {
+          animation: imageTextImagePulse ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes imageTextImagePulse {
+          0%, 100% { 
+            opacity: 1;
+            filter: brightness(1);
+          }
+          50% { 
+            opacity: 0.7;
+            filter: brightness(1.3);
+          }
+        }
+      `;
+    } else if (animConfig.type === "glow") {
+      return `
+        ${selector} {
+          animation: imageTextImageGlow ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes imageTextImageGlow {
+          0%, 100% { 
+            filter: brightness(1) drop-shadow(0 0 0px rgba(255, 255, 255, 0));
+          }
+          50% { 
+            filter: brightness(1.2) drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
+          }
+        }
+      `;
+    } else if (animConfig.type === "brightness") {
+      return `
+        ${selector} {
+          animation: imageTextImageBrightness ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes imageTextImageBrightness {
+          0%, 100% { 
+            filter: brightness(1);
+          }
+          50% { 
+            filter: brightness(1.4);
+          }
+        }
+      `;
+    } else if (animConfig.type === "blur") {
+      return `
+        ${selector} {
+          animation: imageTextImageBlur ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes imageTextImageBlur {
+          0%, 100% { 
+            filter: blur(0px);
+          }
+          50% { 
+            filter: blur(2px);
+          }
+        }
+      `;
+    } else if (animConfig.type === "saturate") {
+      return `
+        ${selector} {
+          animation: imageTextImageSaturate ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes imageTextImageSaturate {
+          0%, 100% { 
+            filter: saturate(1);
+          }
+          50% { 
+            filter: saturate(1.8);
+          }
+        }
+      `;
+    } else if (animConfig.type === "contrast") {
+      return `
+        ${selector} {
+          animation: imageTextImageContrast ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes imageTextImageContrast {
+          0%, 100% { 
+            filter: contrast(1);
+          }
+          50% { 
+            filter: contrast(1.5);
+          }
+        }
+      `;
+    } else if (animConfig.type === "opacity") {
+      return `
+        ${selector} {
+          animation: imageTextImageOpacity ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes imageTextImageOpacity {
+          0% { 
+            opacity: 1;
+          }
+          50% { 
+            opacity: 0.4;
+          }
+          100% { 
+            opacity: 1;
+          }
+        }
+      `;
+    } else if (animConfig.type === "shadow") {
+      return `
+        ${selector} {
+          animation: imageTextImageShadow ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes imageTextImageShadow {
+          0%, 100% { 
+            filter: drop-shadow(0 0 0px rgba(0, 0, 0, 0));
+          }
+          50% { 
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+          }
+        }
+      `;
+    }
+
+    return "";
+  }}
 `;
 
 const TextContainer = styled.div<{
@@ -109,10 +263,171 @@ const Button = styled.a<{ $data: ImageTextSection }>`
   &:hover {
     opacity: 0.8;
   }
+
+  /* Apply button animations */
+  ${(props) => {
+    const buttonAnimation = props.$data.blocks?.setting?.buttonAnimation;
+    if (!buttonAnimation) return "";
+
+    const { type, animation: animConfig } = buttonAnimation;
+    const selector = type === "hover" ? "&:hover" : "&:active";
+
+    // Generate animation CSS based on type
+    if (animConfig.type === "pulse") {
+      return `
+        ${selector} {
+          animation: imageTextButtonPulse ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes imageTextButtonPulse {
+          0%, 100% { 
+            opacity: 1;
+            filter: brightness(1);
+          }
+          50% { 
+            opacity: 0.7;
+            filter: brightness(1.3);
+          }
+        }
+      `;
+    } else if (animConfig.type === "glow") {
+      return `
+        ${selector} {
+          animation: imageTextButtonGlow ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes imageTextButtonGlow {
+          0%, 100% { 
+            filter: brightness(1) drop-shadow(0 0 0px rgba(255, 255, 255, 0));
+          }
+          50% { 
+            filter: brightness(1.2) drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
+          }
+        }
+      `;
+    } else if (animConfig.type === "brightness") {
+      return `
+        ${selector} {
+          animation: imageTextButtonBrightness ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes imageTextButtonBrightness {
+          0%, 100% { 
+            filter: brightness(1);
+          }
+          50% { 
+            filter: brightness(1.4);
+          }
+        }
+      `;
+    } else if (animConfig.type === "blur") {
+      return `
+        ${selector} {
+          animation: imageTextButtonBlur ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes imageTextButtonBlur {
+          0%, 100% { 
+            filter: blur(0px);
+          }
+          50% { 
+            filter: blur(2px);
+          }
+        }
+      `;
+    } else if (animConfig.type === "saturate") {
+      return `
+        ${selector} {
+          animation: imageTextButtonSaturate ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes imageTextButtonSaturate {
+          0%, 100% { 
+            filter: saturate(1);
+          }
+          50% { 
+            filter: saturate(1.8);
+          }
+        }
+      `;
+    } else if (animConfig.type === "contrast") {
+      return `
+        ${selector} {
+          animation: imageTextButtonContrast ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes imageTextButtonContrast {
+          0%, 100% { 
+            filter: contrast(1);
+          }
+          50% { 
+            filter: contrast(1.5);
+          }
+        }
+      `;
+    } else if (animConfig.type === "opacity") {
+      return `
+        ${selector} {
+          animation: imageTextButtonOpacity ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes imageTextButtonOpacity {
+          0% { 
+            opacity: 1;
+          }
+          50% { 
+            opacity: 0.4;
+          }
+          100% { 
+            opacity: 1;
+          }
+        }
+      `;
+    } else if (animConfig.type === "shadow") {
+      return `
+        ${selector} {
+          animation: imageTextButtonShadow ${animConfig.duration} ${
+        animConfig.timing
+      } ${animConfig.delay || "0s"} ${animConfig.iterationCount || "1"};
+        }
+        
+        @keyframes imageTextButtonShadow {
+          0%, 100% { 
+            filter: drop-shadow(0 0 0px rgba(0, 0, 0, 0));
+          }
+          50% { 
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+          }
+        }
+      `;
+    }
+
+    return "";
+  }}
 `;
 
-const ImageText: React.FC<ImageTextProps> = ({ sections, isMobile, componentName }) => {
-  const sectionData = sections.find((section) => section.type === componentName);
+const ImageText: React.FC<ImageTextProps> = ({
+  sections,
+  isMobile,
+  componentName,
+}) => {
+  const sectionData = sections.find(
+    (section) => section.type === componentName
+  );
   if (!sectionData) {
     return <div>No data available</div>;
   }

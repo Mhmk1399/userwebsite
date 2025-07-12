@@ -135,6 +135,7 @@ const TrustIconsContainer = styled.div`
   @media (min-width: 768px) {
     justify-content: space-around;
     align-items: center;
+    gap: 1rem;
   }
 `;
 
@@ -183,7 +184,6 @@ const ScrollTopButton = styled.button<{
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   padding: 0 10px;
   z-index: 10;
 
@@ -393,6 +393,7 @@ const Footer = () => {
         <span className="text-sm text-gray-500 mr-1">{textNumber}</span>
       </NumberPart>
       <ScrollTopButton
+        className="shadow-lg shadow-gray-500/50"
         $data={sectionData}
         onClick={(e) => {
           e.stopPropagation();
