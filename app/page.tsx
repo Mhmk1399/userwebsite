@@ -340,7 +340,7 @@ export default function Page() {
     <>
       {blogData && <BlogSchema blogData={blogData} />}
 
-      <div className="grid grid-cols-1 pt-4 px-1">
+      <div className="grid grid-cols-1 pt-4 ">
         {orders.map((componentName, index) => {
           const baseComponentName = componentName.split("-")[0];
           const Component =

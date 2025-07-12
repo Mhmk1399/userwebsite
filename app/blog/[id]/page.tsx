@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
 import Image from "next/image";
 import styled from "styled-components";
 import { BlogDetailSection } from "@/lib/types";
@@ -18,11 +17,19 @@ interface BlogDetailData {
   author: string;
 }
 
-interface BlogDetailProps {
-  sections: BlogDetailSection[];
-  isMobile: boolean;
-  componentName: string;
+// Next.js 15+ page component props structure with Promise params
+interface PageProps {
+  params: Promise<{
+    id: string;
+  }>;
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }
+
+// Internal component props
+interface BlogDetailProps {
+  isMobile: boolean;
+}
+
 // Styled components based on blogdetaillg.json settings
 const SectionBlogDetail = styled.div<{
   $data: BlogDetailSection;
@@ -236,18 +243,21 @@ const CoverImageContainer = styled.div<{
   }
 `;
 
-export default function BlogDetailPage({ isMobile }: BlogDetailProps) {
+// Internal component that uses the BlogDetailProps
+const BlogDetailContent: React.FC<BlogDetailProps & { blogId: string }> = ({
+  isMobile,
+  blogId,
+}) => {
   const [blog, setBlog] = useState<BlogDetailData | null>(null);
   const [loading, setLoading] = useState(true);
   const [sectionData, setSectionData] = useState<BlogDetailSection | null>(
     null
   );
-  const params = useParams();
 
   useEffect(() => {
     const fetchBlogDetail = async () => {
       try {
-        const response = await fetch(`/api/blog/${params.id}`);
+        const response = await fetch(`/api/blog/${blogId}`);
         if (!response.ok) {
           throw new Error("Failed to fetch blog details");
         }
@@ -261,27 +271,16 @@ export default function BlogDetailPage({ isMobile }: BlogDetailProps) {
       }
     };
 
-    if (params.id) {
+    if (blogId) {
       fetchBlogDetail();
     }
-  }, [params.id]);
+  }, [blogId]);
 
   useEffect(() => {
-    // Determine which data to use based on screen width
-    const handleResize = () => {
-      const data = window.innerWidth < 768 ? smallBlogData : largeBlogData;
-      setSectionData(data.children.sections[0] as BlogDetailSection);
-    };
-
-    // Initial setup
-    handleResize();
-
-    // Add event listener for window resize
-    window.addEventListener("resize", handleResize);
-
-    // Cleanup event listener
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+    // Use the isMobile prop to determine which data to use
+    const data = isMobile ? smallBlogData : largeBlogData;
+    setSectionData(data.children.sections[0] as BlogDetailSection);
+  }, [isMobile]);
 
   if (loading || !sectionData) {
     return <div>در حال بارگذاری...</div>;
@@ -297,10 +296,7 @@ export default function BlogDetailPage({ isMobile }: BlogDetailProps) {
       $isMobile={isMobile}
       className={`transition-all duration-150 ease-in-out relative`}
     >
-      <CoverImageContainer
-        $data={sectionData}
-        $isMobile={window.innerWidth < 768 ? true : false}
-      >
+      <CoverImageContainer $data={sectionData} $isMobile={isMobile}>
         <Image
           src={
             sectionData.setting.coverImage ||
@@ -339,4 +335,44 @@ export default function BlogDetailPage({ isMobile }: BlogDetailProps) {
       />
     </SectionBlogDetail>
   );
+};
+
+// Main page component that Next.js expects
+export default function BlogDetailPage({ params }: PageProps) {
+  const [isMobile, setIsMobile] = useState(false);
+  const [blogId, setBlogId] = useState<string>("");
+
+  useEffect(() => {
+    // Resolve the params Promise to get the actual id
+    const resolveParams = async () => {
+      const resolvedParams = await params;
+      setBlogId(resolvedParams.id);
+    };
+
+    resolveParams();
+  }, [params]);
+
+  useEffect(() => {
+    // Determine if mobile based on screen width
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    // Initial setup
+    handleResize();
+
+    // Add event listener for window resize
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup event listener
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Don't render until we have the blogId
+  if (!blogId) {
+    return <div>در حال بارگذاری...</div>;
+  }
+
+  // Pass the required props to the internal component
+  return <BlogDetailContent isMobile={isMobile} blogId={blogId} />;
 }

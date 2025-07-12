@@ -35,7 +35,7 @@ const FilterBgRow = styled.div<{ $data: ProductSection }>`
 `;
 
 const FilteNameRow = styled.div<{ $data: ProductSection }>`
-  color: ${(props) => props.$data?.setting?.textColor};
+  color: ${(props) => props.$data?.setting?.textColor || "#000"};
   padding-top: 1px;
   padding-right: ${(props) => props.$data?.setting?.paddingRight}px;
 `;

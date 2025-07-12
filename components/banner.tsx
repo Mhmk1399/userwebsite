@@ -16,7 +16,6 @@ const SectionBanner = styled.section<{
 }>`
   position: relative;
   height: 600px;
-  margin: 0px 10px;
   margin-top: ${(props) => props.$data.setting.marginTop}px;
   margin-bottom: ${(props) => props.$data.setting.marginBottom}px;
   padding-top: ${(props) => props.$data.setting.paddingTop}px;

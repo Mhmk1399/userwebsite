@@ -210,10 +210,10 @@ export interface AnimationConfig {
   iterationCount?: string;
 }
 
-export interface AnimationEffect {
-  type: "hover" | "click";
-  animation: AnimationConfig;
-}
+// export interface AnimationEffect {
+//   type: "hover" | "click";
+//   animation: AnimationConfig;
+// }
 
 // Updated BannerBlockSettings with single animation
 export interface BannerBlockSettings extends CommonSettings {
@@ -924,6 +924,9 @@ export interface ProductBlockSetting {
   filterRowBg: string;
   filterNameColor: string;
   filterCardBg: string;
+  btnBackgroundColor: string;
+  btnTextColor: string;
+  textColor: string;
 }
 
 export interface ProductListSection {

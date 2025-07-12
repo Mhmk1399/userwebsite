@@ -3,6 +3,7 @@ import {
   CollapseSection,
   CollapseBlock,
   CollapseBlockSetting,
+  AnimationEffect,
 } from "@/lib/types";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
@@ -58,7 +59,7 @@ const Question = styled.div<{
   $block: CollapseBlock;
   $index: number;
   $isMobile: boolean;
-  $globalAnimation?: any;
+  $globalAnimation?: AnimationEffect;
 }>`
   font-size: ${(props) => {
     const baseFontSize =
