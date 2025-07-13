@@ -428,9 +428,7 @@ const ImageText: React.FC<ImageTextProps> = ({
   const sectionData = sections.find(
     (section) => section.type === componentName
   );
-  if (!sectionData) {
-    return <div>No data available</div>;
-  }
+  if (!sectionData) return null;
 
   const { imageSrc, imageAlt, heading, description, btnLink, btnText } =
     sectionData.blocks;

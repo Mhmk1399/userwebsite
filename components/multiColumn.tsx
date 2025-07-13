@@ -490,9 +490,8 @@ const MultiColumn: React.FC<MultiColumnProps> = ({
   const sectionData = sections.find(
     (section) => section.type === componentName
   );
-  if (!sectionData) {
-    return <div>No data available</div>;
-  }
+  if (!sectionData) return null;
+
 
   return (
     <Section $isMobile={isMobile} $data={sectionData}>

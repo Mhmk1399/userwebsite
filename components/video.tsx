@@ -59,9 +59,7 @@ const Video: React.FC<VideoProps> = ({ sections, isMobile, componentName }) => {
   const sectionData = sections.find(
     (section) => section.type === componentName
   );
-  if (!sectionData) {
-    return <div>No data available</div>;
-  }
+  if (!sectionData) return null;
 
   const { blocks } = sectionData;
 

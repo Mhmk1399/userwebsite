@@ -290,9 +290,7 @@ const CollapseFaq: React.FC<CollapseFaqProps> = ({
     }
   }, [sectionData]);
 
-  if (!sectionData) {
-    return <div>No data available</div>;
-  }
+  if (!sectionData) return null;
 
   const toggleOpen = (index: number) => {
     setOpenIndexes((prev) =>

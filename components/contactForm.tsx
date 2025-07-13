@@ -276,9 +276,8 @@ const ContactForm: React.FC<ContactFormProps> = ({
   const sectionData = sections.find(
     (section) => section.type === componentName
   );
-  if (!sectionData) {
-    return <div>No data available</div>;
-  }
+  if (!sectionData) return null;
+
   return (
     <Section dir="rtl" $data={sectionData} $isMobile={isMobile}>
       <Heading $data={sectionData}>

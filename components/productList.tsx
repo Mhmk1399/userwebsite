@@ -215,37 +215,41 @@ const ProductList: React.FC<ProductListProps> = ({
 
   const handleFilter = useCallback(() => {
     let filtered = [...productData];
-  
+
     // Category filter
     if (selectedFilters.category) {
       filtered = filtered.filter(
         (product) => product.category?.name === selectedFilters.category
       );
     }
-  
+
     // Color filter
     if (selectedColors.length > 0) {
       filtered = filtered.filter((product) =>
         product.colors?.some((color) => selectedColors.includes(color.code))
       );
     }
-  
+
     // Price filter
     filtered = filtered.filter((product) => {
       const price = parseInt(product.price);
-      return price >= selectedFilters.priceMin && price <= selectedFilters.priceMax;
+      return (
+        price >= selectedFilters.priceMin && price <= selectedFilters.priceMax
+      );
     });
-  
+
     // Apply current sorting
     const sortedFiltered = getSortedProducts(filtered);
-  
+
     setFilteredProducts(sortedFiltered);
   }, [productData, selectedColors, selectedFilters, sortBy]);
-  
+
   const searchParams = useSearchParams();
   const urlString = searchParams.toString();
-  const categoryParam = decodeURIComponent(urlString.split("=")[1]?.replace(/\+/g, " "));
-console.log("categoryParam", categoryParam);
+  const categoryParam = decodeURIComponent(
+    urlString.split("=")[1]?.replace(/\+/g, " ")
+  );
+  console.log("categoryParam", categoryParam);
 
   const getCollection = async () => {
     const collectionId = pathname.split("/").pop();
@@ -263,21 +267,20 @@ console.log("categoryParam", categoryParam);
     }
   }, [categoryParam]);
 
- useEffect(() => {
-  const loadInitialData = async () => {
-    const isStoreRoute = pathname.split("/")[1] === "store";
-    if (isStoreRoute) {
-      await fetchProducts();
-      setFilteredProducts(productData); // Initialize filtered products
-    } else {
-      await getCollection();
-      setFilteredProducts(productData); // Initialize filtered products
-    }
-  };
+  useEffect(() => {
+    const loadInitialData = async () => {
+      const isStoreRoute = pathname.split("/")[1] === "store";
+      if (isStoreRoute) {
+        await fetchProducts();
+        setFilteredProducts(productData); // Initialize filtered products
+      } else {
+        await getCollection();
+        setFilteredProducts(productData); // Initialize filtered products
+      }
+    };
 
-  loadInitialData();
-}, [pathname]);
-
+    loadInitialData();
+  }, [pathname]);
 
   useEffect(() => {
     if (productData.length > 0) {
@@ -313,9 +316,7 @@ console.log("categoryParam", categoryParam);
 
   const fetchProducts = async () => {
     try {
-   
-
-        const response = await fetch("/api/store");
+      const response = await fetch("/api/store");
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -338,26 +339,27 @@ console.log("categoryParam", categoryParam);
     }
   }, [selectedFilters, sortBy, productData.length, handleFilter]); // Only re-run when filters or sort changes
 
-  
   const sectionData = sections.find(
     (section) => section.type === componentName
   );
 
-  if (!sectionData) {
-    return <div>No data available</div>;
-  }
+  if (!sectionData) return null;
 
-  const handleSortChange = (value: "newest" | "price-asc" | "price-desc" | "name") => {
+  const handleSortChange = (
+    value: "newest" | "price-asc" | "price-desc" | "name"
+  ) => {
     setSortBy(value);
   };
-  if(loading) {
-    return <div className="flex justify-center items-center h-screen">
-<div className="flex flex-row gap-2">
-  <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce"></div>
-  <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce [animation-delay:-.3s]"></div>
-  <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce [animation-delay:-.5s]"></div>
-</div>
-    </div>;
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="flex flex-row gap-2">
+          <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce"></div>
+          <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce [animation-delay:-.3s]"></div>
+          <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce [animation-delay:-.5s]"></div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -728,16 +730,15 @@ console.log("categoryParam", categoryParam);
           </FilterBgRow>
 
           <SectionProductList
-  $data={sectionData}
-  $isMobile={isMobile}
-  $previewWidth="default"
-  className="mt-20 min-h-[500px]"
->
-  {filteredProducts.map((product) => (
-    <ProductCard key={product._id} productData={product} />
-  ))}
-</SectionProductList>
-
+            $data={sectionData}
+            $isMobile={isMobile}
+            $previewWidth="default"
+            className="mt-20 min-h-[500px]"
+          >
+            {filteredProducts.map((product) => (
+              <ProductCard key={product._id} productData={product} />
+            ))}
+          </SectionProductList>
         </div>
       </div>
     </>

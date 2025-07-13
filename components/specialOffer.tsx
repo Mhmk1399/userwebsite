@@ -293,13 +293,7 @@ export const SpecialOffer: React.FC<SpecialOfferProps> = ({
     fetchSpecialOffers();
   }, []);
 
-  if (!sectionData) {
-    return (
-      <div>
-        <p>بخش ویژه‌ای برای نمایش وجود ندارد.</p>
-      </div>
-    );
-  }
+  if (!sectionData) return null;
 
   const handleScroll = (direction: "left" | "right") => {
     if (containerRef.current) {

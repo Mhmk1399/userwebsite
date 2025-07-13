@@ -611,9 +611,8 @@ const SlideShow: React.FC<SlideShowProps> = ({
     (section) => section.type === componentName
   );
 
-  if (!sectionData) {
-    return <div>No data available</div>;
-  }
+    if (!sectionData) return null;
+
 
   const { blocks } = sectionData;
 

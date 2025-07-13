@@ -270,6 +270,9 @@ export const ProductsRow: React.FC<ProductsRowProps> = ({
   const sectionData = sections.find(
     (section: Section) => section.type === componentName
   ) as SpecialOfferSection;
+  
+  if (!sectionData) return null;
+
   const CollectionId = sectionData?.blocks.setting.selectedCollection;
 
   const [Loading, setLoading] = useState(true);

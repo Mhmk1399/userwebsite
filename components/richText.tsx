@@ -67,7 +67,7 @@ const Btn = styled.button<{
   border-radius: 5px;
   border: none;
   cursor: pointer;
-  
+
   /* Apply button animations */
   ${(props) => {
     const btnAnimation = props.$data?.setting?.btnAnimation;
@@ -233,13 +233,8 @@ const RichText: React.FC<RichTextProps> = ({
   const sectionData = sections.find(
     (section) => section.type === componentName
   );
-  if (!sectionData) {
-    return <div>No data available</div>;
-  }
+  if (!sectionData) return null;
 
-  // Add type guard to verify section type
-
-  // Type guard for RichTextBlock
 
   return (
     <Section dir="rtl" $data={sectionData}>

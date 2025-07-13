@@ -297,6 +297,7 @@ const Button = styled.a<{
   }
 
   /* Apply button animations */
+
   ${(props) => {
     const buttonAnimation = props.$data.setting?.buttonAnimation;
     if (!buttonAnimation) return "";
@@ -460,46 +461,63 @@ const MultiRow: React.FC<MultiRowShowProps> = ({
   const sectionData = sections.find(
     (section) => section.type === componentName
   );
-  if (!sectionData) {
-    return <div>No data available</div>;
-  }
+  if (!sectionData) return null;
+
   return (
-    <Section $isMobile={isMobile} $data={sectionData}>
+    <Section
+      $isMobile={isMobile}
+      $data={sectionData}
+      className={`transition-all duration-150 ease-in-out relative`}
+    >
       <Title $data={sectionData} $isMobile={isMobile}>
         {sectionData.title}
       </Title>
-
       <RowContainer $isMobile={isMobile}>
-        {Object.entries(sectionData.blocks).map(([key, block], idx) => {
-          if (key === "setting") return null;
-          const typedBlock = block as MultiRowBlock;
+        {(() => {
+          // Handle both array and object structures
+          let blocksToRender: MultiRowBlock[] = [];
 
-          return (
+          if (Array.isArray(sectionData.blocks)) {
+            blocksToRender = sectionData.blocks;
+          } else if (
+            sectionData.blocks &&
+            typeof sectionData.blocks === "object"
+          ) {
+            // Convert object to array, filtering out settings
+            blocksToRender = Object.entries(sectionData.blocks)
+              .filter(
+                ([key, block]) =>
+                  key !== "setting" && block && typeof block === "object"
+              )
+              .map((entry) => entry[1] as MultiRowBlock);
+          }
+
+          return blocksToRender.map((block, idx) => (
             <Row key={idx} $data={sectionData} $isMobile={isMobile}>
               <Image
                 $isMobile={isMobile}
-                src={typedBlock.imageSrc || "/default-image.jpg"}
-                alt={typedBlock.imageAlt || ""}
+                src={block.imageSrc || "/default-image.jpg"}
+                alt={block.imageAlt || ""}
                 $data={sectionData}
               />
               <ContentWrapper $isMobile={isMobile} $data={sectionData}>
                 <Heading $isMobile={isMobile} $data={sectionData}>
-                  {typedBlock.heading}
+                  {block.heading}
                 </Heading>
                 <Description $data={sectionData} $isMobile={isMobile}>
-                  {typedBlock.description}
+                  {block.description}
                 </Description>
                 <Button
-                  href={typedBlock.btnLink || "#"}
-                  $data={sectionData}
                   $isMobile={isMobile}
+                  href={block.btnLink || "#"}
+                  $data={sectionData}
                 >
-                  {typedBlock.btnLable || "Learn More"}
+                  {block.btnLable || "Learn More"}
                 </Button>
               </ContentWrapper>
             </Row>
-          );
-        })}
+          ));
+        })()}
       </RowContainer>
     </Section>
   );

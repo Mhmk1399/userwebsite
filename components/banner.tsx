@@ -56,7 +56,6 @@ const BannerTextBox = styled.div<{
   border-radius: ${(props) =>
     props.$data?.blocks?.setting?.backgroundBoxRadious || "10"}px;
 
-    
   /* Apply animations using CSS filters and properties that don't affect positioning */
   ${(props) => {
     const animation = props.$data.blocks.setting.animation;
@@ -246,11 +245,7 @@ const Banner: React.FC<props> = ({ sections, isMobile, componentName }) => {
   const sectionData = sections.find(
     (section) => section.type === componentName
   );
-  if (!sectionData) {
-    return <div>
-       داده‌ای برای این بخش وجود ندارد.
-    </div>;
-  }
+  if (!sectionData) return null;
 
   const { description, imageAlt, imageSrc, text } = sectionData?.blocks;
 
