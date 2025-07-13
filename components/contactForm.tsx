@@ -1,6 +1,8 @@
 "use client";
 import styled from "styled-components";
 import { ContactFormDataSection } from "@/lib/types";
+import { useState } from "react";
+import toast from "react-hot-toast";
 
 interface ContactFormProps {
   sections: ContactFormDataSection[];
@@ -278,20 +280,72 @@ const ContactForm: React.FC<ContactFormProps> = ({
   );
   if (!sectionData) return null;
 
+  const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
+    message: "",
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      if (res.ok) {
+        toast.success("پیام شما با موفقیت ارسال شد");
+      } else {
+        toast.error("خطا در ارسال پیام");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <Section dir="rtl" $data={sectionData} $isMobile={isMobile}>
       <Heading $data={sectionData}>
         {sectionData?.blocks?.heading || "Contact Us"}
       </Heading>
       <Form $isMobile={isMobile}>
-        <Input $isMobile={isMobile} type="text" placeholder="نام" required />
-        <Input $isMobile={isMobile} type="email" placeholder="ایمیل" required />
+        <Input
+          $isMobile={isMobile}
+          type="text"
+          name="name"
+          placeholder="نام"
+          required
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            setFormData({ ...formData, name: e.target.value });
+          }}
+        />
+        <Input
+          $isMobile={isMobile}
+          type="number"
+          name="phone"
+          placeholder="شماره تلفن"
+          required
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            setFormData({ ...formData, phone: e.target.value });
+          }}
+        />
+
         <TextArea
           $isMobile={isMobile}
           placeholder="متن پیام شما ..."
           required
+          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+            setFormData({ ...formData, message: e.target.value });
+          }}
         />
-        <SubmitButton $data={sectionData} $isMobile={isMobile} type="submit">
+        <SubmitButton
+          $data={sectionData}
+          $isMobile={isMobile}
+          onClick={handleSubmit}
+        >
           ارسال
         </SubmitButton>
       </Form>
