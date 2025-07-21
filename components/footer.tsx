@@ -3,7 +3,6 @@ import styled from "styled-components";
 import Link from "next/link";
 import Image from "next/image";
 import { FooterSection } from "@/lib/types";
-import data from "@/public/template/homelg.json";
 import { useEffect, useState } from "react";
 import { BiTimer } from "react-icons/bi";
 import {
@@ -13,6 +12,10 @@ import {
   FaCertificate,
   FaArrowUp,
 } from "react-icons/fa";
+
+interface FooterProps {
+  footerData?: FooterSection;
+}
 interface Category {
   _id: string;
   name: string;
@@ -267,11 +270,14 @@ const ChildCategoryLink = styled(Link)<{
   }
 `;
 
-const Footer = () => {
+const Footer: React.FC<FooterProps> = ({ footerData }) => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [hasMounted, setHasMounted] = useState(false);
   const [enamadExists] = useState(false);
   const [enamad] = useState({});
+
+  const sectionData = footerData as FooterSection;
+
   const scrollToTop = () => {
     if (typeof window !== "undefined") {
       window.scrollTo({
@@ -280,6 +286,7 @@ const Footer = () => {
       });
     }
   };
+
   useEffect(() => {
     setHasMounted(true);
 
@@ -355,10 +362,8 @@ const Footer = () => {
   }, []);
 
   if (!hasMounted) {
-    return null; // Or a loading skeleton
+    return null;
   }
-
-  const sectionData = data.sections.sectionFooter as unknown as FooterSection;
 
   if (!sectionData) {
     return null;

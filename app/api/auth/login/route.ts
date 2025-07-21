@@ -34,11 +34,14 @@ export async function POST(request: Request) {
       }
     );
     console.log(token, "token");
-    const decodedToken = jwt.decode(token) as { userId: string; storeId: string };
+    const decodedToken = jwt.decode(token) as {
+      userId: string;
+      storeId: string;
+    };
     console.log(decodedToken, "decodedToken");
     return NextResponse.json({
       token,
-      userId:decodedToken.userId,
+      userId: decodedToken.userId,
       message: "Login successful",
     });
   } catch (error) {

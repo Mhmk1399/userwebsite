@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import Data from "../public/template/homelg.json";
 
 import {
   BannerSection,
@@ -11,9 +10,11 @@ import {
   CollectionSection,
   ContactFormDataSection,
   DetailPageBlock,
+  FooterSection,
   GalleryBlock,
   GallerySection,
   HeaderBlock,
+  HeaderSection,
   ImageTextBlock,
   ImageTextSection,
   MultiColumnBlock,
@@ -50,10 +51,10 @@ import { OfferRow } from "@/components/offerRow";
 import Gallery from "@/components/gallery";
 import SlideBanner from "@/components/slideBanner";
 import { ProductsRow } from "@/components/productsRow";
-import homeLgTemplate from "@/public/template/homelg.json";
-import homeSmTemplate from "@/public/template/homesm.json";
 import { BlogSchema } from "@/components/schema/blogSchema";
 import CanvasEditor from "@/components/canvasEditor";
+import Header from "@/components/header";
+import Footer from "@/components/footer";
 
 type AllSections = Section &
   RichTextSection &
@@ -73,7 +74,8 @@ type AllSections = Section &
   OfferRowSection &
   GallerySection &
   SlideBannerSection &
-  ProductListSection 
+  ProductListSection;
+
 interface TemplateData {
   sections: {
     children: {
@@ -87,6 +89,7 @@ interface TemplateData {
     };
   };
 }
+
 interface BlogSchemaProps {
   title: string;
   url: string;
@@ -104,6 +107,7 @@ interface ExtractedSection {
   heading: string;
   content: string;
 }
+
 type BlockType =
   | RichTextBlock
   | ImageTextBlock
@@ -121,13 +125,11 @@ type BlockType =
 type GenericBlockType = {
   [key: string]: unknown;
 } & Partial<BlockType>;
+
 const extractBlogData = (template: TemplateData): BlogSchemaProps => {
   const sections = template.sections.children.sections;
-  console.log(template);
-
   const metaData = template.sections.children.metaData;
 
-  // Define text property mappings for each section type
   const textMappings = {
     SlideBanner: {
       headingProps: ["heading", "text"],
@@ -194,8 +196,6 @@ const extractBlogData = (template: TemplateData): BlogSchemaProps => {
       const mapping = textMappings[sectionType as keyof typeof textMappings];
 
       if (mapping) {
-        // Update the getNestedValue function to handle the block types properly
-
         const getNestedValue = (
           obj: unknown,
           path: string
@@ -207,8 +207,8 @@ const extractBlogData = (template: TemplateData): BlogSchemaProps => {
             return undefined;
           }, obj) as string | undefined;
         };
+
         if ("blocks" in section) {
-          // Handle array-based blocks
           if (Array.isArray(section.blocks)) {
             section.blocks.forEach((block) => {
               const heading = mapping.headingProps
@@ -222,9 +222,7 @@ const extractBlogData = (template: TemplateData): BlogSchemaProps => {
                 sectionData.push({ heading, content });
               }
             });
-          }
-          // Handle single block object
-          else {
+          } else {
             const heading = mapping.headingProps
               .map((prop) => getNestedValue(section.blocks, prop))
               .find(Boolean);
@@ -255,30 +253,123 @@ const extractBlogData = (template: TemplateData): BlogSchemaProps => {
     sections: extractedSections,
   };
 };
-export default function Page() {
+
+export default function HomePage() {
   const [data, setData] = useState<AllSections[]>([]);
   const [isMobile, setIsMobile] = useState(false);
   const [orders, setOrders] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [blogData, setBlogData] = useState<BlogSchemaProps | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [headerData, setHeaderData] = useState<HeaderSection | null>(null);
+  const [footerData, setFooterData] = useState<FooterSection | null>(null);
+
+  // Fetch layout data from API
+  const fetchLayoutData = async (
+    routeName: string,
+    activeMode: string,
+    storeId: string
+  ) => {
+    try {
+      const response = await fetch("/api/layout-jason", {
+        method: "GET",
+        headers: {
+          selectedRoute: routeName,
+          activeMode: activeMode,
+          storeId: storeId,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch layout data: ${response.status}`);
+      }
+
+      const layoutData = await response.json();
+      console.log(layoutData);
+      // Extract header and footer data
+      if (layoutData.sections?.sectionHeader) {
+        setHeaderData(layoutData.sections.sectionHeader);
+      }
+      console.log(headerData);
+
+      if (layoutData.sections?.sectionFooter) {
+        setFooterData(layoutData.sections.sectionFooter);
+      }
+      console.log(footerData);
+
+      console.log(`Layout data for home:`, layoutData);
+      return layoutData;
+    } catch (error) {
+      console.error("Error fetching layout data:", error);
+      throw error;
+    }
+  };
+
   useEffect(() => {
     const fetchToken = async () => {
-      const response = await fetch(`/api/generateToken`);
-      const sectionToken = await response.text();
-      localStorage.setItem("sectionToken", sectionToken);
+      try {
+        const response = await fetch(`/api/generateToken`);
+        const sectionToken = await response.text();
+        localStorage.setItem("sectionToken", sectionToken);
+      } catch (error) {
+        console.error("Error fetching token:", error);
+      }
     };
     fetchToken();
   }, []);
+
   useEffect(() => {
-    document.title = Data?.sections?.children?.metaData?.title;
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute(
-        "content",
-        Data?.sections?.children?.metaData?.description
-      );
-    }
-  }, []);
+    const handleResize = async () => {
+      const isMobileView = window.innerWidth < 430;
+      setIsMobile(isMobileView);
+
+      const activeMode = isMobileView ? "sm" : "lg";
+      const storeId = process.env.STOREID || "";
+
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        // Always use "home" for the home page
+        const layoutData = await fetchLayoutData("home", activeMode, storeId);
+        console.log(layoutData);
+
+        if (layoutData && layoutData.sections && layoutData.sections.children) {
+          const testData = layoutData.sections.children
+            .sections as AllSections[];
+          setData(testData);
+          setOrders(layoutData.sections.children.order);
+
+          // Update document title and meta description
+          if (layoutData.sections.children.metaData) {
+            document.title = layoutData.sections.children.metaData.title;
+            const metaDescription = document.querySelector(
+              'meta[name="description"]'
+            );
+            if (metaDescription) {
+              metaDescription.setAttribute(
+                "content",
+                layoutData.sections.children.metaData.description
+              );
+            }
+          }
+
+          // Extract blog data
+          const extractedBlogData = extractBlogData(layoutData as TemplateData);
+          setBlogData(extractedBlogData);
+        }
+      } catch (error) {
+        console.error("Error loading home page data:", error);
+        setError("Failed to load home page content");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []); // No dependencies - this only runs once for home
 
   const componentMap = {
     RichText,
@@ -302,65 +393,111 @@ export default function Page() {
     CanvasEditor,
   };
 
-  useEffect(() => {
-    const handleResize = () => {
-      const isMobileView = window.innerWidth < 430;
-      setIsMobile(isMobileView);
-
-      const template = isMobileView ? homeSmTemplate : homeLgTemplate;
-      console.log(template);
-      const testData = template.sections.children.sections as AllSections[];
-      setData(testData);
-      setOrders(template.sections.children.order);
-      setIsLoading(false);
-      const extractedBlogData = extractBlogData(
-        template as unknown as TemplateData
-      );
-      console.log("extractedBlogData", extractedBlogData);
-
-      setBlogData(extractedBlogData);
-    };
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="flex flex-row gap-2">
-          <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce"></div>
-          <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce [animation-delay:-.3s]"></div>
-          <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce [animation-delay:-.5s]"></div>
-        </div>
-      </div>
+      <>
+        {/* Header - even during loading */}
+        <Header headerData={headerData ?? undefined} />
+
+        <main>
+          <div className="flex justify-center items-center h-screen">
+            <div className="flex flex-row gap-2">
+              <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce"></div>
+              <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce [animation-delay:-.3s]"></div>
+              <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce [animation-delay:-.5s]"></div>
+            </div>
+          </div>
+        </main>
+
+        {/* Footer - even during loading */}
+        <Footer footerData={footerData ?? undefined} />
+      </>
     );
   }
+
+  if (error) {
+    return (
+      <>
+        {/* Header - even during error */}
+        <Header headerData={headerData ?? undefined} />
+
+        <main>
+          <div className="flex justify-center items-center h-screen">
+            <div className="text-center">
+              <h1 className="text-2xl font-bold text-red-600 mb-4">خطا</h1>
+              <p className="text-gray-600">{error}</p>
+              <button
+                onClick={() => window.location.reload()}
+                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              >
+                تلاش مجدد
+              </button>
+            </div>
+          </div>
+        </main>
+
+        {/* Footer - even during error */}
+        <Footer footerData={footerData ?? undefined} />
+      </>
+    );
+  }
+
+  if (!data.length) {
+    return (
+      <>
+        {/* Header - even when no data */}
+        <Header headerData={headerData ?? undefined} />
+
+        <main>
+          <div className="flex justify-center items-center h-screen">
+            <div className="text-center">
+              <h1 className="text-2xl font-bold text-gray-600 mb-4">
+                هیچ محتوایی یافت نشد
+              </h1>
+            </div>
+          </div>
+        </main>
+
+        {/* Footer - even when no data */}
+        <Footer footerData={footerData ?? undefined} />
+      </>
+    );
+  }
+
   return (
     <>
-      {blogData && <BlogSchema blogData={blogData} />}
+      {/* Header with dynamic data */}
+      <Header headerData={headerData ?? undefined} />
 
-      <div className="grid grid-cols-1 pt-4 ">
-        {orders.map((componentName, index) => {
-          const baseComponentName = componentName.split("-")[0];
-          const Component =
-            componentMap[baseComponentName as keyof typeof componentMap];
+      {/* Main content */}
+      <main>
+        {blogData && <BlogSchema blogData={blogData} />}
 
-          return Component ? (
-            <div
-              key={componentName}
-              style={{ order: index }}
-              className="w-full"
-            >
-              <Component
-                sections={data}
-                isMobile={isMobile}
-                componentName={componentName}
-              />
-            </div>
-          ) : null;
-        })}
-      </div>
+        <div className="grid grid-cols-1 pt-4">
+          {orders.map((componentName, index) => {
+            const baseComponentName = componentName.split("-")[0];
+            const Component =
+              componentMap[baseComponentName as keyof typeof componentMap];
+
+            return Component ? (
+              <div
+                key={componentName}
+                style={{ order: index }}
+                className="w-full"
+              >
+                <Component
+                  sections={data}
+                  isMobile={isMobile}
+                  componentName={componentName}
+                />
+              </div>
+            ) : null;
+          })}
+        </div>
+      </main>
+
+      {/* Footer with dynamic data */}
+      <Footer footerData={footerData ?? undefined} />
     </>
   );
 }

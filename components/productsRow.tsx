@@ -266,16 +266,14 @@ export const ProductsRow: React.FC<ProductsRowProps> = ({
 }) => {
   const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
-  const [products, setProducts] = useState<ProductCardData[]>([]); // Using ProductCardData from types.ts
+  const [products, setProducts] = useState<ProductCardData[]>([]);
+  const [Loading, setLoading] = useState(true);
+
   const sectionData = sections.find(
     (section: Section) => section.type === componentName
   ) as SpecialOfferSection;
-  
-  if (!sectionData) return null;
 
   const CollectionId = sectionData?.blocks.setting.selectedCollection;
-
-  const [Loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchSpecialOffers = async () => {
@@ -314,6 +312,9 @@ export const ProductsRow: React.FC<ProductsRowProps> = ({
       });
     }
   };
+
+  if (!sectionData) return null;
+
   if (Loading) {
     return null;
   }

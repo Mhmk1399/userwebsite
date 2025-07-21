@@ -413,9 +413,6 @@ export const OfferRow: React.FC<OfferRowProps> = ({
   const sectionData = sections.find(
     (section) => section.type === componentName
   );
-
-  if (!sectionData) return null;
-
   const CollectionId = sectionData?.blocks.setting.selectedCollection;
 
   useEffect(() => {
@@ -442,6 +439,8 @@ export const OfferRow: React.FC<OfferRowProps> = ({
   }, [CollectionId, sectionData]);
 
   if (!sectionData) return null;
+
+
   return (
     <OffersContainer $data={sectionData} $isMobile={isMobile}>
       <OffersWrapper

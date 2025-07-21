@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import { NextResponse } from "next/server";
 import connect from "@/lib/data";
 import Contact from "@/models/contact";

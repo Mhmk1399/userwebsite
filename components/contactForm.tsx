@@ -275,16 +275,15 @@ const ContactForm: React.FC<ContactFormProps> = ({
   isMobile,
   componentName,
 }) => {
-  const sectionData = sections.find(
-    (section) => section.type === componentName
-  );
-  if (!sectionData) return null;
-
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
     message: "",
   });
+  const sectionData = sections.find(
+    (section) => section.type === componentName
+  );
+  if (!sectionData) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

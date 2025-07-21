@@ -8,9 +8,13 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Search, ShoppingCart, MapPin } from "lucide-react";
-import data from "@/public/template/homelg.json";
 import { useRouter } from "next/navigation";
 import UserMenu from "./userMenu";
+
+interface HeaderProps {
+  headerData?: HeaderSection;
+}
+
 interface Category {
   _id: string;
   name: string;
@@ -267,8 +271,6 @@ const ActionButtons = styled.div`
   }
 `;
 
-
-
 const LocationButton = styled.button`
   display: flex;
   align-items: center;
@@ -356,19 +358,15 @@ const Overlay = styled.div<{ $isOpen: boolean }>`
   }
 `;
 
-const Header = () => {
+const Header: React.FC<HeaderProps> = ({ headerData }) => {
+  const router = useRouter();
   const [mounted, setMounted] = useState<boolean>(false);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [hoverd, setHoverd] = useState<number>(0);
   const [categories, setCategories] = useState<Category[]>([]);
   const [activeMobileCategory, setActiveMobileCategory] =
     useState<MobileCategoryState>(null);
-  const router = useRouter();
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-    // Prevent body scroll when menu is open
-    document.body.style.overflow = !isMenuOpen ? "hidden" : "unset";
-  };
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -447,10 +445,12 @@ const Header = () => {
   useEffect(() => {
     setMounted(true);
   }, []);
+
   if (!mounted) {
     return null; // Or a loading skeleton
   }
-  const sectionData = data?.sections?.sectionHeader as HeaderSection;
+  const sectionData = headerData as HeaderSection;
+
   const isHeaderSection = (section: SectionType): section is HeaderSection => {
     return section?.type === "header" && "blocks" in section;
   };
@@ -472,6 +472,11 @@ const Header = () => {
   };
   const handleNavigate = () => {
     router.push(`/cart`);
+  };
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+    // Prevent body scroll when menu is open
+    document.body.style.overflow = !isMenuOpen ? "hidden" : "unset";
   };
   if (!isHeaderBlock(blocks)) {
     return null;

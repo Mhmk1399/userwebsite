@@ -3,10 +3,10 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { toast, Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
-
 import { FaUser, FaSignOutAlt, FaCog, FaEdit, FaTimes } from "react-icons/fa";
 import { BsCartCheckFill } from "react-icons/bs";
 import Jwt, { JwtPayload } from "jsonwebtoken";
+import Link from "next/link";
 
 interface DecodedToken extends JwtPayload {
   userId: string;
@@ -55,10 +55,10 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      console.log(loading)
+      console.log(loading);
       try {
         // Get the user ID from localStorage token
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem("tokenUser");
         const decoded = Jwt.decode(token as string) as DecodedToken;
         const userId = decoded.userId;
 
@@ -70,7 +70,6 @@ const Dashboard = () => {
         });
         if (response.ok) {
           setLoading(false);
-          toast.success("اطلاعات کاربری با موفقیت دریافت شد");
           const userData = await response.json();
           console.log("User Data:", userData);
           setUserInfo(userData); // Note the .user since the API returns {user: {...}}
@@ -81,12 +80,45 @@ const Dashboard = () => {
         }
       } catch (error) {
         console.log("Error fetching user data:", error);
-        toast.error("خطا در دریافت اطلاعات کاربری");
-        
       }
     };
     fetchUserData();
   }, [loading]);
+
+  useEffect(() => {
+    const checkOrders = async () => {
+      try {
+        const token = localStorage.getItem("tokenUser");
+        if (!token) {
+          router.replace("/login");
+          return;
+        }
+        const ordersResponse = await fetch("/api/orders", {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+        if (!ordersResponse.ok) {
+          throw new Error("Failed to fetch orders");
+        }
+
+        const data = await ordersResponse.json();
+        console.log("Orders data:", data); // Debug log
+
+        if (data.orders) {
+          setOrders(data.orders);
+        }
+      } catch (error) {
+        console.log("Error fetching orders:", error);
+        toast.error("Error loading orders");
+      }
+    };
+
+    checkOrders();
+  }, [router]);
 
   const validateForm = () => {
     let valid = true;
@@ -143,155 +175,203 @@ const Dashboard = () => {
       console.log("خطای سرور");
     }
   };
+
   const handleDeleteAccount = async (
     e: React.MouseEvent<HTMLButtonElement>
   ) => {
     localStorage.removeItem("token");
     e.preventDefault();
   };
-  useEffect(() => {
-    const checkOrders = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          router.replace("/login");
-          return;
-        }
-        const ordersResponse = await fetch("/api/orders", {
-          method: "GET",
-          credentials: "include",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-        if (!ordersResponse.ok) {
-          throw new Error("Failed to fetch orders");
-        }
-
-        const data = await ordersResponse.json();
-        console.log("Orders data:", data); // Debug log
-
-        if (data.orders) {
-          setOrders(data.orders);
-        }
-      } catch (error) {
-        console.log("Error fetching orders:", error);
-        toast.error("Error loading orders");
-      }
-    };
-
-    checkOrders();
-  }, [router]);
 
   const Sidebar = () => (
     <motion.aside
       animate={{ x: 0 }}
       transition={{ duration: 0.5 }}
-      className="w-64 bg-blue-800 h-screen p-6 text-white fixed"
+      className="fixed top-0 right-0 w-64 bg-gradient-to-b from-blue-800 to-blue-900 h-screen p-6 text-white z-50 shadow-2xl
+                 lg:relative lg:translate-x-0 lg:shadow-none
+                 md:w-72 sm:w-64"
       dir="rtl"
     >
-      <h2 className="text-2xl font-bold mb-6">داشبورد - {userInfo?.name} </h2>
-      <nav className="space-y-4">
+      <div className="flex items-center justify-between mb-8">
+        <h2 className="text-xl lg:text-2xl font-bold truncate">
+          داشبورد - {userInfo?.name}
+        </h2>
+        {/* Close button for mobile */}
+        <button className="lg:hidden text-white hover:text-gray-300">
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <nav className="space-y-3">
         <button
           onClick={() => setActiveSection("profile")}
-          className={`flex items-center gap-2 p-2 w-full rounded-lg ${
-            activeSection === "profile" ? "bg-blue-600" : ""
-          }`}
+          className={`flex items-center gap-3 p-3 w-full rounded-xl transition-all duration-200 text-right
+            ${
+              activeSection === "profile"
+                ? "bg-blue-600 shadow-lg transform scale-105"
+                : "hover:bg-blue-700/50"
+            }`}
         >
-          <FaUser /> پروفایل
+          <FaUser className="text-lg" />
+          <span className="font-medium">پروفایل</span>
         </button>
+
         <button
           onClick={() => setActiveSection("orders")}
-          className={`flex items-center gap-2 p-2 w-full rounded-lg ${
-            activeSection === "orders" ? "bg-blue-600" : ""
-          }`}
+          className={`flex items-center gap-3 p-3 w-full rounded-xl transition-all duration-200 text-right
+            ${
+              activeSection === "orders"
+                ? "bg-blue-600 shadow-lg transform scale-105"
+                : "hover:bg-blue-700/50"
+            }`}
         >
-          <BsCartCheckFill /> سفارشات
+          <BsCartCheckFill className="text-lg" />
+          <span className="font-medium">سفارشات</span>
         </button>
+
         <button
           onClick={() => setActiveSection("settings")}
-          className={`flex items-center gap-2 p-2 w-full rounded-lg ${
-            activeSection === "settings" ? "bg-blue-600" : ""
-          }`}
+          className={`flex items-center gap-3 p-3 w-full rounded-xl transition-all duration-200 text-right
+            ${
+              activeSection === "settings"
+                ? "bg-blue-600 shadow-lg transform scale-105"
+                : "hover:bg-blue-700/50"
+            }`}
         >
-          <FaCog /> پیگیری سفارش
+          <FaCog className="text-lg" />
+          <span className="font-medium">پیگیری سفارش</span>
         </button>
+
         <button
           onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 p-2 w-full rounded-lg text-red-400 hover:bg-red-600"
+          className="flex items-center gap-3 p-3 w-full rounded-xl text-red-300 hover:bg-red-600/20 hover:text-red-200 transition-all duration-200 text-right mt-8"
         >
-          <FaSignOutAlt /> خروج
+          <FaSignOutAlt className="text-lg" />
+          <span className="font-medium">خروج</span>
+        </button>
+        <button className="flex-shrink-0 px-4 py-3 text-base font-medium border-b-2 text-right border-transparent text-white hover:text-gray-200 transition-colors whitespace-nowrap">
+          <Link href="/">بازگشت به صفحه اصلی</Link>
         </button>
       </nav>
     </motion.aside>
   );
+
   const ProfileSection = () => {
     if (isEditing) {
       return (
         <motion.div
-          // initial={{ opacity: 0, y: 20 }}
-          // animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
-          className="bg-blue-600 p-6 rounded-xl m-10 shadow-lg space-y-4"
+          className="bg-gradient-to-br from-blue-600 to-blue-700 p-4 lg:p-8 rounded-2xl mx-4 lg:mx-10 shadow-2xl space-y-6"
           dir="rtl"
         >
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-white">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <h2 className="text-xl lg:text-2xl font-bold text-white">
               ویرایش اطلاعات کاربری
             </h2>
-            <div className="flex space-x-2">
+            <div className="flex gap-3">
               <motion.button
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={handleUpdateUser}
-                className="bg-green-500 text-white p-3 mx-2 rounded-full"
+                className="bg-green-500 hover:bg-green-600 text-white p-3 rounded-full shadow-lg transition-colors duration-200"
               >
-                <FaEdit />
+                <FaEdit className="text-lg" />
               </motion.button>
               <motion.button
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => setIsEditing(false)}
-                className="bg-red-500 text-white p-3  rounded-full"
+                className="bg-red-500 hover:bg-red-600 text-white p-3 rounded-full shadow-lg transition-colors duration-200"
               >
-                <FaTimes />
+                <FaTimes className="text-lg" />
               </motion.button>
             </div>
           </div>
 
-          <div>
-            <label className="text-white block mb-2">نام</label>
-            <input
-              type="text"
-              value={formData.name}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, name: e.target.value }))
-              }
-              className={`w-full text-black p-2 rounded ${
-                errors.name ? "border-2 border-red-500" : "border"
-              }`}
-            />
-            {errors.name && (
-              <p className="text-red-300 text-sm mt-1">{errors.name}</p>
-            )}
-          </div>
+          <div className="space-y-6">
+            <div>
+              <label className="text-white block mb-3 font-semibold text-lg">
+                نام
+              </label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, name: e.target.value }))
+                }
+                className={`w-full text-gray-800 p-4 rounded-xl border-2 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-300
+                  ${
+                    errors.name
+                      ? "border-red-400 bg-red-50 focus:border-red-500"
+                      : "border-gray-200 bg-white focus:border-blue-400"
+                  }`}
+                placeholder="نام خود را وارد کنید"
+              />
+              {errors.name && (
+                <p className="text-red-200 text-sm mt-2 flex items-center gap-2">
+                  <svg
+                    className="w-4 h-4"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  {errors.name}
+                </p>
+              )}
+            </div>
 
-          <div>
-            <label className="text-white block mb-2">شماره تماس</label>
-            <input
-              type="tel"
-              value={formData.phone}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, phone: e.target.value }))
-              }
-              className={`w-full text-black p-2 rounded ${
-                errors.phone ? "border-2 border-red-500" : "border"
-              }`}
-            />
-            {errors.phone && (
-              <p className="text-red-300 text-sm mt-1">{errors.phone}</p>
-            )}
+            <div>
+              <label className="text-white block mb-3 font-semibold text-lg">
+                شماره تماس
+              </label>
+              <input
+                type="tel"
+                value={formData.phone}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, phone: e.target.value }))
+                }
+                className={`w-full text-gray-800 p-4 rounded-xl border-2 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-300
+                  ${
+                    errors.phone
+                      ? "border-red-400 bg-red-50 focus:border-red-500"
+                      : "border-gray-200 bg-white focus:border-blue-400"
+                  }`}
+                placeholder="شماره تماس خود را وارد کنید"
+              />
+              {errors.phone && (
+                <p className="text-red-200 text-sm mt-2 flex items-center gap-2">
+                  <svg
+                    className="w-4 h-4"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  {errors.phone}
+                </p>
+              )}
+            </div>
           </div>
         </motion.div>
       );
@@ -302,45 +382,52 @@ const Dashboard = () => {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="shadow rounded-xl m-6 p-10 flex flex-col gap-4"
-        style={{ backgroundColor: "#3a6ea5" }}
+        className="bg-gradient-to-br from-blue-600 to-blue-700 shadow-2xl rounded-2xl mx-4 lg:mx-10 p-6 lg:p-10 space-y-6"
         dir="rtl"
       >
-        <div className="flex justify-between items-center">
-          <h3
-            className="text-2xl font-semibold mb-4 inline-flex items-center gap-2"
-            style={{ color: "#ff6700" }}
-          >
-            <FaUser /> <span>اطلاعات کاربری</span>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <h3 className="text-2xl lg:text-3xl font-bold text-orange-400 flex items-center gap-3">
+            <FaUser className="text-2xl" />
+            <span>اطلاعات کاربری</span>
           </h3>
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             onClick={() => setIsEditing(true)}
-            className="bg-orange-500 text-white p-4 rounded-full"
+            className="bg-orange-500 hover:bg-orange-600 text-white p-4 rounded-full shadow-lg transition-colors duration-200"
           >
-            <FaEdit />
+            <FaEdit className="text-lg" />
           </motion.button>
         </div>
 
-        <p style={{ color: "#ffffff" }}>
-          <strong className="font-bold text-yellow-400 text-lg ml-1">
-            نام:
-          </strong>{" "}
-          {userInfo?.name}
-        </p>
-        <p style={{ color: "#e4e4e4" }}>
-          <strong className="font-bold text-yellow-400 text-lg ml-1">
-            شماره تماس:
-          </strong>{" "}
-          {userInfo?.phone}
-        </p>
-        <p style={{ color: "#e4e4e4" }}>
-          <strong className="font-bold text-yellow-400 text-lg ml-1">
-            تاریخ ایجاد اکانت:
-          </strong>{" "}
-          {new Date(userInfo?.createdAt || "").toLocaleDateString("fa-IR")}
-        </p>
+        <div className="space-y-4 lg:space-y-6">
+          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 lg:p-6">
+            <p className="text-white text-lg lg:text-xl">
+              <strong className="font-bold text-yellow-400 text-lg lg:text-xl ml-2">
+                نام:
+              </strong>
+              {userInfo?.name}
+            </p>
+          </div>
+
+          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 lg:p-6">
+            <p className="text-white text-lg lg:text-xl">
+              <strong className="font-bold text-yellow-400 text-lg lg:text-xl ml-2">
+                شماره تماس:
+              </strong>
+              {userInfo?.phone}
+            </p>
+          </div>
+
+          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 lg:p-6">
+            <p className="text-white text-lg lg:text-xl">
+              <strong className="font-bold text-yellow-400 text-lg lg:text-xl ml-2">
+                تاریخ ایجاد اکانت:
+              </strong>
+              {new Date(userInfo?.createdAt || "").toLocaleDateString("fa-IR")}
+            </p>
+          </div>
+        </div>
       </motion.section>
     );
   };
@@ -350,43 +437,78 @@ const Dashboard = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      style={{ backgroundColor: "#3a6ea5" }}
-      className="p-10 shadow rounded-xl m-10 text-white"
+      className="bg-gradient-to-br from-blue-600 to-blue-700 p-4 lg:p-10 shadow-2xl rounded-2xl mx-4 lg:mx-10 text-white"
       dir="rtl"
     >
-      <h3 className="text-2xl font-bold mb-4 border-b border-gray-200 pb-3">
+      <h3 className="text-2xl lg:text-3xl font-bold mb-6 pb-4 border-b border-white/20 flex items-center gap-3">
+        <BsCartCheckFill className="text-2xl" />
         سفارشات من
       </h3>
+
       {orders.length > 0 ? (
-        <ul className="space-y-4">
+        <div className="space-y-4 lg:space-y-6">
           {orders.map((order) => (
-            <li
+            <div
               key={order._id}
-              className="border border-blue-400 rounded-lg p-4 hover:bg-blue-900 transition-colors"
+              className="bg-white/10 backdrop-blur-sm border border-blue-400/30 rounded-xl p-4 lg:p-6 hover:bg-white/15 transition-all duration-300 hover:transform hover:scale-[1.02]"
             >
-              <p className="mb-2">
-                <strong className="text-yellow-400">شماره سفارش: </strong>
-                {order._id}
-              </p>
-              <p className="mb-2">
-                <strong className="text-yellow-400">وضعیت: </strong>
-                {order.status}
-              </p>
-              <p className="mb-2">
-                <strong className="text-yellow-400">مجموع: </strong>
-                {order.totalAmount} تومان
-              </p>
-              <p className="mb-2">
-                <strong className="text-yellow-400">آدرس: </strong>
-                {order.shippingAddress.city} - {order.shippingAddress.state} -
-                {order.shippingAddress.street} - پستال :
-                {order.shippingAddress.postalCode}
-              </p>
-            </li>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div className="space-y-3">
+                  <p className="text-sm lg:text-base">
+                    <strong className="text-yellow-400 font-semibold">
+                      شماره سفارش:{" "}
+                    </strong>
+                    <span className="font-mono text-xs lg:text-sm">
+                      {order._id}
+                    </span>
+                  </p>
+                  <p className="text-sm lg:text-base">
+                    <strong className="text-yellow-400 font-semibold">
+                      وضعیت:{" "}
+                    </strong>
+                    <span className="bg-green-500/20 text-green-300 px-2 py-1 rounded-full text-xs lg:text-sm">
+                      {order.status}
+                    </span>
+                  </p>
+                  <p className="text-sm lg:text-base">
+                    <strong className="text-yellow-400 font-semibold">
+                      مجموع:{" "}
+                    </strong>
+                    <span className="text-green-300 font-bold">
+                      {order.totalAmount.toLocaleString()} تومان
+                    </span>
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <p className="text-sm lg:text-base">
+                    <strong className="text-yellow-400 font-semibold">
+                      آدرس تحویل:
+                    </strong>
+                  </p>
+                  <div className="bg-white/5 rounded-lg p-3 text-xs lg:text-sm leading-relaxed">
+                    {order.shippingAddress.city} - {order.shippingAddress.state}
+                    <br />
+                    {order.shippingAddress.street}
+                    <br />
+                    <span className="text-gray-300">
+                      کد پستی: {order.shippingAddress.postalCode}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
           ))}
-        </ul>
+        </div>
       ) : (
-        <p className="text-center text-lg">شما سفارشی ندارید.</p>
+        <div className="text-center py-12">
+          <div className="mb-4">
+            <BsCartCheckFill className="text-6xl text-white/30 mx-auto" />
+          </div>
+          <p className="text-lg lg:text-xl text-white/80">
+            شما هنوز سفارشی ندارید.
+          </p>
+        </div>
       )}
     </motion.div>
   );
@@ -396,82 +518,209 @@ const Dashboard = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      style={{ backgroundColor: "#3a6ea5" }}
+      className="bg-gradient-to-br from-blue-600 to-blue-700 p-4 lg:p-10 shadow-2xl rounded-2xl mx-4 lg:mx-10"
       dir="rtl"
-      className="p-6 m-10 rounded-xl shadow-lg"
     >
-      <h3 className="text-2xl text-white font-bold mb-4">پیگیری سفارشات</h3>
-      <p className="mb-4" style={{ color: "#ffffff" }}>
-        لطفا شماره سفارش خود را وارد کنید تا اطلاعات سفارش را دریافت کنید.
-      </p>
-      <input
-        type="text"
-        placeholder="شماره سفارش"
-        className="border rounded p-2 w-full mb-4 focus:ring-2 focus:outline-none"
-        style={{
-          borderColor: "#004e98",
-          outlineColor: "none",
-          color: "#004e98",
-        }}
-      />
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        className="px-4 py-2 rounded shadow"
-        style={{
-          backgroundColor: "#004e98",
-          color: "#fff",
-          transition: "all 0.2s ease-in-out",
-        }}
-      >
-        پیگیری سفارش
-      </motion.button>
+      <h3 className="text-2xl lg:text-3xl font-bold text-white mb-6 pb-4 border-b border-white/20 flex items-center gap-3">
+        <FaCog className="text-2xl" />
+        پیگیری سفارشات
+      </h3>
+
+      <div className="space-y-6">
+        <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 lg:p-6">
+          <p className="mb-4 text-white text-base lg:text-lg leading-relaxed">
+            لطفا شماره سفارش خود را وارد کنید تا اطلاعات سفارش را دریافت کنید.
+          </p>
+
+          <div className="space-y-4">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="شماره سفارش"
+                className="w-full p-4 rounded-xl border-2 border-white/20 bg-white/10 backdrop-blur-sm text-white placeholder-white/60 focus:outline-none focus:ring-4 focus:ring-blue-300 focus:border-white/40 transition-all duration-200"
+              />
+              <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
+                <svg
+                  className="w-5 h-5 text-white/60"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+              </div>
+            </div>
+
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="w-full sm:w-auto px-8 py-4 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl shadow-lg transition-all duration-200 flex items-center justify-center gap-2"
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+              پیگیری سفارش
+            </motion.button>
+          </div>
+        </div>
+
+     
+      </div>
     </motion.div>
   );
 
   return (
-    <div className="flex">
+    <div className="min-h-screen bg-gray-50" dir="rtl">
       <Toaster
         position="top-right"
         containerStyle={{ top: 10, fontSize: "14px", fontWeight: "bold" }}
       />
-      <Sidebar />
-      <main className="ml-64 w-full bg-gray-100 min-h-screen">
-        {activeSection === "profile" && <ProfileSection />}
-        {activeSection === "orders" && <OrdersSection />}
-        {activeSection === "settings" && <SettingsSection />}
-      </main>
 
+      {/* Mobile Header */}
+      <div
+        className="lg:hidden bg-white shadow-sm border-b p-4 flex items-center justify-between"
+        dir="rtl"
+      >
+        <h1 className="text-lg font-bold text-gray-800">داشبورد کاربری</h1>
+        <button className="p-2 text-gray-600 hover:text-blue-600 transition-colors">
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <div className="flex flex-col lg:flex-row">
+        {/* Sidebar - Hidden on mobile, shown on desktop */}
+        <div className="hidden lg:block">
+          <Sidebar />
+        </div>
+
+        {/* Mobile Navigation */}
+        <div className="lg:hidden bg-white border-b">
+          <div className="flex overflow-x-auto scrollbar-hide" dir="rtl">
+            <button
+              onClick={() => setActiveSection("profile")}
+              className={`flex-shrink-0 px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap
+                ${
+                  activeSection === "profile"
+                    ? "border-blue-600 text-blue-600"
+                    : "border-transparent text-gray-500 hover:text-gray-700"
+                }`}
+            >
+              پروفایل
+            </button>
+            <button
+              onClick={() => setActiveSection("orders")}
+              className={`flex-shrink-0 px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap
+                ${
+                  activeSection === "orders"
+                    ? "border-blue-600 text-blue-600"
+                    : "border-transparent text-gray-500 hover:text-gray-700"
+                }`}
+            >
+              سفارشات
+            </button>
+            <button
+              onClick={() => setActiveSection("settings")}
+              className={`flex-shrink-0 px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap
+                ${
+                  activeSection === "settings"
+                    ? "border-blue-600 text-blue-600"
+                    : "border-transparent text-gray-500 hover:text-gray-700"
+                }`}
+            >
+              پیگیری سفارش
+            </button>
+            <button className="flex-shrink-0 px-4 py-3 text-sm font-medium border-b-2 border-transparent text-blue-500 hover:text-blue-700 transition-colors whitespace-nowrap">
+              <Link href="/">بازگشت به صفحه اصلی</Link>
+            </button>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="flex-shrink-0 px-4 py-3 text-sm font-medium border-b-2 border-transparent text-red-500 hover:text-red-700 transition-colors whitespace-nowrap"
+            >
+              خروج
+            </button>
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <main className="flex-1 lg:mr-64 bg-gray-50 min-h-screen">
+          <div className="py-4 lg:py-8">
+            {activeSection === "profile" && <ProfileSection />}
+            {activeSection === "orders" && <OrdersSection />}
+            {activeSection === "settings" && <SettingsSection />}
+          </div>
+        </main>
+      </div>
+
+      {/* Modal */}
       {isModalOpen && (
-        <div
-          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
-          dir="rtl"
-        >
-          <div className="bg-white rounded-lg p-6 shadow-lg">
-            <h2 className="text-lg font-semibold mb-4">انتخاب کنید</h2>
-            <p className="mb-4">لطفا عملیات مورد نظر را انتخاب کنید</p>
-            <div className="flex justify-start">
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50 p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-2xl p-6 shadow-2xl w-full max-w-md"
+            dir="rtl"
+          >
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FaSignOutAlt className="text-2xl text-red-600" />
+              </div>
+              <h2 className="text-xl font-bold text-gray-800 mb-2">
+                تایید خروج
+              </h2>
+              <p className="text-gray-600">
+                آیا مطمئن هستید که می‌خواهید از حساب کاربری خود خارج شوید؟
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-3">
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="px-4 py-2 mx-2 transition-all text-white border bg-blue-500 rounded-lg hover:bg-opacity-75"
+                className="flex-1 px-4 py-3 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl font-medium transition-colors duration-200"
               >
                 انصراف
               </button>
-
               <button
                 onClick={(e) => {
                   setIsModalOpen(false);
                   handleDeleteAccount(e);
                 }}
-                className="px-4 py-2 mx-2 transition-all text-white border bg-red-500 rounded-lg hover:bg-opacity-75"
+                className="flex-1 px-4 py-3 text-white bg-red-500 hover:bg-red-600 rounded-xl font-medium transition-colors duration-200"
               >
-                حذف حساب
+                خروج از حساب
               </button>
             </div>
-          </div>
+          </motion.div>
         </div>
       )}
     </div>
   );
 };
+
 export default Dashboard;

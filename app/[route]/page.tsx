@@ -1,18 +1,21 @@
 "use client";
 import { useEffect, useState } from "react";
-import Data from "../../public/template/contactlg.json";
-
+import { useParams } from "next/navigation";
 import {
   BannerSection,
   BlogBlock,
   BlogDetailBlock,
+  BlogListSection,
   CollapseBlock,
   CollapseSection,
   CollectionSection,
   ContactFormDataSection,
   DetailPageBlock,
+  FooterSection,
   GalleryBlock,
   GallerySection,
+  HeaderBlock,
+  HeaderSection,
   ImageTextBlock,
   ImageTextSection,
   MultiColumnBlock,
@@ -49,22 +52,12 @@ import { OfferRow } from "@/components/offerRow";
 import Gallery from "@/components/gallery";
 import SlideBanner from "@/components/slideBanner";
 import { ProductsRow } from "@/components/productsRow";
-import contactLgTemplate from "@/public/template/contactlg.json";
-import contactSmTemplate from "@/public/template/contactsm.json";
 import { BlogSchema } from "@/components/schema/blogSchema";
+import BlogList from "@/components/blogList";
+import CanvasEditor from "@/components/canvasEditor";
+import Footer from "@/components/footer";
+import Header from "@/components/header";
 
-interface BlogSchemaProps {
-  title: string;
-  url: string;
-  description: string;
-  images: string[];
-  sections: {
-    heading: string;
-    content: string;
-    images?: string[];
-    lists?: string[];
-  }[];
-}
 type AllSections = Section &
   RichTextSection &
   BannerSection &
@@ -83,23 +76,44 @@ type AllSections = Section &
   OfferRowSection &
   GallerySection &
   SlideBannerSection &
-  ProductListSection;
+  BlogBlock &
+  BlogDetailBlock &
+  ProductListSection &
+  BlogListSection &
+  DetailPageBlock;
+
 interface TemplateData {
-  children: {
-    metaData: {
-      title: string;
-      description: string;
+  sections: {
+    children: {
+      metaData: {
+        title: string;
+        description: string;
+      };
+      sections: Section[];
+      type?: string;
+      order: string[];
     };
-    sections: Section[];
-    type?: string;
-    order: string[];
   };
+}
+
+interface BlogSchemaProps {
+  title: string;
+  url: string;
+  description: string;
+  images: string[];
+  sections: {
+    heading: string;
+    content: string;
+    images?: string[];
+    lists?: string[];
+  }[];
 }
 
 interface ExtractedSection {
   heading: string;
   content: string;
 }
+
 type BlockType =
   | RichTextBlock
   | ImageTextBlock
@@ -110,15 +124,17 @@ type BlockType =
   | BlogBlock
   | BlogDetailBlock
   | GalleryBlock
+  | HeaderBlock
   | Record<string, unknown>
   | Array<BlockType>;
+
 type GenericBlockType = {
   [key: string]: unknown;
 } & Partial<BlockType>;
-const extractBlogData = (template: TemplateData): BlogSchemaProps => {
-  const sections = template.children.sections;
 
-  const metaData = template.children.metaData;
+const extractBlogData = (template: TemplateData): BlogSchemaProps => {
+  const sections = template.sections.children.sections;
+  const metaData = template.sections.children.metaData;
 
   // Define text property mappings for each section type
   const textMappings = {
@@ -128,7 +144,7 @@ const extractBlogData = (template: TemplateData): BlogSchemaProps => {
     },
     SpecialOffer: {
       headingProps: ["textHeading", "heading"],
-      contentProps: ["description", "setting.selectedCollection"],
+      contentProps: ["description"],
     },
     Story: {
       headingProps: ["title", "heading"],
@@ -187,7 +203,6 @@ const extractBlogData = (template: TemplateData): BlogSchemaProps => {
       const mapping = textMappings[sectionType as keyof typeof textMappings];
 
       if (mapping) {
-        // Update the getNestedValue function to handle the block types properly
         const getNestedValue = (
           obj: unknown,
           path: string
@@ -201,7 +216,6 @@ const extractBlogData = (template: TemplateData): BlogSchemaProps => {
         };
 
         if ("blocks" in section) {
-          // Handle array-based blocks
           if (Array.isArray(section.blocks)) {
             section.blocks.forEach((block) => {
               const heading = mapping.headingProps
@@ -215,14 +229,12 @@ const extractBlogData = (template: TemplateData): BlogSchemaProps => {
                 sectionData.push({ heading, content });
               }
             });
-          }
-          // Handle single block object
-          else {
+          } else {
             const heading = mapping.headingProps
-              .map((prop) => getNestedValue(section?.blocks, prop))
+              .map((prop) => getNestedValue(section.blocks, prop))
               .find(Boolean);
             const content = mapping.contentProps
-              .map((prop) => getNestedValue(section?.blocks, prop))
+              .map((prop) => getNestedValue(section.blocks, prop))
               .find(Boolean);
 
             if (heading && content) {
@@ -237,8 +249,8 @@ const extractBlogData = (template: TemplateData): BlogSchemaProps => {
     .filter((section) => section.heading && section.content);
 
   return {
-    title: metaData.title,
-    description: metaData.description,
+    title: metaData?.title,
+    description: metaData?.description,
     url: "/",
     images: [
       "/assets/images/bannerdigi.webp",
@@ -250,21 +262,124 @@ const extractBlogData = (template: TemplateData): BlogSchemaProps => {
 };
 
 export default function Page() {
+  const params = useParams();
+  const route = params.route as string;
+  console.log(route, "route");
+
   const [data, setData] = useState<AllSections[]>([]);
   const [isMobile, setIsMobile] = useState(false);
   const [orders, setOrders] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [blogData, setBlogData] = useState<BlogSchemaProps>();
-  useEffect(() => {
-    document.title = Data?.children?.metaData?.title;
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute(
-        "content",
-        Data.children.metaData.description
-      );
+  const [blogData, setBlogData] = useState<BlogSchemaProps | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [headerData, setHeaderData] = useState<HeaderSection | null>(null);
+  const [footerData, setFooterData] = useState<FooterSection | null>(null);
+
+  // Fetch layout data from API
+  const fetchLayoutData = async (
+    routeName: string,
+    activeMode: string,
+    storeId: string
+  ) => {
+    try {
+      const response = await fetch("/api/layout-jason", {
+        method: "GET",
+        headers: {
+          selectedRoute: routeName,
+          activeMode: activeMode,
+          storeId: storeId, 
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch layout data: ${response.status}`);
+      }
+
+      const layoutData = await response.json();
+      console.log(layoutData);
+      // Extract header and footer data
+      if (layoutData.sections?.sectionHeader) {
+        setHeaderData(layoutData.sections.sectionHeader);
+      }
+      console.log(headerData);
+
+      if (layoutData.sections?.sectionFooter) {
+        setFooterData(layoutData.sections.sectionFooter);
+      }
+      console.log(footerData);
+      return layoutData;
+    } catch (error) {
+      console.error("Error fetching layout data:", error);
+      throw error;
     }
+  };
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      try {
+        const response = await fetch(`/api/generateToken`);
+        const sectionToken = await response.text();
+        localStorage.setItem("sectionToken", sectionToken);
+      } catch (error) {
+        console.error("Error fetching token:", error);
+      }
+    };
+    fetchToken();
   }, []);
+
+  useEffect(() => {
+    const handleResize = async () => {
+      const isMobileView = window.innerWidth < 430;
+      setIsMobile(isMobileView);
+
+      const activeMode = isMobileView ? "sm" : "lg";
+      const storeId = process.env.STOREID || '';
+
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        const layoutData = await fetchLayoutData(route, activeMode, storeId);
+
+        if (layoutData && layoutData.sections && layoutData.sections.children) {
+          const testData = layoutData.sections.children
+            .sections as AllSections[];
+          setData(testData);
+          setOrders(layoutData.sections.children.order);
+
+          // Update document title and meta description
+          if (layoutData.sections.children.metaData) {
+            document.title = layoutData.sections.children.metaData.title;
+            const metaDescription = document.querySelector(
+              'meta[name="description"]'
+            );
+            if (metaDescription) {
+              metaDescription.setAttribute(
+                "content",
+                layoutData.sections.children.metaData.description
+              );
+            }
+          }
+
+          // Extract blog data
+          const extractedBlogData = extractBlogData(layoutData as TemplateData);
+          setBlogData(extractedBlogData);
+        }
+      } catch (error) {
+        console.error("Error loading page data:", error);
+        setError("خطا در بارگذاری صفحه");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (route) {
+      handleResize();
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }
+  }, [route]);
+
   const componentMap = {
     RichText,
     Banner,
@@ -284,29 +399,10 @@ export default function Page() {
     Gallery,
     SlideBanner,
     ProductsRow,
+    CanvasEditor,
+    BlogList,
   };
 
-  useEffect(() => {
-    const handleResize = () => {
-      const isMobileView = window.innerWidth < 430;
-      setIsMobile(isMobileView);
-
-      const template = isMobileView ? contactSmTemplate : contactLgTemplate;
-      console.log(template);
-      const testData = template.children.sections as AllSections[];
-      setData(testData);
-      setOrders(template.children.order);
-      setIsLoading(false);
-      const extractedBlogData = extractBlogData(
-        template as unknown as TemplateData
-      );
-      setBlogData(extractedBlogData);
-    };
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -318,31 +414,72 @@ export default function Page() {
       </div>
     );
   }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-red-600 mb-4">
+            خطا در بارگذاری صفحه
+          </h1>
+          <p className="text-gray-600">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            دوباره تلاش کنید
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!data.length) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-600 mb-4">
+            صفحه مورد نظر خالی است
+          </h1>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
-      {blogData && <BlogSchema blogData={blogData} />}
-      <div className="grid grid-cols-1 pt-4 px-1">
-        {orders.map((componentName, index) =>
-         {
-          const baseComponentName = componentName.split("-")[0];
-          const Component =
-            componentMap[baseComponentName as keyof typeof componentMap];
+      {/* Header with dynamic data */}
+      <Header headerData={headerData ?? undefined} />
 
-          return Component ? (
-            <div
-              key={componentName}
-              style={{ order: index }}
-              className="w-full"
-            >
-              <Component
-                sections={data}
-                isMobile={isMobile}
-                componentName={componentName}
-              />
-            </div>
-          ) : null;
-        })}
-      </div>
+      {/* Main content */}
+      <main>
+        {blogData && <BlogSchema blogData={blogData} />}
+
+        <div className="grid grid-cols-1 pt-4">
+          {orders.map((componentName, index) => {
+            const baseComponentName = componentName.split("-")[0];
+            const Component =
+              componentMap[baseComponentName as keyof typeof componentMap];
+
+            return Component ? (
+              <div
+                key={componentName}
+                style={{ order: index }}
+                className="w-full"
+              >
+                <Component
+                  sections={data}
+                  isMobile={isMobile}
+                  componentName={componentName}
+                />
+              </div>
+            ) : null;
+          })}
+        </div>
+      </main>
+
+      {/* Footer with dynamic data */}
+      <Footer footerData={footerData ?? undefined} />
     </>
   );
 }
