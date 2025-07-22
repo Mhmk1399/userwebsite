@@ -333,7 +333,7 @@ export default function Page() {
       setIsMobile(isMobileView);
 
       const activeMode = isMobileView ? "sm" : "lg";
-      const storeId = process.env.STOREID || '';
+      const storeId = process.env.storeId || '';
 
       try {
         setIsLoading(true);

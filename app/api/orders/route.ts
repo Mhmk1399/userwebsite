@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Order from "@/models/orders";
 import connect from "@/lib/data";
-import { getStoreId } from "../../../middleWare/storeId";
+import { getstoreId } from "../../../middleWare/storeId";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
 interface CustomJwtPayload extends JwtPayload {
@@ -27,7 +27,7 @@ if (!token) {
 }
 
   try {
-    const storeId = getStoreId();
+    const storeId = getstoreId();
     const orderData = { ...body, storeId };
     console.log("Order Data:", orderData);
     const order = await Order.create(orderData);

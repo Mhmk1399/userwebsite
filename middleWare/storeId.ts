@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-export const getStoreId = (): string => {
+export const getstoreId = (): string => {
   const storeIdPath = path.join(process.cwd(), "storeId.txt");
   try {
     const storeId = fs.readFileSync(storeIdPath, "utf-8");

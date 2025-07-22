@@ -324,7 +324,7 @@ export default function HomePage() {
       setIsMobile(isMobileView);
 
       const activeMode = isMobileView ? "sm" : "lg";
-      const storeId = process.env.STOREID || "";
+      const storeId = process.env.storeId || "";
 
       try {
         setIsLoading(true);
