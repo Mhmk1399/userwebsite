@@ -264,11 +264,14 @@ export default function HomePage() {
   const [headerData, setHeaderData] = useState<HeaderSection | null>(null);
   const [footerData, setFooterData] = useState<FooterSection | null>(null);
 
+
+
+  
   // Fetch layout data from API
   const fetchLayoutData = async (
     routeName: string,
     activeMode: string,
-    storeId: string
+
   ) => {
     try {
       const response = await fetch("/api/layout-jason", {
@@ -276,9 +279,10 @@ export default function HomePage() {
         headers: {
           selectedRoute: routeName,
           activeMode: activeMode,
-          storeId: storeId,
+    
         },
       });
+      console.log(response)
 
       if (!response.ok) {
         throw new Error(`Failed to fetch layout data: ${response.status}`);
@@ -324,14 +328,15 @@ export default function HomePage() {
       setIsMobile(isMobileView);
 
       const activeMode = isMobileView ? "sm" : "lg";
-      const storeId = process.env.storeId || "";
 
       try {
         setIsLoading(true);
         setError(null);
 
+
+
         // Always use "home" for the home page
-        const layoutData = await fetchLayoutData("home", activeMode, storeId);
+        const layoutData = await fetchLayoutData("home", activeMode);
         console.log(layoutData);
 
         if (layoutData && layoutData.sections && layoutData.sections.children) {

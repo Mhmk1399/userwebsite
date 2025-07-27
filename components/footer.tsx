@@ -292,16 +292,9 @@ const Footer: React.FC<FooterProps> = ({ footerData }) => {
 
     const fetchCategories = async () => {
       try {
-        const token = localStorage.getItem("sectionToken");
-        console.log("Footer token:", token);
+       
 
-        const response = await fetch("/api/category", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await fetch("/api/category");
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -310,7 +303,6 @@ const Footer: React.FC<FooterProps> = ({ footerData }) => {
         const cateData = await response.json();
         setCategories(cateData);
       } catch (error) {
-        console.log("Error fetching categories", error);
         setCategories([
           {
             _id: "1",

@@ -370,24 +370,10 @@ const Header: React.FC<HeaderProps> = ({ headerData }) => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const token = localStorage.getItem("sectionToken");
-        console.log(
-          "Token from localStorage:",
-          token?.substring(0, 20) + "..."
-        ); // Debug log
+     
 
-        if (!token) {
-          throw new Error("No section token found");
-        }
 
-        const response = await fetch("/api/category", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`, // Note the capital A in Authorization
-            "Content-Type": "application/json",
-          },
-          credentials: "include", // Add this to handle cookies if needed
-        });
+        const response = await fetch("/api/category");
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);

@@ -4,9 +4,9 @@ import storeConfig from "../../../store-config.json";
 
 export async function GET() {
   try {
-    const storeId = storeConfig.storeId;
+    const storeId = process.env.storeId;
     console.log(storeId, "ssssssssssssss");
-    const repoUrl = storeConfig.repoUrl;
+    const VPS_URL = process.env.VPS_URL;
 
     // Generate a unique token for sections
     const secret = process.env.JWT_SECRET;
@@ -15,7 +15,7 @@ export async function GET() {
     const sectionsToken = jwt.sign(
       {
         storeId,
-        repoUrl,
+        VPS_URL,
 
         timestamp: Date.now(),
       } as JwtPayload,

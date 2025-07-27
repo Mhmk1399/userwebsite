@@ -4,12 +4,15 @@ import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
   await connect();
+  const storeId =process.env.storeId
+  console.log(storeId)
 
   try {
     const routeName = request.headers.get("selectedRoute");
     const activeMode = request.headers.get("activeMode") || "lg";
-    const storeId = request.headers.get("storeId") || "storemdbrstve5d4941"; // You can add this header client-side
 
+
+    console.log(routeName,activeMode,storeId,"configs")
     if (!routeName || !activeMode || !storeId) {
       return NextResponse.json(
         { error: "Missing required parameters" },
@@ -43,7 +46,7 @@ export async function GET(request: Request) {
       const homeContent = JSON.parse(
         await fetchFromStore(getFilename("home"), storeId)
       );
-      console.log(homeContent, "homeContent");
+      
 
       const layout = {
         sections: {

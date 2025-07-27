@@ -1,7 +1,7 @@
 import Story from "../../../models/story";
 import { NextResponse } from "next/server";
 import connect from "@/lib/data";
-import StoreConfig from "../../../store-config.json";
+
 
 export async function GET() {
   try {
@@ -11,7 +11,7 @@ export async function GET() {
       return NextResponse.json({ error: "Failed to connect to database" });
     }
 
-    const storeId = StoreConfig.storeId;
+    const storeId = process.env.storeId;
     if (!storeId) {
       return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
