@@ -8,7 +8,7 @@ export async function fetchFromStore(
   const response = await fetch(endpoint, {
     method: "GET",
     headers: {
-      storeId:storeId,
+      storeId: storeId,
       filename: filename,
       Authorization: `Bearer ${token}`,
     },
