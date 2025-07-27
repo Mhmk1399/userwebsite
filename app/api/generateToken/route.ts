@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import storeConfig from "../../../store-config.json";
 
 export async function GET() {
   try {

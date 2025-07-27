@@ -274,7 +274,7 @@ const Footer: React.FC<FooterProps> = ({ footerData }) => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [hasMounted, setHasMounted] = useState(false);
   const [enamadExists] = useState(false);
-  const [enamad] = useState({});
+  const [enamad] = useState("");
 
   const sectionData = footerData as FooterSection;
 
@@ -303,6 +303,7 @@ const Footer: React.FC<FooterProps> = ({ footerData }) => {
         const cateData = await response.json();
         setCategories(cateData);
       } catch (error) {
+        console.error("Error fetching categories:", error);
         setCategories([
           {
             _id: "1",
@@ -352,6 +353,7 @@ const Footer: React.FC<FooterProps> = ({ footerData }) => {
 
     fetchCategories();
   }, []);
+
 
   if (!hasMounted) {
     return null;
