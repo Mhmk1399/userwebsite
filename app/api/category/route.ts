@@ -10,9 +10,9 @@ export async function GET() {
     if (!connect) {
       return NextResponse.json({ error: "Failed to connect to database" });
     }
-    const storeId = process.env.storeId;
+    const storeId = process.env.STOREID;
     if (!storeId) {
-      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+      return NextResponse.json({ error: "Miss storeId" }, { status: 401 });
     }
 
     const categories = await Category.find({ storeId: storeId }).populate(

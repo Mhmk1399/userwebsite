@@ -3,7 +3,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 
 export async function GET() {
   try {
-    const storeId = process.env.storeId;
+    const storeId = process.env.STOREID;
     console.log(storeId, "ssssssssssssss");
     const VPS_URL = process.env.VPS_URL;
 

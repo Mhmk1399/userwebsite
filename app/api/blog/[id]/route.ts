@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const storeId = process.env.storeId;
+    const storeId = process.env.STOREID;
     if (!storeId) {
       return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }

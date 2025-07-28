@@ -2,8 +2,7 @@ import { NextResponse } from "next/server";
 import connect from "@/lib/data";
 import StoreUsers from "../../../models/storesUsers";
 import bcrypt from "bcryptjs";
-import fs from "fs";
-import path from "path";
+
 
 
 export async function GET() {
@@ -35,10 +34,8 @@ export async function POST(request: Request) {
     const { name, phone, password } = await request.json();
     
     // Read storeId from store-config.json
-    const configPath = path.join(process.cwd(), 'store-config.json');
-    const configFile = fs.readFileSync(configPath, 'utf-8');
-    const config = JSON.parse(configFile);
-    const storeId = config.storeId;
+  
+    const storeId = process.env.STOREID;
     
     console.log(storeId, "storeId");
     const hashedPassword = await bcrypt.hash(password, 10);

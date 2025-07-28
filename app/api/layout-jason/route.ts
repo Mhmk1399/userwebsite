@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
   await connect();
-  const storeId =process.env.storeId
+  const storeId =process.env.STOREID
   console.log(storeId)
 
   try {

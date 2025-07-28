@@ -11,7 +11,7 @@ export async function GET() {
       return NextResponse.json({ error: "Failed to connect to database" });
     }
 
-    const storeId = process.env.storeId;
+    const storeId = process.env.STOREID;
     if (!storeId) {
       return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }

@@ -1,13 +1,12 @@
 import connect from "@/lib/data";
 import { NextResponse } from "next/server";
 import Products from "../../../models/product";
-import StoreConfig from "../../../store-config.json";
 
 export async function GET() {
   try {
     await connect();
 
-    const storeId = StoreConfig.storeId;
+    const storeId = process.env.STOREID;
     if (!storeId) {
       return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }

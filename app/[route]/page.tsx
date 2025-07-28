@@ -314,18 +314,18 @@ export default function Page() {
     }
   };
 
-  useEffect(() => {
-    const fetchToken = async () => {
-      try {
-        const response = await fetch(`/api/generateToken`);
-        const sectionToken = await response.text();
-        localStorage.setItem("sectionToken", sectionToken);
-      } catch (error) {
-        console.error("Error fetching token:", error);
-      }
-    };
-    fetchToken();
-  }, []);
+  // useEffect(() => {
+  //   const fetchToken = async () => {
+  //     try {
+  //       const response = await fetch(`/api/generateToken`);
+  //       const sectionToken = await response.text();
+  //       localStorage.setItem("sectionToken", sectionToken);
+  //     } catch (error) {
+  //       console.error("Error fetching token:", error);
+  //     }
+  //   };
+  //   fetchToken();
+  // }, []);
 
   useEffect(() => {
     const handleResize = async () => {
@@ -333,7 +333,7 @@ export default function Page() {
       setIsMobile(isMobileView);
 
       const activeMode = isMobileView ? "sm" : "lg";
-      const storeId = process.env.storeId || '';
+      const storeId = process.env.STOREID || '';
 
       try {
         setIsLoading(true);

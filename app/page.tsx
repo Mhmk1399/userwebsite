@@ -309,18 +309,18 @@ export default function HomePage() {
     }
   };
 
-  useEffect(() => {
-    const fetchToken = async () => {
-      try {
-        const response = await fetch(`/api/generateToken`);
-        const sectionToken = await response.text();
-        localStorage.setItem("sectionToken", sectionToken);
-      } catch (error) {
-        console.error("Error fetching token:", error);
-      }
-    };
-    fetchToken();
-  }, []);
+  // useEffect(() => {
+  //   const fetchToken = async () => {
+  //     try {
+  //       const response = await fetch(`/api/generateToken`);
+  //       const sectionToken = await response.text();
+  //       localStorage.setItem("sectionToken", sectionToken);
+  //     } catch (error) {
+  //       console.error("Error fetching token:", error);
+  //     }
+  //   };
+  //   fetchToken();
+  // }, []);
 
   useEffect(() => {
     const handleResize = async () => {
@@ -372,9 +372,9 @@ export default function HomePage() {
     };
 
     handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []); // No dependencies - this only runs once for home
+  //   window.addEventListener("resize", handleResize);
+  //   return () => window.removeEventListener("resize", handleResize);
+  }, []); 
 
   const componentMap = {
     RichText,

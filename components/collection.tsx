@@ -139,7 +139,7 @@ export const Collection: React.FC<CollectionProps> = ({
       try {
         console.log("Fetching collections from:", "/api/collection");
 
-        const response = await fetch("/api/collections", {
+        const response = await fetch("/api/collection", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
