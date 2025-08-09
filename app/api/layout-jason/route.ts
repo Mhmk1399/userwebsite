@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 export async function GET(request: Request) {
   await connect();
   const storeId =process.env.STOREID
-  console.log(storeId)
+  
 
   try {
     const routeName = request.headers.get("selectedRoute");
@@ -26,7 +26,7 @@ export async function GET(request: Request) {
       Expires: "0",
     };
 
-    const getFilename = (name: string) => `${name}${activeMode}.json`;
+    const getFilename = (name: string) => `${name}${activeMode}`;
     // console.log(routeName, activeMode);
 
     // Home route
