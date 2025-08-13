@@ -6,6 +6,7 @@ import { useEffect, useState, useCallback } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import React from "react";
 import { FiFilter } from "react-icons/fi";
+import { Toaster } from "react-hot-toast";
 
 interface ProductListProps {
   sections: ProductSection[];
@@ -184,7 +185,7 @@ const ProductList: React.FC<ProductListProps> = ({
     { value: "name", label: "نام محصول" },
   ];
   const pathname = usePathname();
-  console.log(pathname.split("/")[2]);
+  // console.log(pathname.split("/")[2]);
   const [selectedFilters, setSelectedFilters] = useState({
     category: "",
     priceMin: 1000,
@@ -244,12 +245,15 @@ const ProductList: React.FC<ProductListProps> = ({
     setFilteredProducts(sortedFiltered);
   }, [productData, selectedColors, selectedFilters, sortBy]);
 
+
+
+
   const searchParams = useSearchParams();
   const urlString = searchParams.toString();
   const categoryParam = decodeURIComponent(
     urlString.split("=")[1]?.replace(/\+/g, " ")
   );
-  console.log("categoryParam", categoryParam);
+  
 
   const getCollection = async () => {
     const collectionId = pathname.split("/").pop();
@@ -272,15 +276,16 @@ const ProductList: React.FC<ProductListProps> = ({
       const isStoreRoute = pathname.split("/")[1] === "store";
       if (isStoreRoute) {
         await fetchProducts();
-        setFilteredProducts(productData); // Initialize filtered products
       } else {
         await getCollection();
-        setFilteredProducts(productData); // Initialize filtered products
       }
     };
 
     loadInitialData();
   }, [pathname]);
+
+
+  console.log(filteredProducts, "filteredProducts")
 
   useEffect(() => {
     if (productData.length > 0) {
@@ -325,6 +330,7 @@ const ProductList: React.FC<ProductListProps> = ({
       const data = await response.json();
       if (data?.products) {
         setProductData(data.products);
+        console.log(data.products, "ghasem")
         setLoading(false);
       }
     } catch (error) {
@@ -332,12 +338,20 @@ const ProductList: React.FC<ProductListProps> = ({
     }
   };
 
-  // Empty dependency array for initial load only
+  // Initialize filtered products when productData changes
+  useEffect(() => {
+    if (productData.length > 0) {
+      setFilteredProducts(productData);
+      handleFilter();
+    }
+  }, [productData, handleFilter]);
+
+  // Apply filters when filter criteria change
   useEffect(() => {
     if (productData.length > 0) {
       handleFilter();
     }
-  }, [selectedFilters, sortBy, productData.length, handleFilter]); // Only re-run when filters or sort changes
+  }, [selectedFilters, sortBy, selectedColors, handleFilter]);
 
   const sectionData = sections.find(
     (section) => section.type === componentName
@@ -364,6 +378,7 @@ const ProductList: React.FC<ProductListProps> = ({
 
   return (
     <>
+      <Toaster position="top-right" />
       {!isMobile && (
         <button
           className="bg-blue-500 text-black p-2 rounded absolute top-[70px]  right-4 z-50 shadow-md lg:hidden"
@@ -735,8 +750,8 @@ const ProductList: React.FC<ProductListProps> = ({
             $previewWidth="default"
             className="mt-20 min-h-[500px]"
           >
-            {filteredProducts.map((product) => (
-              <ProductCard key={product._id} productData={product} />
+            {(filteredProducts.length > 0 ? filteredProducts : productData).map((product) => ( 
+              <ProductCard key={product._id || product.id} productData={product} />
             ))}
           </SectionProductList>
         </div>

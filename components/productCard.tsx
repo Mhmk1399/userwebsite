@@ -1,8 +1,17 @@
 import Image from "next/image";
 import styled from "styled-components";
 import { ProductCardSetting, ProductCardData } from "@/lib/types";
+
+interface CartItem {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+  image: string;
+}
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
 
 interface ProductCardProps {
   productData: ProductCardData;
@@ -109,9 +118,9 @@ const ProductPrice = styled.span<{
 }>`
   font-size: ${(props) =>
     props.$settings?.priceFontSize || defaultSetting.priceFontSize};
-  font-weight: ${(props) =>
+  color: ${(props) =>
     props.$settings?.priceColor || defaultSetting.pricecolor};
-
+  font-weight: bold;
   padding: 4px 0;
   display: block;
   text-align: center;
@@ -121,6 +130,29 @@ const ProductPrice = styled.span<{
 
   &:hover {
     transform: scale(1.02);
+  }
+`;
+
+const AddToCartButton = styled.button`
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  margin-top: 8px;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  }
+
+  &:active {
+    transform: translateY(0);
   }
 `;
 
@@ -136,9 +168,47 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData }) => {
     ],
   };
   const [currentImageIndex] = useState(0);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
 
   const handleNavigate = (id: string) => {
     router.push(`/store/${id}`);
+  };
+
+  const addToCart = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsAddingToCart(true);
+    
+    try {
+      const db = await openDB();
+      const transaction = (db as IDBDatabase).transaction("cart", "readwrite");
+      const store = transaction.objectStore("cart");
+      
+      // Use _id or id, whichever is available
+      const productId = productData._id || productData.id;
+      
+      // Check if item already exists
+      const existingItem = await new Promise<CartItem | null>((resolve) => {
+        const request = store.get(productId);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => resolve(null);
+      });
+      
+      const cartItem = {
+        id: productId,
+        name: safeProductData.name || "Unnamed Product",
+        price: parseFloat(safeProductData.price?.replace(/[^0-9.-]+/g, "") || "0"),
+        quantity: existingItem ? existingItem.quantity + 1 : 1,
+        image: currentImage.imageSrc,
+      };
+      
+      await store.put(cartItem);
+      toast.success("محصول به سبد خرید اضافه شد");
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      toast.error("خطا در افزودن به سبد خرید");
+    } finally {
+      setIsAddingToCart(false);
+    }
   };
 
   const currentImage = safeProductData.images[currentImageIndex] || {
@@ -146,9 +216,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData }) => {
     imageAlt: "Product Image",
   };
 
+  // Use _id or id, whichever is available
+  const productId = productData._id || productData.id;
+
   return (
     <Card
-      onClick={() => handleNavigate(productData.id)}
+      onClick={() => handleNavigate(productId)}
       dir="rtl"
       className="min-w-[200px] min-h-[350px]"
     >
@@ -156,28 +229,54 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData }) => {
         $productData={safeProductData}
         src={currentImage.imageSrc}
         alt={currentImage.imageAlt}
-        width={4000}
-        height={4000}
+        width={300}
+        height={200}
       />
-      <div className="flex flex-col p-2 w-full">
+      <div className="flex flex-col p-2 w-full flex-1">
         <ProductName className="" $productData={safeProductData}>
           {safeProductData.name || "Unnamed Product"}
         </ProductName>
         <ProductDescription $productData={safeProductData}>
           {safeProductData.description || "No description available"}
         </ProductDescription>
-        <div className=" w-full  border-[#e51542] border-x-2 bg-red-50 hover:bg-red-100 transition-all duration-200 flex justify-center items-center  p-2">
-          <ProductPrice
-            className="text-black font-extralight leading-4 text-center w-full"
-            $productData={safeProductData}
+        <div className="mt-auto">
+          <div className="w-full border-[#e51542] border-x-2 bg-red-50 hover:bg-red-100 transition-all duration-200 flex justify-center items-center p-2">
+            <ProductPrice
+              className="text-black font-extralight leading-4 text-center w-full"
+              $productData={safeProductData}
+            >
+              {safeProductData.price !== undefined
+                ? `${safeProductData.price} تومان`
+                : "Price not available"}
+            </ProductPrice>
+          </div>
+          <AddToCartButton
+            onClick={addToCart}
+            disabled={isAddingToCart}
           >
-            {safeProductData.price !== undefined
-              ? safeProductData.price
-              : "Price not available"}
-          </ProductPrice>
+            {isAddingToCart ? "در حال افزودن..." : "افزودن به سبد خرید"}
+          </AddToCartButton>
         </div>
       </div>
     </Card>
   );
 };
+
+// IndexedDB helper function
+async function openDB() {
+  return await new Promise((resolve, reject) => {
+    const request = indexedDB.open("CartDB", 1);
+
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => resolve(request.result);
+
+    request.onupgradeneeded = (event) => {
+      const db = (event.target as IDBOpenDBRequest).result;
+      if (!db.objectStoreNames.contains("cart")) {
+        db.createObjectStore("cart", { keyPath: "id" });
+      }
+    };
+  });
+}
+
 export default ProductCard;

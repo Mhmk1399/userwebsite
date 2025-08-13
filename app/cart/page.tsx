@@ -15,6 +15,7 @@ interface CartItem {
 export default function CartPage() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [paymentLoading, setPaymentLoading] = useState(false);
   const [shippingAddress, setShippingAddress] = useState({
     street: "",
     city: "",
@@ -66,7 +67,8 @@ export default function CartPage() {
   };
   const calculateTotal = () =>
     cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const postOrder = async () => {
+  const initiatePayment = async () => {
+    setPaymentLoading(true);
     const userId = localStorage.getItem("userId");
     const orderData = {
       userId,
@@ -86,30 +88,43 @@ export default function CartPage() {
       paymentStatus: "pending",
     };
 
+    console.log("calculateTotal", calculateTotal());
+
     try {
-      const response = await fetch("/api/orders", {
+      // Store order data for after payment
+      localStorage.setItem("pendingOrder", JSON.stringify(orderData));
+
+      // Request payment
+      const response = await fetch("/api/payment/request", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        body: JSON.stringify(orderData),
+        body: JSON.stringify({
+          amount: calculateTotal() * 10000, // Convert Toman to Rial
+          description: `خرید ${cartItems.length} محصول`
+        }),
       });
 
       if (!response.ok) {
-        throw new Error("Failed to submit order");
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      // Clear cart after successful order
-      const db = await openDB();
-      const transaction = (db as IDBDatabase).transaction("cart", "readwrite");
-      const store = transaction.objectStore("cart");
-      await store.clear();
-      setCartItems([]);
-      toast.success("سفارش با موفقیت ثبت شد");
+      const result = await response.json();
+      console.log("Payment response:", result);
+
+      if (result.success && result.paymentUrl) {
+        console.log("Redirecting to:", result.paymentUrl);
+        window.location.href = result.paymentUrl;
+      } else {
+        console.error("Payment failed:", result);
+        toast.error(result.message || "درخواست پرداخت ناموفق بود");
+      }
     } catch (error) {
-      console.log("Error submitting order:", error);
-      toast.error("خطا در ثبت سفارش" + error);
+      console.error("Payment initiation error:", error);
+      toast.error("خطا در ایجاد درخواست پرداخت");
+    } finally {
+      setPaymentLoading(false);
     }
   };
 
@@ -120,6 +135,12 @@ export default function CartPage() {
 
     if (cartItems.length === 0) {
       toast.error("سبد خرید شما خالی است");
+      return;
+    }
+
+    // Validate minimum amount (100 Toman)
+    if (calculateTotal() < 100) {
+      toast.error("حداقل مبلغ سفارش 100 تومان است. لطفا محصولات بیشتری اضافه کنید");
       return;
     }
 
@@ -134,7 +155,7 @@ export default function CartPage() {
       return;
     }
 
-    postOrder();
+    initiatePayment();
   };
 
   return (
@@ -340,12 +361,20 @@ export default function CartPage() {
                     <span>{calculateTotal().toLocaleString()} تومان</span>
                   </div>
                   <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-300"
+                    whileHover={{ scale: paymentLoading ? 1 : 1.02 }}
+                    whileTap={{ scale: paymentLoading ? 1 : 0.98 }}
+                    className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                     onClick={submitOrder}
+                    disabled={paymentLoading}
                   >
-                    ادامه فرآیند خرید
+                    {paymentLoading ? (
+                      <div className="flex items-center justify-center gap-2">
+                        <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white" />
+                        در حال ایجاد درخواست...
+                      </div>
+                    ) : (
+                      "پرداخت و ثبت سفارش"
+                    )}
                   </motion.button>
                 </div>
               </div>
