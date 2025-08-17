@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
   try {
     const storeId = process.env.STOREID;
     if (!storeId) {
-      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+      return NextResponse.json({ error: "Storeid is empty" }, { status: 401 });
     }
 
     const id = request.nextUrl.pathname.split("/")[3];

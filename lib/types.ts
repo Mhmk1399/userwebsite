@@ -2,6 +2,40 @@ import { DetailedHTMLProps, HTMLAttributes } from "react";
 import { Interpolation } from "styled-components";
 import { Substitute } from "styled-components/dist/types";
 
+
+
+export interface ShippingAddress {
+  fullName: string;
+  phone: string;
+  address: string;
+  city: string;
+  postalCode: string;
+}
+
+export interface CartItem {
+  productId: string;
+  quantity: number;
+  price: number;
+}
+
+export interface PendingOrder {
+  userId: string;
+  products: CartItem[];
+  totalAmount: number;
+  shippingAddress: ShippingAddress;
+  status: string;
+  paymentStatus: string;
+  createdAt: Date;
+  expiresAt: Date;
+  authority: string;
+  paymentAmount: number;
+}
+
+declare global {
+  // eslint-disable-next-line no-var
+  var pendingOrders: Map<string, PendingOrder> | undefined;
+}
+
 export interface Link {
   megaMenu: MegaMenuItem[];
   name: string;

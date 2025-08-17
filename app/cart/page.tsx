@@ -69,51 +69,48 @@ export default function CartPage() {
     cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const initiatePayment = async () => {
     setPaymentLoading(true);
-    const userId = localStorage.getItem("userId");
-    const orderData = {
-      userId,
-      products: cartItems.map((item) => ({
-        productId: item.id,
-        quantity: item.quantity,
-        price: item.price,
-      })),
-      status: "pending",
-      totalAmount: calculateTotal(),
-      shippingAddress: {
-        street: shippingAddress.street,
-        city: shippingAddress.city,
-        state: shippingAddress.state,
-        postalCode: shippingAddress.postalCode,
-      },
-      paymentStatus: "pending",
-    };
-
-    console.log("calculateTotal", calculateTotal());
+    const token = localStorage.getItem("tokenUser");
+    
+    if (!token) {
+      toast.error("لطفا ابتدا وارد شوید");
+      setPaymentLoading(false);
+      return;
+    }
 
     try {
-      // Store order data for after payment
-      localStorage.setItem("pendingOrder", JSON.stringify(orderData));
-
-      // Request payment
+      // Send cart items to server for validation and payment
       const response = await fetch("/api/payment/request", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify({
-          amount: calculateTotal() * 10000, // Convert Toman to Rial
-          description: `خرید ${cartItems.length} محصول`
+          cartItems: cartItems.map((item) => ({
+            productId: item.id,
+            quantity: item.quantity,
+            price: item.price // This will be validated server-side
+          })),
+          shippingAddress: {
+            street: shippingAddress.street,
+            city: shippingAddress.city,
+            state: shippingAddress.state,
+            postalCode: shippingAddress.postalCode,
+          }
         }),
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorData = await response.json();
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
       }
 
       const result = await response.json();
       console.log("Payment response:", result);
 
       if (result.success && result.paymentUrl) {
+        // Store only the authority for verification
+        localStorage.setItem("paymentAuthority", result.authority);
         console.log("Redirecting to:", result.paymentUrl);
         window.location.href = result.paymentUrl;
       } else {
@@ -122,7 +119,7 @@ export default function CartPage() {
       }
     } catch (error) {
       console.error("Payment initiation error:", error);
-      toast.error("خطا در ایجاد درخواست پرداخت");
+      toast.error(error instanceof Error ? error.message : "خطا در ایجاد درخواست پرداخت");
     } finally {
       setPaymentLoading(false);
     }
@@ -139,10 +136,10 @@ export default function CartPage() {
     }
 
     // Validate minimum amount (100 Toman)
-    if (calculateTotal() < 100) {
-      toast.error("حداقل مبلغ سفارش 100 تومان است. لطفا محصولات بیشتری اضافه کنید");
-      return;
-    }
+    // if (calculateTotal() < 100000) {
+    //   toast.error("حداقل مبلغ سفارش 100 تومان است. لطفا محصولات بیشتری اضافه کنید");
+    //   return;
+    // }
 
     // Validate shipping address
     if (

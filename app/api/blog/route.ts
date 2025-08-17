@@ -12,12 +12,12 @@ export const GET = async () => {
   try {
     const storeId = process.env.STOREID;
     if (!storeId) {
-      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+      return NextResponse.json({ error: "Storeid is empty" }, { status: 401 });
     }
 
     const blogs = await Blog.find({ storeId: storeId });
     if (!blogs) {
-      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+      return NextResponse.json({ error: "Storeid is empty" }, { status: 401 });
     }
 
     return NextResponse.json({ blogs }, { status: 200 });

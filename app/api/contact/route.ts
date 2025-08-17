@@ -7,7 +7,7 @@ export const POST = async (req: Request) => {
   try {
     const storeId = process.env.STOREID;
     if (!storeId) {
-      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+      return NextResponse.json({ error: "Storeid is empty" }, { status: 401 });
     }
     const body = await req.json();
     const { phone, name , message } = body;

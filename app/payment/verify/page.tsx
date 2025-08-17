@@ -27,65 +27,63 @@ function PaymentVerifyContent() {
   }, [searchParams]);
 
   const verifyAndProcessOrder = async (authority: string) => {
+    console.log("=== CLIENT: Starting payment verification ===");
+    console.log("Authority:", authority);
+    
     try {
-      // Get cart data from localStorage (stored before payment)
-      const orderData = localStorage.getItem("pendingOrder");
-      if (!orderData) {
-        throw new Error("No pending order found");
-      }
-
-      const parsedOrderData = JSON.parse(orderData);
-
-      // Verify payment with Zarinpal
+      console.log("CLIENT: Sending verification request...");
+      // Verify payment with server-stored order data
       const verifyResponse = await fetch("/api/payment/verify", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          authority,
-          amount: parsedOrderData.totalAmount // Convert to Rials
+          authority
         }),
       });
 
-      const verifyResult = await verifyResponse.json();
+      console.log("CLIENT: Response status:", verifyResponse.status);
+      console.log("CLIENT: Response headers:", Object.fromEntries(verifyResponse.headers.entries()));
+
+      if (!verifyResponse.ok) {
+        const errorText = await verifyResponse.text();
+        console.error("CLIENT: Error response body:", errorText);
+        throw new Error(`HTTP error! status: ${verifyResponse.status}`);
+      }
+
+      const responseText = await verifyResponse.text();
+      console.log("CLIENT: Response text:", responseText);
+      let verifyResult;
+      
+      try {
+        verifyResult = JSON.parse(responseText);
+        console.log("CLIENT: Parsed response:", verifyResult);
+      } catch {
+        console.error("CLIENT: Failed to parse response as JSON:", responseText);
+        throw new Error("Server returned invalid response");
+      }
 
       if (!verifyResult.success) {
-        throw new Error("Payment verification failed");
+        throw new Error(verifyResult.message || "Payment verification failed");
       }
 
-      // Submit order to API
-      const response = await fetch("/api/orders", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify({
-          ...parsedOrderData,
-          paymentStatus: "completed",
-          paymentAuthority: authority,
-          paymentRefId: verifyResult.ref_id,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to submit order");
-      }
-
-      // Clear cart and pending order
+      // Payment verified and order created successfully
+      // Clear cart
       const db = await openDB();
       const transaction = (db as IDBDatabase).transaction("cart", "readwrite");
       const store = transaction.objectStore("cart");
       await store.clear();
-      localStorage.removeItem("pendingOrder");
+      
+      // Clear stored authority
+      localStorage.removeItem("paymentAuthority");
 
       setStatus("success");
       toast.success("پرداخت با موفقیت انجام شد");
     } catch (error) {
       console.error("Order processing error:", error);
       setStatus("failed");
-      toast.error("خطا در پردازش سفارش");
+      toast.error(error instanceof Error ? error.message : "خطا در پردازش سفارش");
     }
   };
 
