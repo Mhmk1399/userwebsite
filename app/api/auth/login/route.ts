@@ -33,12 +33,10 @@ export async function POST(request: Request) {
         expiresIn: "10h",
       }
     );
-    console.log(token, "token");
     const decodedToken = jwt.decode(token) as {
       userId: string;
       storeId: string;
     };
-    console.log(decodedToken, "decodedToken");
     return NextResponse.json({
       token,
       userId: decodedToken.userId,
