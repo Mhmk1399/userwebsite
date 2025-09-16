@@ -36,6 +36,7 @@ const SpecialOfferSection = styled.section<{
   align-items: center;
   width: 100%;
   height: auto;
+  max-height:300px;
   max-width: 100%;
   overflow-x: scroll;
   scroll-behavior: smooth;
@@ -339,7 +340,7 @@ export const SpecialOffer: React.FC<SpecialOfferProps> = ({
         ))}
         <button
           onClick={() => router.push(`/collection/${CollectionId}`)}
-          className=" px-4 py-2 ml-10 rounded-lg flex flex-col gap-y-2 justify-center items-center group min-h-[400px]  min-w-[220px] text-white text-nowrap transition-all duration-500 hover:bg-gray-50"
+          className=" px-4 py-2 ml-10 rounded-lg flex flex-col gap-y-2 justify-center items-center group min-h-[200px]  min-w-[220px] text-white text-nowrap transition-all duration-500 hover:bg-gray-50"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

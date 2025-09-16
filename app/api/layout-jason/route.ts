@@ -1,18 +1,15 @@
 import connect from "@/lib/data";
-import { fetchFromStore } from "@/services/fetchFiles";
 import { NextResponse } from "next/server";
+import Jsons from "@/models/jsons";
 
 export async function GET(request: Request) {
   await connect();
-  const storeId =process.env.STOREID
-  
+  const storeId = process.env.STOREID;
 
   try {
     const routeName = request.headers.get("selectedRoute");
     const activeMode = request.headers.get("activeMode") || "lg";
 
-
-    console.log(routeName,activeMode,storeId,"configs")
     if (!routeName || !activeMode || !storeId) {
       return NextResponse.json(
         { error: "Missing required parameters" },
@@ -26,27 +23,27 @@ export async function GET(request: Request) {
       Expires: "0",
     };
 
-    const getFilename = (name: string) => `${name}${activeMode}`;
-    // console.log(routeName, activeMode);
-
-    // Home route
     if (routeName === "home") {
-      const homeContent = JSON.parse(
-        await fetchFromStore(getFilename("home"), storeId)
-      );
-
+      const homeDoc = await Jsons.findOne({ storeId, route: "home" });
+      if (!homeDoc) {
+        return NextResponse.json({ error: "Home content not found" }, { status: 404 });
+      }
+      const homeContent = activeMode === "lg" ? homeDoc.lgContent : homeDoc.smContent;
       return NextResponse.json(homeContent, { status: 200, headers });
     }
 
     try {
-      const routeContent = JSON.parse(
-        await fetchFromStore(getFilename(routeName), storeId)
-      );
-      console.log(routeName, "routeName");
-      const homeContent = JSON.parse(
-        await fetchFromStore(getFilename("home"), storeId)
-      );
-      
+      const [routeDoc, homeDoc] = await Promise.all([
+        Jsons.findOne({ storeId, route: routeName }),
+        Jsons.findOne({ storeId, route: "home" })
+      ]);
+
+      if (!routeDoc || !homeDoc) {
+        return NextResponse.json({ error: "Content not found" }, { status: 404 });
+      }
+
+      const routeContent = activeMode === "lg" ? routeDoc.lgContent : routeDoc.smContent;
+      const homeContent = activeMode === "lg" ? homeDoc.lgContent : homeDoc.smContent;
 
       const layout = {
         sections: {
@@ -55,8 +52,6 @@ export async function GET(request: Request) {
           sectionFooter: homeContent?.sections?.sectionFooter,
         },
       };
-
-      // console.log(layout, "layout");
 
       return NextResponse.json(layout, { status: 200, headers });
     } catch (error) {

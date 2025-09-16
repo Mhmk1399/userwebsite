@@ -24,10 +24,10 @@ console.log("Received token:", token);
 if (!token) {
   return NextResponse.json({ message: "No token provided" }, { status: 401 });
 }
-
+ const decodedToken= jwt.decode(token) as CustomJwtPayload;
   try {
     const storeId = process.env.STOREID
-    const orderData = { ...body, storeId };
+    const orderData = { ...body, storeId , userId: decodedToken.userId };
     console.log("Order Data:", orderData);
     const order = await Order.create(orderData);
     return NextResponse.json(order, { status: 201 });
