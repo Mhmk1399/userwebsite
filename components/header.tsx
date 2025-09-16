@@ -10,6 +10,7 @@ import styled from "styled-components";
 import { Search, ShoppingCart, MapPin } from "lucide-react";
 import { useRouter } from "next/navigation";
 import UserMenu from "./userMenu";
+import { useAuth } from "@/hook/useAuth";
 
 interface HeaderProps {
   headerData?: HeaderSection;
@@ -360,6 +361,7 @@ const Overlay = styled.div<{ $isOpen: boolean }>`
 
 const Header: React.FC<HeaderProps> = ({ headerData }) => {
   const router = useRouter();
+  const { isAuthenticated } = useAuth();
   const [mounted, setMounted] = useState<boolean>(false);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [hoverd, setHoverd] = useState<number>(0);
@@ -508,12 +510,16 @@ const Header: React.FC<HeaderProps> = ({ headerData }) => {
 
         <ActionButtons>
           <div className="flex  items-center gap-2">
-            <ShoppingCart
-              className="text-gray-400 cursor-pointer hover:text-black"
-              size={24}
-              onClick={handleNavigate}
-            />
-            |
+            {isAuthenticated && (
+              <>
+                <ShoppingCart
+                  className="text-gray-400 cursor-pointer hover:text-black"
+                  size={24}
+                  onClick={handleNavigate}
+                />
+                |
+              </>
+            )}
             <UserMenu />
           </div>
 

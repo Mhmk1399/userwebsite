@@ -15,19 +15,32 @@ export const useAuth = () => {
     const checkAuth = () => {
       const token = localStorage.getItem("tokenUser");
       const userId = localStorage.getItem("userId");
-      const userName = localStorage.getItem("userName");
 
-      if (token && userId && userName) {
-        setUser({
-          name: userName,
-          userId,
-          token,
-        });
+      if (token && userId) {
+        try {
+          const payload = JSON.parse(atob(token.split('.')[1]));
+          setUser({
+            name: payload.username || payload.name || userId,
+            userId,
+            token,
+          });
+        } catch {
+          setUser(null);
+        }
+      } else {
+        setUser(null);
       }
       setIsLoading(false);
     };
 
     checkAuth();
+
+    const handleStorageChange = () => {
+      checkAuth();
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
   const logout = () => {

@@ -285,7 +285,7 @@ const ProductList: React.FC<ProductListProps> = ({
   }, [pathname]);
 
 
-  console.log(filteredProducts, "filteredProducts")
+  
 
   useEffect(() => {
     if (productData.length > 0) {
@@ -330,7 +330,6 @@ const ProductList: React.FC<ProductListProps> = ({
       const data = await response.json();
       if (data?.products) {
         setProductData(data.products);
-        console.log(data.products, "ghasem")
         setLoading(false);
       }
     } catch (error) {

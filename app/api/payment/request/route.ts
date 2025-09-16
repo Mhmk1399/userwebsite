@@ -105,6 +105,9 @@ export async function POST(request: NextRequest) {
       }
     };
 
+      console.log(paymentData, "paymentDATA")
+    
+
     const response = await fetch("https://payment.zarinpal.com/pg/v4/payment/request.json", {
       method: "POST",
       headers: {

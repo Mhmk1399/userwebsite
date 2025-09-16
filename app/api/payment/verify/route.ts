@@ -86,11 +86,14 @@ export async function POST(request: NextRequest) {
       }
       
       console.log("8. Preparing order data...");
+      console.log("Pending order structure:", Object.keys(pendingOrder));
+      console.log("Shipping address from pending order:", pendingOrder.shippingAddress);
+      
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { authority: _authority, paymentAmount: _paymentAmount, expiresAt: _expiresAt, ...orderFields } = pendingOrder;
       const orderData = {
         ...orderFields,
-        status: "confirmed",
+        status: "processing", // Use valid enum value
         paymentStatus: "completed",
         paymentAuthority: authority,
         paymentRefId: result.data.ref_id,
@@ -99,6 +102,7 @@ export async function POST(request: NextRequest) {
         storeId: process.env.STOREID
       };
       console.log("Order data to save:", JSON.stringify(orderData, null, 2));
+      console.log("Final shipping address:", orderData.shippingAddress);
       
       console.log("9. Creating order in database...");
       try {
