@@ -1,7 +1,6 @@
 "use client";
 import styled from "styled-components";
 import Image from "next/image";
-import Link from "next/link";
 import { BannerSection } from "@/lib/types";
 
 interface props {
@@ -18,6 +17,8 @@ const SectionBanner = styled.section<{
   height: 600px;
   margin-top: ${(props) => props.$data.setting.marginTop}px;
   margin-bottom: ${(props) => props.$data.setting.marginBottom}px;
+  margin-right: ${(props) => props.$data.setting.marginRight}px;
+  margin-left: ${(props) => props.$data.setting.marginLeft}px;
   padding-top: ${(props) => props.$data.setting.paddingTop}px;
   padding-bottom: ${(props) => props.$data.setting.paddingBottom}px;
   padding-left: ${(props) => props.$data.setting.paddingLeft}px;
@@ -25,6 +26,12 @@ const SectionBanner = styled.section<{
   @media (max-width: 768px) {
     height: 300px;
   }
+  box-shadow: ${(props) =>
+    `${props.$data.blocks.setting?.shadowOffsetX || 0}px 
+     ${props.$data.blocks.setting?.shadowOffsetY || 4}px 
+     ${props.$data.blocks.setting?.shadowBlur || 10}px 
+     ${props.$data.blocks.setting?.shadowSpread || 0}px 
+     ${props.$data.blocks.setting?.shadowColor || "#fff"}`};
 `;
 
 const BannerImage = styled(Image)<{
@@ -32,7 +39,7 @@ const BannerImage = styled(Image)<{
 }>`
   opacity: ${(props) => props.$data?.blocks?.setting?.opacityImage || "1"};
   border-radius: ${(props) =>
-    props.$data?.blocks?.setting?.imageRadious || "10px"};
+    props.$data?.blocks?.setting?.imageRadious || "10"}px;
   object-fit: ${(props) =>
     props.$data?.blocks?.setting?.imageBehavior || "cover"};
 `;
@@ -44,12 +51,16 @@ const BannerTextBox = styled.div<{
   position: absolute;
   top: 50%;
   left: 50%;
+  border: ${(props) => props.$data.blocks.setting.border || "1"}px solid
+    ${(props) => props.$data.blocks.setting.borderColor || "1"};
   transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  opacity: ${(props) => props.$data?.blocks?.setting?.opacityTextBox || "1"};
+  opacity: ${(props) => props.$data.blocks.setting.opacityTextBox || "1"};
+  width: ${(props) => props.$data.blocks.setting.boxWidth || "700"}px;
+  height: ${(props) => props.$data.blocks.setting.boxHeight || "200"}px;
   background-color: ${(props) =>
     props.$data?.blocks?.setting?.backgroundColorBox || "rgba(0, 0, 0, 0.5)"};
   padding: ${(props) => (props.$isMobile ? "20px" : "40px")};
@@ -216,13 +227,10 @@ const HeadingText = styled.h2<{
   $data: BannerSection;
 }>`
   color: ${(props) => props.$data?.blocks?.setting?.textColor || "#ffffff"};
-  font-size: ${(props) => props.$data?.blocks?.setting?.textFontSize || "18"}px;
+  font-size: ${(props) => props.$data?.blocks?.setting?.textFontSize || "16"}px;
   font-weight: ${(props) =>
     props.$data?.blocks?.setting?.textFontWeight || "bold"};
   text-align: center;
-  @media (max-width: 768px) {
-    font-size: 28px;
-  }
 `;
 
 const DescriptionText = styled.p<{
@@ -236,9 +244,6 @@ const DescriptionText = styled.p<{
     props.$data?.blocks?.setting?.descriptionFontWeight || "normal"};
   margin-top: 14px;
   text-align: center;
-  @media (max-width: 768px) {
-    font-size: 16px;
-  }
 `;
 
 const Banner: React.FC<props> = ({ sections, isMobile, componentName }) => {
@@ -251,25 +256,16 @@ const Banner: React.FC<props> = ({ sections, isMobile, componentName }) => {
 
   return (
     <SectionBanner $data={sectionData} $isMobile={isMobile}>
-      <Link
-        href={sectionData.blocks.imageLink || "/"}
-        style={{
-          position: "relative",
-          display: "block",
-          width: "100%",
-          height: "100%",
-        }}
-      >
-        <BannerImage
-          $data={sectionData}
-          alt={imageAlt || "banner"}
-          src={imageSrc || "/assets/images/banner2.webp"}
-          fill
-          priority
-        />
-      </Link>
+      <BannerImage
+        $data={sectionData}
+        alt={imageAlt || "banner"}
+        src={imageSrc || "/assets/images/banner2.webp"}
+        fill
+        priority
+      />
+
       <BannerTextBox $data={sectionData} $isMobile={isMobile}>
-        <HeadingText $data={sectionData}>{text || "گ بنر"}</HeadingText>
+        <HeadingText $data={sectionData}>{text || "بنر"}</HeadingText>
         <DescriptionText $data={sectionData}>
           {description || "توضیحات بنر"}
         </DescriptionText>

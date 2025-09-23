@@ -55,6 +55,7 @@ import { BlogSchema } from "@/components/schema/blogSchema";
 import CanvasEditor from "@/components/canvasEditor";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import { Brands } from "@/components/brands";
 
 type AllSections = Section &
   RichTextSection &
@@ -264,25 +265,17 @@ export default function HomePage() {
   const [headerData, setHeaderData] = useState<HeaderSection | null>(null);
   const [footerData, setFooterData] = useState<FooterSection | null>(null);
 
-
-
-  
   // Fetch layout data from API
-  const fetchLayoutData = async (
-    routeName: string,
-    activeMode: string,
-
-  ) => {
+  const fetchLayoutData = async (routeName: string, activeMode: string) => {
     try {
       const response = await fetch("/api/layout-jason", {
         method: "GET",
         headers: {
           selectedRoute: routeName,
           activeMode: activeMode,
-    
         },
       });
-      console.log(response)
+      console.log(response);
 
       if (!response.ok) {
         throw new Error(`Failed to fetch layout data: ${response.status}`);
@@ -333,8 +326,6 @@ export default function HomePage() {
         setIsLoading(true);
         setError(null);
 
-
-
         // Always use "home" for the home page
         const layoutData = await fetchLayoutData("home", activeMode);
         console.log(layoutData);
@@ -372,13 +363,14 @@ export default function HomePage() {
     };
 
     handleResize();
-  //   window.addEventListener("resize", handleResize);
-  //   return () => window.removeEventListener("resize", handleResize);
-  }, []); 
+    //   window.addEventListener("resize", handleResize);
+    //   return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const componentMap = {
     RichText,
     Banner,
+    Brands,
     ImageText,
     Video,
     ContactForm,

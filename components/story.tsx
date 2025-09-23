@@ -20,20 +20,32 @@ interface Story {
 const StoryContainer = styled.div<{
   $data: StorySection;
 }>`
-  padding-top: ${(props) => props.$data.setting?.paddingTop || "0"}px;
-  padding-bottom: ${(props) => props.$data.setting?.paddingBottom || "0"}px;
-  margin-top: ${(props) => props.$data.setting?.marginTop || "0"}px;
-  margin-bottom: ${(props) => props.$data.setting?.marginBottom || "0"}px;
+  padding-top: ${(props) => props.$data.setting?.paddingTop || "20"}px;
+  padding-bottom: ${(props) => props.$data.setting?.paddingBottom || "20"}px;
+  padding-right: ${(props) => props.$data.setting?.paddingRight || "20"}px;
+  padding-left: ${(props) => props.$data.setting?.paddingLeft || "20"}px;
+  margin-top: ${(props) => props.$data.setting?.marginTop || "10"}px;
+  margin-bottom: ${(props) => props.$data.setting?.marginBottom || "10"}px;
+  margin-right: ${(props) => props.$data.setting.marginRight}px;
+  margin-left: ${(props) => props.$data.setting.marginLeft}px;
   background-color: ${(props) =>
     props.$data.setting?.backgroundColor || "#ffffff"};
+     box-shadow: ${(props) =>
+    `${props.$data.blocks.setting.shadowOffsetX || 0}px 
+     ${props.$data.blocks.setting.shadowOffsetY || 4}px 
+     ${props.$data.blocks.setting.shadowBlur || 10}px 
+     ${props.$data.blocks.setting.shadowSpread || 0}px 
+     ${props.$data.blocks.setting.shadowColor || "#fff"}`};ب
 `;
 
-const StoriesWrapper = styled.section`
+const StoriesWrapper = styled.section<{
+  $data: StorySection;
+}>`
   display: flex;
   direction: rtl;
   justify-content: center;
   overflow-x: auto;
-  gap: 12px;
+  gap: ${(props) => props.$data.blocks.setting.storyGap || 12}px;
   padding: 10px;
   scroll-behavior: smooth;
   width: 100%;
@@ -53,8 +65,8 @@ const StoryItem = styled.div<{
   align-items: center;
   cursor: pointer;
   flex-shrink: 0; // Add this line
-  // width: 80px; // Add fixed width (100px + 4px padding)
-
+  width: ${(props) => props.$data.blocks.setting.storyWidth || 104}px;
+  height: ${(props) => props.$data.blocks.setting.storyHeight || 300}px;
   .story-ring {
     padding: 2px;
     border-radius: 50%;
@@ -259,6 +271,7 @@ export const Story: React.FC<StoryProps> = ({ sections, componentName }) => {
     <>
       <StoryContainer $data={sectionData} className="story-container">
         <StoriesWrapper
+          $data={sectionData}
           ref={containerRef}
           className="overflow-x-auto scroll-smooth"
         >
@@ -278,9 +291,9 @@ export const Story: React.FC<StoryProps> = ({ sections, componentName }) => {
                   <Image
                     src={"/assets/images/pro1.jpg"}
                     alt={story.title}
-                    className="story-image w-[60px] h-[60px] object-"
-                    width={1000}
-                    height={1000}
+                    className="story-image h-[100px] object-cover"
+                    width={800}
+                    height={800}
                   />
                 </div>
                 <span className="story-title">{story.title}</span>

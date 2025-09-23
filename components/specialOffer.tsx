@@ -6,6 +6,7 @@ import ProductCard from "./productCard";
 import { useEffect, useState } from "react";
 import { useRef } from "react";
 import { useRouter } from "next/navigation";
+import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 
 interface SpecialOfferProps {
   sections: SpecialOfferSection[];
@@ -17,13 +18,24 @@ const ScrollContainer = styled.div<{
   $data: SpecialOfferSection;
 }>`
   position: relative;
-  width: 100%;
-  padding-top: ${(props) => props.$data.setting?.paddingTop || "20"}px;
-  padding-bottom: ${(props) => props.$data.setting?.paddingBottom || "20"}px;
-  margin-top: ${(props) => props.$data.setting?.marginTop || "20"}px;
-  margin-bottom: ${(props) => props.$data.setting?.marginBottom || "20"}px;
+  max-width: 100%;
+  margin-top: ${(props) => props.$data.setting.marginTop || "30"}px;
+  margin-bottom: ${(props) => props.$data.setting.marginBottom}px;
+  margin-right: ${(props) => props.$data.setting.marginRight}px;
+  margin-left: ${(props) => props.$data.setting.marginLeft}px;
+  padding-top: ${(props) => props.$data.setting.paddingTop}px;
+  padding-bottom: ${(props) => props.$data.setting.paddingBottom}px;
+  padding-left: ${(props) => props.$data.setting.paddingLeft}px;
+  padding-right: ${(props) => props.$data.setting.paddingRight}px;
   background-color: ${(props) =>
     props.$data.setting?.backgroundColor || "#ef394e"};
+  min-height: ${(props) => props.$data.blocks.setting.height}px;
+  box-shadow: ${(props) =>
+    `${props.$data.blocks.setting?.shadowOffsetX || 0}px 
+     ${props.$data.blocks.setting?.shadowOffsetY || 4}px 
+     ${props.$data.blocks.setting?.shadowBlur || 10}px 
+     ${props.$data.blocks.setting?.shadowSpread || 0}px 
+     ${props.$data.blocks.setting?.shadowColor || "#fff"}`};
 `;
 
 const SpecialOfferSection = styled.section<{
@@ -36,7 +48,7 @@ const SpecialOfferSection = styled.section<{
   align-items: center;
   width: 100%;
   height: auto;
-  max-height:300px;
+  max-height: 300px;
   max-width: 100%;
   overflow-x: scroll;
   scroll-behavior: smooth;
@@ -61,9 +73,7 @@ const Heading = styled.h2<{
 }>`
   color: ${(props) => props.$data.blocks?.setting?.headingColor || "#FFFFFF"};
   font-size: ${(props) =>
-    props.$isMobile
-      ? "24px"
-      : `${props.$data.blocks?.setting?.headingFontSize || "32"}px`};
+    `${props.$data.blocks?.setting?.headingFontSize || "32"}px`};
   font-weight: ${(props) =>
     props.$data.blocks?.setting?.headingFontWeight || "bold"};
   text-align: center;
@@ -75,11 +85,12 @@ const ScrollButton = styled.button<{
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: "#FFFFFF";
-  opacity: 0.5;
+  background-color: ${(props) =>
+    props.$data.blocks?.setting?.btnBackgroundColor || "#000000"};
   color: ${(props) => props.$data.blocks?.setting?.btnTextColor || "#000000"};
+  opacity: 0.8;
   border: none;
-  border-radius: 50%;
+  border-radius: ${(props) => props.$data.blocks?.setting?.btnRadius || "5"}px;
   width: 40px;
   height: 40px;
   display: flex;
@@ -359,26 +370,21 @@ export const SpecialOffer: React.FC<SpecialOfferProps> = ({
         </button>
       </SpecialOfferSection>
 
+      {/* Navigation Buttons with Animation */}
       <ScrollButton
-        className="left bg-white"
+        className="left"
         onClick={() => handleScroll("left")}
         $data={sectionData}
-        aria-label="left"
       >
-        <svg width="24" height="24" viewBox="0 0 24 24">
-          <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z" />
-        </svg>
+        <BiChevronLeft size={24} />
       </ScrollButton>
 
       <ScrollButton
-        aria-label="right"
-        className="right bg-white"
+        className="right"
         onClick={() => handleScroll("right")}
         $data={sectionData}
       >
-        <svg width="24" height="24" viewBox="0 0 24 24">
-          <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
-        </svg>
+        <BiChevronRight size={24} />
       </ScrollButton>
     </ScrollContainer>
   );

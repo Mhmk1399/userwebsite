@@ -19,15 +19,23 @@ const Section = styled.section<{
   padding-right: ${(props) => props.$data?.setting?.paddingRight || "10"}px;
   margin-top: ${(props) => props.$data?.setting?.marginTop || "30"}px;
   margin-bottom: ${(props) => props.$data?.setting?.marginBottom || "30"}px;
+  margin-right: ${(props) => props.$data.setting.marginRight}px;
+  margin-left: ${(props) => props.$data.setting.marginLeft}px;
   background-color: ${(props) =>
     props.$data?.blocks?.setting?.background || "#ffffff"};
   display: flex;
   flex-direction: column;
-  border-radius: 30px;
-  align-items: center;
-  margin-left: 10px;
-  margin-right: 10px;
+  border-radius: ${(props) =>
+    props.$data?.blocks?.setting?.backgroundRadius || "30"}px;
+  align-items: ${(props) => props.$data?.blocks?.setting?.align || "center"};
+  text-align: ${(props) => props.$data?.blocks?.setting?.align || "center"};
   gap: 15px;
+  box-shadow: ${(props) =>
+    `${props.$data.blocks.setting?.shadowOffsetX || 0}px 
+     ${props.$data.blocks.setting?.shadowOffsetY || 4}px 
+     ${props.$data.blocks.setting?.shadowBlur || 10}px 
+     ${props.$data.blocks.setting?.shadowSpread || 0}px 
+     ${props.$data.blocks.setting?.shadowColor || "#fff"}`};
 `;
 
 const H1 = styled.h1<{
@@ -37,11 +45,7 @@ const H1 = styled.h1<{
   font-size: ${(props) => props.$data?.setting?.textHeadingFontSize || "24"}px;
   font-weight: ${(props) =>
     props.$data?.setting?.textHeadingFontWeight || "bold"};
-  // border-bottom: 3px solid #ffffff;
   padding-bottom: 10px;
-  @media (max-width: 768px) {
-    font-size: 28px;
-  }
 `;
 
 const P = styled.p<{
@@ -51,9 +55,16 @@ const P = styled.p<{
   font-size: ${(props) => props.$data?.setting?.descriptionFontSize || "24"}px;
   font-weight: ${(props) =>
     props.$data?.setting?.descriptionFontWeight || "normal"};
-  @media (max-width: 768px) {
-    font-size: 16px;
-  }
+  padding: 0 5px;
+`;
+const HR = styled.hr<{
+  $data: RichTextBlock;
+}>`
+  background-color: ${(props) => props.$data?.setting?.lineColor || "#000"};
+  width: ${(props) => props.$data?.setting?.lineWidth || "20"}px;
+  height: ${(props) => props.$data?.setting?.lineHeight || "0"}px;
+  margin-bottom: ${(props) => props.$data?.setting?.lineBottom || "1"}px;
+  margin-top: ${(props) => props.$data?.setting?.lineTop || "1"}px;
 `;
 
 const Btn = styled.button<{
@@ -64,9 +75,10 @@ const Btn = styled.button<{
   background-color: ${(props) =>
     props.$data?.setting?.btnBackgroundColor || "#007BFF"};
   padding: ${(props) => (props.$isMobile ? "7px 20px" : "15px 30px")};
-  border-radius: 5px;
+  border-radius: ${(props) => props.$data?.setting?.btnRadius || "5"}px;
   border: none;
   cursor: pointer;
+  width: ${(props) => props.$data?.setting?.btnWidth || "20"}px;
 
   /* Apply button animations */
   ${(props) => {
@@ -235,13 +247,11 @@ const RichText: React.FC<RichTextProps> = ({
   );
   if (!sectionData) return null;
 
-
   return (
-    <Section dir="rtl" $data={sectionData}>
+    <Section className="mx-2 " dir="rtl" $data={sectionData}>
       <H1 $data={sectionData.blocks}>{sectionData.blocks.textHeading}</H1>
 
-      <hr className="w-[70%] h-[4px] bg-white mb-4" />
-
+      <HR $data={sectionData.blocks} className=" mx-auto" />
       <P $data={sectionData.blocks}>{sectionData.blocks.description}</P>
       <Btn $data={sectionData.blocks} $isMobile={isMobile}>
         <Link href={sectionData.blocks.btnLink} passHref legacyBehavior>
