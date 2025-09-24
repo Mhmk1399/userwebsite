@@ -332,6 +332,7 @@ export const SpecialOffer: React.FC<SpecialOfferProps> = ({
             $data={sectionData}
             $isMobile={isMobile}
             className="animate-pulse"
+            dir="rtl"
           >
             {sectionData.blocks?.textHeading}
           </Heading>

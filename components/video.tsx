@@ -75,12 +75,12 @@ const Video: React.FC<VideoProps> = ({ sections, isMobile, componentName }) => {
   return (
     <Section $data={sectionData} $isMobile={isMobile}>
       {blocks.heading && (
-        <Heading $isMobile={isMobile} $data={sectionData}>
+        <Heading dir="rtl" $isMobile={isMobile} $data={sectionData}>
           {blocks.heading}
         </Heading>
       )}
       {blocks.descrption && (
-        <Desciption $data={sectionData} $isMobile={isMobile}>
+        <Desciption dir="rtl" $data={sectionData} $isMobile={isMobile}>
           {blocks.descrption}
         </Desciption>
       )}

@@ -672,10 +672,15 @@ const SlideShow: React.FC<SlideShowProps> = ({
                 $data={sectionData.setting}
               />
               <SlideTextBox>
-                <SlideHeading $isMobile={isMobile} $data={sectionData.setting}>
+                <SlideHeading
+                  dir="rtl"
+                  $isMobile={isMobile}
+                  $data={sectionData.setting}
+                >
                   {slide.text}
                 </SlideHeading>
                 <SlideDescription
+                  dir="rtl"
                   $isMobile={isMobile}
                   $data={sectionData.setting}
                 >

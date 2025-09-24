@@ -265,8 +265,10 @@ const Banner: React.FC<props> = ({ sections, isMobile, componentName }) => {
       />
 
       <BannerTextBox $data={sectionData} $isMobile={isMobile}>
-        <HeadingText $data={sectionData}>{text || "بنر"}</HeadingText>
-        <DescriptionText $data={sectionData}>
+        <HeadingText dir="rtl" $data={sectionData}>
+          {text || "بنر"}
+        </HeadingText>
+        <DescriptionText dir="rtl" $data={sectionData}>
           {description || "توضیحات بنر"}
         </DescriptionText>
       </BannerTextBox>

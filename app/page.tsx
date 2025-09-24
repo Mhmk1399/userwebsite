@@ -375,6 +375,7 @@ export default function HomePage() {
     Video,
     ContactForm,
     NewsLetter,
+    ProductsRow,
     CollapseFaq,
     MultiColumn,
     SlideShow,
@@ -386,7 +387,6 @@ export default function HomePage() {
     OfferRow,
     Gallery,
     SlideBanner,
-    ProductsRow,
     CanvasEditor,
   };
 
@@ -475,6 +475,8 @@ export default function HomePage() {
             const baseComponentName = componentName.split("-")[0];
             const Component =
               componentMap[baseComponentName as keyof typeof componentMap];
+
+              console.log(baseComponentName , "////////////")
 
             return Component ? (
               <div

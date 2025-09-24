@@ -249,10 +249,14 @@ const RichText: React.FC<RichTextProps> = ({
 
   return (
     <Section className="mx-2 " dir="rtl" $data={sectionData}>
-      <H1 $data={sectionData.blocks}>{sectionData.blocks.textHeading}</H1>
+      <H1 dir="rtl" $data={sectionData.blocks}>
+        {sectionData.blocks.textHeading}
+      </H1>
 
       <HR $data={sectionData.blocks} className=" mx-auto" />
-      <P $data={sectionData.blocks}>{sectionData.blocks.description}</P>
+      <P dir="rtl" $data={sectionData.blocks}>
+        {sectionData.blocks.description}
+      </P>
       <Btn $data={sectionData.blocks} $isMobile={isMobile}>
         <Link href={sectionData.blocks.btnLink} passHref legacyBehavior>
           {sectionData.blocks.btnText}

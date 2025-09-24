@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Image from "next/image";
 import { useRef } from "react";
 import type { BrandsSection } from "@/lib/types";
+import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 
 interface BrandsProps {
   sections: BrandsSection[];
@@ -13,14 +14,23 @@ interface BrandsProps {
 const BrandsContainer = styled.div<{
   $data: BrandsSection;
 }>`
-  padding-top: ${(props) => props.$data.setting?.paddingTop || "5"}px;
-  padding-bottom: ${(props) => props.$data.setting?.paddingBottom || "5"}px;
-  margin-top: ${(props) => props.$data.setting?.marginTop || "2"}px;
-  margin-bottom: ${(props) => props.$data.setting?.marginBottom || "2"}px;
+  margin-top: ${(props) => props.$data.setting.marginTop || "30"}px;
+  margin-bottom: ${(props) => props.$data.setting.marginBottom}px;
+  margin-right: ${(props) => props.$data.setting.marginRight}px;
+  margin-left: ${(props) => props.$data.setting.marginLeft}px;
+  padding-top: ${(props) => props.$data.setting.paddingTop}px;
+  padding-bottom: ${(props) => props.$data.setting.paddingBottom}px;
+  padding-left: ${(props) => props.$data.setting.paddingLeft}px;
+  padding-right: ${(props) => props.$data.setting.paddingRight}px;
   background-color: ${(props) =>
     props.$data.setting?.backgroundColor || "#FFFFFF"};
   border-radius: ${(props) => props.$data.setting?.borderRadius || "20"}px;
-  border: ${(props) => props.$data.setting?.border || "1px solid #E0E0E0"};
+  box-shadow: ${(props) =>
+    `${props.$data.blocks.setting?.shadowOffsetX || 0}px 
+     ${props.$data.blocks.setting?.shadowOffsetY || 4}px 
+     ${props.$data.blocks.setting?.shadowBlur || 10}px 
+     ${props.$data.blocks.setting?.shadowSpread || 0}px 
+     ${props.$data.blocks.setting?.shadowColor || "#fff"}`};
 `;
 
 const Heading = styled.h2<{
@@ -29,13 +39,24 @@ const Heading = styled.h2<{
 }>`
   color: ${(props) => props.$data.blocks?.setting?.headingColor || "#14213D"};
   font-size: ${(props) =>
-    props.$isMobile
-      ? "24px"
-      : `${props.$data.blocks?.setting?.headingFontSize || "32"}px`};
+    `${props.$data.blocks?.setting?.headingFontSize || "32"}px`};
   font-weight: ${(props) =>
     props.$data.blocks?.setting?.headingFontWeight || "bold"};
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1px;
+`;
+const Description = styled.p<{
+  $data: BrandsSection;
+  $isMobile: boolean;
+}>`
+  color: ${(props) =>
+    props.$data.blocks?.setting?.descriptionColor || "#14213D"};
+  font-size: ${(props) =>
+    `${props.$data.blocks?.setting?.descriptionFontSize || "32"}px`};
+  font-weight: ${(props) =>
+    props.$data.blocks?.setting?.descriptionFontWeight || "bold"};
+  text-align: center;
+  padding: 0 20px;
 `;
 
 const BrandsGrid = styled.div<{
@@ -61,9 +82,11 @@ const ScrollButton = styled.button<{
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: #ffffff;
+  background-color: ${(props) =>
+    props.$data.blocks?.setting?.btnBackgroundColor || "#fff"};
+  color: ${(props) => props.$data.blocks?.setting?.btnColor || "#000"};
   border: none;
-  border-radius: 50%;
+  border-radius: ${(props) => props.$data.blocks?.setting?.btnRadius || "5"}px;
   width: 40px;
   height: 40px;
   display: flex;
@@ -289,68 +312,67 @@ export const Brands: React.FC<BrandsProps> = ({
   }
 
   return (
-    <div className={`transition-all duration-150 ease-in-out relative`}>
-      <BrandsContainer
+    <BrandsContainer
+      $data={sectionData}
+      className={`transition-all duration-150 ease-in-out relative `}
+    >
+      <Heading dir="rtl" $data={sectionData} $isMobile={isMobile}>
+        {sectionData.blocks?.heading}
+      </Heading>
+      <Description dir="rtl" $data={sectionData} $isMobile={isMobile}>
+        {sectionData.blocks?.description}
+      </Description>
+
+      <BrandsGrid
+        ref={containerRef}
         $data={sectionData}
-        className={`transition-all duration-150 ease-in-out relative `}
+        $isMobile={isMobile}
+        dir="rtl"
       >
-        <Heading $data={sectionData} $isMobile={isMobile}>
-          {sectionData.blocks?.heading}
-        </Heading>
-
-        <BrandsGrid
-          ref={containerRef}
-          $data={sectionData}
-          $isMobile={isMobile}
-          dir="rtl"
-        >
-          {sectionData.blocks?.brands.map((brand) => (
-            <BrandCard
-              className="border-l p-3"
-              key={brand.id}
-              $data={sectionData}
+        {sectionData.blocks?.brands.map((brand) => (
+          <BrandCard
+            className="border-l p-3"
+            key={brand.id}
+            $data={sectionData}
+          >
+            <div
+              className="relative "
+              style={{
+                width: `${sectionData.blocks?.setting?.logoWidth || 96}px`,
+                height: `${sectionData.blocks?.setting?.logoHeight || 96}px`,
+              }}
             >
-              <div
-                className="relative "
-                style={{
-                  width: `${sectionData.blocks?.setting?.logoWidth || 96}px`,
-                  height: `${sectionData.blocks?.setting?.logoHeight || 96}px`,
-                }}
-              >
-                <Image
-                  src={brand.logo}
-                  alt={brand.name}
-                  fill
-                  className="object-contain"
-                />
-              </div>
-              <BrandName $data={sectionData}>{brand.name}</BrandName>
-            </BrandCard>
-          ))}
-        </BrandsGrid>
+              <Image
+                src={brand.logo}
+                alt={brand.name}
+                fill
+                className="object-contain"
+              />
+            </div>
+            <BrandName $data={sectionData}>{brand.name}</BrandName>
+          </BrandCard>
+        ))}
+      </BrandsGrid>
 
-        {/* Left Scroll Button with Animation */}
-        <ScrollButton
-          className="left bg-white"
-          onClick={() => handleScroll("left")}
-          $data={sectionData}
-        >
-          <svg width="24" height="24" viewBox="0 0 24 24">
-            <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z" />
-          </svg>
-        </ScrollButton>
+      {/* Left Scroll Button with Animation */}
+      <ScrollButton
+        className="left"
+        onClick={() => handleScroll("left")}
+        $data={sectionData}
+      >
+        {" "}
+        <BiChevronLeft size={24} />
+      </ScrollButton>
 
-        {/* Right Scroll Button with Animation */}
-        <ScrollButton
-          className="right bg-white"
-          onClick={() => handleScroll("right")}
-          $data={sectionData}
-        >
-          <svg width="24" height="24" viewBox="0 0 24 24">
-            <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
-          </svg>
-        </ScrollButton>
-      </BrandsContainer>
-    </div>
+      {/* Right Scroll Button with Animation */}
+      <ScrollButton
+        className="right"
+        onClick={() => handleScroll("right")}
+        $data={sectionData}
+      >
+        {" "}
+        <BiChevronRight size={24} />
+      </ScrollButton>
+    </BrandsContainer>
   );
 };

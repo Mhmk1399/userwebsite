@@ -228,16 +228,30 @@
               "descriptionFontWeight": "normal",
               "btnBackgroundColor": "#ffffff",
               "btnTextColor": "#000000",
-              "formBackground": "#1d6bdf"
+              "formBackground": "#1d6bdf",
+              "inputRadius": "5",
+              "formRadius": "0",
+              "inputWidth": "300",
+              "inputBackgroundColor": "#fff",
+              "inputTextColor": "#000",
+              "btnRadius": "5",
+              "btnWidth": "150",
+              "shadowOffsetX": 0,
+              "shadowOffsetY": 8,
+              "shadowBlur": 20,
+              "shadowSpread": 2,
+              "shadowColor": "#e4e4e4"
             }
           },
           "setting": {
             "paddingTop": "30",
             "paddingBottom": "30",
-            "marginTop": "20",
+            "marginTop": "0",
+            "marginLeft": "20",
+            "marginRight": "20",
             "marginBottom": "20",
-            "paddinRight": "0",
-            "paddinLeft": "0"
+            "paddingLeft": "20",
+            "paddingRight": "20"
           }
         },
         {
@@ -501,31 +515,7 @@
             }
           }
         },
-        {
-          "type": "NewsLetter",
-          "blocks": {
-            "heading": "عضویت در خبرنامه",
-            "description": "توضیحات درباره خبرنامه",
-            "btnText": "ثبت نام",
-            "setting": {
-              "headingColor": "#14213D",
-              "headingFontSize": "27",
-              "headingFontWeight": "bold",
-              "descriptionColor": "#ffffff",
-              "descriptionFontSize": "18",
-              "descriptionFontWeight": "normal",
-              "btnBackgroundColor": "#FCA311",
-              "btnTextColor": "#ffffff",
-              "formBackground": "#E5E5E5"
-            }
-          },
-          "setting": {
-            "paddingTop": "20",
-            "paddingBottom": "20",
-            "marginTop": "20",
-            "marginBottom": "20"
-          }
-        },
+
         {
           "type": "MultiRow",
           "title": "سربرگ ردیف ها",
@@ -584,8 +574,8 @@
         {
           "type": "Gallery",
           "blocks": {
-            "title": " ",
-            "description": " ",
+            "title": "گالری تصاویر",
+            "description": "در این قسمت می‌توانید تصاویر مختلف را مشاهده کنید",
             "images": [
               {
                 "imageSrc": "/assets/images/digi4baners.webp",
@@ -620,16 +610,24 @@
               "imageHeight": "200",
               "imageRadius": "8",
               "gridColumns": "4",
-              "gridGap": "20"
+              "gridGap": "20",
+              "shadowOffsetX": 0,
+              "shadowOffsetY": 8,
+              "shadowBlur": 20,
+              "shadowSpread": 2,
+              "shadowColor": "#e4e4e4",
+              "Radius": "5"
             }
           },
           "setting": {
-            "paddingTop": "0",
-            "paddingBottom": "0",
-            "marginTop": "0",
-            "marginBottom": "0",
-            "paddingRight": "0",
-            "paddingLeft": "0"
+            "paddingTop": "30",
+            "marginTop": "20",
+            "marginBottom": "20",
+            "paddingBottom": "30",
+            "marginLeft": "0",
+            "marginRight": "0",
+            "paddingLeft": "0",
+            "paddingRight": "0"
           }
         },
         {
@@ -853,36 +851,6 @@
         },
 
         {
-          "type": "ProductsRow",
-          "blocks": {
-            "textHeading": " محصولات پرفروش ",
-            "setting": {
-              "selectedCollection": "",
-              "headingColor": "#000000",
-              "headingFontSize": "22",
-              "headingFontWeight": "bold",
-              "productNameColor": "#000000",
-              "priceColor": "#EF394E",
-              "descriptionColor": "#666666",
-              "btnBg": "#EF394E",
-              "btnTextColor": "#ffffff",
-              "cardBackground": "#EF394E",
-              "cardBorderRadius": "8",
-              "imageRadius": "8",
-              "gridColumns": "4"
-            }
-          },
-          "setting": {
-            "paddingTop": "30",
-            "paddingBottom": "30",
-            "marginTop": "20",
-            "marginBottom": "20",
-            "backgroundColor": "#ffffff",
-            "paddingLeft": "10",
-            "paddingRight": "10"
-          }
-        },
-        {
           "type": "Story",
           "blocks": {
             "stories": [
@@ -970,6 +938,7 @@
           "type": "Brands",
           "blocks": {
             "heading": "محبوب‌ترین برندها",
+            "description": "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است",
             "brands": [
               {
                 "id": 1,
@@ -1006,6 +975,9 @@
               "headingColor": "#14213D",
               "headingFontSize": "32",
               "headingFontWeight": "bold",
+              "descriptionColor": "#14213D",
+              "descriptionFontSize": "16",
+              "descriptionFontWeight": "bold",
               "brandNameColor": "#666666",
               "brandNameFontSize": "16",
               "brandNameFontWeight": "normal",
@@ -1013,45 +985,31 @@
               "cardBorderRadius": "8",
               "cardHoverShadow": "lg",
               "gridColumns": "6",
+              "btnColor": "#000",
+              "btnBackgroundColor": "#fff",
+              "btnRadius": "#000",
               "logoWidth": "96",
-              "logoHeight": "96"
+              "logoHeight": "96",
+              "shadowOffsetX": 0,
+              "shadowOffsetY": 8,
+              "shadowBlur": 20,
+              "shadowSpread": 2,
+              "shadowColor": "#e4e4e4"
             }
           },
           "setting": {
-            "paddingTop": "5",
-            "paddingBottom": "5",
-            "marginTop": "20",
-            "marginBottom": "20",
+            "paddingTop": "0",
+            "paddingRight": "0",
+            "paddingLeft": "0",
+            "marginLeft": "0",
+            "marginRight": "0",
+            "paddingBottom": "0",
+            "marginTop": "0",
+            "marginBottom": "0",
             "backgroundColor": "#FFFFFF"
           }
         },
-        {
-          "type": "ProductsRow",
-          "blocks": {
-            "textHeading": " محصولات جدید ",
-            "setting": {
-              "selectedCollection": "",
-              "headingColor": "#000000",
-              "headingFontSize": "22",
-              "headingFontWeight": "bold",
-              "productNameColor": "#000000",
-              "priceColor": "#EF394E",
-              "descriptionColor": "#666666",
-              "btnBg": "#EF394E",
-              "btnTextColor": "#ffffff",
-              "cardBorderRadius": "8"
-            }
-          },
-          "setting": {
-            "paddingTop": "30",
-            "paddingBottom": "30",
-            "marginTop": "20",
-            "marginBottom": "20",
-            "backgroundColor": "#ffffff",
-            "paddingLeft": "10",
-            "paddingRight": "10"
-          }
-        },
+
         {
           "type": "ProductsRow",
           "blocks": {
@@ -1069,60 +1027,27 @@
               "cardBackground": "#EF394E",
               "cardBorderRadius": "8",
               "imageRadius": "8",
-              "gridColumns": "4"
+              "gridColumns": "4",
+              "btnBackgroundColor": "#fff",
+              "btnColor": "#000",
+              "btnRadius": "5",
+              "height": "200",
+              "Radius": "10"
             }
           },
           "setting": {
-            "paddingTop": "30",
-            "paddingBottom": "30",
-            "marginTop": "20",
-            "marginBottom": "20",
-            "backgroundColor": "#ffffff",
-            "paddingLeft": "10",
-            "paddingRight": "10"
-          }
-        },
-        {
-          "type": "Gallery",
-          "blocks": {
-            "title": " ",
-            "description": " ",
-            "images": [
-              {
-                "imageSrc": "/assets/images/twinbanner2.webp",
-                "imageAlt": "Gallery Image 1",
-                "imageLink": "#"
-              },
-              {
-                "imageSrc": "/assets/images/twinbanner.webp",
-                "imageAlt": "Gallery Image 2",
-                "imageLink": "#"
-              }
-            ],
-            "setting": {
-              "titleColor": "#333333",
-              "titleFontSize": "32",
-              "titleFontWeight": "bold",
-              "descriptionColor": "#666666",
-              "descriptionFontSize": "16",
-              "descriptionFontWeight": "normal",
-              "background": "#ffffff",
-              "imageWidth": "300",
-              "imageHeight": "250",
-              "imageRadius": "8",
-              "gridColumns": "2",
-              "gridGap": "20"
-            }
-          },
-          "setting": {
-            "paddingTop": "10",
-            "paddingBottom": "10",
-            "marginTop": "5",
-            "marginBottom": "5",
+            "paddingTop": "20",
+            "paddingBottom": "20",
+            "paddingLeft": "0",
             "paddingRight": "0",
-            "paddingLeft": "0"
+            "marginTop": "0",
+            "marginBottom": "0",
+            "marginLeft": "0",
+            "marginRight": "0",
+            "backgroundColor": "#ffffff"
           }
         },
+
         {
           "type": "ImageText",
           "blocks": {
@@ -1193,6 +1118,8 @@
           "setting": {
             "paddingTop": "0",
             "paddingBottom": "0",
+            "paddingLeft": "0",
+            "paddingRight": "0",
             "marginTop": "20",
             "marginBottom": "20",
             "marginLeft": "20",
