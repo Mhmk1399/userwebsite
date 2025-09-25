@@ -14,34 +14,53 @@ const Section = styled.section<{
   $data: ContactFormDataSection;
   $isMobile: boolean;
 }>`
+  max-width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  padding-top: ${(props) => props.$data?.setting?.paddingTop || "20"}px;
-  padding-bottom: ${(props) => props.$data?.setting?.paddingBottom || "20"}px;
-  padding-left: ${(props) => props.$data?.setting?.paddingLeft || "20"}px;
-  padding-right: ${(props) => props.$data?.setting?.paddingRight || "20"}px;
-  margin-top: ${(props) => props.$data?.setting?.marginTop || "20"}px;
+  align-items: center;
+  margin-top: ${(props) => props.$data.setting.marginTop || "30"}px;
+  margin-bottom: ${(props) => props.$data.setting.marginBottom}px;
+  margin-right: ${(props) => props.$data.setting.marginRight}px;
+  margin-left: ${(props) => props.$data.setting.marginLeft}px;
+  padding-top: ${(props) => props.$data.setting.paddingTop}px;
+  padding-bottom: ${(props) => props.$data.setting.paddingBottom}px;
+  padding-left: ${(props) => props.$data.setting.paddingLeft}px;
+  padding-right: ${(props) => props.$data.setting.paddingRight}px;
   margin-bottom: ${(props) => props.$data?.setting?.marginBottom || "20"}px;
   background-color: ${(props) =>
     props.$data.blocks?.setting?.formBackground || "#f9f9f9"};
-  border-radius: 20px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  width: ${(props) => (props.$isMobile ? "100%" : "auto")};
-  max-width: ${(props) => (props.$isMobile ? "425px" : "100%")};
+  border-radius: ${(props) =>
+    props.$data.blocks?.setting?.boxRadiuos || "10"}px;
+  box-shadow: ${(props) =>
+    `${props.$data.blocks?.setting?.shadowOffsetX || 0}px 
+     ${props.$data.blocks?.setting?.shadowOffsetY || 4}px 
+     ${props.$data.blocks?.setting?.shadowBlur || 10}px 
+     ${props.$data.blocks?.setting?.shadowSpread || 0}px 
+     ${props.$data.blocks?.setting?.shadowColor || "#fff"}`};
 `;
 
-const Heading = styled.h2<{ $data: ContactFormDataSection }>`
+const FormHeading = styled.h2<{ $data: ContactFormDataSection }>`
   color: ${(props) => props.$data.blocks?.setting?.headingColor || "#333"};
   font-size: ${(props) =>
-    props.$data.blocks?.setting?.headingFontSize || "24px"}px;
+    props.$data.blocks?.setting?.headingFontSize || "24"}px;
   font-weight: ${(props) =>
     props.$data.blocks?.setting?.headingFontWeight || "bold"};
-  margin-bottom: 20px;
-  @media (max-width: 768px) {
-    font-size: 28px;
-  }
+  text-align: center;
+  margin-bottom: 2rem;
+`;
+
+const FormGroup = styled.div`
+  margin-bottom: 1.5rem;
+`;
+const Label = styled.label<{
+  $data: ContactFormDataSection;
+}>`
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  margin-right: 10px;
+  color: ${(props) => props.$data?.blocks?.setting?.labelColor || "#333"};
 `;
 
 const Form = styled.form<{ $isMobile: boolean }>`
@@ -53,31 +72,38 @@ const Form = styled.form<{ $isMobile: boolean }>`
   padding: 0 ${(props) => (props.$isMobile ? "10px" : "20px")};
 `;
 
-const Input = styled.input<{ $isMobile: boolean }>`
-  padding: ${(props) => (props.$isMobile ? "10px" : "14px")};
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  font-size: ${(props) => (props.$isMobile ? "14px" : "16px")};
-  width: 70%;
+const Input = styled.input<{
+  $data: ContactFormDataSection;
+}>`
+  max-width: 100%;
+  width: ${(props) => props.$data.blocks?.setting?.inputWidth || "10"}px;
+  padding: 12px;
+  margin-right: 10px;
+  margin-left: 10px;
+  border: 2px solid #e1e5e9;
+  border-radius: ${(props) =>
+    props.$data.blocks?.setting?.inputRadiuos || "10"}px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
 
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
-  }
-
-  @media (max-width: 768px) {
-    width: 90%;
+    border-color: #007bff;
   }
 `;
 
-const TextArea = styled.textarea<{ $isMobile: boolean }>`
+const TextArea = styled.textarea<{
+  $isMobile: boolean;
+  $data: ContactFormDataSection;
+}>`
   padding: ${(props) => (props.$isMobile ? "10px" : "14px")};
   margin-bottom: 15px;
   border: 1px solid #ccc;
-  border-radius: 10px;
+  border-radius: ${(props) =>
+    props.$data.blocks?.setting?.inputRadiuos || "10"}px;
   font-size: ${(props) => (props.$isMobile ? "14px" : "16px")};
-  width: 70%;
+  max-width: 100%;
+  width: ${(props) => props.$data.blocks?.setting?.inputWidth || "10"}px;
   resize: vertical;
   min-height: ${(props) => (props.$isMobile ? "80px" : "100px")};
 
@@ -100,13 +126,14 @@ const SubmitButton = styled.button<{
     props.$data.blocks.setting?.btnBackgroundColor || "#007bff"};
   color: ${(props) => props.$data.blocks.setting?.btnTextColor || "#fff"};
   border: none;
-  border-radius: 5px;
+  border-radius: ${(props) =>
+    props.$data.blocks?.setting?.btnRadiuos || "10"}px;
   font-size: ${(props) => (props.$isMobile ? "14px" : "16px")};
   cursor: pointer;
   transition: all 0.4s ease-in-out;
-  width: ${(props) => (props.$isMobile ? "50%" : "70%")};
+  width: ${(props) => props.$data.blocks?.setting?.btnWidth || "10"}px;
+  max-width: 100%;
   text-align: center;
-
   &:hover {
     background-color: ${(props) =>
       props.$data.blocks.setting?.btnBackgroundColor ? "#0056b3" : "#9c119c"};
@@ -307,39 +334,56 @@ const ContactForm: React.FC<ContactFormProps> = ({
 
   return (
     <Section dir="rtl" $data={sectionData} $isMobile={isMobile}>
-      <Heading $data={sectionData}>
+      <FormHeading $data={sectionData}>
         {sectionData?.blocks?.heading || "Contact Us"}
-      </Heading>
-      <Form $isMobile={isMobile}>
-        <Input
-          $isMobile={isMobile}
-          type="text"
-          name="name"
-          placeholder="نام"
-          required
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            setFormData({ ...formData, name: e.target.value });
-          }}
-        />
-        <Input
-          $isMobile={isMobile}
-          type="number"
-          name="phone"
-          placeholder="شماره تلفن"
-          required
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            setFormData({ ...formData, phone: e.target.value });
-          }}
-        />
-
-        <TextArea
-          $isMobile={isMobile}
-          placeholder="متن پیام شما ..."
-          required
-          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
-            setFormData({ ...formData, message: e.target.value });
-          }}
-        />
+      </FormHeading>
+      <Form $isMobile={isMobile} onSubmit={handleSubmit}>
+        <FormGroup>
+          {" "}
+          <Label $data={sectionData} htmlFor="name">
+            نام و نام خانوادگی *
+          </Label>
+          <Input
+            $data={sectionData}
+            type="text"
+            name="name"
+            placeholder="نام"
+            required
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              setFormData({ ...formData, name: e.target.value });
+            }}
+          />
+        </FormGroup>
+        <FormGroup>
+          {" "}
+          <Label $data={sectionData} htmlFor="phone">
+            شماره تماس
+          </Label>
+          <Input
+            $data={sectionData}
+            type="number"
+            name="phone"
+            placeholder="شماره تلفن"
+            required
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              setFormData({ ...formData, phone: e.target.value });
+            }}
+          />
+        </FormGroup>
+        <FormGroup>
+          <Label $data={sectionData} htmlFor="message">
+            پیام *
+          </Label>
+          <TextArea
+            $isMobile={isMobile}
+            $data={sectionData}
+            placeholder="متن پیام شما ..."
+            required
+            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+              setFormData({ ...formData, message: e.target.value });
+            }}
+          />
+        </FormGroup>
         <SubmitButton
           $data={sectionData}
           $isMobile={isMobile}

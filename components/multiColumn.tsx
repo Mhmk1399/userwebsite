@@ -11,18 +11,15 @@ const Section = styled.section<{
   $data: MultiColumnSection;
   $isMobile: boolean;
 }>`
-  padding-top: ${(props) =>
-    props.$isMobile ? "10" : props.$data.setting?.paddingTop || "20"}px;
-  padding-bottom: ${(props) =>
-    props.$isMobile ? "10" : props.$data.setting?.paddingBottom || "20"}px;
-  padding-right: ${(props) =>
-    props.$isMobile ? "10" : props.$data.setting?.paddingRight || "20"}px;
-  padding-left: ${(props) =>
-    props.$isMobile ? "10" : props.$data.setting?.paddingLeft || "20"}px;
-  margin-top: ${(props) =>
-    props.$isMobile ? "10" : props.$data.setting?.marginTop || "20"}px;
-  margin-bottom: ${(props) =>
-    props.$isMobile ? "10" : props.$data.setting?.marginBottom || "20"}px;
+  max-width: 100%;
+  margin-top: ${(props) => props.$data.setting.marginTop || "30"}px;
+  margin-bottom: ${(props) => props.$data.setting.marginBottom}px;
+  margin-right: ${(props) => props.$data.setting.marginRight}px;
+  margin-left: ${(props) => props.$data.setting.marginLeft}px;
+  padding-top: ${(props) => props.$data.setting.paddingTop}px;
+  padding-bottom: ${(props) => props.$data.setting.paddingBottom}px;
+  padding-left: ${(props) => props.$data.setting.paddingLeft}px;
+  padding-right: ${(props) => props.$data.setting.paddingRight}px;
   background-color: ${(props) =>
     props.$data.setting?.backgroundColorBox || "#ffffff"};
   display: flex;
@@ -30,10 +27,13 @@ const Section = styled.section<{
   justify-content: center;
   align-items: center;
   gap: ${(props) => (props.$isMobile ? "10" : "15")}px;
-  border-radius: 12px;
-  width: ${(props) => (props.$isMobile ? "100%" : "auto")}px;
-  margin-left: ${(props) => (props.$isMobile ? "5" : "10")}px;
-  margin-right: ${(props) => (props.$isMobile ? "5" : "10")}px;
+  border-radius: ${(props) => props.$data.setting.formRadius || 5}px;
+  box-shadow: ${(props) =>
+    `${props.$data.setting?.shadowOffsetX || 0}px 
+     ${props.$data.setting?.shadowOffsetY || 4}px 
+     ${props.$data.setting?.shadowBlur || 10}px 
+     ${props.$data.setting?.shadowSpread || 0}px 
+     ${props.$data.setting?.shadowColor || "#fff"}`};
 `;
 
 const Heading = styled.h2<{
@@ -55,7 +55,7 @@ const Heading = styled.h2<{
 const ColumnContainer = styled.div<{
   $isMobile: boolean;
 }>`
-  // display: flex;
+  display: flex;
   gap: ${(props) => (props.$isMobile ? "10px" : "20px")};
   justify-content: center;
   align-items: center;
@@ -99,9 +99,9 @@ const Image = styled.img<{
   $data: MultiColumnSection;
 }>`
   width: 100%;
-  height: 100%;
+  height: ${(props) => props.$data.setting?.imageHeight || "200"}px;
   overflow-y: auto;
-  border-radius: ${(props) => props.$data.setting?.imageRadious || "5px"}px;
+  border-radius: ${(props) => props.$data.setting?.imageRadious || "5"}px;
   margin-bottom: 10px;
   transition: all 0.5s ease-in-out;
 
@@ -112,7 +112,7 @@ const Image = styled.img<{
 
   /* Default hover effect */
   &:hover {
-    transform: scale(0.95);
+    transform: scale(0.99);
   }
 
   /* Apply image animations */
@@ -304,7 +304,8 @@ const Button = styled.a<{
   background-color: ${(props) =>
     props.$data.setting?.btnBackgroundColor || "#000"};
   color: ${(props) => props.$data.setting?.btnColor || "#fff"};
-  border-radius: 5px;
+  border-radius: ${(props) => props.$data.setting?.btnRadius || "5"}px;
+  max-width: 100%;
   text-decoration: none;
   cursor: pointer;
   transition: all 0.5s ease-in-out;
@@ -492,10 +493,9 @@ const MultiColumn: React.FC<MultiColumnProps> = ({
   );
   if (!sectionData) return null;
 
-
   return (
     <Section $isMobile={isMobile} $data={sectionData}>
-      <Heading $data={sectionData} $isMobile={isMobile}>
+      <Heading dir="rtl" $data={sectionData} $isMobile={isMobile}>
         {sectionData?.setting.heading || "heading"}
       </Heading>
       {/* // Replace the existing mapping code with this: */}
@@ -507,14 +507,14 @@ const MultiColumn: React.FC<MultiColumnProps> = ({
           const typedBlock = block as MultiColumnSection;
           return (
             <Column key={idx} $data={sectionData} $isMobile={isMobile}>
-              <Title $data={sectionData} $isMobile={isMobile}>
+              <Title dir="rtl" $data={sectionData} $isMobile={isMobile}>
                 {
                   typedBlock[
                     `title${index + 1}` as keyof MultiColumnSection
                   ] as React.ReactNode
                 }
               </Title>
-              <Description $data={sectionData} $isMobile={isMobile}>
+              <Description dir="rtl" $data={sectionData} $isMobile={isMobile}>
                 {
                   typedBlock[
                     `description${index + 1}` as keyof MultiColumnSection

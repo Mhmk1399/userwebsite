@@ -359,62 +359,7 @@
             "btnBackgroundColor": "#1d6bdf"
           }
         },
-        {
-          "type": "MultiRow",
-          "title": "سربرگ ردیف ها",
 
-          "blocks": [
-            {
-              "heading": "ردیف اول",
-              "description": "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد",
-              "btnLable": "دکمه اول",
-              "btnLink": "",
-              "imageSrc": "/assets/images/banner1.jpg",
-              "imageAlt": ""
-            },
-            {
-              "heading": "ردیف دوم",
-              "description": "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد",
-              "btnLable": "دکمه دوم",
-              "btnLink": "",
-              "imageSrc": "/assets/images/banner3.jpg",
-              "imageAlt": ""
-            },
-            {
-              "heading": "ردیف سوم",
-              "description": "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد",
-              "btnLable": "دکمه سوم",
-              "btnLink": "",
-              "imageSrc": "/assets/images/banner.jpg",
-              "imageAlt": ""
-            }
-          ],
-          "setting": {
-            "titleColor": "#1d6bdf",
-            "titleFontWeight": "bold",
-            "titleFontSize": "35",
-            "paddingTop": "30",
-            "paddingBottom": "30",
-            "marginTop": "20",
-            "marginBottom": "20",
-            "paddinRight": "0",
-            "paddinLeft": "0",
-            "backgroundColorMultiRow": "#ffffff",
-            "backgroundColorBox": "#e4e4e4",
-            "imageWidth": "500",
-            "imageHeight": "300",
-            "imageRadius": "45",
-            "headingColor": "#000000",
-            "headingFontSize": "30",
-            "headingFontWeight": "bold",
-            "descriptionColor": "#000000",
-            "descriptionFontSize": "15",
-            "descriptionFontWeight": "normal",
-            "btnColor": "#ffffff",
-            "btnBackgroundColor": "#1d6bdf",
-            "imageAlign": "row"
-          }
-        },
         {
           "type": "SpecialOffer",
           "blocks": {
@@ -550,11 +495,13 @@
             "titleFontWeight": "bold",
             "titleFontSize": "35",
             "paddingTop": "30",
-            "paddingBottom": "30",
             "marginTop": "20",
             "marginBottom": "20",
-            "paddinRight": "0",
-            "paddinLeft": "0",
+            "paddingBottom": "30",
+            "marginLeft": "0",
+            "marginRight": "0",
+            "paddingLeft": "0",
+            "paddingRight": "0",
             "backgroundColorMultiRow": "#FCA311",
             "backgroundColorBox": "#14213D",
             "imageWidth": "500",
@@ -568,7 +515,16 @@
             "descriptionFontWeight": "normal",
             "btnColor": "#000000",
             "btnBackgroundColor": "#E5E5E5",
-            "imageAlign": "row"
+            "imageAlign": "row",
+            "formRadius": "0",
+            "rowRadius": "0",
+            "btnRadius": "0",
+            "btnWidth": "150",
+            "shadowOffsetX": 0,
+            "shadowOffsetY": 8,
+            "shadowBlur": 20,
+            "shadowSpread": 2,
+            "shadowColor": "#e4e4e4"
           }
         },
         {
@@ -661,18 +617,19 @@
           "setting": {
             "heading": "سربرگ ستون ها",
             "paddingTop": "30",
-            "paddingBottom": "30",
             "marginTop": "20",
             "marginBottom": "20",
-            "paddinRight": "0",
-            "paddinLeft": "0",
+            "paddingBottom": "30",
+            "marginLeft": "0",
+            "marginRight": "0",
+            "paddingLeft": "0",
+            "paddingRight": "0",
             "backgroundColorBox": "#E5E5E5",
             "headingFontSize": "40",
             "headingFontWeight": "bold",
             "headingColor": "#14213D",
             "imageRadious": "10",
-            "imageWidth": "400px",
-            "imageHeight": "300px",
+            "imageHeight": "300",
             "titleColor": "#ffa62b",
             "titleFontSize": "25",
             "titleFontWeight": "bold",
@@ -680,7 +637,14 @@
             "descriptionFontSize": "18",
             "descriptionFontWeight": "normal",
             "btnColor": "#ffffff",
-            "btnBackgroundColor": "#FCA311"
+            "btnBackgroundColor": "#FCA311",
+            "btnRadius": "5",
+            "formRadius": "5",
+            "shadowOffsetX": 0,
+            "shadowOffsetY": 8,
+            "shadowBlur": 20,
+            "shadowSpread": 2,
+            "shadowColor": "#e4e4e4"
           }
         },
         {
@@ -746,6 +710,11 @@
             "headingColor": "#ffffff",
             "headingFontSize": "30",
             "headingFontWeight": "bold",
+            "shadowOffsetX": 0,
+            "shadowOffsetY": 8,
+            "shadowBlur": 20,
+            "shadowSpread": 2,
+            "shadowColor": "#e4e4e4",
             "background": "#14213D",
             "borderRadious": "20"
           }
@@ -760,16 +729,29 @@
               "headingFontWeight": "bold",
               "btnBackgroundColor": "#14213D",
               "btnTextColor": "#ffffff",
-              "formBackground": "#FCA311"
+              "formBackground": "#FCA311",
+              "boxRadiuos": "20",
+              "labelColor": "#fff",
+              "btnRadiuos": "5",
+              "btnWidth": "250",
+              "inputWidth": "250",
+              "inputRadiuos": "10",
+              "shadowOffsetX": 0,
+              "shadowOffsetY": 8,
+              "shadowBlur": 20,
+              "shadowSpread": 2,
+              "shadowColor": "#e4e4e4"
             }
           },
           "setting": {
             "paddingTop": "30",
-            "paddingBottom": "30",
             "marginTop": "20",
             "marginBottom": "20",
-            "paddinRight": "0",
-            "paddinLeft": "0"
+            "paddingBottom": "30",
+            "marginLeft": "0",
+            "marginRight": "0",
+            "paddingLeft": "0",
+            "paddingRight": "0"
           }
         },
         {
@@ -835,9 +817,17 @@
               "backgroundBoxOpacity": 0.9,
               "boxRadiuos": "20",
               "opacityImage": 1,
-              "imageWidth": "85",
-              "imageHeight": "50",
-              "background": "#14213D"
+              "imageWidth": "200",
+              "imageRadius": "200",
+              "imageHeight": "100",
+              "background": "#14213D",
+              "shadowOffsetX": 0,
+              "shadowOffsetY": 8,
+              "shadowBlur": 20,
+              "shadowSpread": 2,
+              "shadowColor": "#e4e4e4",
+              "btnRadiuos": "5",
+              "btnWidth": "150"
             }
           },
           "setting": {
@@ -845,6 +835,8 @@
             "paddingBottom": "30",
             "marginTop": "20",
             "marginBottom": "20",
+            "marginLeft": "0",
+            "marginRight": "0",
             "paddinRight": "0",
             "paddinLeft": "0"
           }
@@ -1049,42 +1041,6 @@
         },
 
         {
-          "type": "ImageText",
-          "blocks": {
-            "imageSrc": "/assets/images/banner3.jpg",
-            "imageAlt": "",
-            "heading": "سربرگ محصول",
-            "description": "توضیحات درباره محصول",
-            "btnLink": "/",
-            "btnText": "دکمه",
-            "setting": {
-              "headingColor": "#ffffff",
-              "headingFontSize": "24",
-              "headingFontWeight": "bold",
-              "descriptionColor": "#000000",
-              "descriptionFontSize": "16",
-              "descriptionFontWeight": "normal",
-              "btnTextColor": "#000000",
-              "btnBackgroundColor": "#ffffff",
-              "backgroundColorBox": "#1d6bdf",
-              "backgroundBoxOpacity": 0.9,
-              "boxRadiuos": "20",
-              "opacityImage": 1,
-              "imageWidth": "85",
-              "imageHeight": "50",
-              "background": "#ffffff"
-            }
-          },
-          "setting": {
-            "paddingTop": "30",
-            "paddingBottom": "30",
-            "marginTop": "20",
-            "marginBottom": "20",
-            "paddinRight": "0",
-            "paddinLeft": "0"
-          }
-        },
-        {
           "type": "Banner",
           "blocks": {
             "imageSrc": "/assets/images/ban.jpg",
@@ -1211,28 +1167,6 @@
             "marginTop": "20px",
             "marginBottom": "20px",
             "backgroundColor": "#F5F5F5"
-          }
-        },
-        {
-          "type": "ContactForm",
-          "blocks": {
-            "heading": "فرم ارتباط با ما",
-            "setting": {
-              "headingColor": "#1d6bdf",
-              "headingFontSize": "35",
-              "headingFontWeight": "bold",
-              "btnBackgroundColor": "#1d6bdf",
-              "btnTextColor": "#ffffff",
-              "formBackground": "#ffffff"
-            }
-          },
-          "setting": {
-            "paddingTop": "30",
-            "paddingBottom": "30",
-            "marginTop": "20",
-            "marginBottom": "20",
-            "paddinRight": "0",
-            "paddinLeft": "0"
           }
         }
       ],

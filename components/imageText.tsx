@@ -18,14 +18,24 @@ const Section = styled.section<{
   justify-content: center;
   border-radius: ${(props) =>
     props.$data.blocks?.setting?.boxRadiuos || "10"}px;
-  padding-top: ${(props) => props.$data.setting?.paddingTop || "0"}px;
-  padding-bottom: ${(props) => props.$data.setting?.paddingBottom || "0"}px;
-  padding-left: ${(props) => props.$data.setting?.paddingLeft || "0"}px;
-  padding-right: ${(props) => props.$data.setting?.paddingRight || "0"}px;
-  margin-top: ${(props) => props.$data.setting?.marginTop || "0"}px;
-  margin-bottom: ${(props) => props.$data.setting?.marginBottom || "0"}px;
+  max-width: 100%;
+  margin-top: ${(props) => props.$data.setting.marginTop || "30"}px;
+  margin-bottom: ${(props) => props.$data.setting.marginBottom}px;
+  margin-right: ${(props) => props.$data.setting.marginRight}px;
+  margin-left: ${(props) => props.$data.setting.marginLeft}px;
+  padding-top: ${(props) => props.$data.setting.paddingTop}px;
+  padding-bottom: ${(props) => props.$data.setting.paddingBottom}px;
+  padding-left: ${(props) => props.$data.setting.paddingLeft}px;
+  padding-right: ${(props) => props.$data.setting.paddingRight}px;
   background-color: ${(props) =>
     props.$data.blocks?.setting?.background || "transparent"};
+  flex-direction: ${(props) => (props.$isMobile ? "column" : "row")};
+  box-shadow: ${(props) =>
+    `${props.$data.blocks?.setting?.shadowOffsetX || 0}px 
+     ${props.$data.blocks?.setting?.shadowOffsetY || 4}px 
+     ${props.$data.blocks?.setting?.shadowBlur || 10}px 
+     ${props.$data.blocks?.setting?.shadowSpread || 0}px 
+     ${props.$data.blocks?.setting?.shadowColor || "#fff"}`};
   @media (max-width: 768px) {
     flex-direction: column;
   }
@@ -35,12 +45,12 @@ const Image = styled.img<{
   $data: ImageTextSection;
 }>`
   width: ${(props) => props.$data?.blocks?.setting?.imageWidth || "500"}px;
-  max-width: 50%;
   height: ${(props) => props.$data?.blocks?.setting?.imageHeight || "200"}px;
   opacity: ${(props) => props.$data?.blocks?.setting?.opacityImage || "1"};
   border-radius: ${(props) =>
     props.$data?.blocks?.setting?.boxRadiuos || "30"}px;
   object-fit: cover;
+  margin-left: 5px;
   @media (max-width: 768px) {
     max-width: 100%;
   }
@@ -227,9 +237,7 @@ const Heading = styled.h2<{
 }>`
   color: ${(props) => props.$data.blocks?.setting?.headingColor || "#333"};
   font-size: ${(props) =>
-    props.$isMobile
-      ? "22"
-      : props.$data.blocks?.setting?.headingFontSize || "30"}px;
+    props.$data.blocks?.setting?.headingFontSize || "30"}px;
   font-weight: ${(props) =>
     props.$data.blocks?.setting?.headingFontWeight || "bold"};
   margin-bottom: 10px;
@@ -242,9 +250,7 @@ const Description = styled.p<{
   color: ${(props) =>
     props.$data.blocks?.setting?.descriptionColor || "#666666"};
   font-size: ${(props) =>
-    props.$isMobile
-      ? "18"
-      : props.$data?.blocks?.setting?.descriptionFontSize || "24"}px;
+    props.$data?.blocks?.setting?.descriptionFontSize || "24"}px;
   font-weight: ${(props) =>
     props.$data.blocks?.setting?.descriptionFontWeight || "normal"};
   margin-bottom: 20px;
@@ -256,13 +262,11 @@ const Button = styled.a<{ $data: ImageTextSection }>`
   color: ${(props) => props.$data.blocks?.setting?.btnTextColor || "#fff"};
   background-color: ${(props) =>
     props.$data.blocks?.setting?.btnBackgroundColor || "#007bff"};
+  max-width: 100%;
+  width: ${(props) => props.$data.blocks?.setting?.btnWidth || "100"}px;
   text-decoration: none;
-  border-radius: 5px;
-  transition: opacity 0.3s;
-
-  &:hover {
-    opacity: 0.8;
-  }
+  border-radius: ${(props) => props.$data.blocks?.setting?.btnRadiuos || "5"}px;
+  transition: transform 0.2s;
 
   /* Apply button animations */
   ${(props) => {
@@ -442,10 +446,10 @@ const ImageText: React.FC<ImageTextProps> = ({
         alt={imageAlt || "Image"}
       />
       <TextContainer $isMobile={isMobile} $data={sectionData}>
-        <Heading $isMobile={isMobile} $data={sectionData}>
+        <Heading dir="rtl" $isMobile={isMobile} $data={sectionData}>
           {heading || "Default Heading"}
         </Heading>
-        <Description $isMobile={isMobile} $data={sectionData}>
+        <Description dir="rtl" $isMobile={isMobile} $data={sectionData}>
           {description ||
             "Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review."}
         </Description>

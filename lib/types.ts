@@ -59,6 +59,7 @@ export interface CollapseBlockSetting extends CommonSettings {
   contentFontSize?: string;
   contentFontWeight?: string;
   contentColor?: string;
+  formRadius?: string;
 }
 
 export interface CollapseBlock {
@@ -303,11 +304,14 @@ export interface MultiColumnBlockSetting extends CommonSettings {
   descriptionColor?: string;
   backgroundColorBox?: string;
   btnColor?: string;
+  btnRadius?: string;
+  btnWidth?: string;
   btnBackgroundColor?: string;
   imageRadious?: string;
   // ADD these two lines:
   btnAnimation?: AnimationEffect;
   imageAnimation?: AnimationEffect;
+  formRadius?: string;
 }
 
 export interface MultiColumnBlock {
@@ -522,6 +526,9 @@ export interface ImageTextBlockSetting extends CommonSettings {
   imageWidth: string;
   imageHeight: string;
   background: string;
+  btnRadiuos: string;
+  imageRadius: string;
+  btnWidth: string;
   imageAnimation?: AnimationEffect; // Add image animation support
   buttonAnimation?: AnimationEffect; // Add button animation support
 }
@@ -604,7 +611,13 @@ export interface ContactFormBlockSetting extends Partial<CommonSettings> {
   headingFontWeight?: string;
   btnTextColor?: string;
   btnBackgroundColor?: string;
+  inputWidth?: string;
+  btnWidth?: string;
+  btnRadiuos?: string;
   formBackground?: string;
+  inputRadiuos?: string;
+  labelColor?: string;
+  boxRadiuos?: string;
   btnAnimation?: AnimationEffect; // Add button animation support
 }
 
@@ -856,6 +869,10 @@ export interface MultiRowBlockSetting extends CommonSettings {
   imageAlign: string;
   buttonAnimation?: AnimationEffect;
   imageAnimation?: AnimationEffect;
+  btnWidth?: string;
+  btnRadius?: string;
+  rowRadius?: string;
+  formRadius?: string;
 }
 
 export interface MultiRowBlock {

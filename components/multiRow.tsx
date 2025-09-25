@@ -12,16 +12,27 @@ const Section = styled.section<{
   $data: MultiRowSection;
   $isMobile: boolean;
 }>`
-  padding-top: ${(props) => props.$data.setting?.paddingTop || "20"}px;
-  padding-bottom: ${(props) => props.$data.setting?.paddingBottom || "20"}px;
-  paddding-left: ${(props) => props.$data.setting?.paddingLeft || "0"}px;
-  padding-right: ${(props) => props.$data.setting?.paddingRight || "0"}px;
-  margin-top: ${(props) => props.$data.setting?.marginTop || "20"}px;
-  margin-bottom: ${(props) => props.$data.setting?.marginBottom || "20"}px;
+  max-width: 100%;
+  margin-top: ${(props) => props.$data.setting.marginTop || "30"}px;
+  margin-bottom: ${(props) => props.$data.setting.marginBottom}px;
+  margin-right: ${(props) => props.$data.setting.marginRight}px;
+  margin-left: ${(props) => props.$data.setting.marginLeft}px;
+  padding-top: ${(props) => props.$data.setting.paddingTop}px;
+  padding-bottom: ${(props) => props.$data.setting.paddingBottom}px;
+  padding-left: ${(props) => props.$data.setting.paddingLeft}px;
+  padding-right: ${(props) => props.$data.setting.paddingRight}px;
+  display: flex;
+  flex-direction: column;
   background-color: ${(props) =>
     props.$data.setting?.backgroundColorMultiRow || "#ffffff"};
   width: ${(props) => (props.$isMobile ? "auto" : "100%")};
-  border-radius: 12px;
+  border-radius: ${(props) => props.$data.setting.formRadius || "5"}px;
+  box-shadow: ${(props) =>
+    `${props.$data.setting?.shadowOffsetX || 0}px 
+     ${props.$data.setting?.shadowOffsetY || 4}px 
+     ${props.$data.setting?.shadowBlur || 10}px 
+     ${props.$data.setting?.shadowSpread || 0}px 
+     ${props.$data.setting?.shadowColor || "#fff"}`};
 `;
 
 const RowContainer = styled.div<{
@@ -47,9 +58,12 @@ const Row = styled.div<{
   padding: ${(props) => (props.$isMobile ? "15px" : "30px")};
   background-color: ${(props) =>
     props.$data.setting?.backgroundColorBox || "#f9f9f9"};
-  border-radius: 18px;
-  @media (max-width: 426px) {
+  border-radius: ${(props) => props.$data.setting.rowRadius || "0"}px;
+  @media (max-width: 768px) {
     flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 15px;
   }
 `;
 
@@ -74,12 +88,12 @@ const Image = styled.img<{
   height: ${(props) =>
     props.$isMobile ? "200px" : props.$data.setting?.imageHeight}px;
   object-fit: cover;
+  max-width: 100%;
   border-radius: ${(props) => props.$data.setting?.imageRadius || "8px"}px;
   transition: all 0.3s ease-in-out;
 
   &:hover {
     transform: scale(1.01);
-    opacity: 0.7;
     cursor: pointer;
   }
   /* Apply image animations */
@@ -244,6 +258,8 @@ const Title = styled.h2<{
 }>`
   font-size: ${(props) =>
     props.$isMobile ? "24" : props.$data.setting?.titleFontSize || "24"}px;
+  font-weight: ${(props) => props.$data.setting?.titleFontWeight || "bold"};
+
   color: ${(props) => props.$data?.setting?.titleColor || "#ffffff"};
   text-align: center;
   margin-bottom: ${(props) => (props.$isMobile ? "10px" : "20px")};
@@ -258,10 +274,6 @@ const Heading = styled.h2<{
     props.$isMobile ? "22" : props.$data.setting?.headingFontSize || "24"}px;
   font-weight: ${(props) => props.$data.setting?.headingFontWeight || "bold"};
   text-align: center;
-  @media (max-width: 768px) {
-    font-size: 24px;
-    margin-top: 10px;
-  }
 `;
 
 const Description = styled.p<{
@@ -288,7 +300,9 @@ const Button = styled.a<{
   background-color: ${(props) =>
     props.$data.setting?.btnBackgroundColor || "#007BFF"};
   color: ${(props) => props.$data.setting?.btnColor || "#fff"};
-  border-radius: 5px;
+  border-radius: ${(props) => props.$data.setting.btnRadius || "5"}px;
+  width: ${(props) => props.$data.setting.btnWidth || "5"}px;
+  max-width: 100%;
   text-align: center;
   transition: opacity 0.3s ease;
 
@@ -469,7 +483,7 @@ const MultiRow: React.FC<MultiRowShowProps> = ({
       $data={sectionData}
       className={`transition-all duration-150 ease-in-out relative`}
     >
-      <Title $data={sectionData} $isMobile={isMobile}>
+      <Title dir="rtl" $data={sectionData} $isMobile={isMobile}>
         {sectionData.title}
       </Title>
       <RowContainer $isMobile={isMobile}>
@@ -501,10 +515,10 @@ const MultiRow: React.FC<MultiRowShowProps> = ({
                 $data={sectionData}
               />
               <ContentWrapper $isMobile={isMobile} $data={sectionData}>
-                <Heading $isMobile={isMobile} $data={sectionData}>
+                <Heading dir="rtl" $isMobile={isMobile} $data={sectionData}>
                   {block.heading}
                 </Heading>
-                <Description $data={sectionData} $isMobile={isMobile}>
+                <Description dir="rtl" $data={sectionData} $isMobile={isMobile}>
                   {block.description}
                 </Description>
                 <Button
@@ -512,7 +526,7 @@ const MultiRow: React.FC<MultiRowShowProps> = ({
                   href={block.btnLink || "#"}
                   $data={sectionData}
                 >
-                  {block.btnLable || "Learn More"}
+                  {block.btnLable || "بیشتر"}
                 </Button>
               </ContentWrapper>
             </Row>
