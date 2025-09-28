@@ -5,14 +5,8 @@ import { toast, Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { FaUser, FaSignOutAlt, FaCog, FaEdit, FaTimes } from "react-icons/fa";
 import { BsCartCheckFill } from "react-icons/bs";
-import Jwt, { JwtPayload } from "jsonwebtoken";
 import Link from "next/link";
-
-interface DecodedToken extends JwtPayload {
-  userId: string;
-  phone: string;
-  role: string;
-}
+import { useAuth } from "@/hook/useAuth";
 
 interface Order {
   _id: string;
@@ -27,6 +21,14 @@ interface Order {
     postalCode: string;
   };
 }
+
+interface Pagination {
+  currentPage: number;
+  totalPages: number;
+  totalOrders: number;
+  hasNext: boolean;
+  hasPrev: boolean;
+}
 interface UserInfo {
   _id: string;
   name: string;
@@ -36,6 +38,7 @@ interface UserInfo {
 
 const Dashboard = () => {
   const router = useRouter();
+  const { user, isLoading, isAuthenticated, logout } = useAuth();
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
@@ -48,90 +51,108 @@ const Dashboard = () => {
   });
 
   const [orders, setOrders] = useState<Order[]>([]);
-  const [activeSection, setActiveSection] = useState("profile"); // Track active section
-  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
+  const [pagination, setPagination] = useState<Pagination | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [isLoadingOrders, setIsLoadingOrders] = useState(false);
+  const [activeSection, setActiveSection] = useState("profile");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const [loading, setLoading] = useState(true);
+  // Redirect if not authenticated
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      router.push('/login');
+    }
+  }, [isLoading, isAuthenticated, router]);
 
   useEffect(() => {
     const fetchUserData = async () => {
-      console.log(loading);
+      if (!user?.id) return;
+      
       try {
-        // Get the user ID from localStorage token
         const token = localStorage.getItem("tokenUser");
-        const decoded = Jwt.decode(token as string) as DecodedToken;
-        const userId = decoded.userId;
-
-        const response = await fetch(`/api/auth/${userId}`, {
+        const response = await fetch(`/api/auth/${user.id}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
           },
         });
+        
         if (response.ok) {
-          setLoading(false);
           const userData = await response.json();
-          console.log("User Data:", userData);
-          setUserInfo(userData); // Note the .user since the API returns {user: {...}}
+          setUserInfo(userData.user);
           setFormData({
             name: userData.user.name,
             phone: userData.user.phone,
           });
+        } else if (response.status === 401) {
+          logout();
         }
       } catch (error) {
-        console.log("Error fetching user data:", error);
+        console.error("Error fetching user data:", error);
+        toast.error("خطا در دریافت اطلاعات کاربر");
       }
     };
-    fetchUserData();
-  }, [loading]);
+    
+    if (isAuthenticated && user && !userInfo) {
+      fetchUserData();
+    }
+  }, [user, isAuthenticated]);
+
+  const fetchOrders = async (page = 1, status = 'all') => {
+    if (!isAuthenticated) return;
+    
+    setIsLoadingOrders(true);
+    try {
+      const token = localStorage.getItem("tokenUser");
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: '6',
+        ...(status !== 'all' && { status })
+      });
+      
+      const ordersResponse = await fetch(`/api/orders?${params}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      
+      if (ordersResponse.ok) {
+        const data = await ordersResponse.json();
+        setOrders(data.orders || []);
+        setPagination(data.pagination);
+      } else if (ordersResponse.status === 401) {
+        logout();
+      }
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+      toast.error("خطا در دریافت سفارشات");
+    } finally {
+      setIsLoadingOrders(false);
+    }
+  };
 
   useEffect(() => {
-    const checkOrders = async () => {
-      try {
-        const token = localStorage.getItem("tokenUser");
-        if (!token) {
-          router.replace("/login");
-          return;
-        }
-        const ordersResponse = await fetch("/api/orders", {
-          method: "GET",
-          credentials: "include",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-        if (!ordersResponse.ok) {
-          throw new Error("Failed to fetch orders");
-        }
-
-        const data = await ordersResponse.json();
-        console.log("Orders data:", data); // Debug log
-
-        if (data.orders) {
-          setOrders(data.orders);
-        }
-      } catch (error) {
-        console.log("Error fetching orders:", error);
-        toast.error("Error loading orders");
-      }
-    };
-
-    checkOrders();
-  }, [router]);
+    if (isAuthenticated && activeSection === 'orders') {
+      fetchOrders(currentPage, statusFilter);
+    }
+  }, [isAuthenticated, activeSection, currentPage, statusFilter]);
 
   const validateForm = () => {
     let valid = true;
     const newErrors = { name: "", phone: "" };
 
     if (!formData.name) {
-      newErrors.name = "نام نمی‌تواند خالی باشد";
+      newErrors.name = "نام نمیتواند خالی باشد";
       valid = false;
     }
 
     if (!formData.phone) {
-      newErrors.phone = "شماره تماس نمی‌تواند خالی باشد";
-      toast.error("شماره تماس نمی‌تواند خالی باشد");
+      newErrors.phone = "شماره تماس نمیتواند خالی باشد";
+      toast.error("شماره تماس نمیتواند خالی باشد");
       valid = false;
     } else if (!/^09\d{9}$/.test(formData.phone)) {
       toast.error("شماره تماس معتبر نیست");
@@ -142,45 +163,44 @@ const Dashboard = () => {
     setErrors(newErrors);
     return valid;
   };
+
   const handleUpdateUser = async () => {
-    if (!validateForm()) return;
+    if (!validateForm() || !userInfo?._id) return;
 
     try {
-      const response = await fetch(`/api/auth/${userInfo?._id}`, {
+      const token = localStorage.getItem("tokenUser");
+      const response = await fetch(`/api/auth/${userInfo._id}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify({
           name: formData.name,
           phone: formData.phone,
-          password: "placeholder", // Required by backend
         }),
       });
 
       const result = await response.json();
 
       if (response.ok) {
-        toast.success("اطلاعات با موفقیت به‌روز شد");
-
-        setUserInfo((prev) => (prev ? { ...prev, ...formData } : null));
+        toast.success("اطلاعات با موفقیت بهروز شد");
+        setUserInfo(result.user);
         setIsEditing(false);
+      } else if (response.status === 401) {
+        logout();
       } else {
-        toast.error(result.message || "خطا در به‌روزرسانی اطلاعات");
-
-        console.log(result.message || "خطا در به‌روزرسانی اطلاعات");
+        toast.error(result.message || "خطا در بهروزرسانی اطلاعات");
       }
     } catch (error) {
-      console.log("Error updating user:", error);
+      console.error("Error updating user:", error);
       toast.error("خطای سرور");
-
-      console.log("خطای سرور");
     }
   };
 
-  const handleDeleteAccount = async (
-    e: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    localStorage.removeItem("token");
-    e.preventDefault();
+  const handleLogout = async () => {
+    await logout();
+    router.push('/login');
   };
 
   const Sidebar = () => (
@@ -229,30 +249,24 @@ const Dashboard = () => {
         </button>
 
         <button
-          onClick={() => setActiveSection("orders")}
+          onClick={() => {
+            setActiveSection("orders");
+            if (orders.length === 0) {
+              fetchOrders(1, statusFilter);
+            }
+          }}
           className={`flex items-center gap-3 p-3 w-full rounded-xl transition-all duration-200 text-right
             ${
               activeSection === "orders"
-                ? "bg-blue-600 shadow-lg transform scale-105"
-                : "hover:bg-blue-700/50"
+                ? "bg-blue-600 shadow-lg transform scale-105 "
+                : "hover:bg-blue-700/50 "
             }`}
         >
           <BsCartCheckFill className="text-lg" />
-          <span className="font-medium">سفارشات</span>
+          <span className="font-medium"> سفارشات </span>
         </button>
 
-        <button
-          onClick={() => setActiveSection("settings")}
-          className={`flex items-center gap-3 p-3 w-full rounded-xl transition-all duration-200 text-right
-            ${
-              activeSection === "settings"
-                ? "bg-blue-600 shadow-lg transform scale-105"
-                : "hover:bg-blue-700/50"
-            }`}
-        >
-          <FaCog className="text-lg" />
-          <span className="font-medium">پیگیری سفارش</span>
-        </button>
+       
 
         <button
           onClick={() => setIsModalOpen(true)}
@@ -382,7 +396,7 @@ const Dashboard = () => {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="bg-gradient-to-br from-blue-600 to-blue-700 shadow-2xl rounded-2xl mx-4 lg:mx-10 p-6 lg:p-10 space-y-6"
+        className="bg-gradient-to-br from-blue-600 to-blue-700 shadow-2xl rounded-2xl mx-4 p-6 lg:p-10 space-y-6"
         dir="rtl"
       >
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -432,157 +446,200 @@ const Dashboard = () => {
     );
   };
 
+  const getStatusColor = (status: string) => {
+    const colors = {
+      pending: 'bg-yellow-500/20 text-yellow-300',
+      processing: 'bg-blue-500/20 text-blue-300',
+      shipped: 'bg-purple-500/20 text-purple-300',
+      delivered: 'bg-green-500/20 text-green-300',
+      cancelled: 'bg-red-500/20 text-red-300'
+    };
+    return colors[status as keyof typeof colors] || 'bg-gray-500/20 text-gray-300';
+  };
+
+  const getStatusText = (status: string) => {
+    const statusTexts = {
+      pending: 'در انتظار',
+      processing: 'در حال پردازش',
+      shipped: 'ارسال شده',
+      delivered: 'تحویل داده شده',
+      cancelled: 'لغو شده'
+    };
+    return statusTexts[status as keyof typeof statusTexts] || status;
+  };
+
   const OrdersSection = () => (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="bg-gradient-to-br from-blue-600 to-blue-700 p-4 lg:p-10 shadow-2xl rounded-2xl mx-4 lg:mx-10 text-white"
+      className="bg-gradient-to-br from-blue-600 to-blue-700 p-4 lg:p-6 shadow-2xl rounded-2xl mx-4 text-white"
       dir="rtl"
     >
-      <h3 className="text-2xl lg:text-3xl font-bold mb-6 pb-4 border-b border-white/20 flex items-center gap-3">
-        <BsCartCheckFill className="text-2xl" />
-        سفارشات من
-      </h3>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
+        <h3 className="text-xl lg:text-2xl font-bold flex items-center gap-3">
+          <BsCartCheckFill className="text-xl" />
+          سفارشات من
+        </h3>
+        
+        <select
+          value={statusFilter}
+          onChange={(e) => {
+            setStatusFilter(e.target.value);
+            setCurrentPage(1);
+          }}
+          className="bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-white/30"
+        >
+          <option value="all" className="text-gray-800">همه وضعیت‌ها</option>
+          <option value="pending" className="text-gray-800">در انتظار</option>
+          <option value="processing" className="text-gray-800">در حال پردازش</option>
+          <option value="shipped" className="text-gray-800">ارسال شده</option>
+          <option value="delivered" className="text-gray-800">تحویل داده شده</option>
+          <option value="cancelled" className="text-gray-800">لغو شده</option>
+        </select>
+      </div>
 
-      {orders.length > 0 ? (
-        <div className="space-y-4 lg:space-y-6">
-          {orders.map((order) => (
-            <div
-              key={order._id}
-              className="bg-white/10 backdrop-blur-sm border border-blue-400/30 rounded-xl p-4 lg:p-6 hover:bg-white/15 transition-all duration-300 hover:transform hover:scale-[1.02]"
-            >
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      {isLoadingOrders ? (
+        <div className="text-center py-12">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-4"></div>
+          <p className="text-white/80">در حال بارگذاری...</p>
+        </div>
+      ) : orders.length > 0 ? (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 mb-6">
+            {orders.map((order) => (
+              <motion.div
+                key={order._id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-white/10 backdrop-blur-sm border border-blue-400/30 rounded-xl p-4 hover:bg-white/15 transition-all duration-300 hover:transform hover:scale-[1.02]"
+              >
                 <div className="space-y-3">
-                  <p className="text-sm lg:text-base">
-                    <strong className="text-yellow-400 font-semibold">
-                      شماره سفارش:{" "}
-                    </strong>
-                    <span className="font-mono text-xs lg:text-sm">
-                      {order._id}
+                  <div className="flex items-center justify-between">
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
+                      {getStatusText(order.status)}
                     </span>
-                  </p>
-                  <p className="text-sm lg:text-base">
-                    <strong className="text-yellow-400 font-semibold">
-                      وضعیت:{" "}
-                    </strong>
-                    <span className="bg-green-500/20 text-green-300 px-2 py-1 rounded-full text-xs lg:text-sm">
-                      {order.status}
-                    </span>
-                  </p>
-                  <p className="text-sm lg:text-base">
-                    <strong className="text-yellow-400 font-semibold">
-                      مجموع:{" "}
-                    </strong>
-                    <span className="text-green-300 font-bold">
+                    <span className="text-green-300 font-bold text-sm">
                       {order.totalAmount.toLocaleString()} تومان
                     </span>
-                  </p>
-                </div>
-
-                <div className="space-y-2">
-                  <p className="text-sm lg:text-base">
-                    <strong className="text-yellow-400 font-semibold">
-                      آدرس تحویل:
-                    </strong>
-                  </p>
-                  <div className="bg-white/5 rounded-lg p-3 text-xs lg:text-sm leading-relaxed">
-                    {order.shippingAddress.city} - {order.shippingAddress.state}
-                    <br />
-                    {order.shippingAddress.street}
-                    <br />
-                    <span className="text-gray-300">
-                      کد پستی: {order.shippingAddress.postalCode}
+                  </div>
+                  
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-white/70 font-mono">
+                      #{order._id.slice(-8)}
+                    </span>
+                    <span className="text-white/60">
+                      {new Date(order.createdAt || order.date || Date.now()).toLocaleDateString('fa-IR')}
                     </span>
                   </div>
+                  
+                  <div className="bg-white/5 rounded-lg p-3 space-y-2">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-white/80">وضعیت پرداخت:</span>
+                      <span className={`px-2 py-1 rounded-full text-xs ${
+                        order.paymentStatus === 'completed' ? 'bg-green-500/20 text-green-300' :
+                        order.paymentStatus === 'failed' ? 'bg-red-500/20 text-red-300' :
+                        'bg-yellow-500/20 text-yellow-300'
+                      }`}>
+                        {order.paymentStatus === 'completed' ? 'پرداخت شده' :
+                         order.paymentStatus === 'failed' ? 'ناموفق' : 'در انتظار'}
+                      </span>
+                    </div>
+                    
+                    <div className="text-xs">
+                      <div className="text-white/80 mb-1">آدرس تحویل:</div>
+                      <div className="text-white/60 leading-relaxed">
+                        {order.shippingAddress.street}<br/>
+                        {order.shippingAddress.city}, {order.shippingAddress.state}<br/>
+                        <span className="text-white/50">کد پستی: {order.shippingAddress.postalCode}</span>
+                      </div>
+                    </div>
+                    
+                    {order.products && order.products.length > 0 && (
+                      <div className="text-xs border-t border-white/10 pt-2">
+                        <div className="text-white/80 mb-1">تعداد اقلام:</div>
+                        <div className="text-white/60">
+                          {order.products.length} محصول - {order.products.reduce((sum, p) => sum + p.quantity, 0)} عدد
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {pagination && pagination.totalPages > 1 && (
+            <div className="flex items-center justify-center gap-2 mt-6">
+              <button
+                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                disabled={!pagination.hasPrev}
+                className="px-3 py-2 bg-white/10 rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white/20 transition-colors"
+              >
+                قبلی
+              </button>
+              
+              <div className="flex gap-1">
+                {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map(page => (
+                  <button
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    className={`px-3 py-2 rounded-lg text-sm transition-colors ${
+                      page === currentPage 
+                        ? 'bg-white text-blue-600 font-medium' 
+                        : 'bg-white/10 hover:bg-white/20'
+                    }`}
+                  >
+                    {page}
+                  </button>
+                ))}
               </div>
+              
+              <button
+                onClick={() => setCurrentPage(prev => Math.min(prev + 1, pagination.totalPages))}
+                disabled={!pagination.hasNext}
+                className="px-3 py-2 bg-white/10 rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white/20 transition-colors"
+              >
+                بعدی
+              </button>
             </div>
-          ))}
-        </div>
+          )}
+          
+          {pagination && (
+            <div className="text-center text-white/60 text-xs mt-4">
+              نمایش {orders.length} از {pagination.totalOrders} سفارش
+            </div>
+          )}
+        </>
       ) : (
         <div className="text-center py-12">
           <div className="mb-4">
-            <BsCartCheckFill className="text-6xl text-white/30 mx-auto" />
+            <BsCartCheckFill className="text-4xl text-white/30 mx-auto" />
           </div>
-          <p className="text-lg lg:text-xl text-white/80">
-            شما هنوز سفارشی ندارید.
+          <p className="text-lg text-white/80">
+            {statusFilter === 'all' ? 'شما هنوز سفارشی ندارید.' : `سفارشی با وضعیت "${getStatusText(statusFilter)}" یافت نشد.`}
           </p>
         </div>
       )}
     </motion.div>
   );
 
-  const SettingsSection = () => (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className="bg-gradient-to-br from-blue-600 to-blue-700 p-4 lg:p-10 shadow-2xl rounded-2xl mx-4 lg:mx-10"
-      dir="rtl"
-    >
-      <h3 className="text-2xl lg:text-3xl font-bold text-white mb-6 pb-4 border-b border-white/20 flex items-center gap-3">
-        <FaCog className="text-2xl" />
-        پیگیری سفارشات
-      </h3>
-
-      <div className="space-y-6">
-        <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 lg:p-6">
-          <p className="mb-4 text-white text-base lg:text-lg leading-relaxed">
-            لطفا شماره سفارش خود را وارد کنید تا اطلاعات سفارش را دریافت کنید.
-          </p>
-
-          <div className="space-y-4">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="شماره سفارش"
-                className="w-full p-4 rounded-xl border-2 border-white/20 bg-white/10 backdrop-blur-sm text-white placeholder-white/60 focus:outline-none focus:ring-4 focus:ring-blue-300 focus:border-white/40 transition-all duration-200"
-              />
-              <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
-                <svg
-                  className="w-5 h-5 text-white/60"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-              </div>
-            </div>
-
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="w-full sm:w-auto px-8 py-4 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl shadow-lg transition-all duration-200 flex items-center justify-center gap-2"
-            >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
-              پیگیری سفارش
-            </motion.button>
-          </div>
+  // Show loading while checking authentication
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">در حال بارگذاری...</p>
         </div>
-
-     
       </div>
-    </motion.div>
-  );
+    );
+  }
+
+  // Don't render if not authenticated (will redirect)
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50" dir="rtl">
@@ -635,7 +692,12 @@ const Dashboard = () => {
               پروفایل
             </button>
             <button
-              onClick={() => setActiveSection("orders")}
+              onClick={() => {
+                setActiveSection("orders");
+                if (orders.length === 0) {
+                  fetchOrders(1, statusFilter);
+                }
+              }}
               className={`flex-shrink-0 px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap
                 ${
                   activeSection === "orders"
@@ -645,17 +707,7 @@ const Dashboard = () => {
             >
               سفارشات
             </button>
-            <button
-              onClick={() => setActiveSection("settings")}
-              className={`flex-shrink-0 px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap
-                ${
-                  activeSection === "settings"
-                    ? "border-blue-600 text-blue-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700"
-                }`}
-            >
-              پیگیری سفارش
-            </button>
+           
             <button className="flex-shrink-0 px-4 py-3 text-sm font-medium border-b-2 border-transparent text-blue-500 hover:text-blue-700 transition-colors whitespace-nowrap">
               <Link href="/">بازگشت به صفحه اصلی</Link>
             </button>
@@ -669,13 +721,14 @@ const Dashboard = () => {
         </div>
 
         {/* Main Content */}
-        <main className="flex-1 lg:mr-64 bg-gray-50 min-h-screen">
+        <main className="flex-1  bg-gray-50 min-h-screen w-full">
           <div className="py-4 lg:py-8">
             {activeSection === "profile" && <ProfileSection />}
             {activeSection === "orders" && <OrdersSection />}
-            {activeSection === "settings" && <SettingsSection />}
           </div>
         </main>
+
+
       </div>
 
       {/* Modal */}
@@ -695,7 +748,7 @@ const Dashboard = () => {
                 تایید خروج
               </h2>
               <p className="text-gray-600">
-                آیا مطمئن هستید که می‌خواهید از حساب کاربری خود خارج شوید؟
+                آیا مطمئن هستید که میخواهید از حساب کاربری خود خارج شوید؟
               </p>
             </div>
 
@@ -707,9 +760,9 @@ const Dashboard = () => {
                 انصراف
               </button>
               <button
-                onClick={(e) => {
+                onClick={() => {
                   setIsModalOpen(false);
-                  handleDeleteAccount(e);
+                  handleLogout();
                 }}
                 className="flex-1 px-4 py-3 text-white bg-red-500 hover:bg-red-600 rounded-xl font-medium transition-colors duration-200"
               >
