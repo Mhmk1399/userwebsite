@@ -524,45 +524,21 @@ const Dashboard = () => {
                     </span>
                   </div>
                   
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-white/70 font-mono">
+                  <div className="text-xs text-white/70">
+                    <span className="font-mono">
                       #{order._id.slice(-8)}
-                    </span>
-                    <span className="text-white/60">
-                      {new Date(order.createdAt || order.date || Date.now()).toLocaleDateString('fa-IR')}
                     </span>
                   </div>
                   
-                  <div className="bg-white/5 rounded-lg p-3 space-y-2">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="text-white/80">وضعیت پرداخت:</span>
-                      <span className={`px-2 py-1 rounded-full text-xs ${
-                        order.paymentStatus === 'completed' ? 'bg-green-500/20 text-green-300' :
-                        order.paymentStatus === 'failed' ? 'bg-red-500/20 text-red-300' :
-                        'bg-yellow-500/20 text-yellow-300'
-                      }`}>
-                        {order.paymentStatus === 'completed' ? 'پرداخت شده' :
-                         order.paymentStatus === 'failed' ? 'ناموفق' : 'در انتظار'}
-                      </span>
+                  <div className="bg-white/5 rounded-lg p-2 text-xs">
+                    <div className="text-white/80 mb-1">آدرس تحویل:</div>
+                    <div className="text-white/60 leading-relaxed">
+                      {order.shippingAddress.city}, {order.shippingAddress.state}
                     </div>
-                    
-                    <div className="text-xs">
-                      <div className="text-white/80 mb-1">آدرس تحویل:</div>
-                      <div className="text-white/60 leading-relaxed">
-                        {order.shippingAddress.street}<br/>
-                        {order.shippingAddress.city}, {order.shippingAddress.state}<br/>
-                        <span className="text-white/50">کد پستی: {order.shippingAddress.postalCode}</span>
-                      </div>
-                    </div>
-                    
-                    {order.products && order.products.length > 0 && (
-                      <div className="text-xs border-t border-white/10 pt-2">
-                        <div className="text-white/80 mb-1">تعداد اقلام:</div>
-                        <div className="text-white/60">
-                          {order.products.length} محصول - {order.products.reduce((sum, p) => sum + p.quantity, 0)} عدد
-                        </div>
-                      </div>
-                    )}
+                  </div>
+                  
+                  <div className="text-xs text-white/60">
+                    {new Date(order.date || Date.now()).toLocaleDateString('fa-IR')}
                   </div>
                 </div>
               </motion.div>
