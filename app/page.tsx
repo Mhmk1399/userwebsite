@@ -394,7 +394,7 @@ export default function HomePage() {
     return (
       <>
         {/* Header - even during loading */}
-        <Header headerData={headerData ?? undefined} />
+        <Header isMobile={isMobile} headerData={headerData ?? undefined} />
 
         <main>
           <div className="flex justify-center items-center h-screen">
@@ -416,7 +416,7 @@ export default function HomePage() {
     return (
       <>
         {/* Header - even during error */}
-        <Header headerData={headerData ?? undefined} />
+        <Header isMobile={isMobile} headerData={headerData ?? undefined} />
 
         <main>
           <div className="flex justify-center items-center h-screen">
@@ -443,7 +443,7 @@ export default function HomePage() {
     return (
       <>
         {/* Header - even when no data */}
-        <Header headerData={headerData ?? undefined} />
+        <Header isMobile={isMobile} headerData={headerData ?? undefined} />
 
         <main>
           <div className="flex justify-center items-center h-screen">
@@ -464,7 +464,7 @@ export default function HomePage() {
   return (
     <>
       {/* Header with dynamic data */}
-      <Header headerData={headerData ?? undefined} />
+      <Header isMobile={isMobile} headerData={headerData ?? undefined} />
 
       {/* Main content */}
       <main>
@@ -476,7 +476,7 @@ export default function HomePage() {
             const Component =
               componentMap[baseComponentName as keyof typeof componentMap];
 
-              console.log(baseComponentName , "////////////")
+            console.log(baseComponentName, "////////////");
 
             return Component ? (
               <div

@@ -162,8 +162,6 @@ export interface HeaderBlockSettings extends CommonSettings {
   imageHeight: string;
   imageRadius: string;
   itemColor: string;
-  itemFontSize: string;
-  itemFontWeight: string;
   itemHoverColor: string;
   backgroundColorNavbar: string;
   searchBarBorderColor: string;
@@ -182,6 +180,10 @@ export interface HeaderBlockSettings extends CommonSettings {
   categoryItemColor: string;
   categoryItemSize: string;
   categoryItemHoverColor: string;
+  mobileBackground: string;
+  megaMenuRadius: string;
+  bgRadius: string;
+  
 }
 export interface HeaderBlock {
   imageLogo: string;
@@ -587,6 +589,12 @@ export interface FooterBlockSetting {
   logoRadius: string;
   backgroundColor: string;
   categoryBg: string;
+  bgRadius: string;
+  shadowColor?: string;
+  shadowSpread?: string;
+  shadowBlur?: string;
+  shadowOffsetY?: string;
+  shadowOffsetX?: string;
 }
 
 export interface FooterLink {

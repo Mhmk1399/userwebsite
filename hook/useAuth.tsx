@@ -18,7 +18,7 @@ export const useAuth = () => {
 
       if (token && userId) {
         try {
-          const payload = JSON.parse(atob(token.split('.')[1]));
+          const payload = JSON.parse(atob(token.split(".")[1]));
           setUser({
             name: payload.username || payload.name || userId,
             userId,
@@ -39,8 +39,8 @@ export const useAuth = () => {
       checkAuth();
     };
 
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
   const logout = () => {

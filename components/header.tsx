@@ -5,15 +5,23 @@ import {
   HeaderBlock,
 } from "@/lib/types";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { Search, ShoppingCart, MapPin } from "lucide-react";
+import {
+  ShoppingCart,
+  Menu,
+  MenuIcon,
+  X,
+  ChevronUp,
+  ChevronDown,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import UserMenu from "./userMenu";
 import { useAuth } from "@/hook/useAuth";
 
 interface HeaderProps {
   headerData?: HeaderSection;
+  isMobile: boolean;
 }
 
 interface Category {
@@ -26,13 +34,13 @@ interface CategoryChild {
   _id: string;
   name: string;
 }
-type MobileCategoryState = string | null;
 
 // Event handler types
 
 // Styled components
 const HeaderWrapper = styled.header<{
   $data: HeaderSection;
+  $isMobile: boolean;
 }>`
   width: 100%;
   border-bottom: 1px solid #e5e7eb;
@@ -45,119 +53,116 @@ const HeaderWrapper = styled.header<{
   padding-right: ${(props) => props.$data?.setting?.paddingRight || "0"};
   background-color: ${(props) =>
     props.$data?.blocks?.setting?.bgColor || "#000"};
+  border-radius: ${(props) => props.$data?.blocks?.setting?.bgRadius || "2"}px;
+  box-shadow: ${(props) =>
+    `${props.$data.blocks.setting?.shadowOffsetX || 0}px 
+     ${props.$data.blocks.setting?.shadowOffsetY || 4}px 
+     ${props.$data.blocks.setting?.shadowBlur || 10}px 
+     ${props.$data.blocks.setting?.shadowSpread || 0}px 
+     ${props.$data.blocks.setting?.shadowColor || "#fff"}`};
+  ${(props) =>
+    props.$isMobile &&
+    `
+    max-width: 425px;
+    padding: 0;
+    
+    ${MainSection} {
+      flex-direction: column;
+      padding: 1rem;
+      gap: 1rem;
+    }
+    
+    ${Logo} {
+      width: 40px;
+      height: 40px;
+    }
+    
+    ${NavContainer} {
+      display: none;
+    }
+    
+    ${ActionButtons} {
+      width: 100%;
+      justify-content: space-between;
+      padding: 0 0.5rem;
+    }
+  `}
 `;
 
 const AnnouncementBar = styled.div<{
   $data: HeaderSection;
 }>`
-  width: 100%;
   background-color: ${(props) =>
     props.$data.blocks?.setting?.announcementBgColor || "#f1b80c"};
   color: ${(props) =>
     props.$data.blocks?.setting?.announcementTextColor || "#ffffff"};
-  padding: 6px 16px;
+  padding: 12px 24px;
   text-align: center;
   font-size: ${(props) =>
     props.$data.blocks.setting?.announcementFontSize || "14"}px;
-  overflow: hidden;
-  white-space: nowrap;
-  position: relative;
-
-  /* Marquee animation */
-  .marquee-content {
-    display: inline-block;
-    animation: marquee 15s linear infinite;
-    padding-left: 100%;
-  }
-
-  @keyframes marquee {
-    0% {
-      transform: translateX(0);
-    }
-    100% {
-      transform: translateX(-100%);
-    }
-  }
-
-  /* Hover pause effect */
-  &:hover .marquee-content {
-    animation-play-state: paused;
-  }
+  font-weight: 500;
+  letter-spacing: 0.025em;
+  transition: all 0.3s ease;
+  border-top-left-radius: ${(props) =>
+    props.$data?.blocks?.setting?.bgRadius || "2"}px;
+  border-top-right-radius: ${(props) =>
+    props.$data?.blocks?.setting?.bgRadius || "2"}px;
 
   @media (max-width: 768px) {
     font-size: 12px;
-    padding: 6px 12px;
+    padding: 8px 16px;
   }
 `;
 
 const MainSection = styled.div`
   display: flex;
+  min-width: 100%;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-between;
   flex-direction: row-reverse;
-  padding: 0.5rem 1.5rem;
-
+  padding: 0rem 2rem;
+  gap: 1rem;
+  transition: padding 0.3s ease;
   @media (max-width: 768px) {
-    padding: 0.75rem;
+    padding: 1rem;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
+    gap: 1.5rem;
   }
 `;
 
 const LogoContainer = styled.div`
-  display: flex;
+  display: hidden;
   width: 100%;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
+  transition: transform 0.2s ease;
+
   @media (max-width: 768px) {
     width: fit-content;
+  }
+  @media (min-width: 768px) {
+    display: flex;
   }
 `;
 
 const Logo = styled.img<{
   $data: HeaderSection;
 }>`
-  width: ${(props) => props.$data.blocks.setting?.imageWidth || "60"}px;
-  height: ${(props) => props.$data.blocks.setting?.imageHeight || "60"}px;
-  border-radius: ${(props) =>
-    props.$data.blocks.setting?.imageRadius || "30"}px;
+  width: 60px;
+  height: 60px;
   margin-left: auto;
-`;
-
-const SearchContainer = styled.div`
-  position: relative;
-  // flex: 1;
-  @media (min-width: 768px) {
-    margin-right: 1rem;
-    margin-left: 150px;
-  }
-`;
-
-const SearchInput = styled.input`
-  width: 500px;
-  padding: 0.5rem 2.5rem 0.5rem 1rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
-  text-align: right;
-  background-color: #f3f4f6;
-
-  @media (max-width: 768px) {
-    width: 100%;
-    padding: 0.5rem 1rem;
-  }
-
-  &:focus {
-    outline: none;
-    ring: 1px solid #000;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  &:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   }
 `;
 
 const NavContainer = styled.nav`
   display: flex;
-  justify-content: flex-end;
   align-items: center;
-  padding: 0.5rem 1.5rem;
+  padding: 0.75rem 2rem;
   @media (max-width: 768px) {
     display: none;
   }
@@ -165,8 +170,9 @@ const NavContainer = styled.nav`
 
 const NavList = styled.ul<{
   $data: HeaderSection;
+  $isMobile: boolean;
 }>`
-  display: flex;
+  display: ${(props) => (props.$isMobile ? "none" : "flex")};
   align-items: center;
   flex-direction: row-reverse;
   gap: ${(props) => props.$data.blocks.setting?.gap || "1"}px;
@@ -175,206 +181,388 @@ const NavList = styled.ul<{
 const NavItem = styled(Link)<{
   $data: HeaderSection;
 }>`
-  color: ${(props) => props.$data.blocks.setting?.itemColor || "#000"};
-  font-size: ${(props) => props.$data.blocks.setting?.itemFontSize || "14"}px;
-  font-weight: ${(props) =>
-    props.$data.blocks.setting?.itemFontWeight || "normal"};
+  color: ${(props) => props.$data.blocks.setting?.itemColor || "#1f2937"};
+  font-size: 15px;
+  font-weight: 500;
   cursor: pointer;
   text-align: right;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
-  padding: 4px 0;
-
-  &::after {
-    content: "";
-    position: absolute;
-    bottom: -2px;
-    right: 0;
-    width: 0;
-    height: 2px;
-    background: ${(props) =>
-      props.$data.blocks.setting?.itemHoverColor || "#FCA311"};
-    transition: width 0.3s cubic-bezier(0.65, 0, 0.35, 1);
-    border-radius: 2px;
-  }
-
-  &:hover::after {
-    width: 100%;
-    left: 0;
-  }
 
   &:hover {
     color: ${(props) =>
-      props.$data.blocks.setting?.itemHoverColor || "#FCA311"};
+      props.$data.blocks.setting?.itemHoverColor || "#f59e0b"};
+    transform: translateY(-1px);
   }
 `;
 
 const MegaMenu = styled.div<{ isVisible?: boolean; $data: HeaderSection }>`
   position: absolute;
-  top: 100%;
+  top: calc(100% + 8px);
   right: 0;
   width: 800px;
   background-color: ${(props) =>
-    props.$data.blocks?.setting?.megaMenuBg || "#f1b80c"};
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    props.$data.blocks?.setting?.megaMenuBg || "#ffffff"};
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
   opacity: 0;
   visibility: hidden;
-  transition: all 0.3s ease;
+  transform: translateY(-8px);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 50;
   display: flex;
-  border-radius: 8px;
-  padding: 1rem;
+  border-radius: ${(props) =>
+    props.$data.blocks?.setting?.megaMenuRadius || "5"}px;
+  padding: 2rem;
   direction: rtl;
+  border: 1px solid #f1f5f9;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: -8px;
+    right: 32px;
+    width: 16px;
+    height: 16px;
+    background: ${(props) =>
+      props.$data.blocks?.setting?.megaMenuBg || "#ffffff"};
+    transform: rotate(45deg);
+    border-left: 1px solid #f1f5f9;
+    border-top: 1px solid #f1f5f9;
+  }
 `;
 
 const NavItemWrapper = styled.li<{ $data?: HeaderSection }>`
   position: relative;
+  list-style: none;
   &:hover ${MegaMenu} {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
   }
 `;
+
 const CategoryItem = styled.span<{ $data: HeaderSection }>`
   color: ${(props) =>
-    props.$data.blocks.setting?.categoryItemColor || "#374151"};
+    props.$data.blocks.setting?.categoryItemColor || "#64748b"};
   font-size: ${(props) =>
     props.$data.blocks.setting?.categoryItemSize || "14"}px;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 500;
 
   &:hover {
     color: ${(props) =>
-      props.$data.blocks.setting?.categoryItemHoverColor || "#2563eb"};
+      props.$data.blocks.setting?.categoryItemHoverColor || "#3b82f6"};
   }
 `;
 
 const MegaMenuTitle = styled.h3`
-  font-size: 0.95rem;
-  color: #374151;
+  font-size: 1rem;
+  color: #1e293b;
   text-wrap: nowrap;
   text-align: right;
-  transition: all 0.2s ease;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 `;
 
-const CategoryIconWrapper = styled.div`
+const CategoryIconWrapper = styled.div<{ $data: HeaderSection }>`
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
+  font-size: 15px;
+  transition: transform 0.2s ease;
+
+  svg {
+    transition: transform 0.3s ease;
+  }
+
+  &:hover svg {
+    transform: rotate(180deg);
+  }
 `;
 
 const ActionButtons = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 1rem;
+  gap: 1.5rem;
   width: 100%;
   @media (max-width: 768px) {
     justify-content: space-between;
+    gap: 1rem;
   }
 `;
 
-const LocationButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: end;
-  gap: 0.25rem;
-  padding: 0.25rem 0.75rem;
-  background-color: #fff7ed;
-  color: #ea580c;
-  border-radius: 0.5rem;
-`;
 const MobileMenuButton = styled.button<{
   $isOpen: boolean;
+  $isMobile: boolean;
 }>`
-  display: none;
-  background: none;
-  border: none;
-  padding: 10px;
-  z-index: 100;
+  display: ${(props) => (props.$isMobile ? "flex" : "none")};
+  align-items: center;
+  justify-content: center;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 0.5rem;
+  z-index: 90;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  svg {
+    transition: transform 0.3s ease;
+    color: #475569;
+  }
+
+  ${(props) =>
+    props.$isOpen &&
+    `
+    svg {
+      transform: rotate(90deg);
+    }
+  `}
 
   @media (max-width: 768px) {
-    display: block;
+    display: flex;
   }
 `;
 
 const MobileMenu = styled.div<{
   $isOpen: boolean;
+  $isMobile: boolean;
+  $data: HeaderSection;
 }>`
-  display: ${(props) => (props.$isOpen ? "inline" : "none")};
-  position: ${(props) => (props.$isOpen ? "absolute" : "static")};
-  top: ${(props) => (props.$isOpen ? "0" : "-100%")};
-  right: ${(props) => (props.$isOpen ? "0" : "-100%")};
-  width: ${(props) => (props.$isOpen ? "80%" : "0")};
-  height: ${(props) => (props.$isOpen ? "100vh" : "0")};
-  transition: right 0.3s ease-in-out;
+  display: ${(props) => (props.$isMobile && props.$isOpen ? "block" : "none")};
+  position: fixed;
+  top: 0;
+  right: ${(props) => {
+    if (props.$isMobile) {
+      return "calc(50% - 212.5px)";
+    }
+    return "0";
+  }};
+  width: 85%;
+  max-width: 340px;
+  height: 100vh;
+  background-color: ${(props) =>
+    props.$data.blocks.setting?.mobileBackground || "#fff"};
+  transform: translateX(${(props) => (props.$isOpen ? "0" : "100%")});
+  opacity: 0.8; // 90% opacity برای کل element
+
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: ${(props) =>
+    props.$isOpen ? "-8px 0 32px rgba(0, 0, 0, 0.12)" : "none"};
+  z-index: 9999;
+  overflow-y: auto;
+  border-left: 1px solid #f1f5f9;
+
   @media (max-width: 768px) {
-    display: inline;
+    display: block;
     position: fixed;
-    top: 0;
-    right: ${(props) => (props.$isOpen ? "0" : "-100%")};
+    right: 0;
     width: 80%;
+    max-width: 320px;
     height: 100vh;
-    background: white;
-    transition: right 0.3s ease-in-out;
-    box-shadow: ${(props) =>
-      props.$isOpen ? "-5px 0 15px rgba(0,0,0,0.1)" : "none"};
-    z-index: 99;
+    z-index: 999;
+  }
+`;
+
+const MobileMenuHeader = styled.div<{
+  $data: HeaderSection;
+}>`
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row-reverse;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #f1f5f9;
+  background-color: ${(props) =>
+    props.$data.blocks.setting?.mobileBackground || "#ffff"};
+`;
+
+const CloseButton = styled.button`
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background: #e2e8f0;
+    transform: rotate(90deg) scale(1.1);
+  }
+
+  svg {
+    color: #64748b;
+    transition: color 0.2s ease;
+  }
+
+  &:hover svg {
+    color: #475569;
   }
 `;
 
 const MobileNavList = styled.div`
-  padding: 80px 20px 20px;
+  padding: 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 0.5rem;
+  text-align: right;
 `;
 
 const MobileNavItem = styled(NavItem)`
-  padding: 10px 0;
-  border-bottom: 1px solid #eee;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
   font-size: 16px;
+  font-weight: 900;
   width: 100%;
   display: block;
-`;
-const MobileDropdown = styled.div<{ $isOpen: boolean }>`
-  height: ${(props) => (props.$isOpen ? "auto" : "0")};
-  overflow: hidden;
-  transition: height 0.3s ease-in-out;
-  background: #f8f9fa;
-  border-radius: 8px;
-  margin-top: ${(props) => (props.$isOpen ? "10px" : "0")};
-`;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: ${(props) => props.$data.blocks.setting?.itemColor || "#1e293b"};
+  text-decoration: none;
 
-const Overlay = styled.div<{ $isOpen: boolean }>`
-  display: none;
-  opacity: ${(props) => (props.$isOpen ? "1" : "0")};
-  @media (max-width: 768px) {
-    display: ${(props) => (props.$isOpen ? "block" : "none")};
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 98;
+  &:hover {
+    transform: translateX(-4px);
+    color: ${(props) =>
+      props.$data.blocks.setting?.itemHoverColor || "#f59e0b"};
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   }
 `;
 
-const Header: React.FC<HeaderProps> = ({ headerData }) => {
+const MobileDropdown = styled.div<{ $isOpen: boolean }>`
+  max-height: ${(props) => (props.$isOpen ? "600px" : "0")};
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-radius: 12px;
+  margin: 0.5rem 0;
+  border: 1px solid #e2e8f0;
+`;
+
+const Overlay = styled.div<{ $isOpen: boolean }>`
+  display: ${(props) => (props.$isOpen ? "block" : "none")};
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background: ${(props) =>
+    props.$isOpen ? "rgba(0, 0, 0, 0.4)" : "transparent"};
+  z-index: 9998;
+  transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(4px);
+
+  @media (max-width: 768px) {
+    position: fixed;
+    height: 100vh;
+    z-index: 998;
+  }
+`;
+
+const MobileNavItemWrapper = styled.div`
+  width: 100%;
+`;
+
+const MobileNavItemButton = styled.button<{ $data: HeaderSection }>`
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row-reverse;
+  align-items: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: ${(props) => props.$data.blocks.setting?.itemColor || "#1e293b"};
+  background: none;
+  border: none;
+  text-align: right;
+  cursor: pointer;
+
+  &:hover {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    transform: translateX(-4px);
+    color: ${(props) =>
+      props.$data.blocks.setting?.itemHoverColor || "#f59e0b"};
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  }
+
+  svg {
+    transition: transform 0.3s ease;
+  }
+`;
+
+const MobileCategoryList = styled.div`
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+`;
+
+const MobileCategoryItem = styled(Link)<{ $data: HeaderSection }>`
+  padding: 0.875rem 1.25rem;
+  font-size: 14px;
+  font-weight: 500;
+  color: ${(props) =>
+    props.$data.blocks.setting?.categoryItemColor || "#64748b"};
+  display: block;
+  text-align: right;
+  border-radius: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+
+  &:hover {
+    background: #ffffff;
+    transform: translateX(-2px);
+    color: ${(props) =>
+      props.$data.blocks.setting?.categoryItemHoverColor || "#3b82f6"};
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+`;
+
+const MobileCategoryTitle = styled.div`
+  font-weight: 700;
+  color: #1e293b;
+  padding: 0.75rem 1.25rem;
+  font-size: 15px;
+  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 13px;
+`;
+
+const Header: React.FC<HeaderProps> = ({ headerData, isMobile }) => {
   const router = useRouter();
+  const menuRef = useRef<HTMLDivElement>(null);
   const { isAuthenticated } = useAuth();
   const [mounted, setMounted] = useState<boolean>(false);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [hoverd, setHoverd] = useState<number>(0);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [activeMobileCategory, setActiveMobileCategory] =
-    useState<MobileCategoryState>(null);
+
+  const [mobileDropdownOpen, setMobileDropdownOpen] = useState(false);
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-     
-
-
         const response = await fetch("/api/category");
 
         if (!response.ok) {
@@ -429,10 +617,36 @@ const Header: React.FC<HeaderProps> = ({ headerData }) => {
 
     fetchCategories();
   }, []);
+  const toggleMenu = useCallback(() => {
+    const newState = !isMenuOpen;
+    setIsMenuOpen(newState);
+
+    if (isMobile && window.innerWidth <= 768) {
+      if (newState) {
+        document.body.style.overflow = "hidden";
+        document.body.style.position = "fixed";
+        document.body.style.width = "100%";
+      } else {
+        document.body.style.overflow = "";
+        document.body.style.position = "";
+        document.body.style.width = "";
+      }
+    }
+  }, [isMenuOpen, isMobile]);
+
+  const toggleMobileDropdown = useCallback(() => {
+    setMobileDropdownOpen(!mobileDropdownOpen);
+  }, [mobileDropdownOpen]);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const handleOverlayClick = useCallback(() => {
+    if (isMenuOpen) {
+      toggleMenu();
+    }
+  }, [isMenuOpen, toggleMenu]);
 
   if (!mounted) {
     return null; // Or a loading skeleton
@@ -461,30 +675,34 @@ const Header: React.FC<HeaderProps> = ({ headerData }) => {
   const handleNavigate = () => {
     router.push(`/cart`);
   };
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-    // Prevent body scroll when menu is open
-    document.body.style.overflow = !isMenuOpen ? "hidden" : "unset";
+  const handleMenuClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
   };
+
   if (!isHeaderBlock(blocks)) {
     return null;
   }
 
   return (
-    <HeaderWrapper $data={sectionData}>
-      <AnnouncementBar
-        className="border-b border-[#e5e7eb]"
-        $data={sectionData}
-      >
-        <div className="marquee-content">
-          {sectionData.blocks.setting?.announcementText}
-        </div>
+    <HeaderWrapper $isMobile={isMobile} $data={sectionData}>
+      <AnnouncementBar $data={sectionData}>
+        {sectionData.blocks.setting?.announcementText ||
+          "ارسال رایگان برای خرید‌های بالای ۵۰۰ هزار تومان!"}
       </AnnouncementBar>
 
       <MainSection>
-        <div className="flex flex-row-reverse items-center  justify-between w-full">
+        <div className="flex flex-row-reverse items-center gap-6 justify-start w-full">
+          <MobileMenuButton
+            $isOpen={isMenuOpen}
+            $isMobile={isMobile}
+            onClick={toggleMenu}
+            aria-label="Toggle mobile menu"
+          >
+            <Menu size={20} />
+          </MobileMenuButton>
+
           <LogoContainer>
-            <Link href="/">
+            <Link className="ml-auto" href="#">
               <Logo
                 $data={sectionData}
                 src={sectionData.blocks.imageLogo || "/assets/images/logo.webp"}
@@ -493,291 +711,174 @@ const Header: React.FC<HeaderProps> = ({ headerData }) => {
             </Link>
           </LogoContainer>
 
-          <SearchContainer>
-            <SearchInput placeholder="جستجو" />
-            <Search
-              style={{
-                position: "absolute",
-                left: "12px",
-                top: "50%",
-                transform: "translateY(-50%)",
-                color: "#6b7280",
-              }}
-              size={20}
-            />
-          </SearchContainer>
-        </div>
-
-        <ActionButtons>
-          <div className="flex  items-center gap-2">
-            {isAuthenticated && (
-              <>
-                <ShoppingCart
-                  className="text-gray-400 cursor-pointer hover:text-black"
-                  size={24}
-                  onClick={handleNavigate}
-                />
-                |
-              </>
-            )}
-            <UserMenu />
-          </div>
-
-          <MobileMenuButton $isOpen={isMenuOpen} onClick={toggleMenu}>
-            {isMenuOpen ? (
-              <svg
-                width="24"
-                height="24"
-                aria-label="close"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                className={`${isMenuOpen ? "opacity-0" : "block"}`}
-              >
-                <path d="M18 6L6 18M6 6l12 12" />
-              </svg>
-            ) : (
-              <svg
-                width="24"
-                aria-label="menu"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            )}
-          </MobileMenuButton>
-        </ActionButtons>
-      </MainSection>
-
-      <NavContainer>
-        {/* <LocationButton>
-          <MapPin size={16} /> شهر خود را انتخاب کنید
-        </LocationButton> */}
-        <NavList $data={sectionData}>
-          {sectionData.blocks.links?.map((link, index) => (
-            <NavItemWrapper key={index}>
-              {link.name === "دسته‌بندی کالاها" ? (
-                <>
-                  <NavItem href="" $data={sectionData}>
-                    <CategoryIconWrapper>
-                      {link.name}
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
+          <NavContainer>
+            <NavList $isMobile={isMobile} $data={sectionData}>
+              {sectionData.blocks.links?.map((link, index) => (
+                <NavItemWrapper key={index}>
+                  {link.name === "دسته‌بندی کالاها" ? (
+                    <>
+                      <NavItem
+                        className="text-nowrap"
+                        href="#"
+                        $data={sectionData}
                       >
-                        <path d="M4 6h16M4 12h16M4 18h16" />
-                      </svg>
-                    </CategoryIconWrapper>
-                  </NavItem>
-                  <MegaMenu $data={sectionData}>
-                    <div className="flex flex-col w-1/4 border-l border-gray-200">
-                      {Array.isArray(categories) &&
-                        categories
-                          .filter(
-                            (category) =>
-                              category.children && category.children.length > 0
-                          )
-                          .map((category, idx) => (
-                            <Link
-                              href={`/store?name=${category.name}`}
-                              key={category._id}
-                              className={`py-3 px-4 rounded-md ml-4 cursor-pointer transition-all duration-200 ${
-                                idx === hoverd ? "bg-gray-100 font-bold" : ""
-                              }`}
-                              onMouseEnter={() => setHoverd(idx)}
-                            >
-                              <MegaMenuTitle>{category.name}</MegaMenuTitle>
-                            </Link>
-                          ))}
-                    </div>
-                    {mounted && Array.isArray(categories) && (
-                      <div className="flex-1 p-4">
-                        <div className="grid grid-cols-3 gap-4">
-                          {(() => {
-                            const parentCategories = categories.filter(
-                              (cat) => cat.children && cat.children.length > 0
-                            );
-                            const activeParent = parentCategories[hoverd];
+                        <CategoryIconWrapper $data={sectionData}>
+                          {link.name}
+                          <MenuIcon size={16} />
+                        </CategoryIconWrapper>
+                      </NavItem>
+                      <MegaMenu $data={sectionData}>
+                        <div className="flex flex-col w-1/4 border-l border-gray-200 pl-4">
+                          {categories
+                            ?.filter((category) => category.children.length > 0)
+                            .map((category, idx) => (
+                              <Link
+                                href="#"
+                                key={category._id}
+                                className="block"
+                              >
+                                <div
+                                  className={`py-3 px-4 rounded-lg ml-2 cursor-pointer transition-all duration-300 ${
+                                    idx === hoverd
+                                      ? "bg-blue-50 border-l-4 border-blue-400 font-semibold text-blue-700"
+                                      : "hover:bg-gray-50"
+                                  }`}
+                                  onMouseEnter={() => setHoverd(idx)}
+                                >
+                                  <MegaMenuTitle>{category.name}</MegaMenuTitle>
+                                </div>
+                              </Link>
+                            ))}
+                        </div>
 
-                            if (!activeParent) return null;
-
-                            return activeParent.children.map(
-                              (child: CategoryChild) => (
+                        <div className="flex-1 p-6">
+                          <div className="grid grid-cols-3 gap-6">
+                            {categories
+                              ?.filter(
+                                (category) => category.children.length > 0
+                              )
+                              [hoverd]?.children.map((child) => (
                                 <Link
-                                  href={`/store?name=${child.name}`}
+                                  href="#"
                                   key={child._id}
-                                  className="p-1 hover:translate-x-[2px] rounded-md transition-all duration-200 text-right"
+                                  className="p-3 hover:translate-x-[2px] rounded-lg transition-all duration-300 text-right group hover:bg-blue-50"
                                 >
                                   <CategoryItem $data={sectionData}>
                                     {child.name}
                                   </CategoryItem>
                                 </Link>
-                              )
-                            );
-                          })()}
+                              ))}
+                          </div>
                         </div>
-                      </div>
-                    )}
-                  </MegaMenu>
-                </>
-              ) : (
-                <NavItem href={link.url} $data={sectionData}>
-                  {link.name}
-                </NavItem>
-              )}
-            </NavItemWrapper>
-          ))}
-        </NavList>
-      </NavContainer>
-
-      <div>
-        <MobileMenu
-          className="z-[9999] transition-all duration-300 bg-white"
-          $isOpen={isMenuOpen}
-        >
-          <MobileNavList>
-            <LocationButton style={{ width: "100%", marginBottom: "20px" }}>
-              <MapPin size={16} /> شهر خود را انتخاب کنید
-            </LocationButton>
-            {sectionData.blocks.links?.map((link, index) => (
-              <div key={index}>
-                {link.name === "دسته‌بندی کالاها" ? (
-                  <>
-                    <MobileNavItem
+                      </MegaMenu>
+                    </>
+                  ) : (
+                    <NavItem
+                      className="text-nowrap"
                       href="#"
                       $data={sectionData}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setActiveMobileCategory(
-                          activeMobileCategory === null ? "main" : null
-                        );
-                      }}
                     >
-                      <div className="flex flex-row-reverse justify-between items-center w-full">
-                        {link.name}
-                        <svg
-                          width="20"
-                          height="20"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          style={{
-                            transform: `rotate(${
-                              activeMobileCategory ? "180deg" : "0deg"
-                            })`,
-                            transition: "transform 0.3s ease",
-                          }}
-                        >
-                          <path d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </div>
-                    </MobileNavItem>
-                    <MobileDropdown $isOpen={activeMobileCategory !== null}>
-                      <div className="p-4">
-                        {Array.isArray(categories) &&
-                          categories
-                            .filter(
-                              (category) =>
-                                category.children &&
-                                category.children.length > 0
-                            )
-                            .map((category) => (
-                              <div
-                                key={category._id}
-                                className="mb-4 border-b pb-2"
-                              >
-                                <div className="flex flex-row-reverse items-center justify-between">
-                                  <span className="font-bold">
-                                    {category.name}
-                                  </span>
-                                  <button
-                                    className="p-2 hover:bg-gray-100 rounded-full transition-all"
-                                    onClick={() =>
-                                      setActiveMobileCategory(
-                                        activeMobileCategory === category._id
-                                          ? null
-                                          : category._id
-                                      )
-                                    }
-                                  >
-                                    <svg
-                                      width="16"
-                                      height="16"
-                                      viewBox="0 0 24 24"
-                                      fill="none"
-                                      stroke="currentColor"
-                                      strokeWidth="2"
-                                      style={{
-                                        transform: `rotate(${
-                                          activeMobileCategory === category._id
-                                            ? "180deg"
-                                            : "0deg"
-                                        })`,
-                                        transition: "transform 0.3s ease",
-                                      }}
-                                    >
-                                      <path d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                  </button>
-                                </div>
-                                <div
-                                  className={`overflow-hidden transition-all duration-300 ${
-                                    activeMobileCategory === category._id
-                                      ? "max-h-96 mt-3"
-                                      : "max-h-0"
-                                  }`}
-                                >
-                                  <Link
-                                    href={`/store?categoryId=${category._id}`}
-                                    className="block py-2 pr-4 text-right text-sky-400 font-bold hover:bg-gray-50 rounded"
-                                    onClick={() => setIsMenuOpen(false)}
-                                  >
-                                    ← مشاهده همه {category.name}
-                                  </Link>
-                                  {category.children.map(
-                                    (child: CategoryChild) => (
-                                      <Link
-                                        href={`/store?categoryId=${child._id}`}
-                                        key={child._id}
-                                        className="block py-2 pr-4 text-right text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded"
-                                        onClick={() => setIsMenuOpen(false)}
-                                      >
-                                        {child.name}
-                                      </Link>
-                                    )
-                                  )}
-                                </div>
-                              </div>
-                            ))}
-                      </div>
-                    </MobileDropdown>
-                  </>
-                ) : (
-                  <MobileNavItem
-                    href={link.url}
+                      {link.name}
+                    </NavItem>
+                  )}
+                </NavItemWrapper>
+              ))}
+            </NavList>
+          </NavContainer>
+          <ActionButtons>
+            <div className="flex  items-center gap-2">
+              {isAuthenticated && (
+                <>
+                  <ShoppingCart
+                    className="text-gray-400 cursor-pointer hover:text-black"
+                    size={24}
+                    onClick={handleNavigate}
+                  />
+                  |
+                </>
+              )}
+              <UserMenu />
+            </div>
+          </ActionButtons>
+        </div>
+      </MainSection>
+
+      <Overlay $isOpen={isMenuOpen} onClick={handleOverlayClick} />
+
+      <MobileMenu
+        ref={menuRef}
+        $isMobile={isMobile}
+        $isOpen={isMenuOpen}
+        onClick={handleMenuClick}
+        $data={sectionData}
+        className="backdrop-blur-sm"
+      >
+        <MobileMenuHeader $data={sectionData}>
+          <Logo
+            $data={sectionData}
+            src={sectionData.blocks.imageLogo || "/assets/images/logo.webp"}
+            alt={sectionData.blocks.imageAlt}
+            style={{ width: "50px", height: "50px" }}
+          />
+          <CloseButton onClick={toggleMenu} aria-label="Close menu">
+            <X size={18} />
+          </CloseButton>
+        </MobileMenuHeader>
+
+        <MobileNavList>
+          {sectionData.blocks.links?.map((link, index) => (
+            <MobileNavItemWrapper key={index}>
+              {link.name === "دسته‌بندی کالاها" ? (
+                <>
+                  <MobileNavItemButton
                     $data={sectionData}
-                    onClick={() => setIsMenuOpen(false)}
+                    onClick={toggleMobileDropdown}
                   >
                     {link.name}
-                  </MobileNavItem>
-                )}
-              </div>
-            ))}
-          </MobileNavList>
-        </MobileMenu>
-      </div>
+                    {mobileDropdownOpen ? (
+                      <ChevronUp size={18} />
+                    ) : (
+                      <ChevronDown size={18} />
+                    )}
+                  </MobileNavItemButton>
 
-      <Overlay $isOpen={isMenuOpen} onClick={() => setIsMenuOpen(false)} />
+                  <MobileDropdown $isOpen={mobileDropdownOpen}>
+                    <MobileCategoryList>
+                      {categories
+                        ?.filter((category) => category.children.length > 0)
+                        .map((category) => (
+                          <div key={category._id}>
+                            <MobileCategoryTitle>
+                              {category.name}
+                            </MobileCategoryTitle>
+                            {category.children.map((child) => (
+                              <MobileCategoryItem
+                                key={child._id}
+                                href="#"
+                                $data={sectionData}
+                                onClick={toggleMenu}
+                              >
+                                {child.name}
+                              </MobileCategoryItem>
+                            ))}
+                          </div>
+                        ))}
+                    </MobileCategoryList>
+                  </MobileDropdown>
+                </>
+              ) : (
+                <MobileNavItem
+                  href="#"
+                  $data={sectionData}
+                  onClick={toggleMenu}
+                >
+                  {link.name}
+                </MobileNavItem>
+              )}
+            </MobileNavItemWrapper>
+          ))}
+        </MobileNavList>
+      </MobileMenu>
     </HeaderWrapper>
   );
 };
