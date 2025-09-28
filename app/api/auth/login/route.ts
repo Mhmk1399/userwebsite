@@ -11,6 +11,7 @@ export async function POST(request: Request) {
   }
   try {
     const { phone, password } = await request.json();
+    
     const user = await StoreUsers.findOne({ phone });
     if (!user) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
@@ -27,21 +28,29 @@ export async function POST(request: Request) {
       throw new Error("JWT_SECRET is not defined");
     }
     const token = jwt.sign(
-      { userId: user._id, storeId: user.storeId, name: user.name},
+      { userId: user._id, storeId: user.storeId, name: user.name, phone: user.phone, role: user.role || 'user'},
       jwtSecret,
       {
         expiresIn: "10h",
       }
     );
-    const decodedToken = jwt.decode(token) as {
-      userId: string;
-      storeId: string;
-    };
-    return NextResponse.json({
+    
+    const response = NextResponse.json({
       token,
-      userId: decodedToken.userId,
+      userId: user._id,
       message: "Login successful",
     });
+    
+    // Set secure HTTP-only cookie (optional, for additional security)
+    response.cookies.set('tokenUser', token, {
+      httpOnly: false, // Set to true for production for better security
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 10 * 60 * 60, // 10 hours
+      path: '/'
+    });
+    
+    return response;
   } catch (error) {
     console.error("Error logging in:", error);
     return NextResponse.json({ message: "Error logging in" }, { status: 500 });
