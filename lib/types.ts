@@ -1,4 +1,4 @@
-import { DetailedHTMLProps, HTMLAttributes } from "react";
+import { DetailedHTMLProps, HTMLAttributes } from "react"; 
 import { Interpolation } from "styled-components";
 import { Substitute } from "styled-components/dist/types";
 
@@ -1290,6 +1290,15 @@ export interface BlogListSetting {
   paddingRight: string;
   marginRight: string;
   marginLeft: string;
+  shadowColor?: string;
+  shadowSpread?: string;
+  shadowBlur?: string;
+  shadowOffsetY?: string;
+  shadowOffsetX?: string;
+  Radius?: string;
+  btnRadius?: string;
+  descriptionSize?: string;
+  titleSize?: string;
 }
 export interface BlogListFormProps {
   setUserInputData: React.Dispatch<React.SetStateAction<BlogSection>>;
@@ -1390,6 +1399,12 @@ export interface BlogDetailBlockSetting extends CommonSettings {
   sectionSpacing: string;
   metaColor: string;
   metaFontSize: string;
+  Radius: string;
+  shadowColor?: string;
+  shadowSpread?: string;
+  shadowBlur?: string;
+  shadowOffsetY?: string;
+  shadowOffsetX?: string;
 }
 
 export interface BlogDetailSection {
