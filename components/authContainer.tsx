@@ -260,7 +260,7 @@ const AuthContainer: React.FC = () => {
           />
         )}
 
-        <div className="bg-white/40 backdrop-blur-xs rounded-3xl shadow-2xl p-8 transform transition-all border border-white/20">
+        <div className="bg-white/40 backdrop-blur-sm rounded-3xl shadow-2xl p-8 transform transition-all border border-white/20">
           <div className="mb-6">
             <Link
               href="/"

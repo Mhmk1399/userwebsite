@@ -183,7 +183,6 @@ export interface HeaderBlockSettings extends CommonSettings {
   mobileBackground: string;
   megaMenuRadius: string;
   bgRadius: string;
-  
 }
 export interface HeaderBlock {
   imageLogo: string;
@@ -1018,6 +1017,12 @@ export interface ProductBlockSetting {
   filterRowBg: string;
   filterNameColor: string;
   filterCardBg: string;
+  shadowColor?: string;
+  shadowSpread?: string;
+  shadowBlur?: string;
+  shadowOffsetY?: string;
+  shadowOffsetX?: string;
+  Radius?: string;
 }
 
 export interface ProductListSection {
@@ -1188,6 +1193,7 @@ export interface DetailPageSettings extends CommonSettings {
   priceFontSize: string;
   descriptionColor: string;
   descriptionFontSize: string;
+  descriptionFontWeight: string;
   btnBackgroundColor: string;
   btnTextColor: string;
   paddingTop: string;
@@ -1204,6 +1210,9 @@ export interface DetailPageSettings extends CommonSettings {
   propertyKeyColor: string;
   propertyValueColor: string;
   propertyBg: string;
+  Radius: string;
+  btnRadius: string;
+  propertyRadius: string;
 }
 
 export interface DetailPageSection {
