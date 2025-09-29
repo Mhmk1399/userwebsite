@@ -1009,6 +1009,9 @@ export interface ProductBlockSetting {
   filterButtonTextColor: string;
   filterRowBg: string;
   filterNameColor: string;
+  textColor:string;
+  btnBackgroundColor:string;
+  btnTextColor:string;
   filterCardBg: string;
 }
 

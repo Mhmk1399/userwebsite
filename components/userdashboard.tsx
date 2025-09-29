@@ -1,12 +1,12 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 import { toast, Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { FaUser, FaSignOutAlt, FaCog, FaEdit, FaTimes } from "react-icons/fa";
+import { FaUser, FaSignOutAlt, FaEdit, FaTimes, FaTicketAlt } from "react-icons/fa";
 import { BsCartCheckFill } from "react-icons/bs";
 import Link from "next/link";
 import { useAuth } from "@/hook/useAuth";
+import TicketSystem from "./TicketSystem";
 
 interface Order {
   _id: string;
@@ -29,6 +29,7 @@ interface Pagination {
   hasNext: boolean;
   hasPrev: boolean;
 }
+
 interface UserInfo {
   _id: string;
   name: string;
@@ -58,7 +59,6 @@ const Dashboard = () => {
   const [activeSection, setActiveSection] = useState("profile");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Redirect if not authenticated
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       router.push('/login');
@@ -204,9 +204,7 @@ const Dashboard = () => {
   };
 
   const Sidebar = () => (
-    <motion.aside
-      animate={{ x: 0 }}
-      transition={{ duration: 0.5 }}
+    <aside
       className="fixed top-0 right-0 w-64 bg-gradient-to-b from-blue-800 to-blue-900 h-screen p-6 text-white z-50 shadow-2xl
                  lg:relative lg:translate-x-0 lg:shadow-none
                  md:w-72 sm:w-64"
@@ -216,7 +214,6 @@ const Dashboard = () => {
         <h2 className="text-xl lg:text-2xl font-bold truncate">
           داشبورد - {userInfo?.name}
         </h2>
-        {/* Close button for mobile */}
         <button className="lg:hidden text-white hover:text-gray-300">
           <svg
             className="w-6 h-6"
@@ -266,7 +263,18 @@ const Dashboard = () => {
           <span className="font-medium"> سفارشات </span>
         </button>
 
-       
+        <button
+          onClick={() => setActiveSection("tickets")}
+          className={`flex items-center gap-3 p-3 w-full rounded-xl transition-all duration-200 text-right
+            ${
+              activeSection === "tickets"
+                ? "bg-blue-600 shadow-lg transform scale-105"
+                : "hover:bg-blue-700/50"
+            }`}
+        >
+          <FaTicketAlt className="text-lg" />
+          <span className="font-medium">پشتیبانی</span>
+        </button>
 
         <button
           onClick={() => setIsModalOpen(true)}
@@ -279,14 +287,13 @@ const Dashboard = () => {
           <Link href="/">بازگشت به صفحه اصلی</Link>
         </button>
       </nav>
-    </motion.aside>
+    </aside>
   );
 
   const ProfileSection = () => {
     if (isEditing) {
       return (
-        <motion.div
-          transition={{ duration: 0.3 }}
+        <div
           className="bg-gradient-to-br from-blue-600 to-blue-700 p-4 lg:p-8 rounded-2xl mx-4 lg:mx-10 shadow-2xl space-y-6"
           dir="rtl"
         >
@@ -295,22 +302,18 @@ const Dashboard = () => {
               ویرایش اطلاعات کاربری
             </h2>
             <div className="flex gap-3">
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
+              <button
                 onClick={handleUpdateUser}
-                className="bg-green-500 hover:bg-green-600 text-white p-3 rounded-full shadow-lg transition-colors duration-200"
+                className="bg-green-500 hover:bg-green-600 text-white p-3 rounded-full shadow-lg transition-colors duration-200 hover:scale-110"
               >
                 <FaEdit className="text-lg" />
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
+              </button>
+              <button
                 onClick={() => setIsEditing(false)}
-                className="bg-red-500 hover:bg-red-600 text-white p-3 rounded-full shadow-lg transition-colors duration-200"
+                className="bg-red-500 hover:bg-red-600 text-white p-3 rounded-full shadow-lg transition-colors duration-200 hover:scale-110"
               >
                 <FaTimes className="text-lg" />
-              </motion.button>
+              </button>
             </div>
           </div>
 
@@ -387,15 +390,12 @@ const Dashboard = () => {
               )}
             </div>
           </div>
-        </motion.div>
+        </div>
       );
     }
 
     return (
-      <motion.section
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
+      <section
         className="bg-gradient-to-br from-blue-600 to-blue-700 shadow-2xl rounded-2xl mx-4 p-6 lg:p-10 space-y-6"
         dir="rtl"
       >
@@ -404,14 +404,12 @@ const Dashboard = () => {
             <FaUser className="text-2xl" />
             <span>اطلاعات کاربری</span>
           </h3>
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
+          <button
             onClick={() => setIsEditing(true)}
-            className="bg-orange-500 hover:bg-orange-600 text-white p-4 rounded-full shadow-lg transition-colors duration-200"
+            className="bg-orange-500 hover:bg-orange-600 text-white p-4 rounded-full shadow-lg transition-colors duration-200 hover:scale-110"
           >
             <FaEdit className="text-lg" />
-          </motion.button>
+          </button>
         </div>
 
         <div className="space-y-4 lg:space-y-6">
@@ -442,7 +440,7 @@ const Dashboard = () => {
             </p>
           </div>
         </div>
-      </motion.section>
+      </section>
     );
   };
 
@@ -469,10 +467,7 @@ const Dashboard = () => {
   };
 
   const OrdersSection = () => (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
+    <div
       className="bg-gradient-to-br from-blue-600 to-blue-700 p-4 lg:p-6 shadow-2xl rounded-2xl mx-4 text-white"
       dir="rtl"
     >
@@ -490,7 +485,7 @@ const Dashboard = () => {
           }}
           className="bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-white/30"
         >
-          <option value="all" className="text-gray-800">همه وضعیت‌ها</option>
+          <option value="all" className="text-gray-800">همه وضعیتها</option>
           <option value="pending" className="text-gray-800">در انتظار</option>
           <option value="processing" className="text-gray-800">در حال پردازش</option>
           <option value="shipped" className="text-gray-800">ارسال شده</option>
@@ -508,11 +503,9 @@ const Dashboard = () => {
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 mb-6">
             {orders.map((order) => (
-              <motion.div
+              <div
                 key={order._id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-white/10 backdrop-blur-sm border border-blue-400/30 rounded-xl p-4 hover:bg-white/15 transition-all duration-300 hover:transform hover:scale-[1.02]"
+                className="bg-white/10 backdrop-blur-sm border border-blue-400/30 rounded-xl p-4 hover:bg-white/15 transition-all duration-300 hover:scale-[1.02]"
               >
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
@@ -541,7 +534,7 @@ const Dashboard = () => {
                     {new Date(order.date || Date.now()).toLocaleDateString('fa-IR')}
                   </div>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
 
@@ -597,10 +590,9 @@ const Dashboard = () => {
           </p>
         </div>
       )}
-    </motion.div>
+    </div>
   );
 
-  // Show loading while checking authentication
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -612,7 +604,6 @@ const Dashboard = () => {
     );
   }
 
-  // Don't render if not authenticated (will redirect)
   if (!isAuthenticated) {
     return null;
   }
@@ -624,7 +615,6 @@ const Dashboard = () => {
         containerStyle={{ top: 10, fontSize: "14px", fontWeight: "bold" }}
       />
 
-      {/* Mobile Header */}
       <div
         className="lg:hidden bg-white shadow-sm border-b p-4 flex items-center justify-between"
         dir="rtl"
@@ -648,12 +638,10 @@ const Dashboard = () => {
       </div>
 
       <div className="flex flex-col lg:flex-row">
-        {/* Sidebar - Hidden on mobile, shown on desktop */}
         <div className="hidden lg:block">
           <Sidebar />
         </div>
 
-        {/* Mobile Navigation */}
         <div className="lg:hidden bg-white border-b">
           <div className="flex overflow-x-auto scrollbar-hide" dir="rtl">
             <button
@@ -683,6 +671,17 @@ const Dashboard = () => {
             >
               سفارشات
             </button>
+            <button
+              onClick={() => setActiveSection("tickets")}
+              className={`flex-shrink-0 px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap
+                ${
+                  activeSection === "tickets"
+                    ? "border-blue-600 text-blue-600"
+                    : "border-transparent text-gray-500 hover:text-gray-700"
+                }`}
+            >
+              پشتیبانی
+            </button>
            
             <button className="flex-shrink-0 px-4 py-3 text-sm font-medium border-b-2 border-transparent text-blue-500 hover:text-blue-700 transition-colors whitespace-nowrap">
               <Link href="/">بازگشت به صفحه اصلی</Link>
@@ -696,24 +695,19 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Main Content */}
-        <main className="flex-1  bg-gray-50 min-h-screen w-full">
+        <main className="flex-1 bg-gray-50 min-h-screen w-full">
           <div className="py-4 lg:py-8">
             {activeSection === "profile" && <ProfileSection />}
             {activeSection === "orders" && <OrdersSection />}
+            {activeSection === "tickets" && <TicketSystem isAuthenticated={isAuthenticated} logout={logout} />}
           </div>
         </main>
-
-
       </div>
 
-      {/* Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50 p-4">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-2xl p-6 shadow-2xl w-full max-w-md"
+          <div
+            className="bg-white rounded-2xl p-6 shadow-2xl w-full max-w-md animate-in zoom-in-95 duration-200"
             dir="rtl"
           >
             <div className="text-center mb-6">
@@ -745,7 +739,7 @@ const Dashboard = () => {
                 خروج از حساب
               </button>
             </div>
-          </motion.div>
+          </div>
         </div>
       )}
     </div>
