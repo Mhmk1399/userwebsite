@@ -47,7 +47,7 @@
           "priceFontSize": "24",
           "descriptionColor": "#000000",
           "descriptionFontSize": "16",
-          "btnBackgroundColor": "#3498DB",
+          "btnBackgroundColor": "#000",
           "btnTextColor": "#FFFFFF",
           "paddingTop": "20",
           "paddingBottom": "20",

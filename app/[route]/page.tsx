@@ -287,7 +287,7 @@ export default function Page() {
         headers: {
           selectedRoute: routeName,
           activeMode: activeMode,
-          storeId: storeId,
+          storeId: "storemfcdfog4456qhn",
         },
       });
 

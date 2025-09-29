@@ -733,7 +733,7 @@ const Header: React.FC<HeaderProps> = ({ headerData, isMobile }) => {
                             ?.filter((category) => category.children.length > 0)
                             .map((category, idx) => (
                               <Link
-                                href="#"
+                                href={`/store/${category._id}`}
                                 key={category._id}
                                 className="block"
                               >
@@ -759,7 +759,7 @@ const Header: React.FC<HeaderProps> = ({ headerData, isMobile }) => {
                               )
                               [hoverd]?.children.map((child) => (
                                 <Link
-                                  href="#"
+                                  href={`/store/${child._id}`}
                                   key={child._id}
                                   className="p-3 hover:translate-x-[2px] rounded-lg transition-all duration-300 text-right group hover:bg-blue-50"
                                 >
@@ -854,7 +854,7 @@ const Header: React.FC<HeaderProps> = ({ headerData, isMobile }) => {
                             {category.children.map((child) => (
                               <MobileCategoryItem
                                 key={child._id}
-                                href="#"
+                                href={`/store/${category._id}`}
                                 $data={sectionData}
                                 onClick={toggleMenu}
                               >

@@ -754,7 +754,7 @@ const ProductList: React.FC<ProductListProps> = ({
             {(filteredProducts.length > 0 ? filteredProducts : productData).map(
               (product) => (
                 <ProductCard
-                  key={product._id || product.id}
+                  key={product._id}
                   productData={product}
                 />
               )
