@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { DetailPageSection, ProductCardData, ProductImage } from "@/lib/types";
 import Image from "next/image";
 import { styled } from "styled-components";
-import { createApiService } from "@/lib/api-factory";
+import { useParams } from "next/navigation";
 
 interface DetailPageProps {
   sections: DetailPageSection[];
@@ -33,12 +33,13 @@ const SectionDetailPage = styled.div<{
   background-color: ${(props) =>
     props.$data?.setting?.backgroundColor || "#ffffff"};
   box-shadow: ${(props) =>
-    `${props.$data.setting?.shadowOffsetX || 0}px 
-     ${props.$data.setting?.shadowOffsetY || 4}px 
-     ${props.$data.setting?.shadowBlur || 10}px 
-     ${props.$data.setting?.shadowSpread || 0}px 
-     ${props.$data.setting?.shadowColor || "#fff"}`};
-  border-radius: ${(props) => props.$data.setting?.Radius || "10"}px;
+    `
+    ${props.$data?.setting?.shadowOffsetX || 0}px 
+     ${props.$data?.setting?.shadowOffsetY || 4}px 
+     ${props.$data?.setting?.shadowBlur || 10}px 
+     ${props.$data?.setting?.shadowSpread || 0}px 
+     ${props.$data?.setting?.shadowColor || "#fff"}`};
+  border-radius: ${(props) => props.$data?.setting?.Radius || "10"}px;
 
   .product-name {
     color: ${(props) => props.$data?.setting?.productNameColor || "#000000"};
@@ -154,29 +155,81 @@ const DetailPage: React.FC<DetailPageProps> = ({
 
   const [selectedImage, setSelectedImage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
+  const [data, setData] = useState<any>(null);
+  const [layoutLoading, setLayoutLoading] = useState<boolean>(true);
 
-  const api = createApiService({
-    baseUrl: "/api",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  const params = useParams();
+  const productId = params.id as string;
 
-  const { data: productData, error } = api.useGet(`/products/${product._id}`, {
-    revalidateOnFocus: false,
-    refreshInterval: 60000,
-  });
+  const fetchLayoutData = async (
+    routeName: string,
+    activeMode: string,
+    storeId: string
+  ) => {
+    try {
+      const response = await fetch("/api/layout-jason", {
+        method: "GET",
+        headers: {
+          selectedRoute: "detail",
+          activeMode: activeMode,
+          storeId: "storemfcdfog4456qhn",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch layout data: ${response.status}`);
+      }
+
+      const layoutData = await response.json();
+      setData(layoutData);
+      console.log(layoutData);
+      setLayoutLoading(false);
+      // Extract header and footer data
+      // if (layoutData.sections?.sectionHeader) {
+      //   setHeaderData(layoutData.sections.sectionHeader);
+      // }
+      // console.log(headerData);
+
+      // if (layoutData.sections?.sectionFooter) {
+      //   setFooterData(layoutData.sections.sectionFooter);
+      // }
+      return layoutData;
+    } catch (error) {
+      console.error("Error fetching layout data:", error);
+      setLayoutLoading(false);
+    }
+  };
 
   useEffect(() => {
-    if (productData) {
-      setProduct(productData);
-      setSelectedImage(productData.images[0]?.imageSrc || "");
-      setLoading(false);
-    } else if (error) {
-      console.log("Error fetching product details:", error);
-      setLoading(false);
+    fetchLayoutData("lg", "storemfcdfog4456qhn", "detail");
+  }, []);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await fetch(`/api/store/${productId}`, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const productData = await response.json();
+        console.log(productData, ".....");
+
+        if (productData && productData.images) {
+          setProduct(productData);
+          setSelectedImage(productData?.images[0]?.imageSrc || "");
+        }
+      } catch (error) {
+        console.log("Error fetching product details:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (productId) {
+      fetchProduct();
     }
-  }, [productData, error]);
+  }, [productId]);
 
   if (loading) {
     return (
@@ -193,12 +246,17 @@ const DetailPage: React.FC<DetailPageProps> = ({
       </div>
     );
   }
-  const sectionData = sections.find(
-    (section) => section.type === componentName
+  // Create fallback section data if layout data is not available
+  const sectionData = data?.sections?.children?.sections?.find(
+    (section: any) => section.type === componentName
   );
 
-  if (!sectionData) {
-    return null;
+  if (layoutLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        Loading layout...
+      </div>
+    );
   }
 
   return (

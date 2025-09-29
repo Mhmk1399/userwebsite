@@ -170,8 +170,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData }) => {
   const [currentImageIndex] = useState(0);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
 
-  const handleNavigate = (id: string) => {
-    router.push(`/store/${id}`);
+  const handleNavigate = (_id: string) => {
+    router.push(`/store/${_id}`);
   };
 
   const addToCart = async (e: React.MouseEvent) => {
@@ -218,6 +218,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData }) => {
 
   // Use _id or id, whichever is available
   const productId = productData._id || productData.id;
+  console.log(productId , "vvvvvvvvvv")
 
   return (
     <Card
