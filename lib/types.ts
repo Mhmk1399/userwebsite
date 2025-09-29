@@ -1,4 +1,4 @@
-import { DetailedHTMLProps, HTMLAttributes } from "react";
+import { DetailedHTMLProps, HTMLAttributes } from "react"; 
 import { Interpolation } from "styled-components";
 import { Substitute } from "styled-components/dist/types";
 
@@ -162,8 +162,6 @@ export interface HeaderBlockSettings extends CommonSettings {
   imageHeight: string;
   imageRadius: string;
   itemColor: string;
-  itemFontSize: string;
-  itemFontWeight: string;
   itemHoverColor: string;
   backgroundColorNavbar: string;
   searchBarBorderColor: string;
@@ -182,6 +180,9 @@ export interface HeaderBlockSettings extends CommonSettings {
   categoryItemColor: string;
   categoryItemSize: string;
   categoryItemHoverColor: string;
+  mobileBackground: string;
+  megaMenuRadius: string;
+  bgRadius: string;
 }
 export interface HeaderBlock {
   imageLogo: string;
@@ -587,6 +588,12 @@ export interface FooterBlockSetting {
   logoRadius: string;
   backgroundColor: string;
   categoryBg: string;
+  bgRadius: string;
+  shadowColor?: string;
+  shadowSpread?: string;
+  shadowBlur?: string;
+  shadowOffsetY?: string;
+  shadowOffsetX?: string;
 }
 
 export interface FooterLink {
@@ -1013,6 +1020,12 @@ export interface ProductBlockSetting {
   btnBackgroundColor:string;
   btnTextColor:string;
   filterCardBg: string;
+  shadowColor?: string;
+  shadowSpread?: string;
+  shadowBlur?: string;
+  shadowOffsetY?: string;
+  shadowOffsetX?: string;
+  Radius?: string;
 }
 
 export interface ProductListSection {
@@ -1183,6 +1196,7 @@ export interface DetailPageSettings extends CommonSettings {
   priceFontSize: string;
   descriptionColor: string;
   descriptionFontSize: string;
+  descriptionFontWeight: string;
   btnBackgroundColor: string;
   btnTextColor: string;
   paddingTop: string;
@@ -1199,6 +1213,9 @@ export interface DetailPageSettings extends CommonSettings {
   propertyKeyColor: string;
   propertyValueColor: string;
   propertyBg: string;
+  Radius: string;
+  btnRadius: string;
+  propertyRadius: string;
 }
 
 export interface DetailPageSection {
@@ -1276,6 +1293,15 @@ export interface BlogListSetting {
   paddingRight: string;
   marginRight: string;
   marginLeft: string;
+  shadowColor?: string;
+  shadowSpread?: string;
+  shadowBlur?: string;
+  shadowOffsetY?: string;
+  shadowOffsetX?: string;
+  Radius?: string;
+  btnRadius?: string;
+  descriptionSize?: string;
+  titleSize?: string;
 }
 export interface BlogListFormProps {
   setUserInputData: React.Dispatch<React.SetStateAction<BlogSection>>;
@@ -1376,6 +1402,12 @@ export interface BlogDetailBlockSetting extends CommonSettings {
   sectionSpacing: string;
   metaColor: string;
   metaFontSize: string;
+  Radius: string;
+  shadowColor?: string;
+  shadowSpread?: string;
+  shadowBlur?: string;
+  shadowOffsetY?: string;
+  shadowOffsetX?: string;
 }
 
 export interface BlogDetailSection {

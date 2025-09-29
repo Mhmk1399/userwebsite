@@ -82,29 +82,22 @@
               }
             ]
           },
-          {
-            "name": "شگفت‌انگیزها",
-            "url": "/offers"
-          },
-          {
-            "name": "سوپرمارکت",
-            "url": "/supermarket"
-          },
+
           {
             "name": "پرفروش‌ترین‌ها",
             "url": "/best-sellers"
           },
           {
-            "name": "تخفیف‌ها و پیشنهادها",
-            "url": "/discounts"
+            "name": "ارتباط با ما",
+            "url": "/contact"
           },
           {
-            "name": "سوالی دارید؟",
+            "name": "سوالات متداول",
             "url": "/faq"
           },
           {
-            "name": "فروشنده شوید",
-            "url": "/become-seller"
+            "name": "درباره ما",
+            "url": "/about"
           }
         ],
         "setting": {
@@ -112,8 +105,6 @@
           "imageHeight": "60",
           "imageRadius": "30",
           "itemColor": "#6c757d",
-          "itemFontSize": "14",
-          "itemFontWeight": "normal",
           "itemHoverColor": "#e4e4e4",
           "backgroundColorNavbar": "#FCA311",
           "searchBarBorderColor": "#E5E7EB",
@@ -131,7 +122,15 @@
           "megaMenuBg": "#ffffff",
           "categoryItemColor": "ffffff",
           "categoryItemSize": "14",
-          "categoryItemHoverColor": "#000000"
+          "categoryItemHoverColor": "#000000",
+          "mobileBackground": "#fff",
+          "megaMenuRadius": "2",
+          "bgRadius": "2",
+          "shadowOffsetX": 0,
+          "shadowOffsetY": 8,
+          "shadowBlur": 20,
+          "shadowSpread": 2,
+          "shadowColor": "#e4e4e4"
         }
       },
       "setting": {
@@ -1194,6 +1193,24 @@
     "sectionFooter": {
       "type": "Footer",
       "blocks": {
+        "text": "سربرگ قسمت پایین سایت",
+        "description": "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد",
+        "instagramLink": "#",
+        "telegramLink": "#",
+        "whatsappLink": "#",
+        "textNumber": "با این شماره تماس بگیرید",
+        "phoneNumber": "09123456789",
+        "logo": "/assets/images/logo.webp",
+        "links": [
+          {
+            "url": "/privacy-policy",
+            "label": "Privacy Policy"
+          },
+          {
+            "url": "/terms-of-service",
+            "label": "Terms of Service"
+          }
+        ],
         "setting": {
           "textColor": "#000000",
           "textFontSize": "25",
@@ -1212,32 +1229,20 @@
           "logoWidth": "80",
           "logoHeight": "80",
           "logoRadius": "10",
-          "categoryBg": "#ffffff"
-        },
-        "text": "سربرگ قسمت پایین سایت",
-        "description": "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد",
-        "instagramLink": "#",
-        "telegramLink": "#",
-        "whatsappLink": "#",
-        "textNumber": "با این شماره تماس بگیرید",
-        "phoneNumber": "09123456789",
-        "logo": "/assets/images/logo.webp",
-        "links": [
-          {
-            "url": "/privacy-policy",
-            "label": "Privacy Policy"
-          },
-          {
-            "url": "/terms-of-service",
-            "label": "Terms of Service"
-          }
-        ]
+          "bgRadius": "10",
+          "categoryBg": "#ffffff",
+          "shadowOffsetX": 0,
+          "shadowOffsetY": 8,
+          "shadowBlur": 20,
+          "shadowSpread": 2,
+          "shadowColor": "#e4e4e4"
+        }
       },
       "setting": {
         "paddingTop": "30",
         "paddingBottom": "30",
         "marginTop": "20",
-        "marginBottom": "20",
+        "marginBottom": "0",
         "paddinRight": "0",
         "paddinLeft": "0",
         "backgroundColor": "#ffad8a"

@@ -1,6 +1,10 @@
 "use client";
 import styled from "styled-components";
-import { ProductSection, ProductCardData } from "@/lib/types";
+import {
+  ProductSection,
+  ProductCardData,
+  ProductBlockSetting,
+} from "@/lib/types";
 import ProductCard from "./productCard";
 import { useEffect, useState, useCallback } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -31,35 +35,33 @@ const FilterBgRow = styled.div<{ $data: ProductSection }>`
   top: px;
   right: 0;
   z-index: 20;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   direction: rtl;
 `;
 
-const FilteNameRow = styled.div<{ $data: ProductSection }>`
-  color: ${(props) => props.$data?.setting?.textColor || "#000"};
-  padding-top: 1px;
-  padding-right: ${(props) => props.$data?.setting?.paddingRight}px;
+const FilterNameRow = styled.div<{
+  $data: ProductBlockSetting;
+  $isMobile: boolean;
+}>`
+  color: ${(props) => props.$data?.filterNameColor};
+  font-size: ${(props) => (props.$isMobile ? "12" : "16")}px;
 `;
 
-const FilterCardBg = styled.div<{ $data: ProductSection }>`
-  background-color: ${(props) =>
-    props.$data?.setting?.filterCardBg || "#f3f4f6"};
+const FilterCardBg = styled.div<{
+  $data: ProductBlockSetting;
+  $isMobile: boolean;
+}>`
+  background-color: ${(props) => props.$data?.filterCardBg};
   border-radius: 10px;
-  height: fit-content;
-  box-shadow: 1px 1px 2px 2px rgba(0, 0, 0, 0.1);
-  margin-top: 7rem;
-
-  width: 280px;
-
+  width: 180px;
+  display: ${(props) => (props.$isMobile ? "none" : "block")};
   @media (max-width: 426px) {
     display: none;
   }
 `;
 
-const FilterBtn = styled.div<{ $data: ProductSection }>`
-  background-color: ${(props) =>
-    props.$data?.setting?.btnBackgroundColor || "#2563eb"};
-  color: ${(props) => props.$data?.setting?.btnTextColor || "white"};
+const FilterBtn = styled.div<{ $data: ProductBlockSetting }>`
+  background-color: ${(props) => props.$data?.filterButtonBg};
+  color: ${(props) => props.$data?.filterButtonTextColor};
   padding: 0.5rem 1rem;
   border-radius: 0.375rem;
   text-align: center;
@@ -79,6 +81,7 @@ const ColorBox = styled.div<ColorBoxProps>`
   cursor: pointer;
   border: 2px solid ${(props) => (props.$selected ? "#2563eb" : "transparent")};
   transition: all 0.2s ease;
+
   &:hover {
     transform: scale(1.1);
   }
@@ -95,28 +98,19 @@ const RangeSlider = styled.input`
   width: 100%;
   pointer-events: none;
   appearance: none;
-  height: 7px;
-  background: #ddd;
-  border-radius: 5px;
-  background-image: linear-gradient(#3b82f6, #3b82f6);
-  background-repeat: no-repeat;
+  height: 2px;
+  background: none;
 
   &::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    height: 20px;
-    width: 20px;
-    border-radius: 50%;
-    background: #3b82f6;
-    cursor: pointer;
-    box-shadow: 0 0 2px 0 #555;
     pointer-events: all;
-  }
-
-  &::-webkit-slider-runnable-track {
-    -webkit-appearance: none;
-    box-shadow: none;
-    border: none;
-    background: transparent;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #2563eb;
+    cursor: pointer;
+    appearance: none;
+    z-index: 3;
+    position: relative;
   }
 `;
 
@@ -126,35 +120,47 @@ const SectionProductList = styled.section<{
   $isMobile: boolean;
 }>`
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   overflow-x: auto;
-  width: 78%;
-  direction: ltr;
+  width: 100%;
+  direction: rtl;
   padding-top: ${(props) => props.$data?.setting?.paddingTop}px;
   padding-bottom: ${(props) => props.$data?.setting?.paddingBottom}px;
   padding-left: ${(props) => props.$data?.setting?.paddingLeft}px;
   padding-right: ${(props) => props.$data?.setting?.paddingRight}px;
   margin-top: ${(props) => props.$data?.setting?.marginTop}px;
   margin-bottom: ${(props) => props.$data?.setting?.marginBottom}px;
-  background-color: #ffffff;
+  margin-left: ${(props) => props.$data?.setting?.marginLeft}px;
+  margin-right: ${(props) => props.$data?.setting?.marginRight}px;
+  background-color: ${(props) => props.$data?.setting?.backgroundColor};
+  box-shadow: ${(props) =>
+    `${props.$data.setting?.shadowOffsetX || 0}px 
+     ${props.$data.setting?.shadowOffsetY || 4}px 
+     ${props.$data.setting?.shadowBlur || 10}px 
+     ${props.$data.setting?.shadowSpread || 0}px 
+     ${props.$data.setting?.shadowColor || "#fff"}`};
+  border-radius: ${(props) => props.$data.setting?.Radius || "10"}px;
 
   ${(props) =>
-    props.$previewWidth === "default" &&
+    !props.$isMobile &&
     `
     display: grid;
     grid-template-columns: repeat(${props.$data.setting?.gridColumns}, 1fr);
-    overflow-x: auto;
+    overflow-x: hidden;
   `}
 
   @media (max-width: 426px) {
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex-wrap: nowrap;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
-    justify-content: center;
-    width: 100%;
+
+    & > div {
+      flex: 0 0 auto;
+      width: 80%;
+      scroll-snap-align: start;
+    }
   }
 `;
 
@@ -245,15 +251,11 @@ const ProductList: React.FC<ProductListProps> = ({
     setFilteredProducts(sortedFiltered);
   }, [productData, selectedColors, selectedFilters, sortBy]);
 
-
-
-
   const searchParams = useSearchParams();
   const urlString = searchParams.toString();
   const categoryParam = decodeURIComponent(
     urlString.split("=")[1]?.replace(/\+/g, " ")
   );
-  
 
   const getCollection = async () => {
     const collectionId = pathname.split("/").pop();
@@ -283,9 +285,6 @@ const ProductList: React.FC<ProductListProps> = ({
 
     loadInitialData();
   }, [pathname]);
-
-
-  
 
   useEffect(() => {
     if (productData.length > 0) {
@@ -386,8 +385,8 @@ const ProductList: React.FC<ProductListProps> = ({
           <FiFilter size={20} />
         </button>
       )}
-      <div className=" gap-3 relative ">
-        <div className="flex-1 ">
+      <div className="gap-3 relative">
+        <div className="flex-1">
           {isMobileFilterOpen && (
             <div className="fixed inset-0 bg-black bg-opacity-50 z-50  flex items-center justify-center">
               <div
@@ -557,7 +556,8 @@ const ProductList: React.FC<ProductListProps> = ({
             </div>
           )}
           <FilterCardBg
-            $data={sectionData}
+            $isMobile={isMobile}
+            $data={sectionData.setting}
             className=" top-0 right-2 absolute  "
           >
             <div className="p-6">
@@ -702,7 +702,7 @@ const ProductList: React.FC<ProductListProps> = ({
                   </RangeSliderContainer>
                 </div>
 
-                <FilterBtn $data={sectionData} onClick={handleFilter}>
+                <FilterBtn $data={sectionData.setting} onClick={handleFilter}>
                   اعمال فیلتر
                 </FilterBtn>
               </div>
@@ -710,16 +710,18 @@ const ProductList: React.FC<ProductListProps> = ({
           </FilterCardBg>
           <FilterBgRow $data={sectionData}>
             <div className="flex w-[100%] items-center gap-4 lg:gap-6 p-4 border-b">
-              <FilteNameRow
-                $data={sectionData}
+              <FilterNameRow
+                $data={sectionData.setting}
+                $isMobile={isMobile}
                 className="opacity-70 font-semibold text-xs lg:text-lg"
               >
                 مرتب‌سازی بر اساس :
-              </FilteNameRow>
+              </FilterNameRow>
               <div className="flex gap-6">
                 {sortOptions.map((option) => (
-                  <FilteNameRow
-                    $data={sectionData}
+                  <FilterNameRow
+                    $data={sectionData.setting}
+                    $isMobile={isMobile}
                     key={option.value}
                     onClick={() =>
                       handleSortChange(
@@ -737,7 +739,7 @@ const ProductList: React.FC<ProductListProps> = ({
                     }`}
                   >
                     {option.label}
-                  </FilteNameRow>
+                  </FilterNameRow>
                 ))}
               </div>
             </div>
@@ -749,9 +751,14 @@ const ProductList: React.FC<ProductListProps> = ({
             $previewWidth="default"
             className="mt-20 min-h-[500px]"
           >
-            {(filteredProducts.length > 0 ? filteredProducts : productData).map((product) => ( 
-              <ProductCard key={product._id || product.id} productData={product} />
-            ))}
+            {(filteredProducts.length > 0 ? filteredProducts : productData).map(
+              (product) => (
+                <ProductCard
+                  key={product._id || product.id}
+                  productData={product}
+                />
+              )
+            )}
           </SectionProductList>
         </div>
       </div>

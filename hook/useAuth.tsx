@@ -15,18 +15,18 @@ export const useAuth = () => {
 
   const verifyToken = async (token: string) => {
     try {
-      console.log('Verifying token:', token?.substring(0, 20) + '...');
-      const response = await fetch('/api/auth/verify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token })
+      console.log("Verifying token:", token?.substring(0, 20) + "...");
+      const response = await fetch("/api/auth/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token }),
       });
-      
+
       const data = await response.json();
-      console.log('Token verification response:', data);
+      console.log("Token verification response:", data);
       return data.valid ? data.user : null;
     } catch (error) {
-      console.error('Token verification error:', error);
+      console.error("Token verification error:", error);
       return null;
     }
   };
@@ -34,22 +34,22 @@ export const useAuth = () => {
   useEffect(() => {
     const checkAuth = async () => {
       const token = localStorage.getItem("tokenUser");
-      console.log('Checking auth, token exists:', !!token);
-      
+      console.log("Checking auth, token exists:", !!token);
+
       if (token) {
         const userData = await verifyToken(token);
         if (userData) {
-          console.log('User authenticated:', userData);
+          console.log("User authenticated:", userData);
           setUser(userData);
         } else {
           // Token is invalid or expired
-          console.log('Token invalid, clearing');
+          console.log("Token invalid, clearing");
           localStorage.removeItem("tokenUser");
           localStorage.removeItem("userId");
           setUser(null);
         }
       } else {
-        console.log('No token found');
+        console.log("No token found");
         setUser(null);
       }
       setIsLoading(false);
@@ -61,15 +61,15 @@ export const useAuth = () => {
       checkAuth();
     };
 
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
   }, [router]);
 
   const logout = async () => {
     try {
-      await fetch('/api/auth/logout', { method: 'POST' });
+      await fetch("/api/auth/logout", { method: "POST" });
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error("Logout error:", error);
     } finally {
       localStorage.removeItem("tokenUser");
       localStorage.removeItem("userId");

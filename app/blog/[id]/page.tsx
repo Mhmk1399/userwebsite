@@ -244,6 +244,7 @@ const CoverImageContainer = styled.div<{
 `;
 
 // Internal component that uses the BlogDetailProps
+
 const BlogDetailContent: React.FC<BlogDetailProps & { blogId: string }> = ({
   isMobile,
   blogId,
