@@ -326,8 +326,8 @@ const ProductList: React.FC<ProductListProps> = ({
 
   const sortOptions = [
     { value: "newest", label: "جدیدترین" },
-    { value: "price-asc", label: "ارزان‌ترین" },
-    { value: "price-desc", label: "گران‌ترین" },
+    { value: "price-asc", label: "ارزانترین" },
+    { value: "price-desc", label: "گرانترین" },
     { value: "name", label: "نام محصول" },
   ];
   const pathname = usePathname();
@@ -692,7 +692,7 @@ const ProductList: React.FC<ProductListProps> = ({
                         }))
                       }
                     >
-                      <option value="">همه</option>
+                      <option value="">همه دستهبندیها</option>
                       {categories.map((category) => (
                         <option key={category._id} value={category.name}>
                           {category.name}
@@ -708,7 +708,7 @@ const ProductList: React.FC<ProductListProps> = ({
                       onClick={() => setShowColorModal(true)}
                       className="w-full px-4 py-3 bg-gray-100 rounded-lg hover:bg-gray-200 flex items-center justify-between text-base transition-colors"
                     >
-                      انتخاب رنگ
+                      <span>انتخاب رنگ</span>
                       {selectedColors.length > 0 && (
                         <span className="bg-blue-500 text-white rounded-full px-3 py-1 text-sm">
                           {selectedColors.length}
@@ -773,7 +773,7 @@ const ProductList: React.FC<ProductListProps> = ({
                 ))}
               </SortContainer>
             </div>
-          </FilterBgRow>
+          </div>
 
           <SectionProductList
             $data={sectionData}
