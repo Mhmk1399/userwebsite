@@ -31,7 +31,7 @@ const StoryContainer = styled.div<{
   background-color: ${(props) =>
     props.$data.setting?.backgroundColor || "#ffffff"};
      box-shadow: ${(props) =>
-    `${props.$data.blocks.setting.shadowOffsetX || 0}px 
+       `${props.$data.blocks.setting.shadowOffsetX || 0}px 
      ${props.$data.blocks.setting.shadowOffsetY || 4}px 
      ${props.$data.blocks.setting.shadowBlur || 10}px 
      ${props.$data.blocks.setting.shadowSpread || 0}px 
@@ -306,14 +306,14 @@ export const Story: React.FC<StoryProps> = ({ sections, componentName }) => {
       <AnimatePresence>
         {selectedStory && (
           <motion.div
-            className="fixed w-full inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm "
+            className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setSelectedStory(null)}
           >
             <motion.div
-              className="relative w-full max-w-lg "
+              className="relative w-full max-w-[70vw] mr-12 lg:mr-0 sm:max-w-[70vw] md:max-w-[50vw] lg:max-w-[40vw] xl:max-w-[30vw]"
               initial={{ scale: 0.8, y: 100 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.8, y: 100 }}
@@ -321,7 +321,7 @@ export const Story: React.FC<StoryProps> = ({ sections, componentName }) => {
               onClick={(e) => e.stopPropagation()}
             >
               <button
-                className="absolute -top-20 right-3 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white/20 backdrop-blur-sm text-white text-2xl hover:bg-white/30 transition-all"
+                className="absolute -top-12 right-0 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white/20 backdrop-blur-sm text-white text-2xl hover:bg-white/30 transition-all"
                 onClick={() => setSelectedStory(null)}
               >
                 ×
@@ -330,7 +330,6 @@ export const Story: React.FC<StoryProps> = ({ sections, componentName }) => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
-                className="w-full h-full"
               >
                 <Image
                   src={selectedStory}

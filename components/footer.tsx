@@ -219,16 +219,24 @@ const ChildCategoryLink = styled(Link)<{
 `;
 const CategorySection = styled.div`
   display: flex;
-  flex-col;
-  gap: 6px;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+`;
+
+const ParentContainer = styled.div`
+  width: 100%;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #e9ecef;
+  margin-bottom: 8px;
 `;
 
 const ChildrenContainer = styled.div`
   display: flex;
-  flex-col;
-  gap: 2px;
-  padding-right: 8px;
-  border-right: 2px solid #f3f4f6;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  align-items: center;
 `;
 
 const SocialLinkItem = styled(Link)`
@@ -429,12 +437,14 @@ const Footer: React.FC<FooterProps> = ({ footerData }) => {
             )
             .map((category) => (
               <CategorySection key={category._id}>
-                <ParentCategoryLink
-                  href={`/store?categoryId=${category._id}`}
-                  $data={sectionData}
-                >
-                  {category.name}
-                </ParentCategoryLink>
+                <ParentContainer>
+                  <ParentCategoryLink
+                    href={`/store?categoryId=${category._id}`}
+                    $data={sectionData}
+                  >
+                    {category.name}
+                  </ParentCategoryLink>
+                </ParentContainer>
 
                 <ChildrenContainer>
                   {category.children.map((child) => (

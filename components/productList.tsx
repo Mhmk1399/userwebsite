@@ -7,10 +7,10 @@ import {
 } from "@/lib/types";
 import ProductCard from "./productCard";
 import { useEffect, useState, useCallback } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import React from "react";
 import { FiFilter } from "react-icons/fi";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 
 interface ProductListProps {
   sections: ProductSection[];
@@ -30,11 +30,10 @@ interface ColorBoxProps {
 const FilterBgRow = styled.div<{ $data: ProductSection }>`
   background-color: ${(props) =>
     props.$data?.setting?.filterCardBg || "#f3f4f6"};
-  position: absolute;
+  position: sticky;
+  top: 0;
   min-width: 100%;
-  top: px;
-  right: 0;
-  z-index: 20;
+  z-index: 30;
   direction: rtl;
 `;
 
@@ -50,67 +49,100 @@ const FilterCardBg = styled.div<{
   $data: ProductBlockSetting;
   $isMobile: boolean;
 }>`
-  background-color: ${(props) => props.$data?.filterCardBg};
-  border-radius: 10px;
-  width: 180px;
+  background-color: ${(props) => props.$data?.filterCardBg || "#ffffff"};
+  border-radius: 12px;
+  width: 356px;
   display: ${(props) => (props.$isMobile ? "none" : "block")};
-  @media (max-width: 426px) {
+  position: sticky;
+  top: 80px;
+  height: fit-content;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  @media (max-width: 1024px) {
     display: none;
   }
 `;
 
 const FilterBtn = styled.div<{ $data: ProductBlockSetting }>`
-  background-color: ${(props) => props.$data?.filterButtonBg};
-  color: ${(props) => props.$data?.filterButtonTextColor};
-  padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
+  background-color: ${(props) => props.$data?.filterButtonBg || "#2563eb"};
+  color: ${(props) => props.$data?.filterButtonTextColor || "#ffffff"};
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
   text-align: center;
   cursor: pointer;
   transition: opacity 0.2s;
+  font-size: 16px;
+  font-weight: 500;
 
   &:hover {
-    opacity: 0.8;
+    opacity: 0.9;
   }
 `;
 
 const ColorBox = styled.div<ColorBoxProps>`
-  width: 30px;
-  height: 30px;
-  border-radius: 4px;
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
   background-color: ${(props) => props.$color};
   cursor: pointer;
   border: 2px solid ${(props) => (props.$selected ? "#2563eb" : "transparent")};
   transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
   &:hover {
     transform: scale(1.1);
   }
+
+  @media (max-width: 768px) {
+    width: 32px;
+    height: 32px;
+  }
 `;
 
-const RangeSliderContainer = styled.div`
-  position: relative;
-  width: 100%;
-  height: 40px;
+const PriceInputContainer = styled.div`
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  justify-content: space-between;
 `;
 
-const RangeSlider = styled.input`
-  position: absolute;
-  width: 100%;
-  pointer-events: none;
-  appearance: none;
-  height: 2px;
-  background: none;
+const PriceInput = styled.input`
+  flex: 1;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  text-align: center;
+  font-size: 0.875rem;
+  transition: all 0.2s;
 
-  &::-webkit-slider-thumb {
-    pointer-events: all;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: #2563eb;
-    cursor: pointer;
-    appearance: none;
-    z-index: 3;
-    position: relative;
+  &:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  }
+
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+`;
+
+const ApplyButton = styled.button`
+  width: 100%;
+  padding: 0.75rem;
+  margin-top: 1rem;
+  background-color: #2563eb;
+  color: white;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: #1d4ed8;
+  }
+
+  &:active {
+    transform: scale(0.98);
   }
 `;
 
@@ -120,48 +152,158 @@ const SectionProductList = styled.section<{
   $isMobile: boolean;
 }>`
   display: flex;
-  flex-wrap: nowrap;
-  overflow-x: auto;
+  flex-wrap: wrap;
+  overflow-x: hidden;
+  overflow-y: auto;
   width: 100%;
   direction: rtl;
-  padding-top: ${(props) => props.$data?.setting?.paddingTop}px;
-  padding-bottom: ${(props) => props.$data?.setting?.paddingBottom}px;
-  padding-left: ${(props) => props.$data?.setting?.paddingLeft}px;
-  padding-right: ${(props) => props.$data?.setting?.paddingRight}px;
-  margin-top: ${(props) => props.$data?.setting?.marginTop}px;
-  margin-bottom: ${(props) => props.$data?.setting?.marginBottom}px;
-  margin-left: ${(props) => props.$data?.setting?.marginLeft}px;
-  margin-right: ${(props) => props.$data?.setting?.marginRight}px;
-  background-color: ${(props) => props.$data?.setting?.backgroundColor};
+  padding: 2rem;
+  margin-top: ${(props) => props.$data?.setting?.marginTop || 0}px;
+  margin-bottom: ${(props) => props.$data?.setting?.marginBottom || 0}px;
+  margin-left: ${(props) => props.$data?.setting?.marginLeft || 0}px;
+  margin-right: ${(props) => props.$data?.setting?.marginRight || 0}px;
+  background-color: ${(props) =>
+    props.$data?.setting?.backgroundColor || "#ffffff"};
   box-shadow: ${(props) =>
-    `${props.$data.setting?.shadowOffsetX || 0}px 
-     ${props.$data.setting?.shadowOffsetY || 4}px 
-     ${props.$data.setting?.shadowBlur || 10}px 
-     ${props.$data.setting?.shadowSpread || 0}px 
-     ${props.$data.setting?.shadowColor || "#fff"}`};
-  border-radius: ${(props) => props.$data.setting?.Radius || "10"}px;
+    `${props.$data.setting?.shadowOffsetX || 0}px
+     ${props.$data.setting?.shadowOffsetY || 4}px
+     ${props.$data.setting?.shadowBlur || 10}px
+     ${props.$data.setting?.shadowSpread || 0}px
+     ${props.$data.setting?.shadowColor || "rgba(0,0,0,0.05)"}`};
+  border-radius: ${(props) => props.$data.setting?.Radius || "12"}px;
+  gap: 2rem;
 
   ${(props) =>
     !props.$isMobile &&
     `
     display: grid;
-    grid-template-columns: repeat(${props.$data.setting?.gridColumns}, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     overflow-x: hidden;
+    gap: 2rem;
+    padding: 2rem;
   `}
 
-  @media (max-width: 426px) {
+  @media (max-width: 1024px) and (min-width: 769px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    padding: 1.5rem;
+  }
+
+  @media (max-width: 768px) {
     display: flex;
     flex-wrap: nowrap;
     overflow-x: auto;
+    overflow-y: hidden;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
+    padding: 1rem;
+    gap: 1rem;
 
     & > div {
-      flex: 0 0 auto;
-      width: 80%;
+      flex: 0 0 85%;
       scroll-snap-align: start;
+      min-width: 280px;
+      max-width: 320px;
     }
   }
+
+  @media (max-width: 426px) {
+    padding: 0.75rem;
+    gap: 0.75rem;
+
+    & > div {
+      flex: 0 0 90%;
+      min-width: 240px;
+      max-width: 280px;
+    }
+  }
+`;
+
+const MobileFilterModal = styled.div`
+  background-color: #ffffff;
+  border-radius: 16px 16px 0 0;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 1.5rem;
+  position: relative;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 426px) {
+    padding: 1rem;
+  }
+`;
+
+const SortContainer = styled.div<{ $isMobile: boolean }>`
+  display: flex;
+  gap: ${(props) => (props.$isMobile ? "0.5rem" : "2rem")};
+  overflow-x: ${(props) => (props.$isMobile ? "auto" : "visible")};
+  padding: ${(props) => (props.$isMobile ? "0.25rem 0" : "0")};
+  scrollbar-width: thin;
+  scrollbar-color: #e5e7eb transparent;
+
+  &::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #e5e7eb;
+    border-radius: 2px;
+  }
+
+  @media (min-width: 769px) {
+    overflow-x: visible;
+  }
+`;
+
+const SortOption = styled.div<{
+  $data: ProductBlockSetting;
+  $isMobile: boolean;
+  $active: boolean;
+}>`
+  color: ${(props) => props.$data?.filterNameColor || "#000"};
+  font-size: ${(props) => (props.$isMobile ? "11px" : "14px")};
+  padding: ${(props) => (props.$isMobile ? "0.25rem 0.5rem" : "0.5rem 1rem")};
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  border-radius: 4px;
+
+  ${(props) =>
+    props.$active
+      ? `
+        color: #2563eb;
+        font-weight: 800;
+        background-color: rgba(37, 99, 235, 0.1);
+      `
+      : `
+        &:hover {
+          color: #2563eb;
+          background-color: rgba(37, 99, 235, 0.05);
+        }
+      `}
+`;
+
+const ColorModal = styled.div`
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+`;
+
+const ColorModalContent = styled.div`
+  background-color: white;
+  border-radius: 1rem;
+  width: 100%;
+  max-width: 28rem;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 1.5rem;
 `;
 
 const ProductList: React.FC<ProductListProps> = ({
@@ -170,9 +312,6 @@ const ProductList: React.FC<ProductListProps> = ({
   componentName,
 }) => {
   const [productData, setProductData] = useState<ProductCardData[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<ProductCardData[]>(
-    []
-  );
   const [categories, setCategories] = useState<CategoryWithChildren[]>([]);
   const [sortBy, setSortBy] = useState<
     "newest" | "price-asc" | "price-desc" | "name"
@@ -180,9 +319,10 @@ const ProductList: React.FC<ProductListProps> = ({
   const [colors, setColors] = useState<string[]>([]);
   const [showColorModal, setShowColorModal] = useState(false);
   const [selectedColors, setSelectedColors] = useState<string[]>([]);
-  const [priceRange, setPriceRange] = useState({ min: 0, max: 0 });
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const sortOptions = [
     { value: "newest", label: "جدیدترین" },
@@ -191,71 +331,17 @@ const ProductList: React.FC<ProductListProps> = ({
     { value: "name", label: "نام محصول" },
   ];
   const pathname = usePathname();
-  // console.log(pathname.split("/")[2]);
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [selectedFilters, setSelectedFilters] = useState({
     category: "",
-    priceMin: 1000,
-    priceMax: 1000000000,
+    priceMin: "",
+    priceMax: "",
   });
-  const getSortedProducts = (products: ProductCardData[]) => {
-    switch (sortBy) {
-      case "newest":
-        return [...products].sort(
-          (a, b) =>
-            new Date(b?.createdAt || 0).getTime() -
-            new Date(a?.createdAt || 0).getTime()
-        );
-      case "price-asc":
-        return [...products].sort(
-          (a, b) => parseInt(a.price) - parseInt(b.price)
-        );
-      case "price-desc":
-        return [...products].sort(
-          (a, b) => parseInt(b.price) - parseInt(a.price)
-        );
-      case "name":
-        return [...products].sort((a, b) => a.name.localeCompare(b.name));
-      default:
-        return products;
-    }
-  };
 
-  const handleFilter = useCallback(() => {
-    let filtered = [...productData];
-
-    // Category filter
-    if (selectedFilters.category) {
-      filtered = filtered.filter(
-        (product) => product.category?.name === selectedFilters.category
-      );
-    }
-
-    // Color filter
-    if (selectedColors.length > 0) {
-      filtered = filtered.filter((product) =>
-        product.colors?.some((color) => selectedColors.includes(color.code))
-      );
-    }
-
-    // Price filter
-    filtered = filtered.filter((product) => {
-      const price = parseInt(product.price);
-      return (
-        price >= selectedFilters.priceMin && price <= selectedFilters.priceMax
-      );
-    });
-
-    // Apply current sorting
-    const sortedFiltered = getSortedProducts(filtered);
-
-    setFilteredProducts(sortedFiltered);
-  }, [productData, selectedColors, selectedFilters, sortBy]);
-
-  const searchParams = useSearchParams();
-  const urlString = searchParams.toString();
-  const categoryParam = decodeURIComponent(
-    urlString.split("=")[1]?.replace(/\+/g, " ")
-  );
+  // Temporary price inputs for better UX
+  const [tempPriceMin, setTempPriceMin] = useState("");
+  const [tempPriceMax, setTempPriceMax] = useState("");
 
   const getCollection = async () => {
     const collectionId = pathname.split("/").pop();
@@ -265,36 +351,47 @@ const ProductList: React.FC<ProductListProps> = ({
     const data = await response.json();
     setProductData(data.products);
   };
+
+  const loadInitialData = useCallback(async () => {
+    setLoading(true);
+    const sp = Object.fromEntries(searchParams.entries());
+    setSelectedFilters({
+      category: sp.category || "",
+      priceMin: sp.priceMin || "",
+      priceMax: sp.priceMax || "",
+    });
+    setTempPriceMin(sp.priceMin || "");
+    setTempPriceMax(sp.priceMax || "");
+    setSelectedColors(sp.colors ? sp.colors.split(",") : []);
+    setSortBy((sp.sortBy || "newest") as any);
+    setCurrentPage(parseInt(sp.page || "1"));
+
+    const isStoreRoute = pathname.split("/")[1] === "store";
+    if (isStoreRoute) {
+      await fetchProducts(currentPage);
+    } else {
+      await getCollection();
+    }
+    setLoading(false);
+  }, [searchParams, pathname, currentPage]);
+
+  useEffect(() => {
+    loadInitialData();
+  }, [loadInitialData]);
+
   useEffect(() => {
     if (pathname.split("/")[1] === "store") {
-      fetchProducts();
-    } else {
-      getCollection();
+      setCurrentPage(1);
+      fetchProducts(1);
     }
-  }, [categoryParam]);
+  }, [selectedFilters, selectedColors, sortBy, pathname]);
 
   useEffect(() => {
-    const loadInitialData = async () => {
-      const isStoreRoute = pathname.split("/")[1] === "store";
-      if (isStoreRoute) {
-        await fetchProducts();
-      } else {
-        await getCollection();
-      }
-    };
-
-    loadInitialData();
-  }, [pathname]);
-
-  useEffect(() => {
-    if (productData.length > 0) {
-      const prices = productData.map((product) => parseInt(product.price));
-      setPriceRange({
-        min: Math.min(...prices),
-        max: Math.max(...prices),
-      });
+    if (pathname.split("/")[1] === "store") {
+      fetchProducts(currentPage);
     }
-  }, [productData]);
+  }, [currentPage, pathname]);
+
   useEffect(() => {
     if (productData.length > 0) {
       const allColors = [
@@ -313,43 +410,107 @@ const ProductList: React.FC<ProductListProps> = ({
       const response = await fetch("/api/category");
       const data = await response.json();
       setCategories(data);
-      setLoading(false);
     };
     fetchCategories();
   }, []);
 
-  const fetchProducts = async () => {
+  const fetchProducts = async (page = 1) => {
+    setLoading(true);
     try {
-      const response = await fetch("/api/store");
+      const categoryId = searchParams.get("categoryId");
+      const params = new URLSearchParams();
+      if (categoryId) params.append("categoryId", categoryId);
+      if (selectedFilters.category)
+        params.append("category", selectedFilters.category);
+      if (selectedColors.length > 0)
+        params.append("colors", selectedColors.join(","));
+      if (selectedFilters.priceMin)
+        params.append("priceMin", selectedFilters.priceMin);
+      if (selectedFilters.priceMax)
+        params.append("priceMax", selectedFilters.priceMax);
+      params.append("sortBy", sortBy);
 
+      params.append("page", page.toString());
+      params.append("limit", "10");
+
+      const response = await fetch(`/api/store?${params.toString()}`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-
       const data = await response.json();
       if (data?.products) {
         setProductData(data.products);
-        setLoading(false);
+        setTotalPages(data.totalPages);
+        setCurrentPage(page);
       }
     } catch (error) {
       console.error("Error fetching products:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Initialize filtered products when productData changes
   useEffect(() => {
-    if (productData.length > 0) {
-      setFilteredProducts(productData);
-      handleFilter();
+    const params = new URLSearchParams(searchParams.toString());
+    // Preserve categoryId
+    const categoryId = searchParams.get("categoryId");
+    if (categoryId) {
+      params.set("categoryId", categoryId);
+    } else {
+      params.delete("categoryId");
     }
-  }, [productData, handleFilter]);
 
-  // Apply filters when filter criteria change
-  useEffect(() => {
-    if (productData.length > 0) {
-      handleFilter();
+    // Category
+    if (selectedFilters.category) {
+      params.set("category", selectedFilters.category);
+    } else {
+      params.delete("category");
     }
-  }, [selectedFilters, sortBy, selectedColors, handleFilter]);
+
+    // Colors
+    if (selectedColors.length > 0) {
+      params.set("colors", selectedColors.join(","));
+    } else {
+      params.delete("colors");
+    }
+
+    // Price
+    if (selectedFilters.priceMin) {
+      params.set("priceMin", selectedFilters.priceMin);
+    } else {
+      params.delete("priceMin");
+    }
+
+    if (selectedFilters.priceMax) {
+      params.set("priceMax", selectedFilters.priceMax);
+    } else {
+      params.delete("priceMax");
+    }
+
+    // Sort
+    if (sortBy !== "newest") {
+      params.set("sortBy", sortBy);
+    } else {
+      params.delete("sortBy");
+    }
+
+    // Page
+    if (currentPage > 1) {
+      params.set("page", currentPage.toString());
+    } else {
+      params.delete("page");
+    }
+
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  }, [
+    selectedFilters,
+    selectedColors,
+    sortBy,
+    currentPage,
+    pathname,
+    router,
+    searchParams,
+  ]);
 
   const sectionData = sections.find(
     (section) => section.type === componentName
@@ -362,53 +523,168 @@ const ProductList: React.FC<ProductListProps> = ({
   ) => {
     setSortBy(value);
   };
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="flex flex-row gap-2">
-          <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce"></div>
-          <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce [animation-delay:-.3s]"></div>
-          <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce [animation-delay:-.5s]"></div>
+
+  const resetFilters = () => {
+    setSelectedFilters({
+      category: "",
+      priceMin: "",
+      priceMax: "",
+    });
+    setTempPriceMin("");
+    setTempPriceMax("");
+    setSelectedColors([]);
+    setSortBy("newest" as const);
+    setCurrentPage(1);
+  };
+
+  const applyPriceFilter = () => {
+    // Validate inputs
+    const min = tempPriceMin ? parseInt(tempPriceMin) : 0;
+    const max = tempPriceMax ? parseInt(tempPriceMax) : 0;
+
+    // Only apply if valid
+    if (tempPriceMax && min > max) {
+      toast.error("قیمت حداقل نمی‌تواند از قیمت حداکثر بیشتر باشد");
+      return;
+    }
+
+    setSelectedFilters((prev) => ({
+      ...prev,
+      priceMin: tempPriceMin,
+      priceMax: tempPriceMax,
+    }));
+  };
+
+  const handlePriceKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      applyPriceFilter();
+    }
+  };
+
+  const renderPriceFilter = () => (
+    <div className="price-filter-container">
+      <h3 className="text-lg font-bold text-gray-800 pb-3">فیلتر قیمت</h3>
+      <PriceInputContainer>
+        <div className="flex flex-col items-center flex-1">
+          <label className="text-sm font-medium text-gray-700 mb-1">
+            از (تومان)
+          </label>
+          <PriceInput
+            type="number"
+            placeholder="0"
+            value={tempPriceMin}
+            onChange={(e) => setTempPriceMin(e.target.value)}
+            onKeyPress={handlePriceKeyPress}
+          />
         </div>
-      </div>
-    );
-  }
+        <div className="flex flex-col items-center flex-1">
+          <label className="text-sm font-medium text-gray-700 mb-1">
+            تا (تومان)
+          </label>
+          <PriceInput
+            type="number"
+            placeholder="بدون محدودیت"
+            value={tempPriceMax}
+            onChange={(e) => setTempPriceMax(e.target.value)}
+            onKeyPress={handlePriceKeyPress}
+          />
+        </div>
+      </PriceInputContainer>
+      <ApplyButton onClick={applyPriceFilter}>اعمال فیلتر قیمت</ApplyButton>
+    </div>
+  );
 
   return (
     <>
-      <Toaster position="top-right" />
-      {!isMobile && (
+      {isMobile && (
         <button
-          className="bg-blue-500 text-black p-2 rounded absolute top-[70px]  right-4 z-50 shadow-md lg:hidden"
+          className="bg-blue-500 text-white p-3 rounded-full fixed bottom-6 right-6 z-50 shadow-lg hover:bg-blue-600 transition-colors"
           onClick={() => setIsMobileFilterOpen(true)}
         >
           <FiFilter size={20} />
         </button>
       )}
-      <div className="gap-3 relative">
-        <div className="flex-1">
+      <div className="flex flex-row-reverse gap-8 relative mx-auto px-4   ">
+        <FilterCardBg
+          $isMobile={isMobile}
+          $data={sectionData.setting}
+          className="w-full hidden lg:block"
+        >
+          <div className="p-2 text-right">
+            <div className="grid gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  دسته‌بندی
+                </label>
+                <select
+                  className="w-full border border-gray-300 rounded-lg p-3 text-right text-base"
+                  value={selectedFilters.category}
+                  onChange={(e) =>
+                    setSelectedFilters((prev) => ({
+                      ...prev,
+                      category: e.target.value,
+                    }))
+                  }
+                >
+                  <option value="">همه</option>
+                  {categories.map((category) => (
+                    <option key={category._id} value={category.name}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  رنگ‌ها
+                </label>
+                <button
+                  onClick={() => setShowColorModal(true)}
+                  className="w-full px-4 py-3 bg-gray-100 text-right rounded-lg hover:bg-gray-200 flex flex-row-reverse items-center justify-between text-base transition-colors"
+                >
+                  انتخاب رنگ
+                  {selectedColors.length > 0 && (
+                    <span className="bg-blue-500 text-white text-right rounded-full px-3 py-1 text-sm">
+                      {selectedColors.length}
+                    </span>
+                  )}
+                </button>
+              </div>
+
+              {renderPriceFilter()}
+
+              <div className="flex gap-3">
+                <button
+                  onClick={resetFilters}
+                  className="flex-1 px-4 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors text-base font-medium"
+                >
+                  بازنشانی
+                </button>
+              </div>
+            </div>
+          </div>
+        </FilterCardBg>
+        <div className="flex-1 relative">
           {isMobileFilterOpen && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 z-50  flex items-center justify-center">
-              <div
-                className="bg-white/60 backdrop-blur-sm border p-6 mx-10 rounded-lg min-w-[80%] overflow-x-hidden"
-                dir="rtl"
-              >
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-lg font-bold">فیلترها</h3>
+            <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end justify-center md:hidden">
+              <MobileFilterModal dir="rtl">
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="text-2xl font-bold text-gray-800">فیلترها</h3>
                   <button
                     onClick={() => setIsMobileFilterOpen(false)}
-                    className="text-gray-500 hover:text-gray-700"
+                    className="text-gray-600 hover:text-gray-800 text-2xl"
                   >
                     ✕
                   </button>
                 </div>
-                <div className="grid grid-cols-1 gap-4">
+                <div className="grid grid-cols-1 gap-6 pb-24">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-base font-medium text-gray-800 mb-2">
                       دسته‌بندی
                     </label>
                     <select
-                      className="w-full border rounded-md p-2"
+                      className="w-full border border-gray-300 rounded-lg p-3 text-base bg-white"
+                      value={selectedFilters.category}
                       onChange={(e) =>
                         setSelectedFilters((prev) => ({
                           ...prev,
@@ -425,303 +701,62 @@ const ProductList: React.FC<ProductListProps> = ({
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-base font-medium text-gray-800 mb-2">
                       رنگ‌ها
                     </label>
                     <button
                       onClick={() => setShowColorModal(true)}
-                      className="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200 flex items-center gap-2"
+                      className="w-full px-4 py-3 bg-gray-100 rounded-lg hover:bg-gray-200 flex items-center justify-between text-base transition-colors"
                     >
                       انتخاب رنگ
                       {selectedColors.length > 0 && (
-                        <span className="bg-blue-500 text-white rounded-full px-2 py-0.5 text-sm">
+                        <span className="bg-blue-500 text-white rounded-full px-3 py-1 text-sm">
                           {selectedColors.length}
                         </span>
                       )}
                     </button>
                   </div>
 
-                  {showColorModal && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-                      <div className="bg-white p-6 rounded-lg w-96 max-h-[80vh] overflow-y-auto">
-                        <div className="flex justify-between items-center mb-4">
-                          <h3 className="text-lg font-bold">انتخاب رنگ‌ها</h3>
-                          <button
-                            onClick={() => setShowColorModal(false)}
-                            className="text-gray-500 hover:text-gray-700"
-                          >
-                            ✕
-                          </button>
-                        </div>
-
-                        <div>
-                          <div className="flex gap-2 flex-wrap">
-                            {colors.map((colorCode, i) => (
-                              <div
-                                key={i}
-                                onClick={() => {
-                                  setSelectedColors((prev) =>
-                                    prev.includes(colorCode)
-                                      ? prev.filter((c) => c !== colorCode)
-                                      : [...prev, colorCode]
-                                  );
-                                }}
-                                className="flex flex-col items-center gap-1"
-                              >
-                                <ColorBox
-                                  $color={colorCode}
-                                  $selected={selectedColors.includes(colorCode)}
-                                  style={{ backgroundColor: colorCode }}
-                                  className="w-12 h-12"
-                                />
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div className="mt-4 flex justify-end gap-2">
-                          <button
-                            onClick={() => {
-                              setSelectedColors([]);
-                            }}
-                            className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded"
-                          >
-                            پاک کردن
-                          </button>
-                          <button
-                            onClick={() => {
-                              handleFilter();
-                              setShowColorModal(false);
-                            }}
-                            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                          >
-                            تایید
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="price-range-container">
-                    <h3 className="text-lg pb-2">فیلتر قیمت</h3>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      قیمت از: {selectedFilters.priceMin.toLocaleString()} تا:{" "}
-                      {selectedFilters.priceMax.toLocaleString()} تومان
-                    </label>
-
-                    <RangeSliderContainer>
-                      <RangeSlider
-                        type="range"
-                        min={priceRange.min}
-                        max={priceRange.max}
-                        value={selectedFilters.priceMin}
-                        onChange={(e) =>
-                          setSelectedFilters((prev) => ({
-                            ...prev,
-                            priceMin: Math.min(
-                              parseInt(e.target.value),
-                              selectedFilters.priceMax
-                            ),
-                          }))
-                        }
-                      />
-                      <RangeSlider
-                        type="range"
-                        min={priceRange.min}
-                        max={priceRange.max}
-                        value={selectedFilters.priceMax}
-                        onChange={(e) =>
-                          setSelectedFilters((prev) => ({
-                            ...prev,
-                            priceMax: Math.max(
-                              parseInt(e.target.value),
-                              selectedFilters.priceMin
-                            ),
-                          }))
-                        }
-                      />
-                    </RangeSliderContainer>
-                  </div>
-                  <button
-                    onClick={() => {
-                      handleFilter();
-                      setIsMobileFilterOpen(false);
-                    }}
-                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                  >
-                    اعمال فیلتر
-                  </button>
+                  {renderPriceFilter()}
                 </div>
-              </div>
+                <div className="fixed bottom-0 left-0 right-0 bg-white p-4 shadow-lg rounded-t-2xl z-50">
+                  <div className="flex gap-4 max-w-md mx-auto">
+                    <button
+                      onClick={() => {
+                        resetFilters();
+                      }}
+                      className="flex-1 px-4 sm:px-6 py-3 text-gray-800 bg-gray-100 rounded-lg hover:bg-gray-200 text-base font-medium transition-colors"
+                    >
+                      بازنشانی
+                    </button>
+                    <button
+                      onClick={() => {
+                        setIsMobileFilterOpen(false);
+                      }}
+                      className="flex-1 px-4 sm:px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-base font-medium transition-colors"
+                    >
+                      بستن
+                    </button>
+                  </div>
+                </div>
+              </MobileFilterModal>
             </div>
           )}
-          <FilterCardBg
-            $isMobile={isMobile}
-            $data={sectionData.setting}
-            className=" top-0 right-2 absolute  "
-          >
-            <div className="p-6">
-              <div className="grid gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    دسته‌بندی
-                  </label>
-                  <select
-                    className="w-full border rounded-md p-2"
-                    onChange={(e) =>
-                      setSelectedFilters((prev) => ({
-                        ...prev,
-                        category: e.target.value,
-                      }))
-                    }
-                  >
-                    <option value="">همه</option>
-                    {categories.map((category) => (
-                      <option key={category._id} value={category.name}>
-                        {category.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    رنگ‌ها
-                  </label>
-                  <button
-                    onClick={() => setShowColorModal(true)}
-                    className="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200 flex items-center gap-2"
-                  >
-                    انتخاب رنگ
-                    {selectedColors.length > 0 && (
-                      <span className="bg-blue-500 text-white rounded-full px-2 py-0.5 text-sm">
-                        {selectedColors.length}
-                      </span>
-                    )}
-                  </button>
-                </div>
-
-                {showColorModal && (
-                  <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-                    <div className="bg-white p-6 rounded-lg w-96 max-h-[80vh] overflow-y-auto">
-                      <div className="flex justify-between items-center mb-4">
-                        <h3 className="text-lg font-bold">انتخاب رنگ‌ها</h3>
-                        <button
-                          onClick={() => setShowColorModal(false)}
-                          className="text-gray-500 hover:text-gray-700"
-                        >
-                          ✕
-                        </button>
-                      </div>
-
-                      <div>
-                        <div className="flex gap-2 flex-wrap">
-                          {colors.map((colorCode, i) => (
-                            <div
-                              key={i}
-                              onClick={() => {
-                                setSelectedColors((prev) =>
-                                  prev.includes(colorCode)
-                                    ? prev.filter((c) => c !== colorCode)
-                                    : [...prev, colorCode]
-                                );
-                              }}
-                              className="flex flex-col items-center gap-1"
-                            >
-                              <ColorBox
-                                $color={colorCode}
-                                $selected={selectedColors.includes(colorCode)}
-                                style={{ backgroundColor: colorCode }}
-                                className="w-12 h-12"
-                              />
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="mt-4 flex justify-end gap-2">
-                        <button
-                          onClick={() => {
-                            setSelectedColors([]);
-                          }}
-                          className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded"
-                        >
-                          پاک کردن
-                        </button>
-                        <button
-                          onClick={() => {
-                            handleFilter();
-                            setShowColorModal(false);
-                          }}
-                          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                        >
-                          تایید
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                <div className="price-range-container">
-                  <h3 className="text-lg pb-2">فیلتر قیمت</h3>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    قیمت از: {selectedFilters.priceMin.toLocaleString()} تا:{" "}
-                    {selectedFilters.priceMax.toLocaleString()} تومان
-                  </label>
-
-                  <RangeSliderContainer>
-                    <RangeSlider
-                      type="range"
-                      min={priceRange.min}
-                      max={priceRange.max}
-                      value={selectedFilters.priceMin}
-                      onChange={(e) =>
-                        setSelectedFilters((prev) => ({
-                          ...prev,
-                          priceMin: Math.min(
-                            parseInt(e.target.value),
-                            selectedFilters.priceMax
-                          ),
-                        }))
-                      }
-                    />
-                    <RangeSlider
-                      type="range"
-                      min={priceRange.min}
-                      max={priceRange.max}
-                      value={selectedFilters.priceMax}
-                      onChange={(e) =>
-                        setSelectedFilters((prev) => ({
-                          ...prev,
-                          priceMax: Math.max(
-                            parseInt(e.target.value),
-                            selectedFilters.priceMin
-                          ),
-                        }))
-                      }
-                    />
-                  </RangeSliderContainer>
-                </div>
-
-                <FilterBtn $data={sectionData.setting} onClick={handleFilter}>
-                  اعمال فیلتر
-                </FilterBtn>
-              </div>
-            </div>
-          </FilterCardBg>
           <FilterBgRow $data={sectionData}>
-            <div className="flex w-[100%] items-center gap-4 lg:gap-6 p-4 border-b">
+            <div className="flex w-full items-center gap-4 p-4 sm:p-6 border-b border-gray-200">
               <FilterNameRow
                 $data={sectionData.setting}
                 $isMobile={isMobile}
-                className="opacity-70 font-semibold text-xs lg:text-lg"
+                className="opacity-70 font-semibold text-sm lg:text-base flex-shrink-0"
               >
                 مرتب‌سازی بر اساس :
               </FilterNameRow>
-              <div className="flex gap-6">
+              <SortContainer className="w-fit" $isMobile={isMobile}>
                 {sortOptions.map((option) => (
-                  <FilterNameRow
+                  <SortOption
                     $data={sectionData.setting}
                     $isMobile={isMobile}
+                    $active={sortBy === option.value}
                     key={option.value}
                     onClick={() =>
                       handleSortChange(
@@ -732,16 +767,11 @@ const ProductList: React.FC<ProductListProps> = ({
                           | "name"
                       )
                     }
-                    className={`pb-1 text-center text-xs lg:text-lg relative cursor-pointer transition-all duration-200 ease-in-out ${
-                      sortBy === option.value
-                        ? 'text-blue-500 after:content-[""] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-blue-500'
-                        : " hover:text-blue-500"
-                    }`}
                   >
                     {option.label}
-                  </FilterNameRow>
+                  </SortOption>
                 ))}
-              </div>
+              </SortContainer>
             </div>
           </FilterBgRow>
 
@@ -749,19 +779,128 @@ const ProductList: React.FC<ProductListProps> = ({
             $data={sectionData}
             $isMobile={isMobile}
             $previewWidth="default"
-            className="mt-20 min-h-[500px]"
+            className="mt-0 min-h-[600px]"
           >
-            {(filteredProducts.length > 0 ? filteredProducts : productData).map(
-              (product) => (
-                <ProductCard
-                  key={product._id}
-                  productData={product}
-                />
-              )
+            {loading ? (
+              <div className="col-span-full flex justify-center items-center py-20">
+                <div className="text-gray-500">در حال بارگذاری...</div>
+              </div>
+            ) : productData.length === 0 ? (
+              <div className="col-span-full flex justify-center items-center py-20">
+                <div className="text-gray-500">محصولی یافت نشد</div>
+              </div>
+            ) : (
+              productData.map((product) => (
+                <ProductCard key={product._id} productData={product} />
+              ))
             )}
           </SectionProductList>
+
+          {totalPages > 1 && (
+            <div className="flex justify-center items-center gap-1 sm:gap-2 mt-8 pb-8 px-4">
+              <button
+                onClick={() => setCurrentPage(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="px-2 sm:px-4 py-2 bg-gray-200 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-300 transition-colors text-sm sm:text-base"
+              >
+                قبلی
+              </button>
+
+              <div className="flex gap-1 sm:gap-2 overflow-x-auto max-w-xs sm:max-w-none">
+                {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
+                  let page;
+                  if (totalPages <= 5) {
+                    page = i + 1;
+                  } else if (currentPage <= 3) {
+                    page = i + 1;
+                  } else if (currentPage >= totalPages - 2) {
+                    page = totalPages - 4 + i;
+                  } else {
+                    page = currentPage - 2 + i;
+                  }
+                  return (
+                    <button
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      className={`px-2 sm:px-4 py-2 rounded-lg transition-colors text-sm sm:text-base min-w-[32px] sm:min-w-[40px] ${
+                        currentPage === page
+                          ? "bg-blue-500 text-white"
+                          : "bg-gray-200 hover:bg-gray-300"
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <button
+                onClick={() => setCurrentPage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="px-2 sm:px-4 py-2 bg-gray-200 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-300 transition-colors text-sm sm:text-base"
+              >
+                بعدی
+              </button>
+            </div>
+          )}
         </div>
       </div>
+
+      {showColorModal && (
+        <ColorModal onClick={() => setShowColorModal(false)}>
+          <ColorModalContent onClick={(e) => e.stopPropagation()}>
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-bold text-gray-800">انتخاب رنگ‌ها</h3>
+              <button
+                onClick={() => setShowColorModal(false)}
+                className="text-gray-600 hover:text-gray-800 text-xl"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="grid grid-cols-5 gap-4">
+              {colors.map((colorCode, i) => (
+                <div
+                  key={i}
+                  onClick={() => {
+                    setSelectedColors((prev) =>
+                      prev.includes(colorCode)
+                        ? prev.filter((c) => c !== colorCode)
+                        : [...prev, colorCode]
+                    );
+                  }}
+                  className="flex flex-col items-center gap-2 cursor-pointer"
+                >
+                  <ColorBox
+                    $color={colorCode}
+                    $selected={selectedColors.includes(colorCode)}
+                    style={{ backgroundColor: colorCode }}
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="mt-6 flex justify-between gap-4">
+              <button
+                onClick={() => {
+                  setSelectedColors([]);
+                }}
+                className="flex-1 px-6 py-3 text-gray-800 bg-gray-100 rounded-lg hover:bg-gray-200 text-base transition-colors"
+              >
+                پاک کردن
+              </button>
+              <button
+                onClick={() => {
+                  setShowColorModal(false);
+                }}
+                className="flex-1 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-base transition-colors"
+              >
+                تایید
+              </button>
+            </div>
+          </ColorModalContent>
+        </ColorModal>
+      )}
+      <Toaster position="bottom-center" />
     </>
   );
 };

@@ -35,24 +35,38 @@ interface CategoryChild {
   name: string;
 }
 
-// Event handler types
-
 // Styled components
 const HeaderWrapper = styled.header<{
   $data: HeaderSection;
   $isMobile: boolean;
+  $isScrolled: boolean;
 }>`
   width: 100%;
   border-bottom: 1px solid #e5e7eb;
-  position: relative;
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background-color: ${(props) => {
+    const hexColor = props.$data?.blocks?.setting?.bgColor || "#000";
+    if (props.$isScrolled) {
+      // Convert hex to RGB
+      const r = parseInt(hexColor.slice(1, 3), 16);
+      const g = parseInt(hexColor.slice(3, 5), 16);
+      const b = parseInt(hexColor.slice(5, 7), 16);
+      return `rgba(${r}, ${g}, ${b}, 0.85)`;
+    }
+    return hexColor;
+  }};
+  backdrop-filter: ${(props) => (props.$isScrolled ? "blur(10px)" : "none")};
+  -webkit-backdrop-filter: ${(props) =>
+    props.$isScrolled ? "blur(10px)" : "none"};
+  transition: background-color 0.3s ease, backdrop-filter 0.3s ease;
   margin-top: ${(props) => props.$data.setting?.marginTop || "0"}px;
   margin-bottom: ${(props) => props.$data?.setting?.marginBottom || "0"}px;
-  padding-top: ${(props) => props.$data?.setting?.paddingTop || "0"}px;
-  padding-bottom: ${(props) => props.$data?.setting?.paddingBottom || "0"}px;
   padding-left: ${(props) => props.$data?.setting?.paddingLeft || "0"}px;
-  padding-right: ${(props) => props.$data?.setting?.paddingRight || "0"};
-  background-color: ${(props) =>
-    props.$data?.blocks?.setting?.bgColor || "#000"};
+  padding-right: ${(props) => props.$data?.setting?.paddingRight || "0"}px;
   border-radius: ${(props) => props.$data?.blocks?.setting?.bgRadius || "2"}px;
   box-shadow: ${(props) =>
     `${props.$data.blocks.setting?.shadowOffsetX || 0}px 
@@ -91,18 +105,22 @@ const HeaderWrapper = styled.header<{
 
 const AnnouncementBar = styled.div<{
   $data: HeaderSection;
+  $isScrolled: boolean;
 }>`
   background-color: ${(props) =>
     props.$data.blocks?.setting?.announcementBgColor || "#f1b80c"};
   color: ${(props) =>
     props.$data.blocks?.setting?.announcementTextColor || "#ffffff"};
-  padding: 12px 24px;
   text-align: center;
   font-size: ${(props) =>
     props.$data.blocks.setting?.announcementFontSize || "14"}px;
   font-weight: 500;
   letter-spacing: 0.025em;
-  transition: all 0.3s ease;
+  overflow: hidden;
+  transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
+  max-height: ${(props) => (props.$isScrolled ? "0" : "200px")};
+  opacity: ${(props) => (props.$isScrolled ? "0" : "1")};
+  padding: ${(props) => (props.$isScrolled ? "0" : "12px 24px")};
   border-top-left-radius: ${(props) =>
     props.$data?.blocks?.setting?.bgRadius || "2"}px;
   border-top-right-radius: ${(props) =>
@@ -110,7 +128,7 @@ const AnnouncementBar = styled.div<{
 
   @media (max-width: 768px) {
     font-size: 12px;
-    padding: 8px 16px;
+    padding: ${(props) => (props.$isScrolled ? "0" : "8px 16px")};
   }
 `;
 
@@ -133,7 +151,7 @@ const MainSection = styled.div`
 `;
 
 const LogoContainer = styled.div`
-  display: hidden;
+  display: none;
   width: 100%;
   align-items: center;
   gap: 0.75rem;
@@ -557,7 +575,7 @@ const Header: React.FC<HeaderProps> = ({ headerData, isMobile }) => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [hoverd, setHoverd] = useState<number>(0);
   const [categories, setCategories] = useState<Category[]>([]);
-
+  const [isScrolled, setIsScrolled] = useState(false);
   const [mobileDropdownOpen, setMobileDropdownOpen] = useState(false);
 
   useEffect(() => {
@@ -617,6 +635,16 @@ const Header: React.FC<HeaderProps> = ({ headerData, isMobile }) => {
 
     fetchCategories();
   }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const toggleMenu = useCallback(() => {
     const newState = !isMenuOpen;
     setIsMenuOpen(newState);
@@ -684,8 +712,12 @@ const Header: React.FC<HeaderProps> = ({ headerData, isMobile }) => {
   }
 
   return (
-    <HeaderWrapper $isMobile={isMobile} $data={sectionData}>
-      <AnnouncementBar $data={sectionData}>
+    <HeaderWrapper
+      $isMobile={isMobile}
+      $data={sectionData}
+      $isScrolled={isScrolled}
+    >
+      <AnnouncementBar $data={sectionData} $isScrolled={isScrolled}>
         {sectionData.blocks.setting?.announcementText ||
           "ارسال رایگان برای خرید‌های بالای ۵۰۰ هزار تومان!"}
       </AnnouncementBar>
@@ -702,7 +734,7 @@ const Header: React.FC<HeaderProps> = ({ headerData, isMobile }) => {
           </MobileMenuButton>
 
           <LogoContainer>
-            <Link className="ml-auto" href="#">
+            <Link className="ml-auto hidden lg:block" href="#">
               <Logo
                 $data={sectionData}
                 src={sectionData.blocks.imageLogo || "/assets/images/logo.webp"}
@@ -786,18 +818,21 @@ const Header: React.FC<HeaderProps> = ({ headerData, isMobile }) => {
             </NavList>
           </NavContainer>
           <ActionButtons>
-            <div className="flex  items-center gap-2">
+            <div className="flex   items-center gap-2">
               {isAuthenticated && (
                 <>
                   <ShoppingCart
-                    className="text-gray-400 cursor-pointer hover:text-black"
+                    className="cursor-pointer"
                     size={24}
                     onClick={handleNavigate}
+                    style={{
+                      color: sectionData.blocks.setting?.itemColor || "#f59e0b",
+                    }}
                   />
                   |
                 </>
               )}
-              <UserMenu />
+              <UserMenu color={sectionData.blocks.setting?.itemColor} />
             </div>
           </ActionButtons>
         </div>

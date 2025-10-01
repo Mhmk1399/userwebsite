@@ -18,7 +18,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${hezare.variable}`}>
         <StyledComponentsRegistry>
-          <Toaster />
+          <Toaster position="top-center" />
           {children}
         </StyledComponentsRegistry>
       </body>

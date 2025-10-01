@@ -16,7 +16,7 @@ const SlideBannerSections = styled.section<{
   $isMobile: boolean;
 }>`
   position: relative;
-  width: 100%;
+  max-width: 100%;
   padding-top: ${(props) => props.$data.setting?.paddingTop || "20"}px;
   padding-bottom: ${(props) => props.$data.setting?.paddingBottom || "20"}px;
   padding-left: ${(props) => props.$data.setting?.paddingLeft || "20"}px;
