@@ -751,7 +751,7 @@ const Header: React.FC<HeaderProps> = ({ headerData, isMobile }) => {
                     <>
                       <NavItem
                         className="text-nowrap"
-                        href="#"
+                        href={link.url || "#"}
                         $data={sectionData}
                       >
                         <CategoryIconWrapper $data={sectionData}>
@@ -765,7 +765,7 @@ const Header: React.FC<HeaderProps> = ({ headerData, isMobile }) => {
                             ?.filter((category) => category.children.length > 0)
                             .map((category, idx) => (
                               <Link
-                                href={`/store/${category._id}`}
+                                href={`/store?categoryId=${category._id}`}
                                 key={category._id}
                                 className="block"
                               >
@@ -791,7 +791,7 @@ const Header: React.FC<HeaderProps> = ({ headerData, isMobile }) => {
                               )
                               [hoverd]?.children.map((child) => (
                                 <Link
-                                  href={`/store/${child._id}`}
+                                  href={`/store?categoryId=${categories?.filter((category) => category.children.length > 0)[hoverd]?._id}`}
                                   key={child._id}
                                   className="p-3 hover:translate-x-[2px] rounded-lg transition-all duration-300 text-right group hover:bg-blue-50"
                                 >
