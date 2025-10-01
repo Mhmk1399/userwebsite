@@ -2,9 +2,9 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import styled from "styled-components";
-import { BlogDetailSection } from "@/lib/types";
-import largeBlogData from "../../../public/template/blogdetaillg.json";
-import smallBlogData from "../../../public/template/blogdetailsm.json";
+import { BlogDetailSection, HeaderSection, FooterSection, Section } from "@/lib/types";
+import Header from "@/components/header";
+import Footer from "@/components/footer";
 
 interface BlogDetailData {
   _id: string;
@@ -35,10 +35,10 @@ const SectionBlogDetail = styled.div<{
   $data: BlogDetailSection;
   $isMobile?: boolean;
 }>`
-  padding-top: ${(props) => props.$data?.setting?.paddingTop || 0}px;
-  padding-bottom: ${(props) => props.$data?.setting?.paddingBottom || 0}px;
-  padding-left: ${(props) => props.$data?.setting?.paddingLeft || 0}px;
-  padding-right: ${(props) => props.$data?.setting?.paddingRight || 0}px;
+  padding-top: ${(props) => props.$data?.setting?.paddingTop || 10}px;
+  padding-bottom: ${(props) => props.$data?.setting?.paddingBottom || 10}px;
+  padding-left: ${(props) => props.$data?.setting?.paddingLeft || 30}px;
+  padding-right: ${(props) => props.$data?.setting?.paddingRight || 30}px;
   margin-top: ${(props) => props.$data?.setting?.marginTop || 0}px;
   margin-bottom: ${(props) => props.$data?.setting?.marginBottom || 0}px;
   background-color: ${(props) =>
@@ -77,12 +77,27 @@ const SectionBlogDetail = styled.div<{
     line-height: 1.8;
     margin-top: 24px;
 
+    img {
+      max-width: 1000px;
+      height: 500px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin: 16px auto;
+      display: block;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
     @media (max-width: 768px) {
       font-size: ${(props) =>
         Math.max(
           12,
           parseInt(props.$data?.setting?.contentFontSize || "18") * 0.7
         )}px;
+      
+      img {
+        margin: 12px auto;
+        border-radius: 6px;
+      }
     }
   }
 
@@ -251,9 +266,44 @@ const BlogDetailContent: React.FC<BlogDetailProps & { blogId: string }> = ({
 }) => {
   const [blog, setBlog] = useState<BlogDetailData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [sectionData, setSectionData] = useState<BlogDetailSection | null>(
-    null
-  );
+  const [sectionData, setSectionData] = useState<BlogDetailSection | null>(null);
+  const [sections, setSections] = useState<Section[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [headerData, setHeaderData] = useState<HeaderSection | null>(null);
+  const [footerData, setFooterData] = useState<FooterSection | null>(null);
+
+  const fetchLayoutData = async (activeMode: string, storeId: string) => {
+    try {
+      const response = await fetch("/api/layout-jason", {
+        method: "GET",
+        headers: {
+          selectedRoute: "blog",
+          activeMode: activeMode,
+          storeId: "storemfcdfog4456qhn",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch layout data: ${response.status}`);
+      }
+
+      const layoutData = await response.json();
+      
+      if (layoutData.sections?.sectionHeader) {
+        setHeaderData(layoutData.sections.sectionHeader);
+      }
+      
+      if (layoutData.sections?.sectionFooter) {
+        setFooterData(layoutData.sections.sectionFooter);
+      }
+      
+      return layoutData;
+    } catch (error) {
+      console.error("Error fetching layout data:", error);
+      throw error;
+    }
+  };
 
   useEffect(() => {
     const fetchBlogDetail = async () => {
@@ -278,31 +328,120 @@ const BlogDetailContent: React.FC<BlogDetailProps & { blogId: string }> = ({
   }, [blogId]);
 
   useEffect(() => {
-    // Use the isMobile prop to determine which data to use
-    const data = isMobile ? smallBlogData : largeBlogData;
-    setSectionData(data.children.sections[0] as BlogDetailSection);
+    const handleLayoutFetch = async () => {
+      const activeMode = isMobile ? "sm" : "lg";
+      const storeId = process.env.STOREID || "";
+
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        const layoutData = await fetchLayoutData(activeMode, storeId);
+
+        if (layoutData && layoutData.sections && layoutData.sections.children) {
+          setSections(layoutData.sections.children.sections);
+          const blogDetailSection = layoutData.sections.children.sections.find(
+            (section: Section) => section.type === "BlogDetail"
+          ) as BlogDetailSection;
+          setSectionData(blogDetailSection);
+
+          if (layoutData.sections.children.metaData) {
+            document.title = layoutData.sections.children.metaData.title;
+            const metaDescription = document.querySelector('meta[name="description"]');
+            if (metaDescription) {
+              metaDescription.setAttribute(
+                "content",
+                layoutData.sections.children.metaData.description
+              );
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Error loading page data:", error);
+        setError("خطا در بارگذاری صفحه");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    handleLayoutFetch();
   }, [isMobile]);
 
-  if (loading || !sectionData) {
-    return <div>در حال بارگذاری...</div>;
+  if (isLoading || loading) {
+    return (
+      <>
+        <Header isMobile={isMobile} headerData={headerData ?? undefined} />
+        <main>
+          <div className="flex justify-center items-center h-screen">
+            <div className="flex flex-row gap-2">
+              <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce"></div>
+              <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce [animation-delay:-.3s]"></div>
+              <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce [animation-delay:-.5s]"></div>
+            </div>
+          </div>
+        </main>
+        <Footer footerData={footerData ?? undefined} />
+      </>
+    );
   }
 
-  if (!blog) {
-    return <div>بلاگ مورد نظر یافت نشد.</div>;
+  if (error) {
+    return (
+      <>
+        <Header isMobile={isMobile} headerData={headerData ?? undefined} />
+        <main>
+          <div className="flex justify-center items-center h-screen">
+            <div className="text-center">
+              <h1 className="text-2xl font-bold text-red-600 mb-4">
+                خطا در بارگذاری صفحه
+              </h1>
+              <p className="text-gray-600">{error}</p>
+              <button
+                onClick={() => window.location.reload()}
+                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              >
+                دوباره تلاش کنید
+              </button>
+            </div>
+          </div>
+        </main>
+        <Footer footerData={footerData ?? undefined} />
+      </>
+    );
+  }
+
+  if (!blog || !sectionData) {
+    return (
+      <>
+        <Header isMobile={isMobile} headerData={headerData ?? undefined} />
+        <main>
+          <div className="flex justify-center items-center h-screen">
+            <div className="text-center">
+              <h1 className="text-2xl font-bold text-gray-600 mb-4">
+                بلاگ مورد نظر یافت نشد
+              </h1>
+            </div>
+          </div>
+        </main>
+        <Footer footerData={footerData ?? undefined} />
+      </>
+    );
   }
 
   return (
-    <SectionBlogDetail
-      $data={sectionData}
-      $isMobile={isMobile}
-      className={`transition-all duration-150 ease-in-out relative`}
-    >
+    <>
+      <Header isMobile={isMobile} headerData={headerData ?? undefined} />
+      <main>
+        <SectionBlogDetail
+          $data={sectionData}
+          $isMobile={isMobile}
+          className={`transition-all duration-150 ease-in-out relative`}
+        >
       <CoverImageContainer $data={sectionData} $isMobile={isMobile}>
         <Image
           src={
             sectionData.setting.coverImage ||
-            blog.imageSrc ||
-            "/assets/images/pro3.jpg"
+            blog.image
           }
           alt={blog.title}
           fill
@@ -334,7 +473,10 @@ const BlogDetailContent: React.FC<BlogDetailProps & { blogId: string }> = ({
           __html: blog.content || "محتوای بلاگ در اینجا نمایش داده می‌شود...",
         }}
       />
-    </SectionBlogDetail>
+        </SectionBlogDetail>
+      </main>
+      <Footer footerData={footerData ?? undefined} />
+    </>
   );
 };
 

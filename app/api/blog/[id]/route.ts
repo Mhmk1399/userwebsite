@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
     const id = request.nextUrl.pathname.split("/")[3];
 
     const blog = await Blog.findOne({
-      _id: id,
+       id
     });
 
     if (!blog) {
