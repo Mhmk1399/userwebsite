@@ -773,7 +773,7 @@ const ProductList: React.FC<ProductListProps> = ({
                 ))}
               </SortContainer>
             </div>
-          </div>
+          </FilterBgRow>
 
           <SectionProductList
             $data={sectionData}
@@ -844,63 +844,64 @@ const ProductList: React.FC<ProductListProps> = ({
             </div>
           )}
         </div>
-      </div>
 
-      {showColorModal && (
-        <ColorModal onClick={() => setShowColorModal(false)}>
-          <ColorModalContent onClick={(e) => e.stopPropagation()}>
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-bold text-gray-800">انتخاب رنگ‌ها</h3>
-              <button
-                onClick={() => setShowColorModal(false)}
-                className="text-gray-600 hover:text-gray-800 text-xl"
-              >
-                ✕
-              </button>
-            </div>
-            <div className="grid grid-cols-5 gap-4">
-              {colors.map((colorCode, i) => (
-                <div
-                  key={i}
-                  onClick={() => {
-                    setSelectedColors((prev) =>
-                      prev.includes(colorCode)
-                        ? prev.filter((c) => c !== colorCode)
-                        : [...prev, colorCode]
-                    );
-                  }}
-                  className="flex flex-col items-center gap-2 cursor-pointer"
+        {showColorModal && (
+          <ColorModal onClick={() => setShowColorModal(false)}>
+            <ColorModalContent onClick={(e) => e.stopPropagation()}>
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-bold text-gray-800">
+                  انتخاب رنگ‌ها
+                </h3>
+                <button
+                  onClick={() => setShowColorModal(false)}
+                  className="text-gray-600 hover:text-gray-800 text-xl"
                 >
-                  <ColorBox
-                    $color={colorCode}
-                    $selected={selectedColors.includes(colorCode)}
-                    style={{ backgroundColor: colorCode }}
-                  />
-                </div>
-              ))}
-            </div>
-            <div className="mt-6 flex justify-between gap-4">
-              <button
-                onClick={() => {
-                  setSelectedColors([]);
-                }}
-                className="flex-1 px-6 py-3 text-gray-800 bg-gray-100 rounded-lg hover:bg-gray-200 text-base transition-colors"
-              >
-                پاک کردن
-              </button>
-              <button
-                onClick={() => {
-                  setShowColorModal(false);
-                }}
-                className="flex-1 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-base transition-colors"
-              >
-                تایید
-              </button>
-            </div>
-          </ColorModalContent>
-        </ColorModal>
-      )}
-      <Toaster position="bottom-center" />
+                  ✕
+                </button>
+              </div>
+              <div className="grid grid-cols-5 gap-4">
+                {colors.map((colorCode, i) => (
+                  <div
+                    key={i}
+                    onClick={() => {
+                      setSelectedColors((prev) =>
+                        prev.includes(colorCode)
+                          ? prev.filter((c) => c !== colorCode)
+                          : [...prev, colorCode]
+                      );
+                    }}
+                    className="flex flex-col items-center gap-2 cursor-pointer"
+                  >
+                    <ColorBox
+                      $color={colorCode}
+                      $selected={selectedColors.includes(colorCode)}
+                      style={{ backgroundColor: colorCode }}
+                    />
+                  </div>
+                ))}
+              </div>
+              <div className="mt-6 flex justify-between gap-4">
+                <button
+                  onClick={() => {
+                    setSelectedColors([]);
+                  }}
+                  className="flex-1 px-6 py-3 text-gray-800 bg-gray-100 rounded-lg hover:bg-gray-200 text-base transition-colors"
+                >
+                  پاک کردن
+                </button>
+                <button
+                  onClick={() => {
+                    setShowColorModal(false);
+                  }}
+                  className="flex-1 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-base transition-colors"
+                >
+                  تایید
+                </button>
+              </div>
+            </ColorModalContent>
+          </ColorModal>
+        )}
+      </div>
     </>
   );
 };
