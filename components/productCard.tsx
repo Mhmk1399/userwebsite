@@ -272,7 +272,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData }) => {
           {safeProductData.description || "No description available"}
         </ProductDescription>
         <div className="mt-auto">
-          <div className="w-full border-[#e51542] border-x-2 bg-red-50 hover:bg-red-100 transition-all duration-200 flex justify-center items-center p-2">
+          <div className="w-full   bg-red-50 hover:bg-red-100 transition-all duration-200 flex justify-center items-center p-2">
             <ProductPrice
               className="text-black font-extralight leading-4 text-center w-full"
               $productData={safeProductData}

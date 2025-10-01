@@ -1,14 +1,10 @@
 import connect from "@/lib/data";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import Jsons from "@/models/jsons";
-import fs from "fs/promises";
-import path from "path";
-
 
 export async function GET(request: Request) {
   await connect();
   const storeId = process.env.STOREID;
-  console.log(storeId,"nnnnnnnnnnnnnnnnnnnnnnnnnn")
 
   try {
     const routeName = request.headers.get("selectedRoute");
@@ -30,24 +26,33 @@ export async function GET(request: Request) {
     if (routeName === "home") {
       const homeDoc = await Jsons.findOne({ storeId, route: "home" });
       if (!homeDoc) {
-        return NextResponse.json({ error: "Home content not found" }, { status: 404 });
+        return NextResponse.json(
+          { error: "Home content not found" },
+          { status: 404 }
+        );
       }
-      const homeContent = activeMode === "lg" ? homeDoc.lgContent : homeDoc.smContent;
+      const homeContent =
+        activeMode === "lg" ? homeDoc.lgContent : homeDoc.smContent;
       return NextResponse.json(homeContent, { status: 200, headers });
     }
 
     try {
       const [routeDoc, homeDoc] = await Promise.all([
         Jsons.findOne({ storeId, route: routeName }),
-        Jsons.findOne({ storeId, route: "home" })
+        Jsons.findOne({ storeId, route: "home" }),
       ]);
 
       if (!routeDoc || !homeDoc) {
-        return NextResponse.json({ error: "Content not found" }, { status: 404 });
+        return NextResponse.json(
+          { error: "Content not found" },
+          { status: 404 }
+        );
       }
 
-      const routeContent = activeMode === "lg" ? routeDoc.lgContent : routeDoc.smContent;
-      const homeContent = activeMode === "lg" ? homeDoc.lgContent : homeDoc.smContent;
+      const routeContent =
+        activeMode === "lg" ? routeDoc.lgContent : routeDoc.smContent;
+      const homeContent =
+        activeMode === "lg" ? homeDoc.lgContent : homeDoc.smContent;
 
       const layout = {
         sections: {

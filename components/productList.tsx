@@ -4,16 +4,62 @@ import {
   ProductSection,
   ProductCardData,
   ProductBlockSetting,
+  BannerSection,
+  BlogBlock,
+  BlogDetailBlock,
+  BlogListSection,
+  CollapseSection,
+  CollectionSection,
+  ContactFormDataSection,
+  DetailPageBlock,
+  GallerySection,
+  ImageTextSection,
+  MultiColumnSection,
+  MultiRowSection,
+  NewsLetterSection,
+  OfferRowSection,
+  ProductListSection,
+  RichTextSection,
+  Section,
+  SlideBannerSection,
+  SlideSection,
+  SpecialOfferSection,
+  StorySection,
+  VideoSection,
 } from "@/lib/types";
 import ProductCard from "./productCard";
 import { useEffect, useState, useCallback } from "react";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import React from "react";
 import { FiFilter } from "react-icons/fi";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
+
+type AllSections = Section &
+  RichTextSection &
+  BannerSection &
+  ImageTextSection &
+  VideoSection &
+  ContactFormDataSection &
+  NewsLetterSection &
+  CollapseSection &
+  MultiColumnSection &
+  SlideSection &
+  MultiRowSection &
+  ProductListSection &
+  CollectionSection &
+  SpecialOfferSection &
+  StorySection &
+  OfferRowSection &
+  GallerySection &
+  SlideBannerSection &
+  BlogBlock &
+  BlogDetailBlock &
+  ProductListSection &
+  BlogListSection &
+  DetailPageBlock;
 
 interface ProductListProps {
-  sections: ProductSection[];
+  sections: ProductSection[] | ProductSection;
   isMobile: boolean;
   componentName: string;
 }
@@ -59,22 +105,6 @@ const FilterCardBg = styled.div<{
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   @media (max-width: 1024px) {
     display: none;
-  }
-`;
-
-const FilterBtn = styled.div<{ $data: ProductBlockSetting }>`
-  background-color: ${(props) => props.$data?.filterButtonBg || "#2563eb"};
-  color: ${(props) => props.$data?.filterButtonTextColor || "#ffffff"};
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.5rem;
-  text-align: center;
-  cursor: pointer;
-  transition: opacity 0.2s;
-  font-size: 16px;
-  font-weight: 500;
-
-  &:hover {
-    opacity: 0.9;
   }
 `;
 
@@ -127,12 +157,14 @@ const PriceInput = styled.input`
   }
 `;
 
-const ApplyButton = styled.button`
+const ApplyButton = styled.button<{
+  $data: ProductBlockSetting;
+}>`
   width: 100%;
   padding: 0.75rem;
   margin-top: 1rem;
-  background-color: #2563eb;
-  color: white;
+  background-color: ${(props) => props.$data?.filterButtonBg};
+  color: ${(props) => props.$data?.filterButtonTextColor};
   border-radius: 0.375rem;
   font-weight: 500;
   transition: all 0.2s;
@@ -177,7 +209,7 @@ const SectionProductList = styled.section<{
     !props.$isMobile &&
     `
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(${props.$data.setting?.gridColumns}, 1fr);
     overflow-x: hidden;
     gap: 2rem;
     padding: 2rem;
@@ -192,18 +224,16 @@ const SectionProductList = styled.section<{
   @media (max-width: 768px) {
     display: flex;
     flex-wrap: nowrap;
-    overflow-x: auto;
+    overflow-x: scroll;
     overflow-y: hidden;
-    scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
+    touch-action: manipulation;
     padding: 1rem;
     gap: 1rem;
 
     & > div {
-      flex: 0 0 85%;
-      scroll-snap-align: start;
+      flex: 0 0 280px;
       min-width: 280px;
-      max-width: 320px;
     }
   }
 
@@ -212,9 +242,8 @@ const SectionProductList = styled.section<{
     gap: 0.75rem;
 
     & > div {
-      flex: 0 0 90%;
+      flex: 0 0 240px;
       min-width: 240px;
-      max-width: 280px;
     }
   }
 `;
@@ -312,6 +341,7 @@ const ProductList: React.FC<ProductListProps> = ({
   componentName,
 }) => {
   const [productData, setProductData] = useState<ProductCardData[]>([]);
+  const [data, setData] = useState<AllSections | undefined>(undefined);
   const [categories, setCategories] = useState<CategoryWithChildren[]>([]);
   const [sortBy, setSortBy] = useState<
     "newest" | "price-asc" | "price-desc" | "name"
@@ -323,6 +353,8 @@ const ProductList: React.FC<ProductListProps> = ({
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [shouldPreserveCategoryId, setShouldPreserveCategoryId] =
+    useState(true);
 
   const sortOptions = [
     { value: "newest", label: "جدیدترین" },
@@ -353,7 +385,6 @@ const ProductList: React.FC<ProductListProps> = ({
   };
 
   const loadInitialData = useCallback(async () => {
-    setLoading(true);
     const sp = Object.fromEntries(searchParams.entries());
     setSelectedFilters({
       category: sp.category || "",
@@ -364,33 +395,31 @@ const ProductList: React.FC<ProductListProps> = ({
     setTempPriceMax(sp.priceMax || "");
     setSelectedColors(sp.colors ? sp.colors.split(",") : []);
     setSortBy((sp.sortBy || "newest") as any);
-    setCurrentPage(parseInt(sp.page || "1"));
 
     const isStoreRoute = pathname.split("/")[1] === "store";
-    if (isStoreRoute) {
-      await fetchProducts(currentPage);
-    } else {
+    if (!isStoreRoute) {
+      setLoading(true);
       await getCollection();
+      setLoading(false);
     }
-    setLoading(false);
-  }, [searchParams, pathname, currentPage]);
+  }, [searchParams, pathname]);
 
   useEffect(() => {
     loadInitialData();
   }, [loadInitialData]);
 
   useEffect(() => {
-    if (pathname.split("/")[1] === "store") {
-      setCurrentPage(1);
-      fetchProducts(1);
-    }
-  }, [selectedFilters, selectedColors, sortBy, pathname]);
+    setShouldPreserveCategoryId(true);
+  }, [searchParams]);
 
   useEffect(() => {
     if (pathname.split("/")[1] === "store") {
-      fetchProducts(currentPage);
+      setLoading(true);
+      const page = parseInt(searchParams.get("page") || "1");
+      setCurrentPage(page);
+      fetchProducts(page);
     }
-  }, [currentPage, pathname]);
+  }, [searchParams, pathname]);
 
   useEffect(() => {
     if (productData.length > 0) {
@@ -452,9 +481,9 @@ const ProductList: React.FC<ProductListProps> = ({
 
   useEffect(() => {
     const params = new URLSearchParams(searchParams.toString());
-    // Preserve categoryId
+    // Preserve categoryId only if should
     const categoryId = searchParams.get("categoryId");
-    if (categoryId) {
+    if (categoryId && shouldPreserveCategoryId) {
       params.set("categoryId", categoryId);
     } else {
       params.delete("categoryId");
@@ -510,11 +539,13 @@ const ProductList: React.FC<ProductListProps> = ({
     pathname,
     router,
     searchParams,
+    shouldPreserveCategoryId,
   ]);
 
-  const sectionData = sections.find(
-    (section) => section.type === componentName
-  );
+  // Handle both array and single section cases
+  const sectionData = Array.isArray(sections) 
+    ? sections.find((section) => section.type === componentName)
+    : sections;
 
   if (!sectionData) return null;
 
@@ -525,6 +556,7 @@ const ProductList: React.FC<ProductListProps> = ({
   };
 
   const resetFilters = () => {
+    setShouldPreserveCategoryId(false);
     setSelectedFilters({
       category: "",
       priceMin: "",
@@ -590,7 +622,9 @@ const ProductList: React.FC<ProductListProps> = ({
           />
         </div>
       </PriceInputContainer>
-      <ApplyButton onClick={applyPriceFilter}>اعمال فیلتر قیمت</ApplyButton>
+      <ApplyButton $data={sectionData.setting} onClick={applyPriceFilter}>
+        اعمال فیلتر
+      </ApplyButton>
     </div>
   );
 
@@ -664,6 +698,7 @@ const ProductList: React.FC<ProductListProps> = ({
             </div>
           </div>
         </FilterCardBg>
+
         <div className="flex-1 relative">
           {isMobileFilterOpen && (
             <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end justify-center md:hidden">
@@ -692,7 +727,7 @@ const ProductList: React.FC<ProductListProps> = ({
                         }))
                       }
                     >
-                      <option value="">همه دستهبندیها</option>
+                      <option value="">همه دسته بندی ها</option>
                       {categories.map((category) => (
                         <option key={category._id} value={category.name}>
                           {category.name}
