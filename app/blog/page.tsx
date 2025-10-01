@@ -120,39 +120,81 @@ const BlogCard = styled.div<{
   }
 `;
 
+const PaginationContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 30px;
+  grid-column: 1 / -1;
+`;
+
+const PaginationButton = styled.button<{ $active?: boolean }>`
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  background: ${props => props.$active ? '#007bff' : '#fff'};
+  color: ${props => props.$active ? '#fff' : '#333'};
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  
+  &:hover:not(:disabled) {
+    background: ${props => props.$active ? '#0056b3' : '#f8f9fa'};
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
+
 const BlogList: React.FC<BlogListProps> = ({ componentName, sections }) => {
   const [blogData, setBlogData] = useState<BlogData[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pagination, setPagination] = useState({
+    totalPages: 1,
+    totalBlogs: 0,
+    hasNext: false,
+    hasPrev: false
+  });
+  const [loading, setLoading] = useState(false);
+
+  const fetchBlogs = async (page: number) => {
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/blog?page=${page}&limit=6`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      const data = await response.json();
+
+      const blogInfo = data.blogs.map((blog: BlogData) => ({
+        ...blog,
+        btnLink: `/blog/${blog.blogId}`,
+        imageSrc: "/assets/images/pro3.jpg",
+        imageAlt: blog.title,
+        description: blog.description,
+        storeId: blog.storeId,
+      }));
+      setBlogData(blogInfo);
+      setPagination(data.pagination);
+    } catch (error) {
+      console.log("Error fetching blogs:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchBlogs = async () => {
-      try {
-        const response = await fetch("/api/blogs", {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        });
+    fetchBlogs(currentPage);
+  }, [currentPage]);
 
-        const data = await response.json();
-        console.log("data", data);
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
-        const blogInfo = data.blogs.map((blog: BlogData) => ({
-          ...blog,
-          // btnText: "مطالعه بیشتر",
-          btnLink: `/blog/${blog.blogId}`,
-          imageSrc: "/assets/images/pro3.jpg", // Add a default image
-          imageAlt: blog.title,
-          description: blog.description,
-          storeId: blog.storeId,
-        }));
-        setBlogData(blogInfo);
-      } catch (error) {
-        console.log("Error fetching blogs:", error);
-      }
-    };
-
-    fetchBlogs();
-  }, []);
-
-  const sectionData = sections.find(
+  const sectionData = sections?.find(
     (section) => section.type === componentName
   );
 
@@ -160,41 +202,75 @@ const BlogList: React.FC<BlogListProps> = ({ componentName, sections }) => {
 
   return (
     <SectionBlogList dir="rtl" $data={sectionData}>
-      {blogData.map((blog, index) => (
-        <BlogCard key={`blog-${blog.id}-${index}`} $data={sectionData.setting}>
-          {blog.imageSrc ? (
-            <Image
-              src={blog.imageSrc || "/assets/images/pro2.jpg"}
-              alt={blog.title || "Blog image"}
-              width={1000}
-              height={800}
-            />
-          ) : null}
-          <div className="content">
-            <h2 className="title line-clamp-1">{blog.title}</h2>
-            <div className="meta">
-              <span>
-                {blog.createdAt &&
-                  new Intl.DateTimeFormat("fa-IR", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                    calendar: "persian",
-                  }).format(new Date(blog.createdAt))}
-              </span>
+      {loading ? (
+        <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '20px' }}>
+          در حال بارگذاری...
+        </div>
+      ) : (
+        blogData.map((blog, index) => (
+          <BlogCard key={`blog-${blog.id}-${index}`} $data={sectionData.setting}>
+            {blog.imageSrc ? (
+              <Image
+                src={blog.imageSrc || "/assets/images/pro2.jpg"}
+                alt={blog.title || "Blog image"}
+                width={1000}
+                height={800}
+              />
+            ) : null}
+            <div className="content">
+              <h2 className="title line-clamp-1">{blog.title}</h2>
+              <div className="meta">
+                <span>
+                  {blog.createdAt &&
+                    new Intl.DateTimeFormat("fa-IR", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                      calendar: "persian",
+                    }).format(new Date(blog.createdAt))}
+                </span>
+              </div>
+              <div
+                className="description mb-2 text-right"
+                dangerouslySetInnerHTML={{
+                  __html: blog.content.slice(0, 70) + "...",
+                }}
+              />
+              <Link href={`/blog/${blog.id}`} className="read-more">
+                مطالعه بیشتر
+              </Link>
             </div>
-            <div
-              className="description mb-2 text-right"
-              dangerouslySetInnerHTML={{
-                __html: blog.content.slice(0, 70) + "...",
-              }}
-            />
-            <Link href={`/blog/${blog.id}`} className="read-more">
-              مطالعه بیشتر
-            </Link>
-          </div>
-        </BlogCard>
-      ))}
+          </BlogCard>
+        ))
+      )}
+      
+      {pagination.totalPages > 1 && (
+        <PaginationContainer>
+          <PaginationButton 
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={!pagination.hasPrev}
+          >
+            قبلی
+          </PaginationButton>
+          
+          {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map(page => (
+            <PaginationButton
+              key={page}
+              $active={page === currentPage}
+              onClick={() => handlePageChange(page)}
+            >
+              {page}
+            </PaginationButton>
+          ))}
+          
+          <PaginationButton 
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={!pagination.hasNext}
+          >
+            بعدی
+          </PaginationButton>
+        </PaginationContainer>
+      )}
     </SectionBlogList>
   );
 };
