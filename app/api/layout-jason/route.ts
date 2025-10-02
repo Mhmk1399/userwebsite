@@ -1,14 +1,19 @@
 import connect from "@/lib/data";
-import { NextResponse } from "next/server";
+import { NextRequest , NextResponse } from "next/server";
 import Jsons from "@/models/jsons";
+import { getStoreId } from "@/utils/getStoreId";
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   await connect();
-  const storeId = process.env.STOREID;
+  const storeId = getStoreId(request);
 
   try {
-    const routeName = request.headers.get("selectedRoute");
+    const routeName = request.headers.get("selectedRoute") || "home";
     const activeMode = request.headers.get("activeMode") || "lg";
+
+    console.log(routeName, "routeName")
+    console.log(activeMode, "activeMode")
+
 
     if (!routeName || !activeMode || !storeId) {
       return NextResponse.json(
