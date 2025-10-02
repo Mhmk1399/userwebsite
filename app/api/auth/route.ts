@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import connect from "@/lib/data";
 import StoreUsers from "../../../models/storesUsers";
 import bcrypt from "bcryptjs";
+import { NextRequest } from "next/server";
+import { getStoreId } from "@/utils/getStoreId"
 
 
 
@@ -24,7 +26,7 @@ export async function GET() {
 
 
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   await connect();
   if (!connect) {
     return NextResponse.json({ error: "Connection failed!" });
@@ -35,9 +37,9 @@ export async function POST(request: Request) {
     
     // Read storeId from store-config.json
   
-    const storeId = process.env.STOREID;
+    const storeId = getStoreId(request)
     
-    console.log(storeId, "storeId");
+    
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new StoreUsers({
       name,

@@ -254,6 +254,8 @@ const extractBlogData = (template: TemplateData): BlogSchemaProps => {
   };
 };
 
+
+
 export default function HomePage() {
   const [data, setData] = useState<AllSections[]>([]);
   const [isMobile, setIsMobile] = useState(false);
@@ -266,7 +268,10 @@ export default function HomePage() {
 
 
 
+
   
+
+
   // Fetch layout data from API
   const fetchLayoutData = async (
     routeName: string,
@@ -274,53 +279,42 @@ export default function HomePage() {
 
   ) => {
     try {
+      console.log('Fetching from URL:', window.location.href);
+      console.log('Current host:', window.location.host);
+      
       const response = await fetch("/api/layout-jason", {
         method: "GET",
         headers: {
           selectedRoute: routeName,
           activeMode: activeMode,
-    
         },
       });
-      console.log(response)
+      
 
       if (!response.ok) {
         throw new Error(`Failed to fetch layout data: ${response.status}`);
       }
 
       const layoutData = await response.json();
-      console.log(layoutData);
+      
       // Extract header and footer data
       if (layoutData.sections?.sectionHeader) {
         setHeaderData(layoutData.sections.sectionHeader);
       }
-      console.log(headerData);
+      
 
       if (layoutData.sections?.sectionFooter) {
         setFooterData(layoutData.sections.sectionFooter);
       }
-      console.log(footerData);
+      
 
-      console.log(`Layout data for home:`, layoutData);
+      
       return layoutData;
     } catch (error) {
       console.error("Error fetching layout data:", error);
       throw error;
     }
   };
-
-  // useEffect(() => {
-  //   const fetchToken = async () => {
-  //     try {
-  //       const response = await fetch(`/api/generateToken`);
-  //       const sectionToken = await response.text();
-  //       localStorage.setItem("sectionToken", sectionToken);
-  //     } catch (error) {
-  //       console.error("Error fetching token:", error);
-  //     }
-  //   };
-  //   fetchToken();
-  // }, []);
 
   useEffect(() => {
     const handleResize = async () => {
@@ -337,7 +331,7 @@ export default function HomePage() {
 
         // Always use "home" for the home page
         const layoutData = await fetchLayoutData("home", activeMode);
-        console.log(layoutData);
+        
 
         if (layoutData && layoutData.sections && layoutData.sections.children) {
           const testData = layoutData.sections.children

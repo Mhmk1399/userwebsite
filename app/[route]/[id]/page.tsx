@@ -264,7 +264,7 @@ const extractBlogData = (template: TemplateData): BlogSchemaProps => {
 export default function Page() {
   const params = useParams();
   const route = params.route as string;
-  console.log(route, "route");
+  
 
   const [data, setData] = useState<AllSections[]>([]);
   const [isMobile, setIsMobile] = useState(false);
@@ -296,17 +296,17 @@ export default function Page() {
       }
 
       const layoutData = await response.json();
-      console.log(layoutData);
+      
       // Extract header and footer data
       if (layoutData.sections?.sectionHeader) {
         setHeaderData(layoutData.sections.sectionHeader);
       }
-      console.log(headerData);
+      
 
       if (layoutData.sections?.sectionFooter) {
         setFooterData(layoutData.sections.sectionFooter);
       }
-      console.log(footerData);
+      
       return layoutData;
     } catch (error) {
       console.error("Error fetching layout data:", error);
@@ -314,18 +314,7 @@ export default function Page() {
     }
   };
 
-  // useEffect(() => {
-  //   const fetchToken = async () => {
-  //     try {
-  //       const response = await fetch(`/api/generateToken`);
-  //       const sectionToken = await response.text();
-  //       localStorage.setItem("sectionToken", sectionToken);
-  //     } catch (error) {
-  //       console.error("Error fetching token:", error);
-  //     }
-  //   };
-  //   fetchToken();
-  // }, []);
+
 
   useEffect(() => {
     const handleResize = async () => {
