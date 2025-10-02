@@ -13,7 +13,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ message: "توکن احراز هویت مورد نیاز است" }, { status: 401 });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { id?: string; _id?: string };
     const userId = decoded.id || decoded._id;
 
     const ticket = await CustomerTicket.findOne({ 
@@ -26,7 +26,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     return NextResponse.json({ ticket });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ message: "خطای سرور" }, { status: 500 });
   }
 }
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       return NextResponse.json({ message: "توکن احراز هویت مورد نیاز است" }, { status: 401 });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId?: string };
     const userId = decoded.userId || decoded.userId;
     console.log("POST - Looking for ticket with ID:", id, "and customer:", userId);
 
@@ -74,7 +74,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     await ticket.populate("customer", "name phone");
 
     return NextResponse.json({ ticket });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ message: "خطای سرور" }, { status: 500 });
   }
 }

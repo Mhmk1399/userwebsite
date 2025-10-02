@@ -20,11 +20,11 @@ export async function POST(request: NextRequest) {
     }
 
     console.log("2. Checking global.pendingOrders...");
-    console.log("global.pendingOrders exists:", !!global.pendingOrders);
-    console.log("pendingOrders size:", global.pendingOrders?.size || 0);
+    console.log("global.pendingOrders exists:", !!(global as Record<string, unknown>).pendingOrders);
+    console.log("pendingOrders size:", ((global as Record<string, unknown>).pendingOrders as Map<string, unknown>)?.size || 0);
     
     // Retrieve stored order data
-    const pendingOrder = global.pendingOrders?.get(authority);
+    const pendingOrder = ((global as Record<string, unknown>).pendingOrders as Map<string, unknown>)?.get(authority) as Record<string, unknown> | undefined;
     console.log("3. Pending order found:", !!pendingOrder);
     
     if (!pendingOrder) {
@@ -40,9 +40,9 @@ export async function POST(request: NextRequest) {
     console.log("Order expires at:", pendingOrder.expiresAt);
     
     // Check if order has expired
-    if (new Date() > pendingOrder.expiresAt) {
+    if (new Date() > (pendingOrder.expiresAt as Date)) {
       console.log("ERROR: Order has expired");
-      global.pendingOrders?.delete(authority);
+      ((global as Record<string, unknown>).pendingOrders as Map<string, unknown>)?.delete(authority);
       return NextResponse.json({
         success: false,
         message: "Order has expired"
@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
       console.log("Shipping address from pending order:", pendingOrder.shippingAddress);
       
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { authority: _authority, paymentAmount: _paymentAmount, expiresAt: _expiresAt, ...orderFields } = pendingOrder;
+      const { authority: _authority, paymentAmount: _paymentAmount, expiresAt: _expiresAt, ...orderFields } = pendingOrder as Record<string, unknown>;
       const orderData = {
         ...orderFields,
         status: "processing", // Use valid enum value
@@ -100,7 +100,7 @@ export async function POST(request: NextRequest) {
         cardPan: result.data.card_pan,
         verifiedAt: new Date(),
         storeId: process.env.STOREID
-      };
+      } as Record<string, unknown>;
       console.log("Order data to save:", JSON.stringify(orderData, null, 2));
       console.log("Final shipping address:", orderData.shippingAddress);
       
@@ -110,7 +110,7 @@ export async function POST(request: NextRequest) {
         console.log("Order created successfully:", order._id);
         
         // Clean up pending order
-        global.pendingOrders?.delete(authority);
+        ((global as Record<string, unknown>).pendingOrders as Map<string, unknown>)?.delete(authority);
         console.log("10. Pending order cleaned up");
         
         const response = {

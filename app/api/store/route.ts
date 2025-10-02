@@ -25,7 +25,7 @@ export async function GET(request: Request) {
     const limit = parseInt(searchParams.get("limit") || "10");
     const skip = (page - 1) * limit;
 
-    let matchQuery: any = { storeId: storeId };
+    const matchQuery: Record<string, unknown> = { storeId: storeId };
 
     // Category filter
     if (categoryId) {
@@ -58,6 +58,7 @@ export async function GET(request: Request) {
     }
 
     // Build aggregation pipeline
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const pipeline: any[] = [
       { $match: matchQuery },
       // Convert price to number for filtering and sorting
@@ -76,6 +77,7 @@ export async function GET(request: Request) {
     ];
 
     // Price filter - only add if values are provided
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const priceFilters: any[] = [];
     if (priceMin) {
       priceFilters.push({ $gte: ["$numPrice", parseFloat(priceMin)] });
@@ -95,7 +97,7 @@ export async function GET(request: Request) {
     }
 
     // Sort
-    let sortObj: any;
+    let sortObj: Record<string, number>;
     switch (sortBy) {
       case "price-asc":
         sortObj = { numPrice: 1 };

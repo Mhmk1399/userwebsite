@@ -4,28 +4,6 @@ import {
   ProductSection,
   ProductCardData,
   ProductBlockSetting,
-  BannerSection,
-  BlogBlock,
-  BlogDetailBlock,
-  BlogListSection,
-  CollapseSection,
-  CollectionSection,
-  ContactFormDataSection,
-  DetailPageBlock,
-  GallerySection,
-  ImageTextSection,
-  MultiColumnSection,
-  MultiRowSection,
-  NewsLetterSection,
-  OfferRowSection,
-  ProductListSection,
-  RichTextSection,
-  Section,
-  SlideBannerSection,
-  SlideSection,
-  SpecialOfferSection,
-  StorySection,
-  VideoSection,
 } from "@/lib/types";
 import ProductCard from "./productCard";
 import { useEffect, useState, useCallback } from "react";
@@ -34,29 +12,7 @@ import React from "react";
 import { FiFilter } from "react-icons/fi";
 import toast from "react-hot-toast";
 
-type AllSections = Section &
-  RichTextSection &
-  BannerSection &
-  ImageTextSection &
-  VideoSection &
-  ContactFormDataSection &
-  NewsLetterSection &
-  CollapseSection &
-  MultiColumnSection &
-  SlideSection &
-  MultiRowSection &
-  ProductListSection &
-  CollectionSection &
-  SpecialOfferSection &
-  StorySection &
-  OfferRowSection &
-  GallerySection &
-  SlideBannerSection &
-  BlogBlock &
-  BlogDetailBlock &
-  ProductListSection &
-  BlogListSection &
-  DetailPageBlock;
+
 
 interface ProductListProps {
   sections: ProductSection[] | ProductSection;
@@ -341,7 +297,7 @@ const ProductList: React.FC<ProductListProps> = ({
   componentName,
 }) => {
   const [productData, setProductData] = useState<ProductCardData[]>([]);
-  const [data, setData] = useState<AllSections | undefined>(undefined);
+
   const [categories, setCategories] = useState<CategoryWithChildren[]>([]);
   const [sortBy, setSortBy] = useState<
     "newest" | "price-asc" | "price-desc" | "name"
@@ -394,7 +350,7 @@ const ProductList: React.FC<ProductListProps> = ({
     setTempPriceMin(sp.priceMin || "");
     setTempPriceMax(sp.priceMax || "");
     setSelectedColors(sp.colors ? sp.colors.split(",") : []);
-    setSortBy((sp.sortBy || "newest") as any);
+    setSortBy((sp.sortBy || "newest") as "newest" | "price-asc" | "price-desc" | "name");
 
     const isStoreRoute = pathname.split("/")[1] === "store";
     if (!isStoreRoute) {

@@ -129,12 +129,12 @@ export async function POST(request: NextRequest) {
       
       // In production, store this in Redis or database with TTL
       // For now, we'll use a simple in-memory store with cleanup
-      global.pendingOrders = global.pendingOrders || new Map();
-      global.pendingOrders.set(result.data.authority, pendingOrder);
+      (global as Record<string, unknown>).pendingOrders = (global as Record<string, unknown>).pendingOrders || new Map();
+      ((global as Record<string, unknown>).pendingOrders as Map<string, unknown>).set(result.data.authority, pendingOrder);
       
       // Cleanup expired orders
       setTimeout(() => {
-        global.pendingOrders?.delete(result.data.authority);
+        ((global as Record<string, unknown>).pendingOrders as Map<string, unknown>)?.delete(result.data.authority);
       }, 15 * 60 * 1000);
       
       const paymentUrl = `https://payment.zarinpal.com/pg/StartPay/${result.data.authority}`;

@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { BlogDetailSection, HeaderSection, FooterSection, Section } from "@/lib/types";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import { getClientStoreId } from "@/utils/getClientStoreId";
 
 interface BlogDetailData {
   _id: string;
@@ -267,20 +268,20 @@ const BlogDetailContent: React.FC<BlogDetailProps & { blogId: string }> = ({
   const [blog, setBlog] = useState<BlogDetailData | null>(null);
   const [loading, setLoading] = useState(true);
   const [sectionData, setSectionData] = useState<BlogDetailSection | null>(null);
-  const [sections, setSections] = useState<Section[]>([]);
+
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [headerData, setHeaderData] = useState<HeaderSection | null>(null);
   const [footerData, setFooterData] = useState<FooterSection | null>(null);
 
-  const fetchLayoutData = async (activeMode: string, storeId: string) => {
+  const fetchLayoutData = async (activeMode: string) => {
     try {
       const response = await fetch("/api/layout-jason", {
         method: "GET",
         headers: {
           selectedRoute: "blog",
           activeMode: activeMode,
-          storeId: "storemfcdfog4456qhn",
+          storeId: getClientStoreId(),
         },
       });
 
@@ -330,16 +331,15 @@ const BlogDetailContent: React.FC<BlogDetailProps & { blogId: string }> = ({
   useEffect(() => {
     const handleLayoutFetch = async () => {
       const activeMode = isMobile ? "sm" : "lg";
-      const storeId = process.env.STOREID || "";
+
 
       try {
         setIsLoading(true);
         setError(null);
 
-        const layoutData = await fetchLayoutData(activeMode, storeId);
+        const layoutData = await fetchLayoutData(activeMode);
 
         if (layoutData && layoutData.sections && layoutData.sections.children) {
-          setSections(layoutData.sections.children.sections);
           const blogDetailSection = layoutData.sections.children.sections.find(
             (section: Section) => section.type === "BlogDetail"
           ) as BlogDetailSection;
@@ -441,7 +441,7 @@ const BlogDetailContent: React.FC<BlogDetailProps & { blogId: string }> = ({
         <Image
           src={
             sectionData.setting.coverImage ||
-            blog.image
+            blog.imageSrc || "/assets/images/pro2.jpg"
           }
           alt={blog.title}
           fill

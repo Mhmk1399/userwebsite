@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import { getClientStoreId } from "@/utils/getClientStoreId";
 import {
   BannerSection,
   BlogBlock,
@@ -278,8 +279,7 @@ export default function Page() {
   // Fetch layout data from API
   const fetchLayoutData = async (
     routeName: string,
-    activeMode: string,
-    storeId: string
+    activeMode: string
   ) => {
     try {
       const response = await fetch("/api/layout-jason", {
@@ -287,10 +287,9 @@ export default function Page() {
         headers: {
           selectedRoute: routeName,
           activeMode: activeMode,
-          storeId: "storemfcdfog4456qhn",
+          storeId: getClientStoreId(),
         },
       });
-
       if (!response.ok) {
         throw new Error(`Failed to fetch layout data: ${response.status}`);
       }
@@ -322,13 +321,12 @@ export default function Page() {
       setIsMobile(isMobileView);
 
       const activeMode = isMobileView ? "sm" : "lg";
-      const storeId = process.env.STOREID || "";
 
       try {
         setIsLoading(true);
         setError(null);
 
-        const layoutData = await fetchLayoutData(route, activeMode, storeId);
+        const layoutData = await fetchLayoutData(route, activeMode);
 
         if (layoutData && layoutData.sections && layoutData.sections.children) {
           const testData = layoutData.sections.children

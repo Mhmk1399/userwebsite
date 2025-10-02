@@ -8,16 +8,14 @@ import Threads from "./Threads";
 const AuthContainer: React.FC = () => {
   const router = useRouter();
   const [isLogin, setIsLogin] = useState(true);
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [formData, setFormData] = useState<{ [key: string]: string }>({});
+
   const [modalError, setModalError] = useState(false);
   const [modalSuccess, setModalSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState<'phone' | 'sms' | 'password'>('phone');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [smsCode, setSmsCode] = useState('');
-  const [smsVerified, setSmsVerified] = useState(false);
-  const [userExists, setUserExists] = useState(false);
+
   const [smsLoading, setSmsLoading] = useState(false);
   const [isForgetPassword, setIsForgetPassword] = useState(false);
   const [countdown, setCountdown] = useState(0);
@@ -40,7 +38,7 @@ const AuthContainer: React.FC = () => {
       } else {
         toast.error('خطا در ارسال کد');
       }
-    } catch (error) {
+    } catch {
       toast.error('خطا در ارسال کد');
     } finally {
       setSmsLoading(false);
@@ -57,13 +55,12 @@ const AuthContainer: React.FC = () => {
       });
       
       if (response.ok) {
-        setSmsVerified(true);
         toast.success('کد تایید شد');
         setStep('password');
       } else {
         toast.error('کد نامعتبر است');
       }
-    } catch (error) {
+    } catch {
       toast.error('خطا در تایید کد');
     } finally {
       setLoading(false);
@@ -87,7 +84,7 @@ const AuthContainer: React.FC = () => {
       } else {
         toast.error('خطا در تغییر رمز عبور');
       }
-    } catch (error) {
+    } catch {
       toast.error('خطا در تغییر رمز عبور');
     } finally {
       setLoading(false);
@@ -209,7 +206,6 @@ const AuthContainer: React.FC = () => {
 
             setTimeout(() => {
               setIsLogin(true);
-              setFormData({});
               setStep('phone');
               const form = event.currentTarget;
               form.reset();
@@ -228,10 +224,7 @@ const AuthContainer: React.FC = () => {
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+
 
   return (
     <div className="relative min-h-screen flex items-center justify-center px-10 py-20 lg:p-0" dir="rtl">
@@ -304,7 +297,6 @@ const AuthContainer: React.FC = () => {
                     type="text"
                     placeholder="09xxxxxxxxx"
                     required
-                    onChange={handleInputChange}
                     className="w-full px-4 py-3 border-2 rounded-xl text-gray-800 placeholder-gray-400 
                       transition-all duration-300 focus:outline-none focus:ring-0
                       border-gray-200 bg-white focus:border-blue-500 focus:bg-blue-50
@@ -364,7 +356,6 @@ const AuthContainer: React.FC = () => {
                         type="text"
                         placeholder="نام و نام خانوادگی"
                         required
-                        onChange={handleInputChange}
                         className="w-full px-4 py-3 border-2 rounded-xl text-gray-800 placeholder-gray-400 
                           transition-all duration-300 focus:outline-none focus:ring-0
                           border-gray-200 bg-white focus:border-blue-500 focus:bg-blue-50
@@ -380,7 +371,6 @@ const AuthContainer: React.FC = () => {
                         type="email"
                         placeholder="ایمیل"
                         required
-                        onChange={handleInputChange}
                         className="w-full px-4 py-3 border-2 rounded-xl text-gray-800 placeholder-gray-400 
                           transition-all duration-300 focus:outline-none focus:ring-0
                           border-gray-200 bg-white focus:border-blue-500 focus:bg-blue-50
@@ -398,7 +388,6 @@ const AuthContainer: React.FC = () => {
                     type="password"
                     placeholder={isForgetPassword ? "رمز عبور جدید" : "گذرواژه"}
                     required
-                    onChange={handleInputChange}
                     className="w-full px-4 py-3 border-2 rounded-xl text-gray-800 placeholder-gray-400 
                       transition-all duration-300 focus:outline-none focus:ring-0
                       border-gray-200 bg-white focus:border-blue-500 focus:bg-blue-50
@@ -415,7 +404,6 @@ const AuthContainer: React.FC = () => {
                       type="password"
                       placeholder="تکرار گذرواژه"
                       required
-                      onChange={handleInputChange}
                       className="w-full px-4 py-3 border-2 rounded-xl text-gray-800 placeholder-gray-400 
                         transition-all duration-300 focus:outline-none focus:ring-0
                         border-gray-200 bg-white focus:border-blue-500 focus:bg-blue-50

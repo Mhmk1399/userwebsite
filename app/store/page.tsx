@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { getClientStoreId } from "@/utils/getClientStoreId";
 
 import {
   BannerSection,
@@ -84,14 +85,14 @@ export default function Page() {
     DetailPage,
   };
 
-  const fetchLayoutData = async (activeMode: string, storeId: string) => {
+  const fetchLayoutData = async (activeMode: string) => {
     try {
       const response = await fetch("/api/layout-jason", {
         method: "GET",
         headers: {
           selectedRoute: "store",
           activeMode: activeMode,
-          storeId: "storemfcdfog4456qhn",
+          storeId: getClientStoreId(),
         },
       });
 
@@ -123,13 +124,12 @@ export default function Page() {
       setIsMobile(isMobileView);
 
       const activeMode = isMobileView ? "sm" : "lg";
-      const storeId = process.env.STOREID || "";
 
       try {
         setIsLoading(true);
         setError(null);
 
-        const layoutData = await fetchLayoutData(activeMode, storeId);
+        const layoutData = await fetchLayoutData(activeMode);
 
         if (layoutData && layoutData.sections && layoutData.sections.children) {
           const testData = layoutData.sections.children.sections as AllSections[];

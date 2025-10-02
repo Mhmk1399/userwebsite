@@ -6,12 +6,9 @@ import Image from "next/image";
 import Link from "next/link";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import { getClientStoreId } from "@/utils/getClientStoreId";
 
-interface BlogListProps {
-  sections: BlogListSection[];
-  isMobile: boolean;
-  componentName: string;
-}
+
 interface BlogData {
   blogId: number;
   imageSrc: string;
@@ -167,14 +164,14 @@ export default function Page() {
   const [headerData, setHeaderData] = useState<HeaderSection | null>(null);
   const [footerData, setFooterData] = useState<FooterSection | null>(null);
 
-  const fetchLayoutData = async (activeMode: string, storeId: string) => {
+  const fetchLayoutData = async (activeMode: string) => {
     try {
       const response = await fetch("/api/layout-jason", {
         method: "GET",
         headers: {
           selectedRoute: "blogs",
           activeMode: activeMode,
-          storeId: "storemfcdfog4456qhn",
+          storeId: getClientStoreId(),
         },
       });
 
@@ -232,13 +229,12 @@ export default function Page() {
       setIsMobile(isMobileView);
 
       const activeMode = isMobileView ? "sm" : "lg";
-      const storeId = process.env.STOREID || "";
 
       try {
         setIsLoading(true);
         setError(null);
 
-        const layoutData = await fetchLayoutData(activeMode, storeId);
+        const layoutData = await fetchLayoutData(activeMode);
 
         if (layoutData && layoutData.sections && layoutData.sections.children) {
           setSections(layoutData.sections.children.sections);
@@ -308,7 +304,7 @@ export default function Page() {
 
   const sectionData = sections?.find(
     (section) => section.type === "BlogList"
-  ) as BlogListSection;
+  ) as unknown as BlogListSection;
 
   if (!sectionData) {
     return (

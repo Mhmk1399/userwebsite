@@ -4,12 +4,8 @@ import { DetailPageSection, ProductCardData, ProductImage } from "@/lib/types";
 import Image from "next/image";
 import { styled } from "styled-components";
 import { useParams } from "next/navigation";
+import { getClientStoreId } from "@/utils/getClientStoreId";
 
-interface DetailPageProps {
-  sections: DetailPageSection[];
-  isMobile: boolean;
-  componentName: string;
-}
 const defaultProperties = [
   { key: "نوع اتصال", value: "بی‌سیم", tooltip: "بی‌سیم " },
   { key: "نوع گوشی", value: "دو گوشی", tooltip: "دو گوشی" },
@@ -132,11 +128,18 @@ const SectionDetailPage = styled.div<{
   }
 `;
 
-const DetailPage: React.FC<DetailPageProps> = ({
-  componentName,
-  isMobile,
-  sections,
-}) => {
+export default function DetailPage() {
+  const [isMobile, setIsMobile] = useState(false);
+  const componentName = "DetailPage";
+  
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   const [product, setProduct] = useState<ProductCardData>({
     images: [],
     name: "",
@@ -155,7 +158,7 @@ const DetailPage: React.FC<DetailPageProps> = ({
 
   const [selectedImage, setSelectedImage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<Record<string, unknown> | null>(null);
   const [layoutLoading, setLayoutLoading] = useState<boolean>(true);
 
   const params = useParams();
@@ -163,8 +166,7 @@ const DetailPage: React.FC<DetailPageProps> = ({
 
   const fetchLayoutData = async (
     routeName: string,
-    activeMode: string,
-    storeId: string
+    activeMode: string
   ) => {
     try {
       const response = await fetch("/api/layout-jason", {
@@ -172,7 +174,7 @@ const DetailPage: React.FC<DetailPageProps> = ({
         headers: {
           selectedRoute: "detail",
           activeMode: activeMode,
-          storeId: "storemfcdfog4456qhn",
+          storeId: getClientStoreId(),
         },
       });
 
@@ -201,7 +203,7 @@ const DetailPage: React.FC<DetailPageProps> = ({
   };
 
   useEffect(() => {
-    fetchLayoutData("lg", "storemfcdfog4456qhn", "detail");
+    fetchLayoutData("lg", "detail");
   }, []);
 
   useEffect(() => {
@@ -247,9 +249,12 @@ const DetailPage: React.FC<DetailPageProps> = ({
     );
   }
   // Create fallback section data if layout data is not available
-  const sectionData = data?.sections?.children?.sections?.find(
-    (section: any) => section.type === componentName
-  );
+  const sectionData = data && (data as Record<string, unknown>).sections && 
+    ((data as Record<string, unknown>).sections as Record<string, unknown>).children &&
+    (((data as Record<string, unknown>).sections as Record<string, unknown>).children as Record<string, unknown>).sections ?
+    ((((data as Record<string, unknown>).sections as Record<string, unknown>).children as Record<string, unknown>).sections as Record<string, unknown>[])?.find(
+      (section: Record<string, unknown>) => section.type === componentName
+    ) : null;
 
   if (layoutLoading) {
     return (
@@ -260,7 +265,7 @@ const DetailPage: React.FC<DetailPageProps> = ({
   }
 
   return (
-    <SectionDetailPage $isMobile={isMobile} $data={sectionData} dir="rtl">
+    <SectionDetailPage $isMobile={isMobile} $data={(sectionData as unknown as DetailPageSection) || ({} as unknown as DetailPageSection)} dir="rtl">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-2">
         {/* Product Images Section */}
         <div className="space-y-4 z-50">
@@ -464,5 +469,4 @@ const DetailPage: React.FC<DetailPageProps> = ({
       </div>
     </SectionDetailPage>
   );
-};
-export default DetailPage;
+}

@@ -15,15 +15,13 @@ export function createApiService(config: ServiceConfig = {}) {
     post: service.post.bind(service),
     patch: service.patch.bind(service),
     delete: service.delete.bind(service),
-    useGet: service.useGet.bind(service),
 
     // Dynamic endpoint builder
     endpoint: (path: string) => ({
-      get: (options?: any) => service.get(path, options),
-      post: (body?: any, options?: any) => service.post(path, body, options),
-      patch: (body?: any, options?: any) => service.patch(path, body, options),
-      delete: (options?: any) => service.delete(path, options),
-      useGet: (options?: any) => service.useGet(path, options),
+      get: (options?: Record<string, unknown>) => service.get(path, options),
+      post: (body?: Record<string, unknown>, options?: Record<string, unknown>) => service.post(path, body, options),
+      patch: (body?: Record<string, unknown>, options?: Record<string, unknown>) => service.patch(path, body, options),
+      delete: (options?: Record<string, unknown>) => service.delete(path, options),
     }),
 
     // Predefined endpoints (if configured)
@@ -31,16 +29,15 @@ export function createApiService(config: ServiceConfig = {}) {
       Object.keys(config.endpoints).reduce((acc, key) => {
         const path = config.endpoints![key];
         acc[key] = {
-          get: (options?: any) => service.get(path, options),
-          post: (body?: any, options?: any) =>
+          get: (options?: Record<string, unknown>) => service.get(path, options),
+          post: (body?: Record<string, unknown>, options?: Record<string, unknown>) =>
             service.post(path, body, options),
-          patch: (body?: any, options?: any) =>
+          patch: (body?: Record<string, unknown>, options?: Record<string, unknown>) =>
             service.patch(path, body, options),
-          delete: (options?: any) => service.delete(path, options),
-          useGet: (options?: any) => service.useGet(path, options),
+          delete: (options?: Record<string, unknown>) => service.delete(path, options),
         };
         return acc;
-      }, {} as any)),
+      }, {} as Record<string, unknown>)),
   };
 }
 

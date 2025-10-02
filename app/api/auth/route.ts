@@ -35,7 +35,9 @@ export async function POST(request: NextRequest) {
   try {
     const { name, phone, password } = await request.json();
     
-    const storeId = process.env.STOREID;
+    const storeId = process.env.NODE_ENV === 'development' 
+      ? process.env.STOREID 
+      : await getStoreId(request);
     
     // Check if user already exists with this phone and storeId
     const existingUser = await StoreUsers.findOne({ phone, storeId });
@@ -55,7 +57,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ newUser }, { status: 201, statusText: "User created successfully" });
   } catch (error) {
     console.error("Error creating user:", error);
-    if (error.code === 11000) {
+    if (error && typeof error === 'object' && 'code' in error && error.code === 11000) {
       return NextResponse.json({ message: "کاربری با این شماره تلفن قبلاً ثبت نام کرده است" }, { status: 400 });
     }
     return NextResponse.json(

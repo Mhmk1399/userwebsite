@@ -1831,3 +1831,9 @@ export interface CanvasElementStyle {
   textAlign?: "left" | "right" | "center" | "justify" | "start" | "end";
   zIndex?: number;
 }
+
+export interface CartItem {
+  productId: string;
+  quantity: number;
+  price: number;
+}

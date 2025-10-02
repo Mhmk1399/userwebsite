@@ -1,4 +1,4 @@
-import useSWR from "swr";
+
 
 interface ApiConfig {
   baseUrl?: string;
@@ -8,7 +8,7 @@ interface ApiConfig {
 
 interface RequestOptions extends ApiConfig {
   method?: "GET" | "POST" | "PATCH" | "DELETE";
-  body?: any;
+  body?: Record<string, unknown>;
 }
 
 class ApiService {
@@ -46,11 +46,11 @@ class ApiService {
     return this.request(endpoint, { ...options, method: "GET" });
   }
 
-  post(endpoint: string, body?: any, options: ApiConfig = {}) {
+  post(endpoint: string, body?: Record<string, unknown>, options: ApiConfig = {}) {
     return this.request(endpoint, { ...options, method: "POST", body });
   }
 
-  patch(endpoint: string, body?: any, options: ApiConfig = {}) {
+  patch(endpoint: string, body?: Record<string, unknown>, options: ApiConfig = {}) {
     return this.request(endpoint, { ...options, method: "PATCH", body });
   }
 
@@ -58,21 +58,7 @@ class ApiService {
     return this.request(endpoint, { ...options, method: "DELETE" });
   }
 
-  useGet(
-    endpoint: string,
-    options: ApiConfig & { revalidateOnFocus?: boolean } = {}
-  ) {
-    const {
-      cache = 60000,
-      revalidateOnFocus = false,
-      ...fetchOptions
-    } = options;
 
-    return useSWR(endpoint, () => this.get(endpoint, fetchOptions), {
-      refreshInterval: cache,
-      revalidateOnFocus,
-    });
-  }
 }
 
 export default ApiService;

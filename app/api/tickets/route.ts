@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ message: "توکن احراز هویت مورد نیاز است" }, { status: 401 });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
     const userId = decoded.userId;
 
     const tickets = await CustomerTicket.find({ customer: userId , })
@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
       .sort({ updatedAt: -1 });
 
     return NextResponse.json({ tickets });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ message: "خطای سرور" }, { status: 500 });
   }
 }
@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: "توکن احراز هویت مورد نیاز است" }, { status: 401 });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
     const userId = decoded.userId 
     console.log("Decoded token:", decoded);
     console.log("User ID:", userId);
