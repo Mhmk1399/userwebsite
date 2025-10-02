@@ -54,7 +54,6 @@ export async function GET(request: NextRequest) {
         { status: 401 }
       );
     }
-    console.log("Token:", token);
     
     const verifiedToken = jwt.verify(
       token,
@@ -62,10 +61,38 @@ export async function GET(request: NextRequest) {
     ) as CustomJwtPayload;
 
     const userId = verifiedToken.userId;
-    // Query directly with userId filter instead of fetching all orders first
-    const orders = await Order.find({ userId: userId });
+    const { searchParams } = new URL(request.url);
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '6');
+    const status = searchParams.get('status');
+    
+    const skip = (page - 1) * limit;
+    
+    // Build query filter
+    const filter: any = { userId };
+    if (status && status !== 'all') {
+      filter.status = status;
+    }
+    
+    // Get total count for pagination
+    const totalOrders = await Order.countDocuments(filter);
+    
+    // Get orders with pagination
+    const orders = await Order.find(filter)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
 
-    return NextResponse.json({ orders }, { status: 200 });
+    return NextResponse.json({ 
+      orders, 
+      pagination: {
+        currentPage: page,
+        totalPages: Math.ceil(totalOrders / limit),
+        totalOrders,
+        hasNext: page < Math.ceil(totalOrders / limit),
+        hasPrev: page > 1
+      }
+    }, { status: 200 });
   } catch (error) {
     console.log("Error fetching orders:", error);
     return NextResponse.json(
@@ -75,4 +102,4 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// Compare this snippet from app/api/orders/route.ts:
+

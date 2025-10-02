@@ -1,40 +1,6 @@
-import { DetailedHTMLProps, HTMLAttributes } from "react";
+import { DetailedHTMLProps, HTMLAttributes } from "react"; 
 import { Interpolation } from "styled-components";
 import { Substitute } from "styled-components/dist/types";
-
-
-
-export interface ShippingAddress {
-  fullName: string;
-  phone: string;
-  address: string;
-  city: string;
-  postalCode: string;
-}
-
-export interface CartItem {
-  productId: string;
-  quantity: number;
-  price: number;
-}
-
-export interface PendingOrder {
-  userId: string;
-  products: CartItem[];
-  totalAmount: number;
-  shippingAddress: ShippingAddress;
-  status: string;
-  paymentStatus: string;
-  createdAt: Date;
-  expiresAt: Date;
-  authority: string;
-  paymentAmount: number;
-}
-
-declare global {
-  // eslint-disable-next-line no-var
-  var pendingOrders: Map<string, PendingOrder> | undefined;
-}
 
 export interface Link {
   megaMenu: MegaMenuItem[];
@@ -45,6 +11,14 @@ export interface BrandsBlockSettings extends CommonSettings {
   headingColor: string;
   headingFontSize: string;
   headingFontWeight: string;
+  descriptionColor: string;
+  descriptionFontSize: string;
+  descriptionFontWeight: string;
+  shadowColor?: string;
+  shadowSpread?: string;
+  shadowBlur?: string;
+  shadowOffsetY?: string;
+  shadowOffsetX?: string;
   brandNameColor: string;
   brandNameFontSize: string;
   brandNameFontWeight: string;
@@ -85,6 +59,7 @@ export interface CollapseBlockSetting extends CommonSettings {
   contentFontSize?: string;
   contentFontWeight?: string;
   contentColor?: string;
+  formRadius?: string;
 }
 
 export interface CollapseBlock {
@@ -113,7 +88,12 @@ export interface CommonSettings {
   formBackground: string;
   textColor?: string;
   btnTextColor?: string;
+  btnWidth?: string;
+  btnRadius?: string;
   imageWidth?: string;
+  navRadius: string;
+  navColor: string;
+  navBg: string;
   imageHeight?: string;
   opacityImage?: string;
   heading?: string;
@@ -130,7 +110,10 @@ export interface CommonSettings {
   paddingTop?: string;
   paddingBottom?: string;
   marginTop?: string;
+  backgroundRadius?: string;
   marginBottom?: string;
+  marginLeft?: string;
+  marginRight?: string;
   textFontSize?: string;
   textFontWeight?: string;
   descriptionFontSize?: string;
@@ -151,8 +134,16 @@ export interface CommonSettings {
   setting: CollapseBlockSetting;
   paddingRight?: string;
   paddingLeft?: string;
-  marginRight?: string;
-  marginLeft?: string;
+  arrowHeight?: string;
+  arrowWidth?: string;
+  arrowRadius?: string;
+  arrowColor?: string;
+  arrowBgHover?: string;
+  shadowColor?: string;
+  shadowSpread?: string;
+  shadowBlur?: string;
+  shadowOffsetY?: string;
+  shadowOffsetX?: string;
   borderRadius?: string;
   border: string;
   textColor1?: string;
@@ -171,8 +162,6 @@ export interface HeaderBlockSettings extends CommonSettings {
   imageHeight: string;
   imageRadius: string;
   itemColor: string;
-  itemFontSize: string;
-  itemFontWeight: string;
   itemHoverColor: string;
   backgroundColorNavbar: string;
   searchBarBorderColor: string;
@@ -191,6 +180,9 @@ export interface HeaderBlockSettings extends CommonSettings {
   categoryItemColor: string;
   categoryItemSize: string;
   categoryItemHoverColor: string;
+  mobileBackground: string;
+  megaMenuRadius: string;
+  bgRadius: string;
 }
 export interface HeaderBlock {
   imageLogo: string;
@@ -244,10 +236,10 @@ export interface AnimationConfig {
   iterationCount?: string;
 }
 
-// export interface AnimationEffect {
-//   type: "hover" | "click";
-//   animation: AnimationConfig;
-// }
+export interface AnimationEffect {
+  type: "hover" | "click";
+  animation: AnimationConfig;
+}
 
 // Updated BannerBlockSettings with single animation
 export interface BannerBlockSettings extends CommonSettings {
@@ -264,6 +256,10 @@ export interface BannerBlockSettings extends CommonSettings {
   imageRadious: string;
   imageBehavior: string;
   animation?: AnimationEffect;
+  boxWidth: string;
+  boxHeight: string;
+  borderColor: string;
+  border: string;
 }
 export interface AnimationState {
   isPlaying: boolean;
@@ -309,11 +305,14 @@ export interface MultiColumnBlockSetting extends CommonSettings {
   descriptionColor?: string;
   backgroundColorBox?: string;
   btnColor?: string;
+  btnRadius?: string;
+  btnWidth?: string;
   btnBackgroundColor?: string;
   imageRadious?: string;
   // ADD these two lines:
   btnAnimation?: AnimationEffect;
   imageAnimation?: AnimationEffect;
+  formRadius?: string;
 }
 
 export interface MultiColumnBlock {
@@ -367,10 +366,17 @@ export interface NewsLetterBlockSetting extends CommonSettings {
     >
   >;
   headingColor: string;
+  formRadius: string;
+  inputRadius: string;
+  btnRadius: string;
+  btnWidth: string;
+  inputWidth: string;
   headingFontSize: string;
   headingFontWeight: string;
   descriptionColor: string;
   descriptionFontSize: string;
+  inputTextColor: string;
+  inputBackgroundColor: string;
   descriptionFontWeight: string;
   btnTextColor: string;
   btnBackgroundColor: string;
@@ -422,11 +428,20 @@ export interface RichTextBlock {
     marginTop?: string;
     marginBottom?: string;
     background?: string;
+    backgroundRadius?: string;
+    btnWidth?: string;
+    btnRadius?: string;
+    align?: string;
     lineHeight: string;
     lineTop: string;
     lineBottom: string;
     lineWidth: string;
     lineColor: string;
+    shadowColor?: string;
+    shadowSpread?: string;
+    shadowBlur?: string;
+    shadowOffsetY?: string;
+    shadowOffsetX?: string;
     btnAnimation?: AnimationEffect; // Add button animation support
   };
 }
@@ -512,6 +527,9 @@ export interface ImageTextBlockSetting extends CommonSettings {
   imageWidth: string;
   imageHeight: string;
   background: string;
+  btnRadiuos: string;
+  imageRadius: string;
+  btnWidth: string;
   imageAnimation?: AnimationEffect; // Add image animation support
   buttonAnimation?: AnimationEffect; // Add button animation support
 }
@@ -570,6 +588,12 @@ export interface FooterBlockSetting {
   logoRadius: string;
   backgroundColor: string;
   categoryBg: string;
+  bgRadius: string;
+  shadowColor?: string;
+  shadowSpread?: string;
+  shadowBlur?: string;
+  shadowOffsetY?: string;
+  shadowOffsetX?: string;
 }
 
 export interface FooterLink {
@@ -594,7 +618,13 @@ export interface ContactFormBlockSetting extends Partial<CommonSettings> {
   headingFontWeight?: string;
   btnTextColor?: string;
   btnBackgroundColor?: string;
+  inputWidth?: string;
+  btnWidth?: string;
+  btnRadiuos?: string;
   formBackground?: string;
+  inputRadiuos?: string;
+  labelColor?: string;
+  boxRadiuos?: string;
   btnAnimation?: AnimationEffect; // Add button animation support
 }
 
@@ -690,6 +720,11 @@ export interface SlideBlockSetting {
   imageAnimation?: AnimationEffect;
   btnAnimation?: AnimationEffect;
   navAnimation?: AnimationEffect;
+  shadowColor?: string;
+  shadowSpread?: string;
+  shadowBlur?: string;
+  shadowOffsetY?: string;
+  shadowOffsetX?: string;
 }
 
 export interface SlideBlock {
@@ -711,6 +746,15 @@ export interface SlideSection {
   imageBehavior: string;
   btnBackgroundColor: string;
   btnTextColor: string;
+  navRadius: string;
+  navColor: string;
+  shadowColor?: string;
+  shadowSpread?: string;
+  shadowBlur?: string;
+  shadowOffsetY?: string;
+  shadowOffsetX?: string;
+  navBg: string;
+  btnWidth: string;
   blocks: SlideBlock[];
   setting: CommonSettings & {
     paddingTop: string;
@@ -731,19 +775,30 @@ export interface SlideSection {
 // Add these new interfaces for Video component
 export interface VideoBlockSetting extends Partial<CommonSettings> {
   headingColor?: string;
+  descrptionColor?: string;
   backgroundVideoSection?: string;
   headingFontSize?: string;
   headingFontWeight?: string;
+  descrptionFontSize?: string;
+  descrptionFontWeight?: string;
   videoWidth?: string;
+  videoHeight?: string;
   videoRadious?: string;
   videoPoster?: string;
   videoLoop?: boolean;
   videoMute?: boolean;
   videoAutoplay?: boolean;
+  radius?: string;
+  shadowColor?: string;
+  shadowSpread?: string;
+  shadowBlur?: string;
+  shadowOffsetY?: string;
+  shadowOffsetX?: string;
 }
 
 export interface VideoBlock {
   heading?: string;
+  descrption?: string;
   videoUrl: string;
   videoAlt?: string;
   setting: VideoBlockSetting;
@@ -821,6 +876,10 @@ export interface MultiRowBlockSetting extends CommonSettings {
   imageAlign: string;
   buttonAnimation?: AnimationEffect;
   imageAnimation?: AnimationEffect;
+  btnWidth?: string;
+  btnRadius?: string;
+  rowRadius?: string;
+  formRadius?: string;
 }
 
 export interface MultiRowBlock {
@@ -957,10 +1016,16 @@ export interface ProductBlockSetting {
   filterButtonTextColor: string;
   filterRowBg: string;
   filterNameColor: string;
+  textColor:string;
+  btnBackgroundColor:string;
+  btnTextColor:string;
   filterCardBg: string;
-  btnBackgroundColor: string;
-  btnTextColor: string;
-  textColor: string;
+  shadowColor?: string;
+  shadowSpread?: string;
+  shadowBlur?: string;
+  shadowOffsetY?: string;
+  shadowOffsetX?: string;
+  Radius?: string;
 }
 
 export interface ProductListSection {
@@ -1007,6 +1072,26 @@ export interface ProductCard {
   priceColor?: string;
   btnBackgroundColor?: string;
   btnColor?: string;
+}
+export interface ProductCardType {
+  blocks: ProductListSection[];
+  setting: ProductBlockSetting;
+  cardBorderRadius?: string;
+  cardBackground?: string;
+  imageWidth?: string;
+  imageHeight?: string;
+  imageRadius?: string;
+  nameFontSize?: string;
+  nameFontWeight?: string;
+  nameColor?: string;
+  descriptionFontSize?: string;
+  descriptionFontWeight?: string;
+  descriptionColor?: string;
+  priceFontSize?: string;
+  priceColor?: string;
+  btnBackgroundColor?: string;
+  btnColor?: string;
+  _id?: string;
 }
 export interface DetailPageBlockSettings {
   imageWidth: string;
@@ -1111,6 +1196,7 @@ export interface DetailPageSettings extends CommonSettings {
   priceFontSize: string;
   descriptionColor: string;
   descriptionFontSize: string;
+  descriptionFontWeight: string;
   btnBackgroundColor: string;
   btnTextColor: string;
   paddingTop: string;
@@ -1127,6 +1213,9 @@ export interface DetailPageSettings extends CommonSettings {
   propertyKeyColor: string;
   propertyValueColor: string;
   propertyBg: string;
+  Radius: string;
+  btnRadius: string;
+  propertyRadius: string;
 }
 
 export interface DetailPageSection {
@@ -1204,6 +1293,15 @@ export interface BlogListSetting {
   paddingRight: string;
   marginRight: string;
   marginLeft: string;
+  shadowColor?: string;
+  shadowSpread?: string;
+  shadowBlur?: string;
+  shadowOffsetY?: string;
+  shadowOffsetX?: string;
+  Radius?: string;
+  btnRadius?: string;
+  descriptionSize?: string;
+  titleSize?: string;
 }
 export interface BlogListFormProps {
   setUserInputData: React.Dispatch<React.SetStateAction<BlogSection>>;
@@ -1304,6 +1402,12 @@ export interface BlogDetailBlockSetting extends CommonSettings {
   sectionSpacing: string;
   metaColor: string;
   metaFontSize: string;
+  Radius: string;
+  shadowColor?: string;
+  shadowSpread?: string;
+  shadowBlur?: string;
+  shadowOffsetY?: string;
+  shadowOffsetX?: string;
 }
 
 export interface BlogDetailSection {
@@ -1389,6 +1493,7 @@ export interface SpecialOfferBlockSetting extends CommonSettings {
   selectedCollection: string;
   headingColor: string;
   headingFontSize: string;
+  height: string;
   headingFontWeight: string;
   navAnimation?: AnimationEffect; // Add this line for navigation button animations
 }
@@ -1400,7 +1505,7 @@ export interface GalleryImage {
 }
 
 export interface GalleryBlockSetting {
-  imageAnimation: AnimationEffect;
+  imageAnimation?: AnimationEffect;
   titleColor: string;
   titleFontSize: string;
   titleFontWeight: string;
@@ -1413,6 +1518,12 @@ export interface GalleryBlockSetting {
   imageRadius: string;
   gridColumns: string;
   gridGap: string;
+  shadowColor?: string;
+  shadowSpread?: string;
+  shadowBlur?: string;
+  shadowOffsetY?: string;
+  shadowOffsetX?: string;
+  Radius?: string;
 }
 
 export interface GalleryBlock {
@@ -1427,9 +1538,16 @@ export interface GallerySectionSetting {
   paddingBottom: string;
   marginTop: string;
   marginBottom: string;
+  marginLeft: string;
+  marginRight: string;
   paddingLeft: string;
   paddingRight: string;
-  backgroundColor: string;
+  shadowColor?: string;
+  shadowSpread?: string;
+  shadowBlur?: string;
+  shadowOffsetY?: string;
+  shadowOffsetX?: string;
+  Radius?: string;
 }
 
 export interface SpecialOfferBlock {
@@ -1453,6 +1571,9 @@ export interface StoryBlockSetting extends CommonSettings {
   imageHeight: string;
   imageRadius: string;
   imageAnimation?: AnimationEffect; // Add this line for story image animations
+  storyWidth?: string;
+  storyHeight?: string;
+  storyGap?: string;
 }
 
 export interface StoryBlock {
@@ -1566,7 +1687,7 @@ export interface BrandItem {
 }
 
 export interface BrandsBlockSetting extends CommonSettings {
-  navAnimation: AnimationEffect;
+  navAnimation?: AnimationEffect;
   headingColor: string;
   headingFontSize: string;
   headingFontWeight: string;
@@ -1583,6 +1704,7 @@ export interface BrandsBlockSetting extends CommonSettings {
 
 export interface BrandsBlock {
   heading: string;
+  description: string;
   brands: BrandItem[];
   setting: BrandsBlockSetting;
 }
@@ -1595,6 +1717,7 @@ export interface BrandsSection {
 export interface ProductRowBlockSetting extends CommonSettings {
   gridColumns: number;
   imageRadius: string;
+  Radius: string;
   productNameColor: string;
   priceColor: string;
   descriptionColor: string;
@@ -1604,6 +1727,9 @@ export interface ProductRowBlockSetting extends CommonSettings {
   cardBorderRadius: string;
   headingColor: string;
   headingFontSize: string;
+  height: string;
+  btnColor: string;
+  btnRadius: string;
   headingFontWeight: string;
   selectedCollection: string;
   navAnimation?: AnimationEffect; // Add this line for navigation button animations
@@ -1666,7 +1792,6 @@ export interface AnimationConfig {
 export interface AnimationEffect {
   type: "hover" | "click"; // ADD 'scroll' and 'load'
   animation: AnimationConfig;
-  navAnimation?: AnimationConfig; // ADD this for navigation button animations
   trigger?: {
     threshold?: number; // ADD this for scroll animations
   };

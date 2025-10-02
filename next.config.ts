@@ -4,7 +4,8 @@ const nextConfig: NextConfig = {
   images: {
     domains: [
       'raw.githubusercontent.com',
-      'github.com'
+      'github.com',
+      'dashboard-image.s3.ir-thr-at1.arvanstorage.ir'
     ],
     remotePatterns: [
       {
@@ -12,6 +13,12 @@ const nextConfig: NextConfig = {
         hostname: 'raw.githubusercontent.com',
         port: '',
         pathname: '/Mhmk1399/storadge/main/images/**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'dashboard-image.s3.ir-thr-at1.arvanstorage.ir',
+        port: '',
+        pathname: '/uploads/**'
       }
     ]
   },

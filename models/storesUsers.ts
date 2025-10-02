@@ -14,7 +14,6 @@ const StoresUserSchema = new mongoose.Schema(
     phone: {
       type: String,
       required: true,
-      unique: true,
       lowercase: true,
     },
     password: {
@@ -26,6 +25,9 @@ const StoresUserSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+// Compound unique index for phone + storeId
+StoresUserSchema.index({ phone: 1, storeId: 1 }, { unique: true });
 
 
 

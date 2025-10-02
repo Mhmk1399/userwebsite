@@ -287,7 +287,7 @@ export default function Page() {
         headers: {
           selectedRoute: routeName,
           activeMode: activeMode,
-          storeId: storeId, 
+          storeId: "storemfcdfog4456qhn",
         },
       });
 
@@ -322,7 +322,7 @@ export default function Page() {
       setIsMobile(isMobileView);
 
       const activeMode = isMobileView ? "sm" : "lg";
-      const storeId = process.env.STOREID || '';
+      const storeId = process.env.STOREID || "";
 
       try {
         setIsLoading(true);
@@ -438,7 +438,7 @@ export default function Page() {
   return (
     <>
       {/* Header with dynamic data */}
-      <Header headerData={headerData ?? undefined} />
+      <Header isMobile={isMobile} headerData={headerData ?? undefined} />
 
       {/* Main content */}
       <main>

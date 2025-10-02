@@ -55,6 +55,7 @@ import { BlogSchema } from "@/components/schema/blogSchema";
 import CanvasEditor from "@/components/canvasEditor";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import { Brands } from "@/components/brands";
 
 type AllSections = Section &
   RichTextSection &
@@ -266,18 +267,8 @@ export default function HomePage() {
   const [headerData, setHeaderData] = useState<HeaderSection | null>(null);
   const [footerData, setFooterData] = useState<FooterSection | null>(null);
 
-
-
-
-  
-
-
   // Fetch layout data from API
-  const fetchLayoutData = async (
-    routeName: string,
-    activeMode: string,
-
-  ) => {
+  const fetchLayoutData = async (routeName: string, activeMode: string) => {
     try {
       console.log('Fetching from URL:', window.location.href);
       console.log('Current host:', window.location.host);
@@ -289,7 +280,7 @@ export default function HomePage() {
           activeMode: activeMode,
         },
       });
-      
+      console.log(response);
 
       if (!response.ok) {
         throw new Error(`Failed to fetch layout data: ${response.status}`);
@@ -326,8 +317,6 @@ export default function HomePage() {
       try {
         setIsLoading(true);
         setError(null);
-
-
 
         // Always use "home" for the home page
         const layoutData = await fetchLayoutData("home", activeMode);
@@ -366,17 +355,19 @@ export default function HomePage() {
     };
 
     handleResize();
-  //   window.addEventListener("resize", handleResize);
-  //   return () => window.removeEventListener("resize", handleResize);
-  }, []); 
+    //   window.addEventListener("resize", handleResize);
+    //   return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const componentMap = {
     RichText,
     Banner,
+    Brands,
     ImageText,
     Video,
     ContactForm,
     NewsLetter,
+    ProductsRow,
     CollapseFaq,
     MultiColumn,
     SlideShow,
@@ -388,7 +379,6 @@ export default function HomePage() {
     OfferRow,
     Gallery,
     SlideBanner,
-    ProductsRow,
     CanvasEditor,
   };
 
@@ -396,7 +386,7 @@ export default function HomePage() {
     return (
       <>
         {/* Header - even during loading */}
-        <Header headerData={headerData ?? undefined} />
+        <Header isMobile={isMobile} headerData={headerData ?? undefined} />
 
         <main>
           <div className="flex justify-center items-center h-screen">
@@ -418,7 +408,7 @@ export default function HomePage() {
     return (
       <>
         {/* Header - even during error */}
-        <Header headerData={headerData ?? undefined} />
+        <Header isMobile={isMobile} headerData={headerData ?? undefined} />
 
         <main>
           <div className="flex justify-center items-center h-screen">
@@ -445,7 +435,7 @@ export default function HomePage() {
     return (
       <>
         {/* Header - even when no data */}
-        <Header headerData={headerData ?? undefined} />
+        <Header isMobile={isMobile} headerData={headerData ?? undefined} />
 
         <main>
           <div className="flex justify-center items-center h-screen">
@@ -466,7 +456,7 @@ export default function HomePage() {
   return (
     <>
       {/* Header with dynamic data */}
-      <Header headerData={headerData ?? undefined} />
+      <Header isMobile={isMobile} headerData={headerData ?? undefined} />
 
       {/* Main content */}
       <main>
@@ -477,6 +467,8 @@ export default function HomePage() {
             const baseComponentName = componentName.split("-")[0];
             const Component =
               componentMap[baseComponentName as keyof typeof componentMap];
+
+            console.log(baseComponentName, "////////////");
 
             return Component ? (
               <div

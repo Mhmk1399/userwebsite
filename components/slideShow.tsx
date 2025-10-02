@@ -3,6 +3,7 @@ import styled from "styled-components";
 import React, { useState } from "react";
 import { SlideSection, SlideBlock } from "@/lib/types";
 import Link from "next/link";
+import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 
 interface SlideShowProps {
   sections: SlideSection[];
@@ -15,9 +16,11 @@ const SectionSlideShow = styled.section<{
   $isMobile: boolean;
 }>`
   position: relative;
-  margin: 0px 10px;
+  max-width: 100%;
   margin-top: ${(props) => props.$data.setting.marginTop}px;
   margin-bottom: ${(props) => props.$data.setting.marginBottom}px;
+  margin-right: ${(props) => props.$data.setting.marginRight || 0}px;
+  margin-left: ${(props) => props.$data.setting.marginLeft || 0}px;
   padding-top: ${(props) => props.$data.setting.paddingTop}px;
   padding-bottom: ${(props) => props.$data.setting.paddingBottom}px;
   padding-left: ${(props) => props.$data.setting.paddingLeft}px;
@@ -28,21 +31,29 @@ const SectionSlideShow = styled.section<{
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  transition: background-color 0.3s ease;
+  box-shadow: ${(props) =>
+    `${props.$data.setting.shadowOffsetX || 0}px 
+     ${props.$data.setting.shadowOffsetY || 4}px 
+     ${props.$data.setting.shadowBlur || 10}px 
+     ${props.$data.setting.shadowSpread || 0}px 
+     ${props.$data.setting.shadowColor || "#fff"}`};
 `;
 
 const SlideContainer = styled.div<{
   $isMobile: boolean;
 }>`
   width: 100%;
-  max-width: ${(props) => (props.$isMobile ? "400px" : "800px")};
+  max-width: ${(props) => (props.$isMobile ? "400px" : "2000px")};
   overflow: hidden;
-  position: relative;
+  border-radius: 16px;
 `;
 
 const SlidesWrapper = styled.div<{ $currentIndex: number }>`
   display: flex;
-  transition: transform 0.6s ease-in-out;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   transform: translateX(${(props) => props.$currentIndex * -100}%);
+  will-change: transform;
 `;
 
 const Slide = styled.div`
@@ -50,16 +61,36 @@ const Slide = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 10px 0;
+
+  /* Smooth fade-in on mount */
+  animation: fadeIn 0.5s ease;
+  @keyframes fadeIn {
+    from {
+      opacity: 0.6;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 `;
 
-const SlideImage = styled.img<{
+const SlideImage = styled.img.withConfig({
+  shouldForwardProp: (prop) => !prop.startsWith("$"),
+})<{
   $data: SlideSection["setting"];
   $imageAnimation?: SlideSection["setting"]["imageAnimation"];
 }>`
-  width: 100%;
+  width: ${(props) => props.$data?.imageWidth || "200"}px;
+  height: ${(props) => props.$data?.imageHeight || "200"}px;
+  position: relative;
   border-radius: ${(props) => props.$data?.imageRadious || "10"}px;
   opacity: ${(props) => props.$data?.opacityImage || 1};
   object-fit: ${(props) => props.$data?.imageBehavior || "cover"};
+  transition: transform 0.4s ease, opacity 0.4s ease;
+
   /* Apply image animations */
   ${(props) => {
     const imageAnimation = props.$imageAnimation;
@@ -222,53 +253,54 @@ const SlideTextBox = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 10px;
+  margin-top: 15px;
+  padding: 0 12px;
+  text-align: center;
 `;
 
 const SlideHeading = styled.h3<{
   $data: SlideSection["setting"];
   $isMobile: boolean;
 }>`
-  color: ${(props) => props.$data.textColor || "#000"};
-  font-size: ${(props) =>
-    props.$isMobile ? "18" : props.$data?.textFontSize || "22"}px;
-  font-weight: ${(props) => props.$data.textFontWeight || "bold"};
-  margin-top: 5px;
-  text-align: center;
+  color: ${(props) => props.$data.textColor || "#111"};
+  font-size: ${(props) => props.$data?.textFontSize || "22"}px;
+  font-weight: ${(props) => props.$data.textFontWeight || "600"};
+  margin: 8px 0;
+  letter-spacing: 0.3px;
 `;
 
 const SlideDescription = styled.p<{
   $data: SlideSection["setting"];
   $isMobile: boolean;
 }>`
-  color: ${(props) => props.$data.descriptionColor || "#333"};
-  font-size: ${(props) =>
-    props.$isMobile ? "14" : props.$data?.descriptionFontSize || "22"}px;
-  font-weight: ${(props) => props.$data.descriptionFontWeight || "normal"};
-  padding: 20px;
-  text-align: center;
+  color: ${(props) => props.$data.descriptionColor || "#555"};
+  font-size: ${(props) => props.$data?.descriptionFontSize || "18"}px;
+  font-weight: ${(props) => props.$data.descriptionFontWeight || "400"};
+  line-height: 1.6;
   margin-top: 5px;
 `;
 
 const NavButton = styled.button<{
+  $data: SlideSection;
   $navAnimation?: SlideSection["setting"]["navAnimation"];
 }>`
   position: absolute;
   top: 50%;
-  transform: translateY(-250%);
-  background-color: rgba(0, 0, 0, 0.5);
-  color: white;
+  transform: translateY(-50%);
+  background-color: ${(props) =>
+    props.$data.setting.navBg
+      ? props.$data.setting.navBg + "B3" // HEX + alpha (B3 = ~70%)
+      : "rgba(85,85,85,0.7)"};
+  color: ${(props) => props.$data.setting.navColor || "#fff"};
   padding: 10px;
   border: none;
-  border-radius: 20%;
+  border-radius: ${(props) => props.$data.setting.navRadius || "2"}px;
   cursor: pointer;
   z-index: 10;
   @media (max-width: 425px) {
-    transform: translateY(-390%);
-    padding: 7px;
+    padding: 4px;
   }
   @media (max-width: 768px) {
-    transform: translateY(-290%);
     padding: 7px;
   }
   /* Apply navigation button animations */
@@ -439,11 +471,19 @@ const Button = styled.button<{
   $data: SlideSection["setting"];
   $btnAnimation?: SlideSection["setting"]["btnAnimation"];
 }>`
+  margin-top: 12px;
   text-align: center;
   background-color: ${(props) =>
     props.$data?.setting?.btnBackgroundColor || "#007bff"};
   color: ${(props) => props.$data?.setting?.btnTextColor || "#fff"};
-  padding: 10px 20px;
+  padding: 10px 22px;
+  border: none;
+  border-radius: ${(props) => props.$data?.setting?.btnRadius || "50"}px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  width: ${(props) => props.$data?.setting?.btnWidth || "100"}px;
   /* Apply button animations */
   ${(props) => {
     const btnAnimation = props.$btnAnimation;
@@ -611,8 +651,7 @@ const SlideShow: React.FC<SlideShowProps> = ({
     (section) => section.type === componentName
   );
 
-    if (!sectionData) return null;
-
+  if (!sectionData) return null;
 
   const { blocks } = sectionData;
 
@@ -633,10 +672,15 @@ const SlideShow: React.FC<SlideShowProps> = ({
                 $data={sectionData.setting}
               />
               <SlideTextBox>
-                <SlideHeading $isMobile={isMobile} $data={sectionData.setting}>
+                <SlideHeading
+                  dir="rtl"
+                  $isMobile={isMobile}
+                  $data={sectionData.setting}
+                >
                   {slide.text}
                 </SlideHeading>
                 <SlideDescription
+                  dir="rtl"
                   $isMobile={isMobile}
                   $data={sectionData.setting}
                 >
@@ -654,8 +698,13 @@ const SlideShow: React.FC<SlideShowProps> = ({
             </Slide>
           ))}{" "}
         </SlidesWrapper>
-        <PrevButton onClick={handlePrev}>{"<"}</PrevButton>
-        <NextButton onClick={handleNext}>{">"}</NextButton>
+        <PrevButton $data={sectionData} onClick={handlePrev}>
+          {" "}
+          <BiChevronLeft size={24} />
+        </PrevButton>
+        <NextButton $data={sectionData} onClick={handleNext}>
+          <BiChevronRight size={24} />
+        </NextButton>
       </SlideContainer>
     </SectionSlideShow>
   );

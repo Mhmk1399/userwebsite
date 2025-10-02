@@ -14,16 +14,27 @@ const Section = styled.section<{
   $data: GallerySection;
   $isMobile: boolean;
 }>`
-  padding-top: ${(props) => props.$data.setting?.paddingTop || "20"}px;
-  padding-bottom: ${(props) => props.$data.setting?.paddingBottom || "20"}px;
-  margin-top: ${(props) => props.$data.setting?.marginTop || "10"}px;
-  margin-bottom: ${(props) => props.$data.setting?.marginBottom || "10"}px;
+  max-width: 100%;
+  margin-top: ${(props) => props.$data.setting.marginTop || "30"}px;
+  margin-bottom: ${(props) => props.$data.setting.marginBottom}px;
+  margin-right: ${(props) => props.$data.setting.marginRight}px;
+  margin-left: ${(props) => props.$data.setting.marginLeft}px;
+  padding-top: ${(props) => props.$data.setting.paddingTop}px;
+  padding-bottom: ${(props) => props.$data.setting.paddingBottom}px;
+  padding-left: ${(props) => props.$data.setting.paddingLeft}px;
+  padding-right: ${(props) => props.$data.setting.paddingRight}px;
   background-color: ${(props) =>
-    props.$data.setting?.backgroundColor || "#ffffff"};
+    props.$data?.blocks?.setting?.background || "#ffffff"};
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: ${(props) => (props.$isMobile ? "100%" : "auto")};
+  border-radius: ${(props) => props.$data.blocks?.setting?.Radius || "5"}px;
+  box-shadow: ${(props) =>
+    `${props.$data.blocks.setting?.shadowOffsetX || 0}px 
+     ${props.$data.blocks.setting?.shadowOffsetY || 4}px 
+     ${props.$data.blocks.setting?.shadowBlur || 10}px 
+     ${props.$data.blocks.setting?.shadowSpread || 0}px 
+     ${props.$data.blocks.setting?.shadowColor || "#fff"}`};
 `;
 
 const Title = styled.h2<{
@@ -31,13 +42,9 @@ const Title = styled.h2<{
   $isMobile: boolean;
 }>`
   color: ${(props) => props.$data.blocks.setting?.titleColor || "#000000"};
-  font-size: ${(props) =>
-    props.$isMobile
-      ? "18px"
-      : props.$data.blocks.setting?.titleFontSize || "24px"};
+  font-size: ${(props) => props.$data.blocks.setting?.titleFontSize || "24"}px;
   font-weight: ${(props) =>
     props.$data.blocks.setting?.titleFontWeight || "bold"};
-  margin-bottom: 20px;
 `;
 
 const Description = styled.p<{
@@ -47,12 +54,11 @@ const Description = styled.p<{
   color: ${(props) =>
     props.$data.blocks.setting?.descriptionColor || "#666666"};
   font-size: ${(props) =>
-    props.$isMobile
-      ? "14px"
-      : props.$data.blocks.setting?.descriptionFontSize || "16px"};
+    props.$data.blocks.setting?.descriptionFontSize || "16"}px;
   font-weight: ${(props) =>
     props.$data.blocks.setting?.descriptionFontWeight || "normal"};
   margin-bottom: 30px;
+  padding: 0px 20px;
   text-align: center;
 `;
 
@@ -68,7 +74,6 @@ const ImageGrid = styled.div<{
   );
   gap: ${(props) => props.$data.blocks.setting?.gridGap || "10"}px;
   padding: 0 20px;
-  width: ${(props) => (props.$isMobile ? "100%" : "auto")};
 `;
 
 const ImageWrapper = styled.div<{
@@ -76,14 +81,8 @@ const ImageWrapper = styled.div<{
   $isMobile: boolean;
 }>`
   position: relative;
-  height: ${(props) =>
-    props.$isMobile
-      ? "150px"
-      : props.$data.blocks.setting?.imageHeight || "200px"};
-  width: ${(props) =>
-    props.$isMobile
-      ? "100%"
-      : props.$data.blocks.setting?.imageWidth || "200px"};
+  height: ${(props) => props.$data.blocks.setting?.imageHeight || "200"}px;
+  width: ${(props) => props.$data.blocks.setting?.imageWidth || "200"}px;
   border-radius: ${(props) => props.$data.blocks.setting?.imageRadius || "8"}px;
   overflow: hidden;
   transition: transform 0.3s ease;
@@ -261,16 +260,14 @@ const Gallery: React.FC<GalleryProps> = ({
 
   return (
     <Section $data={sectionData} $isMobile={isMobile}>
-      {title && (
-        <Title $data={sectionData} $isMobile={isMobile}>
-          {title}
-        </Title>
-      )}
-      {description && (
-        <Description $data={sectionData} $isMobile={isMobile}>
-          {description}
-        </Description>
-      )}
+      <Title dir="rtl" $data={sectionData} $isMobile={isMobile}>
+        {title}
+      </Title>
+
+      <Description dir="rtl" $data={sectionData} $isMobile={isMobile}>
+        {description}
+      </Description>
+
       <ImageGrid $data={sectionData} $isMobile={isMobile}>
         {images.map((image, index) => (
           <ImageWrapper key={index} $data={sectionData} $isMobile={isMobile}>

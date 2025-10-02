@@ -16,15 +16,23 @@ const SlideBannerSections = styled.section<{
   $isMobile: boolean;
 }>`
   position: relative;
-  width: 100%;
+  max-width: 100%;
   padding-top: ${(props) => props.$data.setting?.paddingTop || "20"}px;
   padding-bottom: ${(props) => props.$data.setting?.paddingBottom || "20"}px;
   padding-left: ${(props) => props.$data.setting?.paddingLeft || "20"}px;
   padding-right: ${(props) => props.$data.setting?.paddingRight || "20"}px;
-  height: ${300}px;
+  height: ${(props) => props.$data.blocks?.setting?.height || "20"}px;
   margin-top: ${(props) => props.$data.setting?.marginTop || "30"}px;
   margin-bottom: ${(props) => props.$data.setting?.marginBottom || "20"}px;
+  margin-left: ${(props) => props.$data.setting?.marginLeft || "20"}px;
+  margin-right: ${(props) => props.$data.setting?.marginRight || "20"}px;
   overflow: hidden;
+  box-shadow: ${(props) =>
+    `${props.$data.blocks.setting?.shadowOffsetX || 0}px 
+     ${props.$data.blocks.setting?.shadowOffsetY || 4}px 
+     ${props.$data.blocks.setting?.shadowBlur || 10}px 
+     ${props.$data.blocks.setting?.shadowSpread || 0}px 
+     ${props.$data.blocks.setting?.shadowColor || "#fff"}`};
 `;
 
 const SlideContainer = styled.div<{ $isMobile: boolean }>`
@@ -56,10 +64,10 @@ const Slide = styled.div<{
 
 const NavigationButtons = styled.div`
   position: absolute;
-  bottom: 20px;
+  bottom: 10px;
   right: 20px;
   display: flex;
-  gap: 10px;
+  gap: 5px;
   z-index: 10;
 `;
 
@@ -69,17 +77,18 @@ const NavButton = styled.button<{
   background: ${(props) =>
     props.$data.blocks.setting?.bgArrow || "rgba(255, 255, 255, 0.8)"};
   border: none;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  border-radius: ${(props) => props.$data.blocks.setting.arrowRadius}px;
+  width: ${(props) => props.$data.blocks.setting.arrowWidth}px;
+  height: ${(props) => props.$data.blocks.setting.arrowHeight}px;
   display: flex;
+  color: ${(props) => props.$data.blocks.setting.arrowColor};
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
 
   &:hover {
-    background: rgba(255, 255, 255, 1);
+    background: ${(props) => props.$data.blocks.setting.arrowBgHover || "#555"};
   }
   /* Apply navigation button animations */
   ${(props) => {

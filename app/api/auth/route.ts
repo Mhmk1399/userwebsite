@@ -35,10 +35,13 @@ export async function POST(request: NextRequest) {
   try {
     const { name, phone, password } = await request.json();
     
-    // Read storeId from store-config.json
-  
-    const storeId = getStoreId(request)
+    const storeId = process.env.STOREID;
     
+    // Check if user already exists with this phone and storeId
+    const existingUser = await StoreUsers.findOne({ phone, storeId });
+    if (existingUser) {
+      return NextResponse.json({ message: "کاربری با این شماره تلفن قبلاً ثبت نام کرده است" }, { status: 400 });
+    }
     
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new StoreUsers({
@@ -47,12 +50,14 @@ export async function POST(request: NextRequest) {
       phone,
       password: hashedPassword,
     });
-    console.log(newUser);
     
     await newUser.save();
     return NextResponse.json({ newUser }, { status: 201, statusText: "User created successfully" });
   } catch (error) {
     console.error("Error creating user:", error);
+    if (error.code === 11000) {
+      return NextResponse.json({ message: "کاربری با این شماره تلفن قبلاً ثبت نام کرده است" }, { status: 400 });
+    }
     return NextResponse.json(
       { message: "Error creating user" },
       { status: 500 }

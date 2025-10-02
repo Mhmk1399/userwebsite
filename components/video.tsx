@@ -15,6 +15,8 @@ const Section = styled.section<{ $data: VideoSection; $isMobile: boolean }>`
   padding-right: ${(props) => props.$data.setting?.paddingRight || "10"}px;
   margin-top: ${(props) => props.$data?.setting?.marginTop || "0"}px;
   margin-bottom: ${(props) => props.$data?.setting?.marginBottom || "0"}px;
+  margin-left: ${(props) => props.$data?.setting?.marginLeft || "0"}px;
+  margin-right: ${(props) => props.$data?.setting?.marginRight || "0"}px;
   background-color: ${(props) =>
     props.$data.blocks.setting?.backgroundVideoSection || "#e4e4e4"};
   display: flex;
@@ -23,36 +25,43 @@ const Section = styled.section<{ $data: VideoSection; $isMobile: boolean }>`
   justify-content: center;
   border-radius: 20px;
   gap: 15px;
-  width: ${(props) => (props.$isMobile ? "425px" : "100%")};
+  min-width: max-content;
+  box-shadow: ${(props) =>
+    `${props.$data.blocks.setting.shadowOffsetX || 0}px 
+     ${props.$data.blocks.setting.shadowOffsetY || 4}px 
+     ${props.$data.blocks.setting.shadowBlur || 10}px 
+     ${props.$data.blocks.setting.shadowSpread || 0}px 
+     ${props.$data.blocks.setting.shadowColor || "#fff"}`};
 `;
 
 const Heading = styled.h1<{ $data: VideoSection; $isMobile: boolean }>`
   color: ${(props) => props.$data.blocks.setting?.headingColor || "#333"};
   font-size: ${(props) =>
-    props.$isMobile
-      ? "20"
-      : props.$data.blocks?.setting?.headingFontSize || "24"}px;
+    props.$data.blocks?.setting?.headingFontSize || "24"}px;
   font-weight: ${(props) =>
     props.$data.blocks?.setting?.headingFontWeight || "bold"};
   text-align: center;
   padding: 0 ${(props) => (props.$isMobile ? "10" : "20")}px;
-  @media (max-width: 768px) {
-    font-size: 20px;
-  }
+`;
+const Desciption = styled.h2<{ $data: VideoSection; $isMobile: boolean }>`
+  color: ${(props) => props.$data.blocks.setting?.descrptionColor || "#333"};
+  font-size: ${(props) =>
+    props.$data.blocks?.setting?.descrptionFontSize || "24"}px;
+  font-weight: ${(props) =>
+    props.$data.blocks?.setting?.descrptionFontWeight || "bold"};
+  text-align: center;
+  padding: 0 ${(props) => (props.$isMobile ? "5" : "10")}px;
 `;
 
 const VideoElement = styled.video<{
   $data: VideoSection;
   $isMobile: boolean;
 }>`
-  width: ${(props) =>
-    props.$isMobile
-      ? "355px"
-      : props.$data.blocks.setting?.videoWidth || "100%"};
+  width: ${(props) => props.$data.blocks.setting?.videoWidth || "100"}px;
   border-radius: ${(props) =>
     props.$data.blocks.setting?.videoRadious || "10px"}px;
-  height: auto;
-  padding: ${(props) => (props.$isMobile ? "0 10" : "10 30")}px;
+  max-width: 100vw;
+  height: ${(props) => props.$data.blocks.setting?.videoHeight || "100"}px;
 `;
 
 const Video: React.FC<VideoProps> = ({ sections, isMobile, componentName }) => {
@@ -66,9 +75,14 @@ const Video: React.FC<VideoProps> = ({ sections, isMobile, componentName }) => {
   return (
     <Section $data={sectionData} $isMobile={isMobile}>
       {blocks.heading && (
-        <Heading $isMobile={isMobile} $data={sectionData}>
+        <Heading dir="rtl" $isMobile={isMobile} $data={sectionData}>
           {blocks.heading}
         </Heading>
+      )}
+      {blocks.descrption && (
+        <Desciption dir="rtl" $data={sectionData} $isMobile={isMobile}>
+          {blocks.descrption}
+        </Desciption>
       )}
 
       {blocks.videoUrl && (

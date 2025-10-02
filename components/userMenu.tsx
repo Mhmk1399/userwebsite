@@ -7,23 +7,29 @@ import { useAuth } from "@/hook/useAuth";
 interface LoginButtonProps {
   href: string;
   children: React.ReactNode;
+  color: string;
 }
 
 // Assuming you have a LoginButton component, if not, create a simple one
-const LoginButton: React.FC<LoginButtonProps> = ({ href, children }) => {
+const LoginButton: React.FC<LoginButtonProps> = ({ href, children, color }) => {
   const router = useRouter();
 
   return (
     <button
       onClick={() => router.push(href)}
-      className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors"
+      className="flex items-center gap-2 px-4 py-2 text-sm hover:opacity-80 font-medium transition-all duration-200"
+      style={{ color }}
     >
       {children}
     </button>
   );
 };
 
-const UserMenu: React.FC = () => {
+interface UserMenuProps {
+  color?: string;
+}
+
+const UserMenu: React.FC<UserMenuProps> = ({ color = "#fff" }) => {
   const { user, isAuthenticated, logout } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const router = useRouter();
@@ -36,7 +42,7 @@ const UserMenu: React.FC = () => {
 
   if (!isAuthenticated || !user) {
     return (
-      <LoginButton href="/login">
+      <LoginButton color={color} href="/login">
         <User size={18} /> ورود | ثبت‌نام
       </LoginButton>
     );
@@ -48,7 +54,7 @@ const UserMenu: React.FC = () => {
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
         className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors"
       >
-        <User size={18} />
+        <User style={{ color }} size={18} />
         <span> {user.name}</span>
         <ChevronDown
           size={16}

@@ -18,22 +18,27 @@ const Section = styled.section<{
   $data: CollapseSection;
   $isMobile: boolean;
 }>`
-  padding-top: ${(props) => props.$data.setting?.paddingTop || 20}px;
-  padding-bottom: ${(props) => props.$data.setting?.paddingBottom || 20}px;
-  padding-left: ${(props) => props.$data.setting?.paddingLeft || 20}px;
-  padding-right: ${(props) => props.$data.setting?.paddingRight || 20}px;
-  margin-top: ${(props) => props.$data.setting?.marginTop || 20}px;
-  margin-bottom: ${(props) => props.$data.setting?.marginBottom || 20}px;
-  margin-left: 10px;
-  margin-right: 10px;
+  max-width: 100%;
+  margin-top: ${(props) => props.$data.setting.marginTop || "30"}px;
+  margin-bottom: ${(props) => props.$data.setting.marginBottom}px;
+  margin-right: ${(props) => props.$data.setting.marginRight}px;
+  margin-left: ${(props) => props.$data.setting.marginLeft}px;
+  padding-top: ${(props) => props.$data.setting.paddingTop}px;
+  padding-bottom: ${(props) => props.$data.setting.paddingBottom}px;
+  padding-left: ${(props) => props.$data.setting.paddingLeft}px;
+  padding-right: ${(props) => props.$data.setting.paddingRight}px;
   background-color: ${(props) => props.$data.setting?.background || "#ffffff"};
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  border-radius: 10px;
-  // width: ${(props) => (props.$isMobile ? "425px" : "100%")};
-  // max-width: ${(props) => (props.$isMobile ? "425px" : "100%")};
+  border-radius: ${(props) => props.$data.setting.formRadius || 5}px;
+  box-shadow: ${(props) =>
+    `${props.$data.setting?.shadowOffsetX || 0}px 
+     ${props.$data.setting?.shadowOffsetY || 4}px 
+     ${props.$data.setting?.shadowBlur || 10}px 
+     ${props.$data.setting?.shadowSpread || 0}px 
+     ${props.$data.setting?.shadowColor || "#fff"}`};
 `;
 
 const Heading = styled.h2<{ $data: CollapseSection; $isMobile: boolean }>`
