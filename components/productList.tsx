@@ -29,12 +29,11 @@ interface ColorBoxProps {
   $selected: boolean;
 }
 
-const FilterBgRow = styled.div<{ $data: ProductSection }>`
-  background-color: ${(props) =>
-    props.$data?.setting?.filterCardBg || "#f3f4f6"};
+const FilterBgRow = styled.div<{ $data: ProductBlockSetting }>`
+  background-color: ${(props) => props.$data?.filterRowBg};
   position: sticky;
   top: 0;
-  min-width: 100%;
+  width: 100%;
   z-index: 30;
   direction: rtl;
 `;
@@ -54,11 +53,13 @@ const FilterCardBg = styled.div<{
   background-color: ${(props) => props.$data?.filterCardBg || "#ffffff"};
   border-radius: 12px;
   width: 356px;
+  flex-shrink: 0;
   display: ${(props) => (props.$isMobile ? "none" : "block")};
-  position: sticky;
-  top: 80px;
   height: fit-content;
+  position: sticky;
+  top: 90px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+
   @media (max-width: 1024px) {
     display: none;
   }
@@ -126,7 +127,7 @@ const ApplyButton = styled.button<{
   transition: all 0.2s;
 
   &:hover {
-    background-color: #1d4ed8;
+    opacity: 0.8;
   }
 
   &:active {
@@ -140,11 +141,10 @@ const SectionProductList = styled.section<{
   $isMobile: boolean;
 }>`
   display: flex;
-  flex-wrap: wrap;
-  overflow-x: hidden;
-  overflow-y: auto;
+  flex-direction: row-reverse;
+  gap: 2rem;
   width: 100%;
-  direction: rtl;
+  direction: ltr;
   padding: 2rem;
   margin-top: ${(props) => props.$data?.setting?.marginTop || 0}px;
   margin-bottom: ${(props) => props.$data?.setting?.marginBottom || 0}px;
@@ -159,16 +159,49 @@ const SectionProductList = styled.section<{
      ${props.$data.setting?.shadowSpread || 0}px
      ${props.$data.setting?.shadowColor || "rgba(0,0,0,0.05)"}`};
   border-radius: ${(props) => props.$data.setting?.Radius || "12"}px;
-  gap: 2rem;
+
+  @media (max-width: 1024px) {
+    padding: 1.5rem;
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    padding: 1rem;
+  }
+
+  @media (max-width: 426px) {
+    padding: 0.75rem;
+  }
+`;
+const ProductGrid = styled.div<{
+  $data: ProductSection;
+  $isMobile: boolean;
+}>`
+  display: ${(props) => (props.$isMobile ? "flex" : "grid")};
+  width: 100%;
 
   ${(props) =>
-    !props.$isMobile &&
-    `
-    display: grid;
-    grid-template-columns: repeat(${props.$data.setting?.gridColumns}, 1fr);
-    overflow-x: hidden;
+    !props.$isMobile
+      ? `
+    grid-template-columns: repeat(${
+      props.$data.setting?.gridColumns || 3
+    }, 1fr);
     gap: 2rem;
     padding: 2rem;
+  `
+      : `
+    flex-wrap: nowrap;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    touch-action: manipulation;
+    padding: 1rem;
+    gap: 1rem;
+
+    & > div {
+      flex: 0 0 280px;
+      min-width: 280px;
+    }
   `}
 
   @media (max-width: 1024px) and (min-width: 769px) {
@@ -182,10 +215,8 @@ const SectionProductList = styled.section<{
     flex-wrap: nowrap;
     overflow-x: scroll;
     overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    touch-action: manipulation;
-    padding: 1rem;
     gap: 1rem;
+    padding: 1rem;
 
     & > div {
       flex: 0 0 280px;
@@ -203,12 +234,11 @@ const SectionProductList = styled.section<{
     }
   }
 `;
-
 const MobileFilterModal = styled.div`
   background-color: #ffffff;
   border-radius: 16px 16px 0 0;
   width: 100%;
-  max-height: 90vh;
+  max-height: 70vh;
   overflow-y: auto;
   padding: 1.5rem;
   position: relative;
@@ -260,8 +290,7 @@ const SortOption = styled.div<{
       ? `
         color: #2563eb;
         font-weight: 800;
-        background-color: rgba(37, 99, 235, 0.1);
-      `
+       `
       : `
         &:hover {
           color: #2563eb;
@@ -499,7 +528,7 @@ const ProductList: React.FC<ProductListProps> = ({
   ]);
 
   // Handle both array and single section cases
-  const sectionData = Array.isArray(sections) 
+  const sectionData = Array.isArray(sections)
     ? sections.find((section) => section.type === componentName)
     : sections;
 
@@ -594,247 +623,190 @@ const ProductList: React.FC<ProductListProps> = ({
           <FiFilter size={20} />
         </button>
       )}
-      <div className="flex flex-row-reverse gap-8 relative mx-auto px-4   ">
-        <FilterCardBg
-          $isMobile={isMobile}
-          $data={sectionData.setting}
-          className="w-full hidden lg:block"
-        >
-          <div className="p-2 text-right">
-            <div className="grid gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  دسته‌بندی
-                </label>
-                <select
-                  className="w-full border border-gray-300 rounded-lg p-3 text-right text-base"
-                  value={selectedFilters.category}
-                  onChange={(e) =>
-                    setSelectedFilters((prev) => ({
-                      ...prev,
-                      category: e.target.value,
-                    }))
-                  }
-                >
-                  <option value="">همه</option>
-                  {categories.map((category) => (
-                    <option key={category._id} value={category.name}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  رنگ‌ها
-                </label>
-                <button
-                  onClick={() => setShowColorModal(true)}
-                  className="w-full px-4 py-3 bg-gray-100 text-right rounded-lg hover:bg-gray-200 flex flex-row-reverse items-center justify-between text-base transition-colors"
-                >
-                  انتخاب رنگ
-                  {selectedColors.length > 0 && (
-                    <span className="bg-blue-500 text-white text-right rounded-full px-3 py-1 text-sm">
-                      {selectedColors.length}
-                    </span>
-                  )}
-                </button>
-              </div>
 
-              {renderPriceFilter()}
-
-              <div className="flex gap-3">
-                <button
-                  onClick={resetFilters}
-                  className="flex-1 px-4 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors text-base font-medium"
-                >
-                  بازنشانی
-                </button>
-              </div>
-            </div>
-          </div>
-        </FilterCardBg>
-
-        <div className="flex-1 relative">
-          {isMobileFilterOpen && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end justify-center md:hidden">
-              <MobileFilterModal dir="rtl">
-                <div className="flex justify-between items-center mb-6">
-                  <h3 className="text-2xl font-bold text-gray-800">فیلترها</h3>
-                  <button
-                    onClick={() => setIsMobileFilterOpen(false)}
-                    className="text-gray-600 hover:text-gray-800 text-2xl"
-                  >
-                    ✕
-                  </button>
-                </div>
-                <div className="grid grid-cols-1 gap-6 pb-24">
-                  <div>
-                    <label className="block text-base font-medium text-gray-800 mb-2">
-                      دسته‌بندی
-                    </label>
-                    <select
-                      className="w-full border border-gray-300 rounded-lg p-3 text-base bg-white"
-                      value={selectedFilters.category}
-                      onChange={(e) =>
-                        setSelectedFilters((prev) => ({
-                          ...prev,
-                          category: e.target.value,
-                        }))
-                      }
-                    >
-                      <option value="">همه دسته بندی ها</option>
-                      {categories.map((category) => (
-                        <option key={category._id} value={category.name}>
-                          {category.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-base font-medium text-gray-800 mb-2">
-                      رنگ‌ها
-                    </label>
-                    <button
-                      onClick={() => setShowColorModal(true)}
-                      className="w-full px-4 py-3 bg-gray-100 rounded-lg hover:bg-gray-200 flex items-center justify-between text-base transition-colors"
-                    >
-                      <span>انتخاب رنگ</span>
-                      {selectedColors.length > 0 && (
-                        <span className="bg-blue-500 text-white rounded-full px-3 py-1 text-sm">
-                          {selectedColors.length}
-                        </span>
-                      )}
-                    </button>
-                  </div>
-
-                  {renderPriceFilter()}
-                </div>
-                <div className="fixed bottom-0 left-0 right-0 bg-white p-4 shadow-lg rounded-t-2xl z-50">
-                  <div className="flex gap-4 max-w-md mx-auto">
-                    <button
-                      onClick={() => {
-                        resetFilters();
-                      }}
-                      className="flex-1 px-4 sm:px-6 py-3 text-gray-800 bg-gray-100 rounded-lg hover:bg-gray-200 text-base font-medium transition-colors"
-                    >
-                      بازنشانی
-                    </button>
-                    <button
-                      onClick={() => {
-                        setIsMobileFilterOpen(false);
-                      }}
-                      className="flex-1 px-4 sm:px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-base font-medium transition-colors"
-                    >
-                      بستن
-                    </button>
-                  </div>
-                </div>
-              </MobileFilterModal>
-            </div>
-          )}
-          <FilterBgRow $data={sectionData}>
-            <div className="flex w-full items-center gap-4 p-4 sm:p-6 border-b border-gray-200">
-              <FilterNameRow
+      <FilterBgRow $data={sectionData.setting}>
+        <div className="flex w-full items-center -mb-3 gap-4 p-2 sm:p-2 border-b border-gray-200">
+          <FilterNameRow
+            $data={sectionData.setting}
+            $isMobile={isMobile}
+            className="opacity-70 font-semibold text-sm lg:text-base flex-shrink-0"
+          >
+            مرتب‌سازی بر اساس :
+          </FilterNameRow>
+          <SortContainer className="w-fit" $isMobile={isMobile}>
+            {sortOptions.map((option) => (
+              <SortOption
                 $data={sectionData.setting}
                 $isMobile={isMobile}
-                className="opacity-70 font-semibold text-sm lg:text-base flex-shrink-0"
+                $active={sortBy === option.value}
+                key={option.value}
+                className={`pb-1 relative cursor-pointer transition-all duration-200 ease-in-out ${
+                  sortBy === option.value
+                    ? 'text-blue-500   after:content-[""] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-blue-500'
+                    : "text-gray-50 hover:text-blue-500"
+                }`}
+                onClick={() =>
+                  handleSortChange(
+                    option.value as
+                      | "newest"
+                      | "price-asc"
+                      | "price-desc"
+                      | "name"
+                  )
+                }
               >
-                مرتب‌سازی بر اساس :
-              </FilterNameRow>
-              <SortContainer className="w-fit" $isMobile={isMobile}>
-                {sortOptions.map((option) => (
-                  <SortOption
-                    $data={sectionData.setting}
-                    $isMobile={isMobile}
-                    $active={sortBy === option.value}
-                    key={option.value}
-                    onClick={() =>
-                      handleSortChange(
-                        option.value as
-                          | "newest"
-                          | "price-asc"
-                          | "price-desc"
-                          | "name"
-                      )
+                {option.label}
+              </SortOption>
+            ))}
+          </SortContainer>
+        </div>
+      </FilterBgRow>
+
+      <div className="flex flex-row-reverse gap-8 relative mx-auto ">
+        <SectionProductList
+          $data={sectionData}
+          $isMobile={isMobile}
+          $previewWidth="default"
+        >
+          {/* Filter Section - Desktop */}
+          <FilterCardBg
+            $isMobile={isMobile}
+            $data={sectionData.setting}
+            dir="rtl"
+          >
+            <div className="p-2 text-right">
+              <div className="grid grid-cols-1 md:grid-cols-1 gap-4 justify-start">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    دسته‌بندی
+                  </label>
+                  <select
+                    className="w-full border rounded-md p-2"
+                    value={selectedFilters.category}
+                    onChange={(e) =>
+                      setSelectedFilters((prev) => ({
+                        ...prev,
+                        category: e.target.value,
+                      }))
                     }
                   >
-                    {option.label}
-                  </SortOption>
-                ))}
-              </SortContainer>
-            </div>
-          </FilterBgRow>
+                    <option value="">همه</option>
+                    {categories.map((category) => (
+                      <option key={category._id} value={category.name}>
+                        {category.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-          <SectionProductList
-            $data={sectionData}
-            $isMobile={isMobile}
-            $previewWidth="default"
-            className="mt-0 min-h-[600px]"
-          >
-            {loading ? (
-              <div className="col-span-full flex justify-center items-center py-20">
-                <div className="text-gray-500">در حال بارگذاری...</div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    رنگ‌ها
+                  </label>
+                  <button
+                    onClick={() => setShowColorModal(true)}
+                    className="px-4 py-2 w-full bg-gray-100 rounded-md hover:bg-gray-200 flex items-center gap-2"
+                  >
+                    انتخاب رنگ
+                    {selectedColors.length > 0 && (
+                      <span className="bg-blue-500 text-white rounded-full px-2 py-0.5 text-sm">
+                        {selectedColors.length}
+                      </span>
+                    )}
+                  </button>
+                </div>
+
+                {renderPriceFilter()}
+
+                <div className="flex gap-3">
+                  <button
+                    onClick={resetFilters}
+                    className="flex-1 px-4 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors text-base font-medium"
+                  >
+                    بازنشانی
+                  </button>
+                </div>
               </div>
-            ) : productData.length === 0 ? (
-              <div className="col-span-full flex justify-center items-center py-20">
-                <div className="text-gray-500">محصولی یافت نشد</div>
+            </div>
+          </FilterCardBg>
+
+          {/* Products Section */}
+          <div className="flex-1 w-full">
+            <ProductGrid $data={sectionData} $isMobile={isMobile}>
+              {loading ? (
+                <div className="col-span-full flex justify-center items-center py-20">
+                  <div className="text-gray-500">در حال بارگذاری...</div>
+                </div>
+              ) : productData.length === 0 ? (
+                <div className="col-span-full flex justify-center items-center py-20">
+                  <div className="text-gray-500">محصولی یافت نشد</div>
+                </div>
+              ) : (
+                productData.map((product) => (
+                  <ProductCard
+                    key={product._id}
+                    settings={sectionData.setting}
+                    productData={product}
+                  />
+                ))
+              )}
+            </ProductGrid>
+
+            {totalPages > 1 && (
+              <div className="flex justify-center items-center gap-1 sm:gap-2 mt-8 pb-8 px-4">
+                {/* Pagination buttons - same as before */}
               </div>
-            ) : (
-              productData.map((product) => (
-                <ProductCard key={product._id} productData={product} />
-              ))
             )}
-          </SectionProductList>
+          </div>
+        </SectionProductList>
 
-          {totalPages > 1 && (
-            <div className="flex justify-center items-center gap-1 sm:gap-2 mt-8 pb-8 px-4">
-              <button
-                onClick={() => setCurrentPage(currentPage - 1)}
-                disabled={currentPage === 1}
-                className="px-2 sm:px-4 py-2 bg-gray-200 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-300 transition-colors text-sm sm:text-base"
-              >
-                قبلی
-              </button>
+        {totalPages > 1 && (
+          <div className="flex justify-center items-center gap-1 sm:gap-2 mt-8 pb-8 px-4">
+            <button
+              onClick={() => setCurrentPage(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="px-2 sm:px-4 py-2 bg-gray-200 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-300 transition-colors text-sm sm:text-base"
+            >
+              قبلی
+            </button>
 
-              <div className="flex gap-1 sm:gap-2 overflow-x-auto max-w-xs sm:max-w-none">
-                {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
-                  let page;
-                  if (totalPages <= 5) {
-                    page = i + 1;
-                  } else if (currentPage <= 3) {
-                    page = i + 1;
-                  } else if (currentPage >= totalPages - 2) {
-                    page = totalPages - 4 + i;
-                  } else {
-                    page = currentPage - 2 + i;
-                  }
-                  return (
-                    <button
-                      key={page}
-                      onClick={() => setCurrentPage(page)}
-                      className={`px-2 sm:px-4 py-2 rounded-lg transition-colors text-sm sm:text-base min-w-[32px] sm:min-w-[40px] ${
-                        currentPage === page
-                          ? "bg-blue-500 text-white"
-                          : "bg-gray-200 hover:bg-gray-300"
-                      }`}
-                    >
-                      {page}
-                    </button>
-                  );
-                })}
-              </div>
-
-              <button
-                onClick={() => setCurrentPage(currentPage + 1)}
-                disabled={currentPage === totalPages}
-                className="px-2 sm:px-4 py-2 bg-gray-200 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-300 transition-colors text-sm sm:text-base"
-              >
-                بعدی
-              </button>
+            <div className="flex gap-1 sm:gap-2 overflow-x-auto max-w-xs sm:max-w-none">
+              {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
+                let page;
+                if (totalPages <= 5) {
+                  page = i + 1;
+                } else if (currentPage <= 3) {
+                  page = i + 1;
+                } else if (currentPage >= totalPages - 2) {
+                  page = totalPages - 4 + i;
+                } else {
+                  page = currentPage - 2 + i;
+                }
+                return (
+                  <button
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    className={`px-2 sm:px-4 py-2 rounded-lg transition-colors text-sm sm:text-base min-w-[32px] sm:min-w-[40px] ${
+                      currentPage === page
+                        ? "bg-blue-500 text-white"
+                        : "bg-gray-200 hover:bg-gray-300"
+                    }`}
+                  >
+                    {page}
+                  </button>
+                );
+              })}
             </div>
-          )}
-        </div>
+
+            <button
+              onClick={() => setCurrentPage(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="px-2 sm:px-4 py-2 bg-gray-200 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-300 transition-colors text-sm sm:text-base"
+            >
+              بعدی
+            </button>
+          </div>
+        )}
 
         {showColorModal && (
           <ColorModal onClick={() => setShowColorModal(false)}>
@@ -893,6 +865,83 @@ const ProductList: React.FC<ProductListProps> = ({
           </ColorModal>
         )}
       </div>
+      {isMobileFilterOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end justify-center md:hidden">
+          <MobileFilterModal dir="rtl">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-2xl font-bold text-gray-800">فیلترها</h3>
+              <button
+                onClick={() => setIsMobileFilterOpen(false)}
+                className="text-gray-600 hover:text-gray-800 text-2xl"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="grid grid-cols-1 gap-6 pb-24">
+              <div>
+                <label className="block text-base font-medium text-gray-800 mb-2">
+                  دسته‌بندی
+                </label>
+                <select
+                  className="w-full border border-gray-300 rounded-lg p-3 text-base bg-white"
+                  value={selectedFilters.category}
+                  onChange={(e) =>
+                    setSelectedFilters((prev) => ({
+                      ...prev,
+                      category: e.target.value,
+                    }))
+                  }
+                >
+                  <option value="">همه دسته بندی ها</option>
+                  {categories.map((category) => (
+                    <option key={category._id} value={category.name}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-base font-medium text-gray-800 mb-2">
+                  رنگ‌ها
+                </label>
+                <button
+                  onClick={() => setShowColorModal(true)}
+                  className="w-full px-4 py-3 bg-gray-100 rounded-lg hover:bg-gray-200 flex items-center justify-between text-base transition-colors"
+                >
+                  <span>انتخاب رنگ</span>
+                  {selectedColors.length > 0 && (
+                    <span className="bg-blue-500 text-white rounded-full px-3 py-1 text-sm">
+                      {selectedColors.length}
+                    </span>
+                  )}
+                </button>
+              </div>
+
+              {renderPriceFilter()}
+            </div>
+            <div className="fixed bottom-0 left-0 right-0 bg-white p-4 shadow-lg rounded-t-2xl z-50">
+              <div className="flex gap-4 max-w-md mx-auto">
+                <button
+                  onClick={() => {
+                    resetFilters();
+                  }}
+                  className="flex-1 px-4 sm:px-6 py-3 text-gray-800 bg-gray-100 rounded-lg hover:bg-gray-200 text-base font-medium transition-colors"
+                >
+                  بازنشانی
+                </button>
+                <button
+                  onClick={() => {
+                    setIsMobileFilterOpen(false);
+                  }}
+                  className="flex-1 px-4 sm:px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-base font-medium transition-colors"
+                >
+                  بستن
+                </button>
+              </div>
+            </div>
+          </MobileFilterModal>
+        </div>
+      )}
     </>
   );
 };

@@ -1,6 +1,10 @@
 import Image from "next/image";
 import styled from "styled-components";
-import { ProductCardSetting, ProductCardData } from "@/lib/types";
+import {
+  ProductCardSetting,
+  ProductCardData,
+  ProductBlockSetting,
+} from "@/lib/types";
 
 interface CartItem {
   id: string;
@@ -15,6 +19,8 @@ import { toast } from "react-hot-toast";
 
 interface ProductCardProps {
   productData: ProductCardData;
+  settings?: ProductBlockSetting;
+  previewWidth?: "sm" | "default";
 }
 const defaultSetting = {
   cardBorderRadius: "10px",
@@ -39,14 +45,14 @@ const Card = styled.div<{
 }>`
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   border-radius: ${(props) =>
     props.$setting?.cardBorderRadius || defaultSetting.cardBorderRadius};
   background: ${(props) =>
     props.$setting?.cardBackground || defaultSetting.cardBackground};
-  padding: 1rem;
-  height: 450px;
+  height: 380px;
   width: 100%;
+  min-width: 250px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
@@ -67,23 +73,17 @@ const ProductImage = styled(Image)<{
   $productData?: ProductCardData;
 }>`
   object-fit: cover;
-  width: ${(props) => props.$settings?.imageWidth || defaultSetting.imageWidth};
-  height: ${(props) =>
-    props.$settings?.imageHeight || defaultSetting.imageheight};
+  width: 100%;
+  height: 200px;
   border-radius: ${(props) =>
-    props.$settings?.imageRadius || defaultSetting.imageRadius};
+    props.$settings?.imageRadius || defaultSetting.imageRadius}px;
   transition: all 0.3s ease;
 
   &:hover {
-    transform: scale(1.05);
+    opacity: 0.8;
   }
-
-  @media (max-width: 768px) {
-    height: 180px;
-  }
-
-  @media (max-width: 426px) {
-    height: 160px;
+  if (props.$setting?.cardBorderRadius > 0) {
+    border-radius-top: ${(props) => props.$settings?.imageRadius}px 0;
   }
 `;
 
@@ -92,12 +92,12 @@ const ProductName = styled.h3<{
   $productData?: ProductCardData;
 }>`
   font-size: ${(props) =>
-    props.$settings?.nameFontSize || defaultSetting.nameFontSize};
+    props.$settings?.nameFontSize || defaultSetting.nameFontSize}حط;
   font-weight: ${(props) =>
     props.$settings?.nameFontWeight || defaultSetting.nameFontWeight};
   color: ${(props) => props.$settings?.nameColor || defaultSetting.nameColor};
-  margin: 12px 0 8px;
-  line-height: 1.4;
+  margin: 8px 0;
+  text-align: center;
 
   @media (max-width: 768px) {
     font-size: 1rem;
@@ -110,14 +110,15 @@ const ProductDescription = styled.p<{
   $productData?: ProductCardData;
 }>`
   font-size: ${(props) =>
-    props.$settings?.descriptionFontSize || defaultSetting.descriptionFontSize};
+    props.$settings?.descriptionFontSize ||
+    defaultSetting.descriptionFontSize}حط;
   color: ${(props) =>
     props.$settings?.descriptionColor || defaultSetting.descriptionColor};
   font-weight: ${(props) =>
     props.$settings?.descriptionFontWeight ||
     defaultSetting.descriptionFontWeight};
-  line-height: 1.6;
-  margin: 8px 0 16px;
+  text-align: center;
+  margin: 8px 0;
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -135,42 +136,30 @@ const ProductPrice = styled.span<{
   $productData?: ProductCardData;
 }>`
   font-size: ${(props) =>
-    props.$settings?.priceFontSize || defaultSetting.priceFontSize};
+    props.$settings?.priceFontSize || defaultSetting.priceFontSize}حط;
   color: ${(props) => props.$settings?.priceColor || defaultSetting.pricecolor};
-  font-weight: bold;
-  padding: 4px 0;
-  display: block;
+  font-weight: 700;
+  margin: 8px 0;
   text-align: center;
-  width: 100%;
-  border-radius: 6px;
-  transition: transform 0.2s ease;
-
-  &:hover {
-    transform: scale(1.02);
-  }
-
-  @media (max-width: 768px) {
-    font-size: 0.95rem;
-    padding: 3px 0;
-  }
 `;
 
-const AddToCartButton = styled.button`
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+const AddToCartButton = styled.button<{
+  $settings?: ProductBlockSetting;
+  $productData?: ProductCardData;
+}>`
+  background-color: ${(props) => props.$settings?.cartBakground};
+  color: ${(props) => props.$settings?.cartColor};
   border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
+  padding: 8px 20px;
+  border-radius: ${(props) => props.$settings?.cartRadius}px;
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  width: 100%;
-  margin-top: 8px;
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 4px 12px ${(props) => props.$settings?.cartBakground};
   }
 
   &:active {
@@ -184,7 +173,7 @@ const AddToCartButton = styled.button`
   }
 `;
 
-const ProductCard: React.FC<ProductCardProps> = ({ productData }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ productData, settings }) => {
   const router = useRouter();
   const safeProductData = {
     ...productData,
@@ -251,42 +240,34 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData }) => {
   console.log(productId, "vvvvvvvvvv");
 
   return (
-    <Card
-      onClick={() => handleNavigate(productId)}
-      dir="rtl"
-      className="min-w-0"
-    >
+    <Card onClick={() => handleNavigate(productId)} dir="rtl">
       <ProductImage
+        $settings={settings}
         $productData={safeProductData}
         src={currentImage.imageSrc}
         alt={currentImage.imageAlt}
-        width={300}
-        height={200}
-        sizes="(max-width: 768px) 100vw, 300px"
+        width={2000}
+        height={2000}
       />
-      <div className="flex flex-col p-2 w-full flex-1">
-        <ProductName className="" $productData={safeProductData}>
-          {safeProductData.name || "Unnamed Product"}
-        </ProductName>
-        <ProductDescription $productData={safeProductData}>
-          {safeProductData.description || "No description available"}
-        </ProductDescription>
-        <div className="mt-auto">
-          <div className="w-full   bg-red-50 hover:bg-red-100 transition-all duration-200 flex justify-center items-center p-2">
-            <ProductPrice
-              className="text-black font-extralight leading-4 text-center w-full"
-              $productData={safeProductData}
-            >
-              {safeProductData.price !== undefined
-                ? `${safeProductData.price} تومان`
-                : "Price not available"}
-            </ProductPrice>
-          </div>
-          <AddToCartButton onClick={addToCart} disabled={isAddingToCart}>
-            {isAddingToCart ? "در حال افزودن..." : "افزودن به سبد خرید"}
-          </AddToCartButton>
-        </div>
-      </div>
+
+      <ProductName $settings={settings} $productData={productData}>
+        {safeProductData.name || "Unnamed Product"}
+      </ProductName>
+      <ProductDescription $settings={settings} $productData={productData}>
+        {productData.description.slice(0, 30)}...
+      </ProductDescription>
+
+      <ProductPrice $settings={settings} $productData={productData}>
+        {productData.price}
+      </ProductPrice>
+      <AddToCartButton
+        onClick={addToCart}
+        disabled={isAddingToCart}
+        $settings={settings}
+        $productData={productData}
+      >
+        {isAddingToCart ? "در حال افزودن..." : "افزودن به سبد خرید"}
+      </AddToCartButton>
     </Card>
   );
 };
