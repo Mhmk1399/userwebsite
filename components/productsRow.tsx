@@ -25,10 +25,9 @@ const ScrollContainer = styled.div<{
   padding-bottom: ${(props) => props.$data.setting.paddingBottom}px;
   padding-left: ${(props) => props.$data.setting.paddingLeft}px;
   padding-right: ${(props) => props.$data.setting.paddingRight}px;
-  height: ${(props) => props.$data.blocks.setting.height || "200"}px;
   background-color: ${(props) =>
     props.$data.setting?.backgroundColor || "#ffffff"};
-  border-radius: ${(props) => props.$data.blocks?.setting?.Radius || "5"}px;
+  min-height: ${(props) => props.$data.blocks.setting.height}px;
   box-shadow: ${(props) =>
     `${props.$data.blocks.setting?.shadowOffsetX || 0}px 
      ${props.$data.blocks.setting?.shadowOffsetY || 4}px 
@@ -50,10 +49,11 @@ const ProductsRowSection = styled.section<{
   max-width: 100%;
   overflow-x: scroll;
   scroll-behavior: smooth;
-  gap: 8px;
+  max-height: 450px;
+  gap: 10px;
   padding: ${(props) => (props.$isMobile ? "10px" : "20px")};
   background-color: ${(props) =>
-    props.$data.setting?.backgroundColor || "#ffffff"};
+    props.$data.blocks?.setting?.backgroundColor || "#ffffff"};
   border-radius: ${(props) =>
     props.$data.blocks?.setting?.cardBorderRadius || "8"}px;
   direction: rtl;
@@ -74,24 +74,19 @@ const Heading = styled.h2<{
     `${props.$data.blocks?.setting?.headingFontSize || "32"}px`};
   font-weight: ${(props) =>
     props.$data.blocks?.setting?.headingFontWeight || "bold"};
-  text-align: right;
-  margin-bottom: 20px;
-  padding-top: 5px;
-  border-bottom: 1px solid
-    ${(props) => props.$data.blocks?.setting?.headingColor || "#000000"};
+  text-align: center;
 `;
 
 const ScrollButton = styled.button<{
   $data: ProductRowSection;
-  $position: "left" | "right";
 }>`
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  ${(props) => props.$position}: 10px;
   background-color: ${(props) =>
-    props.$data.blocks?.setting?.btnBackgroundColor || "#fff"};
-  color: ${(props) => props.$data.blocks?.setting?.btnColor || "#000"};
+    props.$data.blocks?.setting?.btnBackgroundColor || "#000000"};
+  color: ${(props) => props.$data.blocks?.setting?.btnTextColor || "#000000"};
+  opacity: 0.8;
   border: none;
   border-radius: ${(props) => props.$data.blocks?.setting?.btnRadius || "5"}px;
   width: 40px;
@@ -293,13 +288,18 @@ export const ProductsRow: React.FC<ProductsRowProps> = ({
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            collectionId: CollectionId || "", // Remove extra quotes
+            CollectionId: CollectionId,
           },
         });
+        
+        if (!response.ok) {
+          console.log(`API error: ${response.status} ${response.statusText}`);
+          return;
+        }
+        
         const data = await response.json();
         if (data.products) {
           setProducts(data.products);
-          // setLoading(false);
         }
       } catch (error) {
         console.log("Error fetching special offers:", error);
@@ -329,32 +329,30 @@ export const ProductsRow: React.FC<ProductsRowProps> = ({
   //   return null;
   // }
   return (
-    <div className="px-2">
-      <ScrollContainer $data={sectionData} className="border rounded-lg">
-        <Heading
-          dir="rtl"
-          $data={sectionData}
-          $isMobile={isMobile}
-          className="w-fit ml-auto mr-3 text-center"
-        >
-          {isSpecialOfferBlock(sectionData.blocks)
-            ? sectionData.blocks.textHeading
-            : ""}
-        </Heading>
-
-        <ProductsRowSection
-          ref={containerRef}
-          $data={sectionData}
-          $isMobile={isMobile}
-        >
+    <ScrollContainer $data={sectionData} className="rounded-lg">
+      <ProductsRowSection
+        ref={containerRef}
+        $data={sectionData}
+        $isMobile={isMobile}
+      >
+        <div className="flex flex-col items-center justify-center lg:px-10">
+          <Heading
+            $data={sectionData}
+            $isMobile={isMobile}
+            className="animate-pulse"
+            dir="rtl"
+          >
+            {isSpecialOfferBlock(sectionData.blocks)
+              ? sectionData.blocks.textHeading
+              : ""}
+          </Heading>
+        </div>
           {products.map((product, idx) => (
             <ProductCard key={idx} productData={product} />
           ))}
-          <button
-            aria-label="left"
-            onClick={() => router.push(`/collection/${CollectionId}`)}
-            className="bg-white px-4 py-2 ml-10 rounded-lg  flex flex-col gap-y-2 justify-center items-center   text-black text-nowrap hover:bg-gray-100"
-            style={{ boxShadow: "1px 1px 8px 1px rgba(0, 0, 0, 0.1)" }}
+        <button
+          onClick={() => router.push(`/collection/${CollectionId}`)}
+          className="px-4 py-2 ml-10 rounded-lg flex flex-col gap-y-2 justify-center items-center group min-h-[200px] min-w-[220px] text-black text-nowrap transition-all duration-500 hover:bg-gray-50"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -362,31 +360,29 @@ export const ProductsRow: React.FC<ProductsRowProps> = ({
               viewBox="0 -960 960 960"
               width="60px"
               fill="#3ac1ee"
-              aria-label="View All"
+              className="group-hover:fill-gray-400"
             >
               <path d="m480-334 42-42-74-74h182v-60H448l74-74-42-42-146 146 146 146Zm0 254q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Zm0-60q142 0 241-99.5T820-480q0-142-99-241t-241-99q-141 0-240.5 99T140-480q0 141 99.5 240.5T480-140Zm0-340Z" />
             </svg>
             <span className="text-2xl"> مشاهده همه‌</span>
           </button>
-        </ProductsRowSection>
+      </ProductsRowSection>
 
-        {/* Navigation Buttons with Animation */}
-        <ScrollButton
-          $data={sectionData}
-          $position="left"
-          onClick={() => handleScroll("left")}
-        >
-          <BiChevronLeft size={24} />
-        </ScrollButton>
+      <ScrollButton
+        className="left"
+        onClick={() => handleScroll("left")}
+        $data={sectionData}
+      >
+        <BiChevronLeft size={24} />
+      </ScrollButton>
 
-        <ScrollButton
-          $data={sectionData}
-          $position="right"
-          onClick={() => handleScroll("right")}
-        >
-          <BiChevronRight size={24} />
-        </ScrollButton>
-      </ScrollContainer>
-    </div>
+      <ScrollButton
+        className="right"
+        onClick={() => handleScroll("right")}
+        $data={sectionData}
+      >
+        <BiChevronRight size={24} />
+      </ScrollButton>
+    </ScrollContainer>
   );
 };

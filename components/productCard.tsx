@@ -183,21 +183,18 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData, settings }) => {
   }
 
   try {
-    // Handle products from collections that don't have images property
-    const safeProductData = {
-      ...productData,
-      images: [{
-        imageSrc: "/assets/images/pro2.jpg",
-        imageAlt: productData?.name || "Product Image",
-      }],
-    };
-    
     const [isAddingToCart, setIsAddingToCart] = useState(false);
 
-    // Define currentImage with guaranteed fallback
+    // Use actual product image or fallback
     const currentImage = {
-      imageSrc: "/assets/images/pro2.jpg",
-      imageAlt: "Product Image",
+      imageSrc: productData?.images?.[0]?.imageSrc || productData?.image || "/assets/images/pro2.jpg",
+      imageAlt: productData?.images?.[0]?.imageAlt || productData?.name || "Product Image",
+    };
+    
+    // Handle products from collections
+    const safeProductData = {
+      ...productData,
+      images: productData?.images || [currentImage],
     };
 
   const handleNavigate = (_id: string) => {
