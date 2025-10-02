@@ -175,17 +175,30 @@ const AddToCartButton = styled.button<{
 
 const ProductCard: React.FC<ProductCardProps> = ({ productData, settings }) => {
   const router = useRouter();
-  const safeProductData = {
-    ...productData,
-    images: productData.images || [
-      {
+  
+  // Early return if productData is null or undefined
+  if (!productData) {
+    console.log('ProductCard: productData is null or undefined');
+    return null;
+  }
+
+  try {
+    // Handle products from collections that don't have images property
+    const safeProductData = {
+      ...productData,
+      images: [{
         imageSrc: "/assets/images/pro2.jpg",
-        imageAlt: "Product Image",
-      },
-    ],
-  };
-  const [currentImageIndex] = useState(0);
-  const [isAddingToCart, setIsAddingToCart] = useState(false);
+        imageAlt: productData?.name || "Product Image",
+      }],
+    };
+    
+    const [isAddingToCart, setIsAddingToCart] = useState(false);
+
+    // Define currentImage with guaranteed fallback
+    const currentImage = {
+      imageSrc: "/assets/images/pro2.jpg",
+      imageAlt: "Product Image",
+    };
 
   const handleNavigate = (_id: string) => {
     router.push(`/store/${_id}`);
@@ -230,46 +243,45 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData, settings }) => {
     }
   };
 
-  const currentImage = safeProductData.images[currentImageIndex] || {
-    imageSrc: "/assets/images/pro2.jpg",
-    imageAlt: "Product Image",
-  };
+    // Use _id or id, whichever is available
+    const productId = productData?._id || productData?.id || 'unknown';
+    console.log(productId, "vvvvvvvvvv");
 
-  // Use _id or id, whichever is available
-  const productId = productData._id || productData.id;
-  console.log(productId, "vvvvvvvvvv");
+    return (
+      <Card onClick={() => handleNavigate(productId)} dir="rtl">
+        <ProductImage
+          $settings={settings}
+          $productData={safeProductData}
+          src={currentImage.imageSrc}
+          alt={currentImage.imageAlt}
+          width={2000}
+          height={2000}
+        />
 
-  return (
-    <Card onClick={() => handleNavigate(productId)} dir="rtl">
-      <ProductImage
-        $settings={settings}
-        $productData={safeProductData}
-        src={currentImage.imageSrc}
-        alt={currentImage.imageAlt}
-        width={2000}
-        height={2000}
-      />
+        <ProductName $settings={settings} $productData={productData}>
+          {safeProductData.name || "Unnamed Product"}
+        </ProductName>
+        <ProductDescription $settings={settings} $productData={productData}>
+          {productData?.description ? productData.description.slice(0, 30) + '...' : 'توضیحات موجود نیست'}
+        </ProductDescription>
 
-      <ProductName $settings={settings} $productData={productData}>
-        {safeProductData.name || "Unnamed Product"}
-      </ProductName>
-      <ProductDescription $settings={settings} $productData={productData}>
-        {productData.description.slice(0, 30)}...
-      </ProductDescription>
-
-      <ProductPrice $settings={settings} $productData={productData}>
-        {productData.price}
-      </ProductPrice>
-      <AddToCartButton
-        onClick={addToCart}
-        disabled={isAddingToCart}
-        $settings={settings}
-        $productData={productData}
-      >
-        {isAddingToCart ? "در حال افزودن..." : "افزودن به سبد خرید"}
-      </AddToCartButton>
-    </Card>
-  );
+        <ProductPrice $settings={settings} $productData={productData}>
+          {productData?.price || 'قیمت مشخص نشده'}
+        </ProductPrice>
+        <AddToCartButton
+          onClick={addToCart}
+          disabled={isAddingToCart}
+          $settings={settings}
+          $productData={productData}
+        >
+          {isAddingToCart ? "در حال افزودن..." : "افزودن به سبد خرید"}
+        </AddToCartButton>
+      </Card>
+    );
+  } catch (error) {
+    console.error('ProductCard error:', error, 'productData:', productData);
+    return <div>Error loading product</div>;
+  }
 };
 
 // IndexedDB helper function
