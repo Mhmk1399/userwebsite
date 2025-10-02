@@ -18,7 +18,7 @@ import {
 import { useRouter } from "next/navigation";
 import UserMenu from "./userMenu";
 import { useAuth } from "@/hook/useAuth";
-import { useUserInfo } from "@/hook/userInfo";
+import { useUserInfo } from "@/hook/useUserInfo";
 
 interface HeaderProps {
   headerData?: HeaderSection;
@@ -579,7 +579,7 @@ const Header: React.FC<HeaderProps> = ({ headerData, isMobile }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileDropdownOpen, setMobileDropdownOpen] = useState(false);
   const { basic } = useUserInfo();
-  console.log(basic , "vvvvv")
+ 
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -740,7 +740,7 @@ const Header: React.FC<HeaderProps> = ({ headerData, isMobile }) => {
             <Link className="ml-auto hidden lg:block" href="#">
               <Logo
                 $data={sectionData}
-                src={basic?.logo || "/assets/images/logo.webp"}
+                src={basic?.logo || sectionData.blocks.imageLogo || "/assets/images/logo.webp"}
                 alt={sectionData.blocks.imageAlt}
               />
             </Link>
@@ -860,7 +860,7 @@ const Header: React.FC<HeaderProps> = ({ headerData, isMobile }) => {
         <MobileMenuHeader $data={sectionData}>
           <Logo
             $data={sectionData}
-            src={basic?.logo || "/assets/images/logo.webp"}
+            src={basic?.logo || sectionData.blocks.imageLogo || "/assets/images/logo.webp"}
             alt={sectionData.blocks.imageAlt}
             style={{ width: "50px", height: "50px" }}
           />
