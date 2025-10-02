@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import useSWR from "swr";
 
 interface UserInfo {
   _id: string;
@@ -25,27 +25,22 @@ interface UserInfo {
   };
 }
 
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
 export const useUserInfo = () => {
-  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
-  const [loading, setLoading] = useState(true);
+  const {
+    data: userInfo,
+    error,
+    isLoading,
+  } = useSWR<UserInfo>("/api/userInfo", fetcher, {
+    refreshInterval: 180000,
+  });
 
-  useEffect(() => {
-    const fetchUserInfo = async () => {
-      try {
-        const response = await fetch("/api/userInfo");
-        if (response.ok) {
-          const data = await response.json();
-          setUserInfo(data);
-        }
-      } catch (error) {
-        console.error("Error fetching user info:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUserInfo();
-  }, []);
-
-  return { userInfo, loading, basic: userInfo?.basic };
+  return {
+    userInfo,
+    loading: isLoading,
+    error,
+    basic: userInfo?.basic,
+    contact: userInfo?.contact,
+  };
 };

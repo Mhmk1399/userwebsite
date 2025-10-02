@@ -51,6 +51,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ color = "#fff" }) => {
   return (
     <div className="relative">
       <button
+        style={{ color }}
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
         className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors"
       >
@@ -75,7 +76,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ color = "#fff" }) => {
           {/* Dropdown menu */}
           <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 z-20">
             <div className="py-1">
-              <div className="px-4 py-2 flex justify-end text-sm text-gray-500 border-b border-gray-100">
+              <div className="px-4 py-2 flex justify-end text-sm  border-b border-gray-100">
                 {user.name}
               </div>
 
