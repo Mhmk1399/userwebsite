@@ -1,4 +1,4 @@
-import { DetailedHTMLProps, HTMLAttributes } from "react"; 
+import { DetailedHTMLProps, HTMLAttributes } from "react";
 import { Interpolation } from "styled-components";
 import { Substitute } from "styled-components/dist/types";
 
@@ -1016,9 +1016,6 @@ export interface ProductBlockSetting {
   filterButtonTextColor: string;
   filterRowBg: string;
   filterNameColor: string;
-  textColor:string;
-  btnBackgroundColor:string;
-  btnTextColor:string;
   filterCardBg: string;
   shadowColor?: string;
   shadowSpread?: string;
@@ -1026,6 +1023,25 @@ export interface ProductBlockSetting {
   shadowOffsetY?: string;
   shadowOffsetX?: string;
   Radius?: string;
+  // ProductCard settings
+  cardBackground?: string;
+  imageWidth?: string;
+  imageHeight?: string;
+  imageRadius?: string;
+  nameFontSize?: string;
+  nameFontWeight?: string;
+  nameColor?: string;
+  descriptionFontSize?: string;
+  descriptionFontWeight?: string;
+  descriptionColor?: string;
+  priceFontSize?: string;
+  priceColor?: string;
+  btnBackgroundColor?: string;
+  btnColor?: string;
+  imagePadding?: string;
+  cartRadius?: string;
+  cartColor?: string;
+  cartBakground?: string;
 }
 
 export interface ProductListSection {
@@ -1072,6 +1088,7 @@ export interface ProductCard {
   priceColor?: string;
   btnBackgroundColor?: string;
   btnColor?: string;
+  imagePadding?: string;
 }
 export interface ProductCardType {
   blocks: ProductListSection[];
