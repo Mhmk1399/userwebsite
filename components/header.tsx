@@ -42,7 +42,6 @@ const HeaderWrapper = styled.header<{
   $isScrolled: boolean;
 }>`
   width: 100%;
-  border-bottom: 1px solid #e5e7eb;
   position: sticky;
   top: 0;
   left: 0;
@@ -791,7 +790,11 @@ const Header: React.FC<HeaderProps> = ({ headerData, isMobile }) => {
                               )
                               [hoverd]?.children.map((child) => (
                                 <Link
-                                  href={`/store?categoryId=${categories?.filter((category) => category.children.length > 0)[hoverd]?._id}`}
+                                  href={`/store?categoryId=${
+                                    categories?.filter(
+                                      (category) => category.children.length > 0
+                                    )[hoverd]?._id
+                                  }`}
                                   key={child._id}
                                   className="p-3 hover:translate-x-[2px] rounded-lg transition-all duration-300 text-right group hover:bg-blue-50"
                                 >

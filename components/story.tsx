@@ -43,7 +43,7 @@ const StoriesWrapper = styled.section<{
 }>`
   display: flex;
   direction: rtl;
-  justify-content: center;
+  justify-content: flex-start;
   overflow-x: auto;
   gap: ${(props) => props.$data.blocks.setting.storyGap || 12}px;
   padding: 10px;
