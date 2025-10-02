@@ -48,7 +48,7 @@ const SpecialOfferSection = styled.section<{
   align-items: center;
   width: 100%;
   height: auto;
-  max-height: 300px;
+  max-height: 450px;
   max-width: 100%;
   overflow-x: scroll;
   scroll-behavior: smooth;
