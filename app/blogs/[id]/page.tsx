@@ -5,7 +5,6 @@ import styled from "styled-components";
 import { BlogDetailSection, HeaderSection, FooterSection, Section } from "@/lib/types";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
-import { getClientStoreId } from "@/utils/getClientStoreId";
 
 interface BlogDetailData {
   _id: string;
@@ -281,7 +280,6 @@ const BlogDetailContent: React.FC<BlogDetailProps & { blogId: string }> = ({
         headers: {
           selectedRoute: "blog",
           activeMode: activeMode,
-          storeId: getClientStoreId(),
         },
       });
 

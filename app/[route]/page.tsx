@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { getClientStoreId } from "@/utils/getClientStoreId";
 import {
   BannerSection,
   BlogBlock,
@@ -287,7 +286,6 @@ export default function Page() {
         headers: {
           selectedRoute: routeName,
           activeMode: activeMode,
-          storeId: getClientStoreId(),
         },
       });
       if (!response.ok) {

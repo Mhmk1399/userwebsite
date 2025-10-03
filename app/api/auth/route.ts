@@ -35,9 +35,7 @@ export async function POST(request: NextRequest) {
   try {
     const { name, phone, password } = await request.json();
     
-    const storeId = process.env.NODE_ENV === 'development' 
-      ? process.env.STOREID 
-      : await getStoreId(request);
+    const storeId = getStoreId(request);
     
     // Check if user already exists with this phone and storeId
     const existingUser = await StoreUsers.findOne({ phone, storeId });

@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import { getClientStoreId } from "@/utils/getClientStoreId";
 
 import {
   BannerSection,
@@ -92,7 +91,6 @@ export default function Page() {
         headers: {
           selectedRoute: "store",
           activeMode: activeMode,
-          storeId: getClientStoreId(),
         },
       });
 

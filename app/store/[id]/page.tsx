@@ -4,7 +4,6 @@ import { DetailPageSection, ProductCardData, ProductImage } from "@/lib/types";
 import Image from "next/image";
 import { styled } from "styled-components";
 import { useParams } from "next/navigation";
-import { getClientStoreId } from "@/utils/getClientStoreId";
 
 const defaultProperties = [
   { key: "نوع اتصال", value: "بی‌سیم", tooltip: "بی‌سیم " },
@@ -174,7 +173,6 @@ export default function DetailPage() {
         headers: {
           selectedRoute: "detail",
           activeMode: activeMode,
-          storeId: getClientStoreId(),
         },
       });
 

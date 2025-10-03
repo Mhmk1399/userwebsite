@@ -6,7 +6,6 @@ import Image from "next/image";
 import Link from "next/link";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
-import { getClientStoreId } from "@/utils/getClientStoreId";
 
 
 interface BlogData {
@@ -171,7 +170,6 @@ export default function Page() {
         headers: {
           selectedRoute: "blogs",
           activeMode: activeMode,
-          storeId: getClientStoreId(),
         },
       });
 
