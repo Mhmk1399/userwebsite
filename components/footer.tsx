@@ -5,6 +5,7 @@ import Image from "next/image";
 import { FooterSection } from "@/lib/types";
 import { useEffect, useState } from "react";
 import { FaArrowUp } from "react-icons/fa";
+import { useUserInfo } from "@/hook/useUserInfo";
 
 interface FooterProps {
   footerData?: FooterSection;
@@ -257,6 +258,7 @@ const Footer: React.FC<FooterProps> = ({ footerData }) => {
   const [hasMounted, setHasMounted] = useState(false);
   const [enamadExists] = useState(false);
   const [enamad] = useState("");
+  const { basic, userInfo } = useUserInfo();
 
   const sectionData = footerData as FooterSection;
 
@@ -359,15 +361,21 @@ const Footer: React.FC<FooterProps> = ({ footerData }) => {
       <Link href="/" className="">
         <Logo
           $data={sectionData}
-          src={logo || "/assets/images/logo.webp"}
+          src={basic?.logo || logo || "/assets/images/logo.webp"}
           width={70}
           height={70}
           alt="Logo"
         />
       </Link>
       <NumberPart $data={sectionData} className="">
-        <Link href={`tel:${phoneNumber || "123123123"}`}>{phoneNumber} | </Link>
-        <span className="text-sm text-gray-500 mr-1">{textNumber}</span>
+        <Link
+          href={`tel:${userInfo?.contact?.phone || phoneNumber || "123123123"}`}
+        >
+          {userInfo?.contact?.phone || phoneNumber} |{" "}
+        </Link>
+        <span className="text-sm text-gray-500 mr-1">
+          {textNumber || "با این شماره تماس بگیرید"}
+        </span>
       </NumberPart>
 
       <ScrollTopButton

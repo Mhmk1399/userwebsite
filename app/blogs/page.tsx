@@ -204,16 +204,24 @@ export default function Page() {
 
       const data = await response.json();
 
-      const blogInfo = data.blogs.map((blog: BlogData) => ({
-        ...blog,
-        btnLink: `/blogs/${blog.blogId}`,
-        imageSrc: "/assets/images/pro3.jpg",
-        imageAlt: blog.title,
-        description: blog.description,
-        storeId: blog.storeId,
-      }));
-      setBlogData(blogInfo);
-      setPagination(data.pagination);
+      if (data.blogs && Array.isArray(data.blogs)) {
+        const blogInfo = data.blogs.map((blog: BlogData) => ({
+          ...blog,
+          btnLink: `/blogs/${blog.blogId}`,
+          imageSrc: "/assets/images/pro3.jpg",
+          imageAlt: blog.title,
+          description: blog.description,
+          storeId: blog.storeId,
+        }));
+        setBlogData(blogInfo);
+        
+        if (data.pagination) {
+          setPagination(data.pagination);
+        }
+      } else {
+        console.error('Invalid API response structure:', data);
+        setBlogData([]);
+      }
     } catch (error) {
       console.log("Error fetching blogs:", error);
     } finally {

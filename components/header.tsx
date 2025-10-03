@@ -18,6 +18,7 @@ import {
 import { useRouter } from "next/navigation";
 import UserMenu from "./userMenu";
 import { useAuth } from "@/hook/useAuth";
+import { useUserInfo } from "@/hook/useUserInfo";
 
 interface HeaderProps {
   headerData?: HeaderSection;
@@ -42,7 +43,6 @@ const HeaderWrapper = styled.header<{
   $isScrolled: boolean;
 }>`
   width: 100%;
-  border-bottom: 1px solid #e5e7eb;
   position: sticky;
   top: 0;
   left: 0;
@@ -275,9 +275,10 @@ const CategoryItem = styled.span<{ $data: HeaderSection }>`
   }
 `;
 
-const MegaMenuTitle = styled.h3`
+const MegaMenuTitle = styled.h3<{ $data: HeaderSection }>`
   font-size: 1rem;
-  color: #1e293b;
+  color: ${(props) =>
+    props.$data.blocks.setting?.categoryItemColor || "#64748b"};
   text-wrap: nowrap;
   text-align: right;
   font-weight: 600;
@@ -577,6 +578,8 @@ const Header: React.FC<HeaderProps> = ({ headerData, isMobile }) => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileDropdownOpen, setMobileDropdownOpen] = useState(false);
+  const { basic } = useUserInfo();
+ 
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -737,7 +740,7 @@ const Header: React.FC<HeaderProps> = ({ headerData, isMobile }) => {
             <Link className="ml-auto hidden lg:block" href="#">
               <Logo
                 $data={sectionData}
-                src={sectionData.blocks.imageLogo || "/assets/images/logo.webp"}
+                src={basic?.logo || sectionData.blocks.imageLogo || "/assets/images/logo.webp"}
                 alt={sectionData.blocks.imageAlt}
               />
             </Link>
@@ -770,14 +773,16 @@ const Header: React.FC<HeaderProps> = ({ headerData, isMobile }) => {
                                 className="block"
                               >
                                 <div
-                                  className={`py-3 px-4 rounded-lg ml-2 cursor-pointer transition-all duration-300 ${
+                                  className={`py-3 px-4 ml-2 cursor-pointer ${
                                     idx === hoverd
-                                      ? "bg-blue-50 border-l-4 border-blue-400 font-semibold text-blue-700"
-                                      : "hover:bg-gray-50"
+                                      ? " border-r-2 font-semibold  "
+                                      : ""
                                   }`}
                                   onMouseEnter={() => setHoverd(idx)}
                                 >
-                                  <MegaMenuTitle>{category.name}</MegaMenuTitle>
+                                  <MegaMenuTitle $data={sectionData}>
+                                    {category.name}
+                                  </MegaMenuTitle>
                                 </div>
                               </Link>
                             ))}
@@ -791,9 +796,13 @@ const Header: React.FC<HeaderProps> = ({ headerData, isMobile }) => {
                               )
                               [hoverd]?.children.map((child) => (
                                 <Link
-                                  href={`/store?categoryId=${categories?.filter((category) => category.children.length > 0)[hoverd]?._id}`}
+                                  href={`/store?categoryId=${
+                                    categories?.filter(
+                                      (category) => category.children.length > 0
+                                    )[hoverd]?._id
+                                  }`}
                                   key={child._id}
-                                  className="p-3 hover:translate-x-[2px] rounded-lg transition-all duration-300 text-right group hover:bg-blue-50"
+                                  className="p-3 hover:translate-x-[2px] rounded-lg transition-all duration-300 text-right group"
                                 >
                                   <CategoryItem $data={sectionData}>
                                     {child.name}
@@ -851,7 +860,7 @@ const Header: React.FC<HeaderProps> = ({ headerData, isMobile }) => {
         <MobileMenuHeader $data={sectionData}>
           <Logo
             $data={sectionData}
-            src={sectionData.blocks.imageLogo || "/assets/images/logo.webp"}
+            src={basic?.logo || sectionData.blocks.imageLogo || "/assets/images/logo.webp"}
             alt={sectionData.blocks.imageAlt}
             style={{ width: "50px", height: "50px" }}
           />

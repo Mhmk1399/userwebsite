@@ -227,7 +227,7 @@ const AuthContainer: React.FC = () => {
 
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center px-10 py-20 lg:p-0" dir="rtl">
+    <div className="relative min-h-screen flex items-center justify-center px-10 py-20 lg:p-0 bg-white" dir="rtl">
       <div className="absolute inset-0 z-0">
         <Threads
           color={[0, 1, 4]}

@@ -48,7 +48,7 @@ const SpecialOfferSection = styled.section<{
   align-items: center;
   width: 100%;
   height: auto;
-  max-height: 300px;
+  max-height: 450px;
   max-width: 100%;
   overflow-x: scroll;
   scroll-behavior: smooth;
@@ -282,17 +282,26 @@ export const SpecialOffer: React.FC<SpecialOfferProps> = ({
 
   useEffect(() => {
     const fetchSpecialOffers = async () => {
+      if (!CollectionId) {
+        console.log("No CollectionId provided");
+        return;
+      }
+      
       try {
         const response = await fetch("/api/collection", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            CollectionId: CollectionId || "", // Remove extra quotes
+            CollectionId: CollectionId,
           },
         });
-
+        
+        if (!response.ok) {
+          console.log(`API error: ${response.status} ${response.statusText}`);
+          return;
+        }
+        
         const data = await response.json();
-
         if (data && data.products) {
           setSpecialOfferProducts(data.products);
         } else {
@@ -302,8 +311,9 @@ export const SpecialOffer: React.FC<SpecialOfferProps> = ({
         console.log("Error fetching special offers:", error);
       }
     };
+    
     fetchSpecialOffers();
-  }, []);
+  }, [CollectionId]);
 
   if (!sectionData) return null;
 
