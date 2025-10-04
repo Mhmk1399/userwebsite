@@ -18,6 +18,8 @@ interface ProductListProps {
   sections: ProductSection[] | ProductSection;
   isMobile: boolean;
   componentName: string;
+  collectionProducts?: ProductCardData[];
+  hideFilters?: boolean;
 }
 interface CategoryWithChildren {
   _id: string;
@@ -324,6 +326,8 @@ const ProductList: React.FC<ProductListProps> = ({
   sections,
   isMobile,
   componentName,
+  collectionProducts,
+  hideFilters,
 }) => {
   const [productData, setProductData] = useState<ProductCardData[]>([]);
 
@@ -381,13 +385,19 @@ const ProductList: React.FC<ProductListProps> = ({
     setSelectedColors(sp.colors ? sp.colors.split(",") : []);
     setSortBy((sp.sortBy || "newest") as "newest" | "price-asc" | "price-desc" | "name");
 
-    const isStoreRoute = pathname.split("/")[1] === "store";
-    if (!isStoreRoute) {
-      setLoading(true);
-      await getCollection();
+    // Use collectionProducts if provided, otherwise fetch from API
+    if (collectionProducts) {
+      setProductData(collectionProducts);
       setLoading(false);
+    } else {
+      const isStoreRoute = pathname.split("/")[1] === "store";
+      if (!isStoreRoute) {
+        setLoading(true);
+        await getCollection();
+        setLoading(false);
+      }
     }
-  }, [searchParams, pathname]);
+  }, [searchParams, pathname, collectionProducts]);
 
   useEffect(() => {
     loadInitialData();
@@ -669,11 +679,12 @@ const ProductList: React.FC<ProductListProps> = ({
           $previewWidth="default"
         >
           {/* Filter Section - Desktop */}
-          <FilterCardBg
-            $isMobile={isMobile}
-            $data={sectionData.setting}
-            dir="rtl"
-          >
+          {!hideFilters && (
+            <FilterCardBg
+              $isMobile={isMobile}
+              $data={sectionData.setting}
+              dir="rtl"
+            >
             <div className="p-2 text-right">
               <div className="grid grid-cols-1 md:grid-cols-1 gap-4 justify-start">
                 <div>
@@ -728,7 +739,8 @@ const ProductList: React.FC<ProductListProps> = ({
                 </div>
               </div>
             </div>
-          </FilterCardBg>
+            </FilterCardBg>
+          )}
 
           {/* Products Section */}
           <div className="flex-1 w-full">
