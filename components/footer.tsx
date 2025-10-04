@@ -279,7 +279,7 @@ const Footer: React.FC<FooterProps> = ({ footerData }) => {
         const response = await fetch("/api/category");
 
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          console.log(`HTTP error! status: ${response.status}`);
         }
 
         const cateData = await response.json();

@@ -117,7 +117,7 @@ const BlogList: React.FC<BlogListProps> = ({ sections, componentName }) => {
       try {
         const response = await fetch("/api/blog");
         if (!response.ok) {
-          throw new Error("Failed to fetch blogs");
+          console.log("Failed to fetch blogs");
         }
         const data = await response.json();
         console.log(data , "bbbbbbbbb")

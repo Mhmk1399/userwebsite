@@ -38,7 +38,7 @@ class ApiService {
     }
 
     const response = await fetch(url, config);
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    if (!response.ok) console.log(`HTTP ${response.status}`);
     return response.json();
   }
 

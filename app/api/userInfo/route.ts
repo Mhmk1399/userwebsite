@@ -1,7 +1,6 @@
 import connect from "@/lib/data";
-import { NextRequest, NextResponse } from "next/server";
+import {  NextResponse } from "next/server";
 import UserInfo from "@/models/userInfo";
-import jwt, { JwtPayload } from "jsonwebtoken";
 
 export async function GET() {
   try {

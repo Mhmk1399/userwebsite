@@ -14,6 +14,7 @@ import {
   MultiRowSection,
   NewsLetterSection,
   OfferRowSection,
+  ProductCardData,
   ProductListSection,
   RichTextSection,
   Section,
@@ -37,7 +38,6 @@ import RichText from "@/components/richText";
 import ProductList from "@/components/productList";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
-import ProductCard from "@/components/productCard";
 
 type AllSections = Section &
   RichTextSection &
@@ -70,7 +70,7 @@ export default function CollectionPage() {
   const [error, setError] = useState<string | null>(null);
   const [headerData, setHeaderData] = useState<HeaderSection | null>(null);
   const [footerData, setFooterData] = useState<FooterSection | null>(null);
-  const [collectionData, setCollectionData] = useState<any>(null);
+  const [collectionData, setCollectionData] = useState<{name: string; products: ProductCardData[]} | null>(null);
 
   const componentMap = {
     RichText,
@@ -223,16 +223,7 @@ export default function CollectionPage() {
       <Header isMobile={isMobile} headerData={headerData ?? undefined} />
       
       <main>
-        {collectionData && (
-          <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold text-center mb-4" dir="rtl">
-              {collectionData.name}
-            </h1>
-            <p className="text-gray-600 text-center mb-8" dir="rtl">
-              {collectionData.description}
-            </p>
-          </div>
-        )}
+      
         
         <div className="grid grid-cols-1 pt-4 px-1">
           {orders.map((componentName, index) => {
@@ -247,6 +238,7 @@ export default function CollectionPage() {
                   isMobile={isMobile}
                   componentName={componentName}
                   collectionProducts={collectionData?.products}
+                  hideFilters={true}
                 />
               </div>
             ) : null;

@@ -291,7 +291,7 @@ export default function Page() {
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to fetch layout data: ${response.status}`);
+        console.log(`Failed to fetch layout data: ${response.status}`);
       }
 
       const layoutData = await response.json();

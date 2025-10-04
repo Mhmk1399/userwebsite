@@ -1304,7 +1304,7 @@ export interface CollectionSection {
 
 export interface BlogBlock {
   blogId: number;
-  imageSrc: string;
+  image: string;
   imageAlt: string;
   title: string;
   description: string;
@@ -1616,7 +1616,7 @@ export interface StoryBlockSetting extends CommonSettings {
 export interface StoryBlock {
   stories: {
     id: string;
-    imageUrl: string;
+    image: string;
     title: string;
     link: string;
   }[];
@@ -1774,14 +1774,14 @@ export interface ProductRowBlockSetting extends CommonSettings {
 
 export interface ProductRowBlock {
   textHeading: string;
-  products: ProductRowSection[];
+  products: ProductCardData[];
   setting: ProductRowBlockSetting;
 }
 
 export interface ProductRowSection {
   type: "ProductRow";
   blocks: ProductRowBlock;
-  setting: ProductRowBlockSetting;
+  setting: CommonSettings;
 }
 export interface CanvasElement {
   id: string;

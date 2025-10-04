@@ -101,7 +101,7 @@ export const SharedProvider: React.FC<SharedProviderProps> = ({ children }) => {
 export const useSharedContext = () => {
   const context = useContext(SharedContext);
   if (context === undefined) {
-    throw new Error("useSharedContext must be used within a SharedProvider");
+    console.log("useSharedContext must be used within a SharedProvider");
   }
   return context;
 };
