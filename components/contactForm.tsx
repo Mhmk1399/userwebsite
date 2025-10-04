@@ -135,9 +135,8 @@ const SubmitButton = styled.button<{
   max-width: 100%;
   text-align: center;
   &:hover {
-    background-color: ${(props) =>
-      props.$data.blocks.setting?.btnBackgroundColor ? "#0056b3" : "#9c119c"};
-    transform: scale(0.97);
+    opacity:0.8;
+    transform: translateY(-1px);
   }
 
   /* Apply button animations */

@@ -172,9 +172,6 @@ const Logo = styled.img<{
   height: 60px;
   margin-left: auto;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  &:hover {
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  }
 `;
 
 const NavContainer = styled.nav`
@@ -361,39 +358,22 @@ const MobileMenu = styled.div<{
   $isMobile: boolean;
   $data: HeaderSection;
 }>`
-  display: ${(props) => (props.$isMobile && props.$isOpen ? "block" : "none")};
+  display: ${(props) => (props.$isOpen ? "block" : "none")};
   position: fixed;
   top: 0;
-  right: ${(props) => {
-    if (props.$isMobile) {
-      return "calc(50% - 212.5px)";
-    }
-    return "0";
-  }};
-  width: 85%;
-  max-width: 340px;
+  right: 0;
+  width: 80%;
+  max-width: 320px;
   height: 100vh;
   background-color: ${(props) =>
     props.$data.blocks.setting?.mobileBackground || "#fff"};
   transform: translateX(${(props) => (props.$isOpen ? "0" : "100%")});
-  opacity: 0.8; // 90% opacity برای کل element
-
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: ${(props) =>
     props.$isOpen ? "-8px 0 32px rgba(0, 0, 0, 0.12)" : "none"};
   z-index: 9999;
   overflow-y: auto;
   border-left: 1px solid #f1f5f9;
-
-  @media (max-width: 768px) {
-    display: block;
-    position: fixed;
-    right: 0;
-    width: 80%;
-    max-width: 320px;
-    height: 100vh;
-    z-index: 999;
-  }
 `;
 
 const MobileMenuHeader = styled.div<{
@@ -639,44 +619,63 @@ const Header: React.FC<HeaderProps> = ({ headerData, isMobile }) => {
   }, []);
 
   useEffect(() => {
+    let ticking = false;
+
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 0);
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const scrolled = window.scrollY > 50;
+          setIsScrolled((prev) => (prev !== scrolled ? scrolled : prev));
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const toggleMenu = useCallback(() => {
-    const newState = !isMenuOpen;
-    setIsMenuOpen(newState);
+    setIsMenuOpen((prev) => {
+      const newState = !prev;
 
-    if (isMobile && window.innerWidth <= 768) {
-      if (newState) {
-        document.body.style.overflow = "hidden";
-        document.body.style.position = "fixed";
-        document.body.style.width = "100%";
-      } else {
-        document.body.style.overflow = "";
-        document.body.style.position = "";
-        document.body.style.width = "";
+      if (isMobile && window.innerWidth <= 768) {
+        if (newState) {
+          document.body.style.overflow = "hidden";
+          document.body.style.position = "fixed";
+          document.body.style.width = "100%";
+        } else {
+          document.body.style.overflow = "";
+          document.body.style.position = "";
+          document.body.style.width = "";
+        }
       }
-    }
-  }, [isMenuOpen, isMobile]);
+
+      return newState;
+    });
+  }, [isMobile]);
 
   const toggleMobileDropdown = useCallback(() => {
-    setMobileDropdownOpen(!mobileDropdownOpen);
-  }, [mobileDropdownOpen]);
+    setMobileDropdownOpen((prev) => !prev);
+  }, []);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   const handleOverlayClick = useCallback(() => {
-    if (isMenuOpen) {
-      toggleMenu();
-    }
-  }, [isMenuOpen, toggleMenu]);
+    setIsMenuOpen((prev) => {
+      if (prev) {
+        if (isMobile && window.innerWidth <= 768) {
+          document.body.style.overflow = "";
+          document.body.style.position = "";
+          document.body.style.width = "";
+        }
+      }
+      return false;
+    });
+  }, [isMobile]);
 
   if (!mounted) {
     return null; // Or a loading skeleton

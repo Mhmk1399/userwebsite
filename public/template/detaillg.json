@@ -1,8 +1,8 @@
 {
   "children": {
-     "metaData":{
-      "title":"juju",
-      "description":"juju page"
+    "metaData": {
+      "title": "juju",
+      "description": "juju page"
     },
     "sections": [
       {
@@ -33,8 +33,8 @@
           }
         ],
         "setting": {
-          "imageWidth": "400",
-          "imageHeight": "350",
+          "imageWidth": "370",
+          "imageHeight": "270",
           "imageRadius": "20",
           "productNameColor": "#000000",
           "productNameFontSize": "30",
@@ -47,13 +47,26 @@
           "priceFontSize": "24",
           "descriptionColor": "#000000",
           "descriptionFontSize": "16",
+          "descriptionFontWeight": "2",
           "btnBackgroundColor": "#3498DB",
           "btnTextColor": "#FFFFFF",
           "paddingTop": "20",
           "paddingBottom": "20",
+          "paddingLeft": "20",
+          "paddingRight": "20",
           "marginTop": "10",
           "marginBottom": "10",
-          "backgroundColor": "#ffffff"
+          "marginLeft": "0",
+          "marginRight": "0",
+          "backgroundColor": "#ffffff",
+          "shadowOffsetX": 0,
+          "shadowOffsetY": 8,
+          "shadowBlur": 20,
+          "shadowSpread": 2,
+          "shadowColor": "#e4e4e4",
+          "Radius": "2",
+          "btnRadius": "2",
+          "propertyRadius": "2"
         }
       }
     ],

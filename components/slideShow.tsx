@@ -1,6 +1,6 @@
 "use client";
 import styled from "styled-components";
-import React, { useState } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import { SlideSection, SlideBlock } from "@/lib/types";
 import Link from "next/link";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
@@ -9,6 +9,13 @@ interface SlideShowProps {
   sections: SlideSection[];
   isMobile: boolean;
   componentName: string;
+}
+
+interface DragState {
+  isDragging: boolean;
+  startX: number;
+  currentX: number;
+  startTime: number;
 }
 
 const SectionSlideShow = styled.section<{
@@ -33,11 +40,11 @@ const SectionSlideShow = styled.section<{
   justify-content: center;
   transition: background-color 0.3s ease;
   box-shadow: ${(props) =>
-    `${props.$data.setting.shadowOffsetX || 0}px 
-     ${props.$data.setting.shadowOffsetY || 4}px 
-     ${props.$data.setting.shadowBlur || 10}px 
-     ${props.$data.setting.shadowSpread || 0}px 
-     ${props.$data.setting.shadowColor || "#fff"}`};
+    `${props.$data.shadowOffsetX || 0}px 
+     ${props.$data.shadowOffsetY || 4}px 
+     ${props.$data.shadowBlur || 10}px 
+     ${props.$data.shadowSpread || 0}px 
+     ${props.$data.shadowColor || "#fff"}`};
 `;
 
 const SlideContainer = styled.div<{
@@ -49,11 +56,21 @@ const SlideContainer = styled.div<{
   border-radius: 16px;
 `;
 
-const SlidesWrapper = styled.div<{ $currentIndex: number }>`
+const SlidesWrapper = styled.div<{
+  $currentIndex: number;
+  $isDragging?: boolean;
+  $dragOffset?: number;
+}>`
   display: flex;
-  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  transform: translateX(${(props) => props.$currentIndex * -100}%);
+  transition: ${(props) =>
+    props.$isDragging ? "none" : "transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)"};
+  transform: translateX(
+    ${(props) => props.$currentIndex * -100 + (props.$dragOffset || 0)}%
+  );
   will-change: transform;
+  touch-action: pan-y;
+  user-select: none;
+  cursor: ${(props) => (props.$isDragging ? "grabbing" : "grab")};
 `;
 
 const Slide = styled.div`
@@ -259,23 +276,23 @@ const SlideTextBox = styled.div`
 `;
 
 const SlideHeading = styled.h3<{
-  $data: SlideSection["setting"];
+  $data: SlideSection;
   $isMobile: boolean;
 }>`
-  color: ${(props) => props.$data.textColor || "#111"};
-  font-size: ${(props) => props.$data?.textFontSize || "22"}px;
-  font-weight: ${(props) => props.$data.textFontWeight || "600"};
+  color: ${(props) => props.$data.setting.textColor || "#111"};
+  font-size: ${(props) => props.$data?.setting.textFontSize || "22"}px;
+  font-weight: ${(props) => props.$data.setting.textFontWeight || "600"};
   margin: 8px 0;
   letter-spacing: 0.3px;
 `;
 
 const SlideDescription = styled.p<{
-  $data: SlideSection["setting"];
+  $data: SlideSection;
   $isMobile: boolean;
 }>`
-  color: ${(props) => props.$data.descriptionColor || "#555"};
-  font-size: ${(props) => props.$data?.descriptionFontSize || "18"}px;
-  font-weight: ${(props) => props.$data.descriptionFontWeight || "400"};
+  color: ${(props) => props.$data.setting.descriptionColor || "#555"};
+  font-size: ${(props) => props.$data?.setting.descriptionFontSize || "18"}px;
+  font-weight: ${(props) => props.$data.setting.descriptionFontWeight || "400"};
   line-height: 1.6;
   margin-top: 5px;
 `;
@@ -288,13 +305,13 @@ const NavButton = styled.button<{
   top: 50%;
   transform: translateY(-50%);
   background-color: ${(props) =>
-    props.$data.setting.navBg
-      ? props.$data.setting.navBg + "B3" // HEX + alpha (B3 = ~70%)
+    props.$data.navBg
+      ? props.$data.navBg + "B3" // HEX + alpha (B3 = ~70%)
       : "rgba(85,85,85,0.7)"};
-  color: ${(props) => props.$data.setting.navColor || "#fff"};
+  color: ${(props) => props.$data.navColor || "#fff"};
   padding: 10px;
   border: none;
-  border-radius: ${(props) => props.$data.setting.navRadius || "2"}px;
+  border-radius: ${(props) => props.$data.navRadius || "2"}px;
   cursor: pointer;
   z-index: 10;
   @media (max-width: 425px) {
@@ -468,7 +485,7 @@ const NextButton = styled(NavButton)`
 `;
 
 const Button = styled.button<{
-  $data: SlideSection["setting"];
+  $data: SlideSection;
   $btnAnimation?: SlideSection["setting"]["btnAnimation"];
 }>`
   margin-top: 12px;
@@ -645,66 +662,210 @@ const SlideShow: React.FC<SlideShowProps> = ({
   isMobile,
   componentName,
 }) => {
-  console.log(componentName);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [dragState, setDragState] = useState<DragState>({
+    isDragging: false,
+    startX: 0,
+    currentX: 0,
+    startTime: 0,
+  });
+  const [dragOffset, setDragOffset] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+
   const sectionData = sections.find(
     (section) => section.type === componentName
   );
 
   if (!sectionData) return null;
 
-  const { blocks } = sectionData;
+  const blocks = Array.isArray(sectionData.blocks) ? sectionData.blocks : [];
+  const totalSlides = blocks.length;
 
-  const handleNext = () =>
-    setCurrentIndex((prev) => (prev + 1) % blocks.length);
-  const handlePrev = () =>
-    setCurrentIndex((prev) => (prev - 1 + blocks.length) % blocks.length);
+  const handleDragStart = useCallback((clientX: number) => {
+    setDragState({
+      isDragging: true,
+      startX: clientX,
+      currentX: clientX,
+      startTime: Date.now(),
+    });
+    setDragOffset(0);
+  }, []);
+
+  const handleDragMove = useCallback(
+    (clientX: number) => {
+      if (!dragState.isDragging || !containerRef.current) return;
+
+      const containerWidth = containerRef.current.offsetWidth;
+      const deltaX = clientX - dragState.startX;
+      const offsetPercent = (deltaX / containerWidth) * 100;
+
+      setDragOffset(offsetPercent);
+      setDragState((prev) => ({ ...prev, currentX: clientX }));
+    },
+    [dragState.isDragging, dragState.startX]
+  );
+
+  const handleDragEnd = useCallback(() => {
+    if (!dragState.isDragging || !containerRef.current) return;
+
+    const containerWidth = containerRef.current.offsetWidth;
+    const deltaX = dragState.currentX - dragState.startX;
+    const deltaTime = Date.now() - dragState.startTime;
+    const velocity = Math.abs(deltaX) / deltaTime;
+
+    const threshold = containerWidth * 0.25;
+    const shouldChange = Math.abs(deltaX) > threshold || velocity > 0.5;
+
+    if (shouldChange) {
+      if (deltaX > 0 && currentIndex > 0) {
+        setCurrentIndex((prev) => prev - 1);
+      } else if (deltaX < 0 && currentIndex < totalSlides - 1) {
+        setCurrentIndex((prev) => prev + 1);
+      }
+    }
+
+    setDragState({
+      isDragging: false,
+      startX: 0,
+      currentX: 0,
+      startTime: 0,
+    });
+    setDragOffset(0);
+  }, [dragState, currentIndex, totalSlides]);
+
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      handleDragStart(e.clientX);
+    },
+    [handleDragStart]
+  );
+
+  const handleTouchStart = useCallback(
+    (e: React.TouchEvent) => {
+      handleDragStart(e.touches[0].clientX);
+    },
+    [handleDragStart]
+  );
+
+  useEffect(() => {
+    if (!dragState.isDragging) return;
+
+    const handleGlobalMouseMove = (e: MouseEvent) => {
+      handleDragMove(e.clientX);
+    };
+
+    const handleGlobalMouseUp = () => {
+      handleDragEnd();
+    };
+
+    const handleGlobalTouchMove = (e: TouchEvent) => {
+      handleDragMove(e.touches[0].clientX);
+    };
+
+    const handleGlobalTouchEnd = () => {
+      handleDragEnd();
+    };
+
+    document.addEventListener("mousemove", handleGlobalMouseMove);
+    document.addEventListener("mouseup", handleGlobalMouseUp);
+    document.addEventListener("touchmove", handleGlobalTouchMove);
+    document.addEventListener("touchend", handleGlobalTouchEnd);
+
+    return () => {
+      document.removeEventListener("mousemove", handleGlobalMouseMove);
+      document.removeEventListener("mouseup", handleGlobalMouseUp);
+      document.removeEventListener("touchmove", handleGlobalTouchMove);
+      document.removeEventListener("touchend", handleGlobalTouchEnd);
+    };
+  }, [dragState.isDragging, handleDragMove, handleDragEnd]);
+
+  const handleNext = () => {
+    if (currentIndex < totalSlides - 1) {
+      setCurrentIndex((prev) => prev + 1);
+    }
+  };
+
+  const handlePrev = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex((prev) => prev - 1);
+    }
+  };
 
   return (
     <SectionSlideShow $isMobile={isMobile} $data={sectionData}>
       <SlideContainer $isMobile={isMobile}>
-        <SlidesWrapper $currentIndex={currentIndex}>
-          {blocks.map((slide: SlideBlock, index: number) => (
-            <Slide key={index}>
-              <SlideImage
-                src={slide.imageSrc}
-                alt={slide.imageAlt || "Slide"}
-                $data={sectionData.setting}
-              />
-              <SlideTextBox>
-                <SlideHeading
-                  dir="rtl"
-                  $isMobile={isMobile}
+        <div
+          ref={containerRef}
+          onMouseDown={handleMouseDown}
+          onTouchStart={handleTouchStart}
+          style={{
+            position: "relative",
+            overflow: "hidden",
+            borderRadius: "16px",
+          }}
+        >
+          <SlidesWrapper
+            $currentIndex={currentIndex}
+            $isDragging={dragState.isDragging}
+            $dragOffset={dragOffset}
+          >
+            {blocks.map((slide: SlideBlock, index: number) => (
+              <Slide key={index}>
+                <SlideImage
+                  src={slide.imageSrc}
+                  alt={slide.imageAlt || "Slide"}
                   $data={sectionData.setting}
-                >
-                  {slide.text}
-                </SlideHeading>
-                <SlideDescription
-                  dir="rtl"
-                  $isMobile={isMobile}
-                  $data={sectionData.setting}
-                >
-                  {slide.description}
-                </SlideDescription>
-                <Button $data={sectionData.setting}>
-                  <Link
-                    href={slide.btnLink ? slide.btnLink : "#"}
-                    target="_blank"
+                />
+                <SlideTextBox>
+                  <SlideHeading
+                    dir="rtl"
+                    $isMobile={isMobile}
+                    $data={sectionData}
                   >
-                    {slide.btnText ? slide.btnText : "بیشتر بخوانید"}
-                  </Link>
-                </Button>
-              </SlideTextBox>
-            </Slide>
-          ))}{" "}
-        </SlidesWrapper>
-        <PrevButton $data={sectionData} onClick={handlePrev}>
-          {" "}
-          <BiChevronLeft size={24} />
-        </PrevButton>
-        <NextButton $data={sectionData} onClick={handleNext}>
-          <BiChevronRight size={24} />
-        </NextButton>
+                    {slide.text}
+                  </SlideHeading>
+                  <SlideDescription
+                    dir="rtl"
+                    $isMobile={isMobile}
+                    $data={sectionData}
+                  >
+                    {slide.description}
+                  </SlideDescription>
+                  <Button $data={sectionData}>
+                    <Link
+                      href={slide.btnLink ? slide.btnLink : "#"}
+                      target="_blank"
+                    >
+                      {slide.btnText ? slide.btnText : "بیشتر بخوانید"}
+                    </Link>
+                  </Button>
+                </SlideTextBox>
+              </Slide>
+            ))}
+          </SlidesWrapper>
+
+          {totalSlides > 1 && (
+            <>
+              <PrevButton
+                $data={sectionData}
+                onClick={handlePrev}
+                disabled={currentIndex === 0}
+                style={{ opacity: currentIndex === 0 ? 0.5 : 1 }}
+              >
+                <BiChevronLeft size={24} />
+              </PrevButton>
+              <NextButton
+                $data={sectionData}
+                onClick={handleNext}
+                disabled={currentIndex === totalSlides - 1}
+                style={{ opacity: currentIndex === totalSlides - 1 ? 0.5 : 1 }}
+              >
+                <BiChevronRight size={24} />
+              </NextButton>
+            </>
+          )}
+        </div>
       </SlideContainer>
     </SectionSlideShow>
   );

@@ -1,8 +1,8 @@
 {
   "children": {
-     "metaData":{
-      "title":"juju",
-      "description":"juju page"
+    "metaData": {
+      "title": "وبلاگ - مقالات و اخبار",
+      "description": "آخرین مقالات، اخبار و راهنماهای مفید در وبلاگ ما"
     },
     "sections": [
       {
@@ -30,17 +30,26 @@
           }
         ],
         "setting": {
-          "gridColumns": 2,
-          "paddingTop": 70,
+          "gridColumns": 1,
+          "paddingTop": "50",
           "paddingBottom": "30",
-          "marginTop": "50",
-          "marginBottom": "15",
-          "backgroundColor": "#f8f9fa",
-          "cardBackgroundColor": "#ffffff",
+          "marginTop": "0",
+          "marginBottom": "0",
+          "backgroundColor": "#F5F5F5",
+          "cardBackgroundColor": "#FFFFFF",
           "textColor": "#000000",
-          "cardBorderRadius": 10,
-          "btnBackgroundColor": "#e4e4e4",
-          "buttonColor": "#ffffff"
+          "cardBorderRadius": 12,
+          "btnBackgroundColor": "#DC143C",
+          "buttonColor": "#FFFFFF",
+          "Radius": "12",
+          "shadowOffsetX": 0,
+          "shadowOffsetY": 3,
+          "shadowBlur": 12,
+          "shadowSpread": 0,
+          "shadowColor": "#E0E0E0",
+          "titleSize": "18",
+          "descriptionSize": "13",
+          "btnRadius": "20"
         }
       }
     ],

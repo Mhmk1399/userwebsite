@@ -22,23 +22,6 @@ interface ProductCardProps {
   settings?: ProductBlockSetting;
   previewWidth?: "sm" | "default";
 }
-const defaultSetting = {
-  cardBorderRadius: "10px",
-  cardBackground: "#ffffff",
-  imageWidth: "100%",
-  imageheight: "200px",
-  imageRadius: "8px",
-  nameFontSize: "1.2rem",
-  nameFontWeight: "bold",
-  nameColor: "#000000",
-  descriptionFontSize: "0.9rem",
-  descriptionFontWeight: "normal",
-  descriptionColor: "#666",
-  priceFontSize: "1rem",
-  pricecolor: "#000000",
-  btnBackgroundColor: "#e5e5e5",
-  btnColor: "#000000",
-};
 
 const Card = styled.div<{
   $setting?: ProductCardSetting;
@@ -46,10 +29,8 @@ const Card = styled.div<{
   display: flex;
   flex-direction: column;
   align-items: center;
-  border-radius: ${(props) =>
-    props.$setting?.cardBorderRadius || defaultSetting.cardBorderRadius};
-  background: ${(props) =>
-    props.$setting?.cardBackground || defaultSetting.cardBackground};
+  border-radius: ${(props) => props.$setting?.cardBorderRadius}px;
+  background-color: ${(props) => props.$setting?.cardBackground};
   height: 380px;
   width: 100%;
   min-width: 250px;
@@ -75,15 +56,16 @@ const ProductImage = styled(Image)<{
   object-fit: cover;
   width: 100%;
   height: 200px;
-  border-radius: ${(props) =>
-    props.$settings?.imageRadius || defaultSetting.imageRadius}px;
+  border-radius: ${(props) => props.$settings?.imageRadius}px;
   transition: all 0.3s ease;
 
   &:hover {
     opacity: 0.8;
   }
-  if (props.$setting?.cardBorderRadius > 0) {
-    border-radius-top: ${(props) => props.$settings?.imageRadius}px 0;
+
+  @media (max-width: 426px) {
+    height: 160px;
+    aspect-ratio: 1;
   }
 `;
 
@@ -91,11 +73,9 @@ const ProductName = styled.h3<{
   $settings?: ProductCardSetting;
   $productData?: ProductCardData;
 }>`
-  font-size: ${(props) =>
-    props.$settings?.nameFontSize || defaultSetting.nameFontSize}حط;
-  font-weight: ${(props) =>
-    props.$settings?.nameFontWeight || defaultSetting.nameFontWeight};
-  color: ${(props) => props.$settings?.nameColor || defaultSetting.nameColor};
+  font-size: ${(props) => props.$settings?.nameFontSize}px;
+  font-weight: ${(props) => props.$settings?.nameFontWeight};
+  color: ${(props) => props.$settings?.nameColor};
   margin: 8px 0;
   text-align: center;
 
@@ -109,14 +89,9 @@ const ProductDescription = styled.p<{
   $settings?: ProductCardSetting;
   $productData?: ProductCardData;
 }>`
-  font-size: ${(props) =>
-    props.$settings?.descriptionFontSize ||
-    defaultSetting.descriptionFontSize}حط;
-  color: ${(props) =>
-    props.$settings?.descriptionColor || defaultSetting.descriptionColor};
-  font-weight: ${(props) =>
-    props.$settings?.descriptionFontWeight ||
-    defaultSetting.descriptionFontWeight};
+  font-size: ${(props) => props.$settings?.descriptionFontSize}px;
+  color: ${(props) => props.$settings?.descriptionColor};
+  font-weight: ${(props) => props.$settings?.descriptionFontWeight};
   text-align: center;
   margin: 8px 0;
   overflow: hidden;
@@ -132,12 +107,11 @@ const ProductDescription = styled.p<{
 `;
 
 const ProductPrice = styled.span<{
-  $settings?: ProductCardSetting;
+  $settings?: ProductBlockSetting;
   $productData?: ProductCardData;
 }>`
-  font-size: ${(props) =>
-    props.$settings?.priceFontSize || defaultSetting.priceFontSize}حط;
-  color: ${(props) => props.$settings?.priceColor || defaultSetting.pricecolor};
+  font-size: ${(props) => props.$settings?.priceFontSize}px;
+  color: ${(props) => props.$settings?.priceColor || "#ffffff"};
   font-weight: 700;
   margin: 8px 0;
   text-align: center;
@@ -175,10 +149,10 @@ const AddToCartButton = styled.button<{
 
 const ProductCard: React.FC<ProductCardProps> = ({ productData, settings }) => {
   const router = useRouter();
-  
+
   // Early return if productData is null or undefined
   if (!productData) {
-    console.log('ProductCard: productData is null or undefined');
+    console.log("ProductCard: productData is null or undefined");
     return null;
   }
 
@@ -187,83 +161,98 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData, settings }) => {
 
     // Use actual product image or fallback
     const currentImage = {
-      imageSrc: productData?.images?.[0]?.imageSrc || productData?.image || "/assets/images/pro2.jpg",
-      imageAlt: productData?.images?.[0]?.imageAlt || productData?.name || "Product Image",
+      imageSrc: productData?.images?.[0]?.imageSrc || "/assets/images/pro2.jpg",
+      imageAlt:
+        productData?.images?.[0]?.imageAlt ||
+        productData?.name ||
+        "Product Image",
     };
-    
+
     // Handle products from collections
     const safeProductData = {
       ...productData,
       images: productData?.images || [currentImage],
     };
 
-  const handleNavigate = (_id: string) => {
-    router.push(`/store/${_id}`);
-  };
+    const handleNavigate = (_id: string) => {
+      router.push(`/store/${_id}`);
+    };
 
-  const addToCart = async (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsAddingToCart(true);
+    const addToCart = async (e: React.MouseEvent) => {
+      e.stopPropagation();
+      setIsAddingToCart(true);
 
-    try {
-      const db = await openDB();
-      const transaction = (db as IDBDatabase).transaction("cart", "readwrite");
-      const store = transaction.objectStore("cart");
+      try {
+        const db = await openDB();
+        const transaction = (db as IDBDatabase).transaction(
+          "cart",
+          "readwrite"
+        );
+        const store = transaction.objectStore("cart");
 
-      // Use _id or id, whichever is available
-      const productId = productData._id || productData.id;
+        // Use _id or id, whichever is available
+        const productId = productData._id || productData.id;
 
-      // Check if item already exists
-      const existingItem = await new Promise<CartItem | null>((resolve) => {
-        const request = store.get(productId);
-        request.onsuccess = () => resolve(request.result);
-        request.onerror = () => resolve(null);
-      });
+        // Check if item already exists
+        const existingItem = await new Promise<CartItem | null>((resolve) => {
+          const request = store.get(productId);
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => resolve(null);
+        });
 
-      const cartItem = {
-        id: productId,
-        name: safeProductData.name || "Unnamed Product",
-        price: parseFloat(
-          safeProductData.price?.replace(/[^0-9.-]+/g, "") || "0"
-        ),
-        quantity: existingItem ? existingItem.quantity + 1 : 1,
-        image: currentImage.imageSrc,
-      };
+        const cartItem = {
+          id: productId,
+          name: safeProductData.name || "Unnamed Product",
+          price: parseFloat(
+            safeProductData.price?.replace(/[^0-9.-]+/g, "") || "0"
+          ),
+          quantity: existingItem ? existingItem.quantity + 1 : 1,
+          image: currentImage.imageSrc,
+        };
 
-      await store.put(cartItem);
-      toast.success("محصول به سبد خرید اضافه شد");
-    } catch (error) {
-      console.error("Error adding to cart:", error);
-      toast.error("خطا در افزودن به سبد خرید");
-    } finally {
-      setIsAddingToCart(false);
-    }
-  };
+        await store.put(cartItem);
+        toast.success("محصول به سبد خرید اضافه شد");
+      } catch (error) {
+        console.error("Error adding to cart:", error);
+        toast.error("خطا در افزودن به سبد خرید");
+      } finally {
+        setIsAddingToCart(false);
+      }
+    };
 
     // Use _id or id, whichever is available
-    const productId = productData?._id || productData?.id || 'unknown';
+    const productId = productData?._id || productData?.id || "unknown";
     console.log(productId, "vvvvvvvvvv");
 
     return (
-      <Card onClick={() => handleNavigate(productId)} dir="rtl">
+      <Card
+        $setting={settings}
+        onClick={() => handleNavigate(productId)}
+        dir="rtl"
+      >
         <ProductImage
           $settings={settings}
           $productData={safeProductData}
           src={currentImage.imageSrc}
           alt={currentImage.imageAlt}
           width={2000}
-          height={2000}
+          height={1000}
         />
 
         <ProductName $settings={settings} $productData={productData}>
           {safeProductData.name || "Unnamed Product"}
         </ProductName>
         <ProductDescription $settings={settings} $productData={productData}>
-          {productData?.description ? productData.description.slice(0, 30) + '...' : 'توضیحات موجود نیست'}
+          {productData?.description
+            ? productData.description.slice(0, 30) + "..."
+            : "توضیحات موجود نیست"}
         </ProductDescription>
 
         <ProductPrice $settings={settings} $productData={productData}>
-          {productData?.price || 'قیمت مشخص نشده'}
+          {productData?.price
+            ? Number(productData.price).toLocaleString("fa-IR")
+            : "قیمت مشخص نشده"}{" "}
+          تومان
         </ProductPrice>
         <AddToCartButton
           onClick={addToCart}
@@ -276,8 +265,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData, settings }) => {
       </Card>
     );
   } catch (error) {
-    console.error('ProductCard error:', error, 'productData:', productData);
-    return <div>Error loading product</div>;
+    console.log("ProductCard error:", error, "productData:", productData);
+    return <div>خطا در دریافت</div>;
   }
 };
 

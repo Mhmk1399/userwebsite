@@ -741,11 +741,12 @@ export interface SlideSection {
   textFontWeight: string;
   textFontSize: string;
   textColor: string;
+  descriptionFontWeight: string;
+  descriptionFontSize: string;
+  descriptionColor: string;
   opacityImage: string;
   imageRadious: string;
   imageBehavior: string;
-  btnBackgroundColor: string;
-  btnTextColor: string;
   navRadius: string;
   navColor: string;
   shadowColor?: string;
@@ -756,20 +757,38 @@ export interface SlideSection {
   navBg: string;
   btnWidth: string;
   blocks: SlideBlock[];
-  setting: CommonSettings & {
+  setting: {
+    textFontWeight: string;
+    textFontSize: string;
+    textColor: string;
+    descriptionFontWeight: string;
+    descriptionFontSize: string;
+    descriptionColor: string;
     paddingTop: string;
     paddingBottom: string;
+    paddingRight: string;
+    paddingLeft: string;
     marginTop: string;
     marginBottom: string;
+    marginLeft: string;
+    marginRight: string;
+    backgroundColorBox: string;
     backgroundBoxRadius: string;
     btnBackgroundColor: string;
     btnTextColor: string;
+    btnWidth: string;
+    btnRadius: string;
+    imageBehavior: string;
+    opacityImage: string;
+    imageRadious: string;
+    imageHeight: string;
+    imageWidth: string;
     // Add these animation properties:
     imageAnimation?: AnimationEffect;
     btnAnimation?: AnimationEffect;
     navAnimation?: AnimationEffect;
   };
-  type: "slideshow";
+  type: "SlideShow";
 }
 
 // Add these new interfaces for Video component
@@ -1164,6 +1183,7 @@ export interface ProductCardSetting {
   priceColor?: string;
   btnBackgroundColor?: string;
   btnColor?: string;
+ 
 }
 
 // these new interfaces for DetailPage

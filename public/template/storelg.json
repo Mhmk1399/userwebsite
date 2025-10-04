@@ -1,9 +1,9 @@
 {
   "type": "store",
   "children": {
-     "metaData":{
-      "title":"فروشگاه",
-      "description":"juju page"
+    "metaData": {
+      "title": "فروشگاه",
+      "description": "juju page"
     },
     "sections": [
       {
@@ -52,22 +52,39 @@
         ],
         "setting": {
           "gridColumns": 3,
-          "paddingTop": "90",
-          "paddingBottom": "20",
+          "paddingTop": "100",
+          "paddingBottom": "60",
           "paddingLeft": "20",
           "paddingRight": "20",
-          "marginTop": "10",
-          "marginBottom": "10",
-          "marginLeft": "10",
-          "marginRight": "10",
-          "backgroundColor": "#f5f5f5",
-          "cardBackgroundColor": "#ffffff",
-          "cardBorderRadius": "8",
-          "filterButtonBg": "#3498DB",
-          "filterButtonTextColor": "#ffffff",
-          "filterRowBg": "#adb5bd",
-          "filterNameColor": "#333333",
-          "filterCardBg": "#ffffff"
+          "marginTop": "0",
+          "marginBottom": "0",
+          "marginLeft": "0",
+          "marginRight": "0",
+          "backgroundColor": "#F5F5F5",
+          "cardBackgroundColor": "#FFFFFF",
+          "filterButtonBg": "#DC143C",
+          "filterButtonTextColor": "#FFFFFF",
+          "filterRowBg": "#FFFFFF",
+          "filterNameColor": "#000000",
+          "filterCardBg": "#FFFFFF",
+          "shadowOffsetX": 0,
+          "shadowOffsetY": 4,
+          "shadowBlur": 20,
+          "shadowSpread": 0,
+          "shadowColor": "#E0E0E0",
+          "cardBorderRadius": "1",
+          "cardBackground": "#ffffff",
+          "nameFontSize": "20",
+          "nameFontWeight": "700",
+          "nameColor": "#000000",
+          "descriptionFontSize": "14",
+          "descriptionFontWeight": "400",
+          "descriptionColor": "#666666",
+          "priceFontSize": "16",
+          "priceColor": "#DC143C",
+          "cartBakground": "#DC143C",
+          "cartColor": "#ffffff",
+          "cartRadius": "6"
         }
       }
     ],

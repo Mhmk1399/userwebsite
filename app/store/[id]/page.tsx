@@ -130,7 +130,7 @@ const SectionDetailPage = styled.div<{
 export default function DetailPage() {
   const [isMobile, setIsMobile] = useState(false);
   const componentName = "DetailPage";
-  
+
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
@@ -163,10 +163,7 @@ export default function DetailPage() {
   const params = useParams();
   const productId = params.id as string;
 
-  const fetchLayoutData = async (
-    routeName: string,
-    activeMode: string
-  ) => {
+  const fetchLayoutData = async (routeName: string, activeMode: string) => {
     try {
       const response = await fetch("/api/layout-jason", {
         method: "GET",
@@ -247,23 +244,46 @@ export default function DetailPage() {
     );
   }
   // Create fallback section data if layout data is not available
-  const sectionData = data && (data as Record<string, unknown>).sections && 
-    ((data as Record<string, unknown>).sections as Record<string, unknown>).children &&
-    (((data as Record<string, unknown>).sections as Record<string, unknown>).children as Record<string, unknown>).sections ?
-    ((((data as Record<string, unknown>).sections as Record<string, unknown>).children as Record<string, unknown>).sections as Record<string, unknown>[])?.find(
-      (section: Record<string, unknown>) => section.type === componentName
-    ) : null;
+  const sectionData =
+    data &&
+    (data as Record<string, unknown>).sections &&
+    ((data as Record<string, unknown>).sections as Record<string, unknown>)
+      .children &&
+    (
+      ((data as Record<string, unknown>).sections as Record<string, unknown>)
+        .children as Record<string, unknown>
+    ).sections
+      ? (
+          (
+            (
+              (data as Record<string, unknown>).sections as Record<
+                string,
+                unknown
+              >
+            ).children as Record<string, unknown>
+          ).sections as Record<string, unknown>[]
+        )?.find(
+          (section: Record<string, unknown>) => section.type === componentName
+        )
+      : null;
 
   if (layoutLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        Loading layout...
+        در حال بارگذاری
       </div>
     );
   }
 
   return (
-    <SectionDetailPage $isMobile={isMobile} $data={(sectionData as unknown as DetailPageSection) || ({} as unknown as DetailPageSection)} dir="rtl">
+    <SectionDetailPage
+      $isMobile={isMobile}
+      $data={
+        (sectionData as unknown as DetailPageSection) ||
+        ({} as unknown as DetailPageSection)
+      }
+      dir="rtl"
+    >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-2">
         {/* Product Images Section */}
         <div className="space-y-4 z-50">
@@ -358,9 +378,6 @@ export default function DetailPage() {
                     {prop.key}:
                   </span>
                   <span className="text-sm property-value">{prop.value}</span>
-                  <div className="absolute hidden group-hover:block bg-gray-800 text-white text-xs rounded px-2 py-1 -top-8 right-0 whitespace-nowrap">
-                    {prop.tooltip}
-                  </div>
                 </div>
               ))}
             </div>

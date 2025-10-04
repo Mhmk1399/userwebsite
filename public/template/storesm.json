@@ -1,9 +1,9 @@
 {
   "type": "store",
   "children": {
-     "metaData":{
-      "title":"juju",
-      "description":"juju page"
+    "metaData": {
+      "title": "فروشگاه",
+      "description": "juju page"
     },
     "sections": [
       {
@@ -51,12 +51,41 @@
           }
         ],
         "setting": {
-          "gridColumns": 1,
-          "paddingTop": 90,
-          "paddingBottom": "20",
-          "marginTop": "10",
-          "marginBottom": "10",
-          "backgroundColor": "red"
+          "gridColumns": 2,
+          "paddingTop": "50",
+          "paddingBottom": "30",
+          "paddingLeft": "12",
+          "paddingRight": "12",
+          "marginTop": "0",
+          "marginBottom": "0",
+          "marginLeft": "0",
+          "marginRight": "0",
+          "backgroundColor": "#F5F5F5",
+          "cardBackgroundColor": "#FFFFFF",
+          "filterButtonBg": "#DC143C",
+          "filterButtonTextColor": "#FFFFFF",
+          "filterRowBg": "#FFFFFF",
+          "filterNameColor": "#000000",
+          "filterCardBg": "#FFFFFF",
+          "shadowOffsetX": 0,
+          "shadowOffsetY": 3,
+          "shadowBlur": 12,
+          "shadowSpread": 0,
+          "shadowColor": "#E0E0E0",
+          "Radius": "12",
+          "cardBorderRadius": "12",
+          "cardBackground": "#FFFFFF",
+          "nameFontSize": "16",
+          "nameFontWeight": "700",
+          "nameColor": "#000000",
+          "descriptionFontSize": "12",
+          "descriptionFontWeight": "400",
+          "descriptionColor": "#666666",
+          "priceFontSize": "18",
+          "priceColor": "#DC143C",
+          "cartBakground": "#DC143C",
+          "cartColor": "#ffffff",
+          "cartRadius": "6"
         }
       }
     ],

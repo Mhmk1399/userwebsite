@@ -218,7 +218,7 @@ const TextContainer = styled.div<{
   flex-direction: column;
   align-items: ${(props) => (props.$isMobile ? "center" : "flex-end")};
   text-align: ${(props) => (props.$isMobile ? "center" : "right")};
-  padding: 20px;
+  padding: 10px 5px;
   width: 50%;
   background-color: ${(props) =>
     props.$data.blocks?.setting?.backgroundColorBox};
@@ -228,6 +228,7 @@ const TextContainer = styled.div<{
     align-items: center;
     text-align: center;
     margin: 10px;
+    width: 70%;
   }
 `;
 
@@ -267,6 +268,9 @@ const Button = styled.a<{ $data: ImageTextSection }>`
   text-decoration: none;
   border-radius: ${(props) => props.$data.blocks?.setting?.btnRadiuos || "5"}px;
   transition: transform 0.2s;
+  @media (max-width: 768px) {
+    text-align: center;
+  }
 
   /* Apply button animations */
   ${(props) => {

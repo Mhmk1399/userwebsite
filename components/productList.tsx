@@ -12,8 +12,6 @@ import React from "react";
 import { FiFilter } from "react-icons/fi";
 import toast from "react-hot-toast";
 
-
-
 interface ProductListProps {
   sections: ProductSection[] | ProductSection;
   isMobile: boolean;
@@ -379,7 +377,9 @@ const ProductList: React.FC<ProductListProps> = ({
     setTempPriceMin(sp.priceMin || "");
     setTempPriceMax(sp.priceMax || "");
     setSelectedColors(sp.colors ? sp.colors.split(",") : []);
-    setSortBy((sp.sortBy || "newest") as "newest" | "price-asc" | "price-desc" | "name");
+    setSortBy(
+      (sp.sortBy || "newest") as "newest" | "price-asc" | "price-desc" | "name"
+    );
 
     const isStoreRoute = pathname.split("/")[1] === "store";
     if (!isStoreRoute) {
