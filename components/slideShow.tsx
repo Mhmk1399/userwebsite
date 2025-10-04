@@ -672,15 +672,6 @@ const SlideShow: React.FC<SlideShowProps> = ({
   const [dragOffset, setDragOffset] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const sectionData = sections.find(
-    (section) => section.type === componentName
-  );
-
-  if (!sectionData) return null;
-
-  const blocks = Array.isArray(sectionData.blocks) ? sectionData.blocks : [];
-  const totalSlides = blocks.length;
-
   const handleDragStart = useCallback((clientX: number) => {
     setDragState({
       isDragging: true,
@@ -716,6 +707,12 @@ const SlideShow: React.FC<SlideShowProps> = ({
     const threshold = containerWidth * 0.25;
     const shouldChange = Math.abs(deltaX) > threshold || velocity > 0.5;
 
+    const sectionData = sections.find(
+      (section) => section.type === componentName
+    );
+    const blocks = Array.isArray(sectionData?.blocks) ? sectionData.blocks : [];
+    const totalSlides = blocks.length;
+
     if (shouldChange) {
       if (deltaX > 0 && currentIndex > 0) {
         setCurrentIndex((prev) => prev - 1);
@@ -731,7 +728,7 @@ const SlideShow: React.FC<SlideShowProps> = ({
       startTime: 0,
     });
     setDragOffset(0);
-  }, [dragState, currentIndex, totalSlides]);
+  }, [dragState, currentIndex, sections, componentName]);
 
   const handleMouseDown = useCallback(
     (e: React.MouseEvent) => {
@@ -779,6 +776,12 @@ const SlideShow: React.FC<SlideShowProps> = ({
       document.removeEventListener("touchend", handleGlobalTouchEnd);
     };
   }, [dragState.isDragging, handleDragMove, handleDragEnd]);
+  
+  const sectionData = sections.find(
+    (section) => section.type === componentName
+  );
+  const blocks = Array.isArray(sectionData?.blocks) ? sectionData.blocks : [];
+  const totalSlides = blocks.length;
 
   const handleNext = () => {
     if (currentIndex < totalSlides - 1) {
@@ -791,6 +794,8 @@ const SlideShow: React.FC<SlideShowProps> = ({
       setCurrentIndex((prev) => prev - 1);
     }
   };
+  
+  if (!sectionData) return null;
 
   return (
     <SectionSlideShow $isMobile={isMobile} $data={sectionData}>

@@ -158,8 +158,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData, settings }) => {
 
   try {
     // Use actual product image or fallback
-    const imageSrc =
-      productData?.images?.[0]?.imageSrc || "/assets/images/pro2.jpg";
+    // const imageSrc =
+    //   productData?.images?.[0]?.imageSrc || "/assets/images/pro2.jpg";
     const currentImage = {
       imageSrc: productData?.images?.[0]?.imageSrc || "/assets/images/pro2.jpg",
       imageAlt:
