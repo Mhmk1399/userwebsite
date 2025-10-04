@@ -2,6 +2,7 @@ import connect from "@/lib/data";
 import { NextRequest, NextResponse } from "next/server";
 import collections from "@/models/collection";
 import products from "@/models/product";
+import { ProductCardData } from "@/lib/types";
 
 export async function GET(req: NextRequest) {
   await connect();
@@ -20,7 +21,7 @@ export async function GET(req: NextRequest) {
     }
 
     // Get actual product data from Products collection
-    const productIds = collection.products.map((p: any) => p._id).filter(Boolean);
+    const productIds = collection.products.map((p:ProductCardData) => p._id).filter(Boolean);
     
     if (productIds.length > 0) {
       const actualProducts = await products.find({

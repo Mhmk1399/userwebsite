@@ -14,6 +14,7 @@ import {
   MultiRowSection,
   NewsLetterSection,
   OfferRowSection,
+  ProductCardData,
   ProductListSection,
   RichTextSection,
   Section,
@@ -69,7 +70,7 @@ export default function CollectionPage() {
   const [error, setError] = useState<string | null>(null);
   const [headerData, setHeaderData] = useState<HeaderSection | null>(null);
   const [footerData, setFooterData] = useState<FooterSection | null>(null);
-  const [collectionData, setCollectionData] = useState<any>(null);
+  const [collectionData, setCollectionData] = useState<{name: string; products: ProductCardData[]} | null>(null);
 
   const componentMap = {
     RichText,

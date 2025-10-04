@@ -49,7 +49,7 @@ function PaymentVerifyContent() {
       if (!verifyResponse.ok) {
         const errorText = await verifyResponse.text();
         console.error("CLIENT: Error response body:", errorText);
-        throw new Error(`HTTP error! status: ${verifyResponse.status}`);
+        console.log(`HTTP error! status: ${verifyResponse.status}`);
       }
 
       const responseText = await verifyResponse.text();
@@ -61,11 +61,11 @@ function PaymentVerifyContent() {
         console.log("CLIENT: Parsed response:", verifyResult);
       } catch {
         console.error("CLIENT: Failed to parse response as JSON:", responseText);
-        throw new Error("Server returned invalid response");
+        console.log("Server returned invalid response");
       }
 
       if (!verifyResult.success) {
-        throw new Error(verifyResult.message || "Payment verification failed");
+        console.log(verifyResult.message || "Payment verification failed");
       }
 
       // Payment verified and order created successfully

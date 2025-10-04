@@ -845,30 +845,7 @@
           "type": "Story",
           "blocks": {
             "stories": [
-              {
-                "id": "1",
-                "imageUrl": "/assets/images/pro1.jpg",
-                "title": "تخفیف ویژه",
-                "link": "/special-offers"
-              },
-              {
-                "id": "2",
-                "imageUrl": "/assets/images/pro2.jpg",
-                "title": "جدیدترین‌ها",
-                "link": "/new-arrivals"
-              },
-              {
-                "id": "3",
-                "imageUrl": "/assets/images/pro3.jpg",
-                "title": "پیشنهاد روز",
-                "link": "/daily-deals"
-              },
-              {
-                "id": "4",
-                "imageUrl": "/assets/images/pro4.jpg",
-                "title": "پیشنهاد روز",
-                "link": "/daily-deals"
-              }
+              
             ],
             "setting": {
               "storyRingColor": "#1447e1",

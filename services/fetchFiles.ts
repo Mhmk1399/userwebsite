@@ -14,7 +14,7 @@ export async function fetchFromStore(
   });
 
   if (!response.ok) {
-    throw new Error(
+    console.log(
       `Failed to fetch file: ${filename} — Status ${response.status}`
     );
   }

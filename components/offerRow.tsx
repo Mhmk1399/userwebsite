@@ -444,8 +444,8 @@ export const OfferRow: React.FC<OfferRowProps> = ({
           if (data.products) {
             setOfferProducts(data.products);
           }
-        } catch (parseError) {
-          console.log("Failed to parse JSON:", text.substring(0, 100));
+        } catch (error) {
+          console.log("Failed to parse JSON:", text.substring(0, 100),error);
         }
       } catch (error) {
         console.log("Error fetching offers:", error);
@@ -488,7 +488,7 @@ export const OfferRow: React.FC<OfferRowProps> = ({
               $data={sectionData}
             >
               <Image
-                src={product?.images?.[0]?.imageSrc || product?.image || "/assets/images/placeholder.jpg"}
+                src={product?.images?.[0]?.imageSrc || "/assets/images/placeholder.jpg"}
                 alt={product.name}
                 width={80}
                 height={80}

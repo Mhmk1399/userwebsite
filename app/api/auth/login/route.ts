@@ -25,7 +25,11 @@ export async function POST(request: Request) {
     }
     const jwtSecret = process.env.JWT_SECRET;
     if (!jwtSecret) {
-      throw new Error("JWT_SECRET is not defined");
+      console.log("JWT_SECRET is not defined");
+      return NextResponse.json(
+        { message: "Server configuration error" },
+        { status: 500 }
+      );
     }
     const token = jwt.sign(
       { userId: user._id, storeId: user.storeId, name: user.name, phone: user.phone, role: user.role || 'user'},

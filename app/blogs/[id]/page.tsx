@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import styled from "styled-components";
+import DOMPurify from "dompurify"; // added for sanitization
 import { BlogDetailSection, HeaderSection, FooterSection, Section } from "@/lib/types";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
@@ -11,10 +12,11 @@ interface BlogDetailData {
   title: string;
   subtitle?: string;
   content: string;
-  imageSrc: string;
-  imageAlt: string;
+  image: string;
+  imageAlt?: string;
   createdAt: string;
-  author: string;
+  author?: string;
+  readTime?: number;
 }
 
 // Next.js 15+ page component props structure with Promise params
@@ -258,7 +260,78 @@ const CoverImageContainer = styled.div<{
   }
 `;
 
-// Internal component that uses the BlogDetailProps
+// ====== REPLACED: Robust multi-pass decoder (handles JSON-style escapes, unicode escapes, &amp; double-encoded entities) ======
+const tryJsonUnwrap = (s: string, maxTries = 3): string => {
+  let cur = s;
+  for (let i = 0; i < maxTries; i++) {
+    if (typeof cur !== "string") break;
+    try {
+      const parsed = JSON.parse(cur);
+      // if parsing yields a string, unwrap one level and continue trying
+      if (typeof parsed === "string" && parsed !== cur) {
+        cur = parsed;
+        continue;
+      } else {
+        // either parsed to non-string or same string -> stop
+        break;
+      }
+    } catch {
+      break;
+    }
+  }
+  return cur;
+};
+
+const unescapeJsonOnce = (str: string) => {
+  if (!str) return str;
+  return str
+    .replace(/\\u([\dA-Fa-f]{4})/g, (_, hex) =>
+      String.fromCharCode(parseInt(hex, 16))
+    )
+    .replace(/\\\\/g, "\\") // \\ -> \
+    .replace(/\\"/g, '"') // \" -> "
+    .replace(/\\'/g, "'") // \' -> '
+    .replace(/\\n/g, "\n")
+    .replace(/\\r/g, "\r")
+    .replace(/\\t/g, "\t")
+    .replace(/\\f/g, "\f")
+    .replace(/\\b/g, "\b")
+    .replace(/\\\//g, "/");
+};
+
+const decodeHtmlEntitiesOnce = (str: string) => {
+  if (typeof window === "undefined") return str;
+  const txt = document.createElement("textarea");
+  // Using innerHTML on a textarea decodes named & numeric entities
+  txt.innerHTML = str;
+  return txt.value;
+};
+
+const robustDecode = (input: string, maxPasses = 8): string => {
+  if (!input) return "";
+
+  // Ensure we are working with a string
+  let cur = String(input);
+
+  // Try to unwrap JSON-string-wrapping a few times first (e.g. "\"<p>..</p>\"")
+  cur = tryJsonUnwrap(cur, 4);
+
+  for (let i = 0; i < maxPasses; i++) {
+    const prev = cur;
+
+    // 1) Unescape common JSON backslash sequences once per pass
+    cur = unescapeJsonOnce(cur);
+
+    // 2) Decode HTML entities once per pass
+    cur = decodeHtmlEntitiesOnce(cur);
+
+    // if stable, stop early
+    if (cur === prev) break;
+  }
+
+  return cur;
+};
+// ====================================================================================================================
 
 const BlogDetailContent: React.FC<BlogDetailProps & { blogId: string }> = ({
   isMobile,
@@ -284,7 +357,7 @@ const BlogDetailContent: React.FC<BlogDetailProps & { blogId: string }> = ({
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to fetch layout data: ${response.status}`);
+        console.log(`Failed to fetch layout data: ${response.status}`);
       }
 
       const layoutData = await response.json();
@@ -309,7 +382,7 @@ const BlogDetailContent: React.FC<BlogDetailProps & { blogId: string }> = ({
       try {
         const response = await fetch(`/api/blog/${blogId}`);
         if (!response.ok) {
-          throw new Error("Failed to fetch blog details");
+          console.log("Failed to fetch blog details");
         }
         const data = await response.json();
 
@@ -439,7 +512,7 @@ const BlogDetailContent: React.FC<BlogDetailProps & { blogId: string }> = ({
         <Image
           src={
             sectionData.setting.coverImage ||
-            blog.imageSrc || "/assets/images/pro2.jpg"
+            blog.image || "/assets/images/pro2.jpg"
           }
           alt={blog.title}
           fill
@@ -451,10 +524,9 @@ const BlogDetailContent: React.FC<BlogDetailProps & { blogId: string }> = ({
       <h1 className="blog-title text-right">{blog.title || "عنوان بلاگ"}</h1>
 
       <div className="blog-meta text-right">
-        <span>{blog.author || "نویسنده"} : نویسنده </span>
         <br />
         <span>
-          تاریخ :
+          تاریخ انتشار:
           {blog.createdAt &&
             new Intl.DateTimeFormat("fa-IR", {
               year: "numeric",
@@ -463,12 +535,15 @@ const BlogDetailContent: React.FC<BlogDetailProps & { blogId: string }> = ({
               calendar: "persian",
             }).format(new Date(blog.createdAt))}
         </span>
+        {blog.readTime && <span> • زمان مطالعه: {blog.readTime} دقیقه</span>}
       </div>
 
       <div
         className="blog-content text-right"
         dangerouslySetInnerHTML={{
-          __html: blog.content || "محتوای بلاگ در اینجا نمایش داده می‌شود...",
+          __html: blog.content
+            ? DOMPurify.sanitize(robustDecode(blog.content))
+            : "محتوای بلاگ در اینجا نمایش داده میشود...",
         }}
       />
         </SectionBlogDetail>

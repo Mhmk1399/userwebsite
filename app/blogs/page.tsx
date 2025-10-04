@@ -10,7 +10,7 @@ import Footer from "@/components/footer";
 
 interface BlogData {
   blogId: number;
-  imageSrc: string;
+  image: string;
   imageAlt: string;
   title: string;
   description: string;
@@ -174,7 +174,7 @@ export default function Page() {
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to fetch layout data: ${response.status}`);
+        console.log(`Failed to fetch layout data: ${response.status}`);
       }
 
       const layoutData = await response.json();
@@ -342,9 +342,9 @@ export default function Page() {
       ) : (
         blogData.map((blog, index) => (
           <BlogCard key={`blogs-${blog.id}-${index}`} $data={sectionData.setting}>
-            {blog.imageSrc ? (
+            {blog.image ? (
               <Image
-                src={blog.imageSrc || "/assets/images/pro2.jpg"}
+                src={blog.image || "/assets/images/pro2.jpg"}
                 alt={blog.title || "Blog image"}
                 width={1000}
                 height={800}

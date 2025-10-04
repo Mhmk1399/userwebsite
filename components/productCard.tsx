@@ -175,6 +175,7 @@ const AddToCartButton = styled.button<{
 
 const ProductCard: React.FC<ProductCardProps> = ({ productData, settings }) => {
   const router = useRouter();
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
   
   // Early return if productData is null or undefined
   if (!productData) {
@@ -183,11 +184,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData, settings }) => {
   }
 
   try {
-    const [isAddingToCart, setIsAddingToCart] = useState(false);
 
     // Use actual product image or fallback
+    const imageSrc = productData?.images?.[0]?.imageSrc || "/assets/images/pro2.jpg";
     const currentImage = {
-      imageSrc: productData?.images?.[0]?.imageSrc || productData?.image || "/assets/images/pro2.jpg",
+      imageSrc: imageSrc && imageSrc.trim() !== "" ? imageSrc : "/assets/images/pro2.jpg",
       imageAlt: productData?.images?.[0]?.imageAlt || productData?.name || "Product Image",
     };
     

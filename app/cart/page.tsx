@@ -102,7 +102,7 @@ export default function CartPage() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+        console.log(errorData.message || `HTTP error! status: ${response.status}`);
       }
 
       const result = await response.json();

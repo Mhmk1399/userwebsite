@@ -265,7 +265,7 @@ export const Story: React.FC<StoryProps> = ({ sections, componentName }) => {
     fetchAllStories();
   }, []);
 
-  if (!sectionData) return null;
+  if (!sectionData || !stories) return null;
 
   return (
     <>
@@ -281,20 +281,22 @@ export const Story: React.FC<StoryProps> = ({ sections, componentName }) => {
                 key={"id" in story ? story.id + idx : idx}
                 $data={sectionData}
                 className=""
-                onClick={() =>
-                  setSelectedStory(
-                    "image" in story ? story.image : story.imageUrl
-                  )
-                }
+                onClick={() => {
+                  if (story.image) {
+                    setSelectedStory(story.image);
+                  }
+                }}
               >
                 <div className="story-ring">
-                  <Image
-                    src={"/assets/images/pro1.jpg"}
-                    alt={story.title}
-                    className="story-image h-[100px] object-cover"
-                    width={800}
-                    height={800}
-                  />
+                  {story.image && (
+                    <Image
+                      src={story.image}
+                      alt={story.title}
+                      className="story-image h-[100px] object-cover"
+                      width={800}
+                      height={800}
+                    />
+                  )}
                 </div>
                 <span className="story-title">{story.title}</span>
               </StoryItem>

@@ -459,7 +459,7 @@ const ProductList: React.FC<ProductListProps> = ({
 
       const response = await fetch(`/api/store?${params.toString()}`);
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        console.log(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
       if (data?.products) {
