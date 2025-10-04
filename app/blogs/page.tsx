@@ -342,62 +342,13 @@ export default function Page() {
       <Header isMobile={isMobile} headerData={headerData ?? undefined} />
       <main>
         <SectionBlogList dir="rtl" $data={sectionData}>
-      {loading ? (
-        <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '20px' }}>
-          در حال بارگذاری...
-        </div>
-      ) : (
-        blogData.map((blog, index) => (
-          <BlogCard key={`blogs-${blog.id}-${index}`} $data={sectionData.setting}>
-            {blog.image ? (
-              <Image
-                src={blog.image || "/assets/images/pro2.jpg"}
-                alt={blog.title || "Blog image"}
-                width={1000}
-                height={800}
-              />
-            ) : null}
-            <div className="content">
-              <h2 className="title line-clamp-1">{blog.title}</h2>
-              <div className="meta">
-                <span>
-                  {blog.createdAt &&
-                    new Intl.DateTimeFormat("fa-IR", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                      calendar: "persian",
-                    }).format(new Date(blog.createdAt))}
-                </span>
-              </div>
-              <div
-                className="description mb-2 text-right"
-                dangerouslySetInnerHTML={{
-                  __html: blog.content.slice(0, 70) + "...",
-                }}
-              />
-              <Link href={`/blogs/${blog.id}`} className="read-more">
-                مطالعه بیشتر
-              </Link>
-            </div>
-          </BlogCard>
-        ))
-      )}
-      
-      {pagination.totalPages > 1 && (
-        <PaginationContainer>
-          <PaginationButton 
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={!pagination.hasPrev}
-          >
-            قبلی
-          </PaginationButton>
-          
-          {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map(page => (
-            <PaginationButton
-              key={page}
-              $active={page === currentPage}
-              onClick={() => handlePageChange(page)}
+          {loading ? (
+            <div
+              style={{
+                gridColumn: "1 / -1",
+                textAlign: "center",
+                padding: "20px",
+              }}
             >
               در حال بارگذاری...
             </div>
@@ -407,9 +358,9 @@ export default function Page() {
                 key={`blogs-${blog.id}-${index}`}
                 $data={sectionData.setting}
               >
-                {blog.imageSrc ? (
+                {blog.image ? (
                   <Image
-                    src={blog.imageSrc || "/assets/images/pro2.jpg"}
+                    src={blog.image || "/assets/images/pro2.jpg"}
                     alt={blog.title || "Blog image"}
                     width={1000}
                     height={800}
