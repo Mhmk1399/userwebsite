@@ -53,8 +53,7 @@ import SlideBanner from "@/components/slideBanner";
 import { ProductsRow } from "@/components/productsRow";
 import { BlogSchema } from "@/components/schema/blogSchema";
 import CanvasEditor from "@/components/canvasEditor";
-import Header from "@/components/header";
-import Footer from "@/components/footer";
+
 import { Brands } from "@/components/brands";
 
 type AllSections = Section &
@@ -264,15 +263,9 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [blogData, setBlogData] = useState<BlogSchemaProps | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [headerData, setHeaderData] = useState<HeaderSection | null>(null);
-  const [footerData, setFooterData] = useState<FooterSection | null>(null);
-
   // Fetch layout data from API
   const fetchLayoutData = async (routeName: string, activeMode: string) => {
     try {
-      console.log('Fetching from URL:', window.location.href);
-      console.log('Current host:', window.location.host);
-      
       const response = await fetch("/api/layout-jason", {
         method: "GET",
         headers: {
@@ -280,26 +273,12 @@ export default function HomePage() {
           activeMode: activeMode,
         },
       });
-      console.log(response);
 
       if (!response.ok) {
         console.log(`Failed to fetch layout data: ${response.status}`);
       }
 
       const layoutData = await response.json();
-      
-      // Extract header and footer data
-      if (layoutData.sections?.sectionHeader) {
-        setHeaderData(layoutData.sections.sectionHeader);
-      }
-      
-
-      if (layoutData.sections?.sectionFooter) {
-        setFooterData(layoutData.sections.sectionFooter);
-      }
-      
-
-      
       return layoutData;
     } catch (error) {
       console.error("Error fetching layout data:", error);
@@ -384,111 +363,70 @@ export default function HomePage() {
 
   if (isLoading) {
     return (
-      <>
-        {/* Header - even during loading */}
-        <Header isMobile={isMobile} headerData={headerData ?? undefined} />
-
-        <main>
-          <div className="flex justify-center items-center h-screen">
-            <div className="flex flex-row gap-2">
-              <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce"></div>
-              <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce [animation-delay:-.3s]"></div>
-              <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce [animation-delay:-.5s]"></div>
-            </div>
-          </div>
-        </main>
-
-        {/* Footer - even during loading */}
-        <Footer footerData={footerData ?? undefined} />
-      </>
+      <div className="flex justify-center items-center h-screen">
+        <div className="flex flex-row gap-2">
+          <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce"></div>
+          <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce [animation-delay:-.3s]"></div>
+          <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce [animation-delay:-.5s]"></div>
+        </div>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <>
-        {/* Header - even during error */}
-        <Header isMobile={isMobile} headerData={headerData ?? undefined} />
-
-        <main>
-          <div className="flex justify-center items-center h-screen">
-            <div className="text-center">
-              <h1 className="text-2xl font-bold text-red-600 mb-4">خطا</h1>
-              <p className="text-gray-600">{error}</p>
-              <button
-                onClick={() => window.location.reload()}
-                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-              >
-                تلاش مجدد
-              </button>
-            </div>
-          </div>
-        </main>
-
-        {/* Footer - even during error */}
-        <Footer footerData={footerData ?? undefined} />
-      </>
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-red-600 mb-4">خطا</h1>
+          <p className="text-gray-600">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            تلاش مجدد
+          </button>
+        </div>
+      </div>
     );
   }
 
   if (!data.length) {
     return (
-      <>
-        {/* Header - even when no data */}
-        <Header isMobile={isMobile} headerData={headerData ?? undefined} />
-
-        <main>
-          <div className="flex justify-center items-center h-screen">
-            <div className="text-center">
-              <h1 className="text-2xl font-bold text-gray-600 mb-4">
-                هیچ محتوایی یافت نشد
-              </h1>
-            </div>
-          </div>
-        </main>
-
-        {/* Footer - even when no data */}
-        <Footer footerData={footerData ?? undefined} />
-      </>
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-600 mb-4">
+            صفحه مورد نظر خالی است
+          </h1>
+        </div>
+      </div>
     );
   }
 
   return (
     <>
-      {/* Header with dynamic data */}
-      <Header isMobile={isMobile} headerData={headerData ?? undefined} />
+      {blogData && <BlogSchema blogData={blogData} />}
+      
+      <div className="grid grid-cols-1 pt-4">
+        {orders.map((componentName, index) => {
+          const baseComponentName = componentName.split("-")[0];
+          const Component =
+            componentMap[baseComponentName as keyof typeof componentMap];
 
-      {/* Main content */}
-      <main>
-        {blogData && <BlogSchema blogData={blogData} />}
-
-        <div className="grid grid-cols-1 pt-4">
-          {orders.map((componentName, index) => {
-            const baseComponentName = componentName.split("-")[0];
-            const Component =
-              componentMap[baseComponentName as keyof typeof componentMap];
-
-            console.log(baseComponentName, "////////////");
-
-            return Component ? (
-              <div
-                key={componentName}
-                style={{ order: index }}
-                className="w-full"
-              >
-                <Component
-                  sections={data}
-                  isMobile={isMobile}
-                  componentName={componentName}
-                />
-              </div>
-            ) : null;
-          })}
-        </div>
-      </main>
-
-      {/* Footer with dynamic data */}
-      <Footer footerData={footerData ?? undefined} />
+          return Component ? (
+            <div
+              key={componentName}
+              style={{ order: index }}
+              className="w-full"
+            >
+              <Component
+                sections={data}
+                isMobile={isMobile}
+                componentName={componentName}
+              />
+            </div>
+          ) : null;
+        })}
+      </div>
     </>
   );
 }

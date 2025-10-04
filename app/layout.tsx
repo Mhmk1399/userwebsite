@@ -4,6 +4,7 @@ import StyledComponentsRegistry from "@/lib/registry";
 import { hezare } from "../next-persian-fonts/dohezar";
 import { Toaster } from "react-hot-toast";
 import ClientWrapper from "@/components/ClientWrapper";
+import LayoutProvider from "@/components/LayoutProvider";
 
 export const metadata: Metadata = {
   title: "وبسایت کاربر",
@@ -17,11 +18,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${hezare.variable}`}>
+      <body className={`${hezare.variable}  `}>
         <StyledComponentsRegistry>
           <ClientWrapper>
             <Toaster position="top-center" />
-            {children}
+            <LayoutProvider>
+              {children}
+            </LayoutProvider>
           </ClientWrapper>
         </StyledComponentsRegistry>
       </body>

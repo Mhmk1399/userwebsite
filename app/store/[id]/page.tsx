@@ -17,11 +17,12 @@ const SectionDetailPage = styled.div<{
   $isMobile: boolean;
 }>`
   max-width: 100%;
+  position: relative;
   padding-top: ${(props) => props.$data?.setting?.paddingTop}px;
   padding-bottom: ${(props) => props.$data?.setting?.paddingBottom}px;
   padding-left: ${(props) => props.$data?.setting?.paddingLeft}px;
   padding-right: ${(props) => props.$data?.setting?.paddingRight}px;
-  margin-top: ${(props) => props.$data?.setting?.marginTop}px;
+  margin-top: ${(props) => props.$data?.setting?.paddingRight}px;
   margin-bottom: ${(props) => props.$data?.setting?.marginBottom}px;
   margin-left: ${(props) => props.$data?.setting?.marginLeft}px;
   margin-right: ${(props) => props.$data?.setting?.marginRight}px;
