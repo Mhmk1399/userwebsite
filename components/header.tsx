@@ -579,7 +579,6 @@ const Header: React.FC<HeaderProps> = ({ headerData, isMobile }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileDropdownOpen, setMobileDropdownOpen] = useState(false);
   const { basic } = useUserInfo();
- 
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -740,7 +739,11 @@ const Header: React.FC<HeaderProps> = ({ headerData, isMobile }) => {
             <Link className="ml-auto hidden lg:block" href="#">
               <Logo
                 $data={sectionData}
-                src={basic?.logo || sectionData.blocks.imageLogo || "/assets/images/logo.webp"}
+                src={
+                  basic?.logo ||
+                  sectionData.blocks.imageLogo ||
+                  "/assets/images/logo.webp"
+                }
                 alt={sectionData.blocks.imageAlt}
               />
             </Link>
@@ -816,7 +819,7 @@ const Header: React.FC<HeaderProps> = ({ headerData, isMobile }) => {
                   ) : (
                     <NavItem
                       className="text-nowrap"
-                      href="#"
+                      href={link.url}
                       $data={sectionData}
                     >
                       {link.name}
@@ -860,7 +863,11 @@ const Header: React.FC<HeaderProps> = ({ headerData, isMobile }) => {
         <MobileMenuHeader $data={sectionData}>
           <Logo
             $data={sectionData}
-            src={basic?.logo || sectionData.blocks.imageLogo || "/assets/images/logo.webp"}
+            src={
+              basic?.logo ||
+              sectionData.blocks.imageLogo ||
+              "/assets/images/logo.webp"
+            }
             alt={sectionData.blocks.imageAlt}
             style={{ width: "50px", height: "50px" }}
           />
@@ -912,7 +919,7 @@ const Header: React.FC<HeaderProps> = ({ headerData, isMobile }) => {
                 </>
               ) : (
                 <MobileNavItem
-                  href="#"
+                  href={link.url}
                   $data={sectionData}
                   onClick={toggleMenu}
                 >
