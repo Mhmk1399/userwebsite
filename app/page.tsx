@@ -30,6 +30,7 @@ import {
   SpecialOfferSection,
   StorySection,
   VideoSection,
+  BrandsSection,
 } from "@/lib/types";
 import ImageText from "@/components/imageText";
 import ContactForm from "@/components/contactForm";
@@ -72,6 +73,7 @@ type AllSections = Section &
   OfferRowSection &
   GallerySection &
   SlideBannerSection &
+  BrandsSection &
   ProductListSection;
 
 interface TemplateData {
