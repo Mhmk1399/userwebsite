@@ -15,8 +15,8 @@
         "imageAlt": "شرکت ما",
         "links": [
           {
-            "name": "خدمات",
-            "url": "/services",
+            "name": "خانه",
+            "url": "/",
             "megaMenu": [
               {
                 "title": "خدمات فنی",

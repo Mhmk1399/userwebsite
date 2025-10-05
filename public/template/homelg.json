@@ -15,8 +15,8 @@
         "imageAlt": "شرکت ما",
         "links": [
           {
-            "name": "خدمات",
-            "url": "/services",
+            "name": "خانه",
+            "url": "/",
             "megaMenu": [
               {
                 "title": "خدمات فنی",
@@ -304,9 +304,9 @@
               "backgroundBoxOpacity": 0.9,
               "boxRadiuos": "24",
               "opacityImage": 1,
-              "imageWidth": "600",
+              "imageWidth": "500",
               "imageRadius": "24",
-              "imageHeight": "500",
+              "imageHeight": "300",
               "background": "#485696",
               "shadowOffsetX": 0,
               "shadowOffsetY": 8,
@@ -318,14 +318,14 @@
             }
           },
           "setting": {
-            "paddingTop": "70",
-            "paddingBottom": "70",
+            "paddingTop": "30",
+            "paddingBottom": "30",
             "marginTop": "0",
             "marginBottom": "0",
             "marginLeft": "0",
             "marginRight": "0",
-            "paddinRight": "20",
-            "paddinLeft": "20"
+            "paddinRight": "10",
+            "paddinLeft": "10"
           }
         },
         {
