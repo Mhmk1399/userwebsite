@@ -1,7 +1,6 @@
 import connect from "@/lib/data";
 import { NextRequest, NextResponse } from "next/server";
-import Jsons from "@/models/jsons";
-import { getStoreId } from "@/utils/getStoreId";
+
 import path from "path";
 import fs from "fs/promises";
 

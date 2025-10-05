@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const NwesLetterSchema = new mongoose.Schema(
+const NewsLetterSchema = new mongoose.Schema(
   {
     storeId: { type: String, required: true },
     phoneNumber: { type: String, required: true },
@@ -8,5 +8,5 @@ const NwesLetterSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export default mongoose.models.NwesLetter ||
-  mongoose.model("NwesLetter", NwesLetterSchema);
+export default mongoose.models.NewsLetter ||
+  mongoose.model("NewsLetter", NewsLetterSchema);

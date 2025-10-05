@@ -5,8 +5,7 @@ import styled from "styled-components";
 import DOMPurify from "dompurify"; // added for sanitization
 import {
   BlogDetailSection,
-  HeaderSection,
-  FooterSection,
+
   Section,
 } from "@/lib/types";
 

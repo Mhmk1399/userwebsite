@@ -3,8 +3,6 @@ import styled from "styled-components";
 import {
   BlogListSection,
   BlogListSetting,
-  HeaderSection,
-  FooterSection,
   Section,
 } from "@/lib/types";
 import { useEffect, useState } from "react";

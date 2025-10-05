@@ -18,6 +18,7 @@ export default function CartPage() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [paymentLoading, setPaymentLoading] = useState(false);
+  const [userName, setUserName] = useState<string | null>(null);
   const [shippingAddress, setShippingAddress] = useState({
     street: "",
     city: "",
@@ -32,7 +33,11 @@ export default function CartPage() {
   });
 
   useEffect(() => {
-    loadCartItems();
+    // Only access localStorage on client side
+    if (typeof window !== 'undefined') {
+      setUserName(localStorage.getItem("userName"));
+      loadCartItems();
+    }
   }, []);
 
   const loadCartItems = async () => {
@@ -78,6 +83,13 @@ export default function CartPage() {
 
   const initiatePayment = async () => {
     setPaymentLoading(true);
+    
+    // Check if we're on client side
+    if (typeof window === 'undefined') {
+      setPaymentLoading(false);
+      return;
+    }
+    
     const token = localStorage.getItem("tokenUser");
 
     if (!token) {
@@ -119,9 +131,11 @@ export default function CartPage() {
       console.log("Payment response:", result);
 
       if (result.success && result.paymentUrl) {
-        localStorage.setItem("paymentAuthority", result.authority);
-        console.log("Redirecting to:", result.paymentUrl);
-        window.location.href = result.paymentUrl;
+        if (typeof window !== 'undefined') {
+          localStorage.setItem("paymentAuthority", result.authority);
+          console.log("Redirecting to:", result.paymentUrl);
+          window.location.href = result.paymentUrl;
+        }
       } else {
         console.error("Payment failed:", result);
         toast.error(result.message || "درخواست پرداخت ناموفق بود");
@@ -224,7 +238,7 @@ export default function CartPage() {
           className="text-center mb-8 sm:mb-12"
         >
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-3 sm:mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 drop-shadow-sm px-2">
-            سبد خرید {localStorage.getItem("userName")}
+            سبد خرید {userName || ""}
           </h1>
           <div className="flex items-center justify-center gap-2 text-gray-600">
             <div className="h-1 w-8 sm:w-12 bg-gradient-to-r from-transparent to-purple-400 rounded-full"></div>

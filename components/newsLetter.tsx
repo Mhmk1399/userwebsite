@@ -290,6 +290,7 @@ const NewsLetter: React.FC<NewsLetterProps> = ({
         toast.error("خطا در ثبت نام");
       }
     } catch (error) {
+      console.log(error);
       toast.error("خطا در ارسال درخواست");
     } finally {
       setLoading(false);
