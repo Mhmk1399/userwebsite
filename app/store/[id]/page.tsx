@@ -287,18 +287,20 @@ export default function DetailPage() {
       router.push("/login");
       return;
     }
-    
+
     setIsAddingToCart(true);
 
     try {
       const db = await openDB();
-      const transaction = (db as IDBDatabase).transaction(
-        "cart",
-        "readwrite"
-      );
+      const transaction = (db as IDBDatabase).transaction("cart", "readwrite");
       const store = transaction.objectStore("cart");
 
       const productId = product.id || product._id;
+
+      if (!productId) {
+        toast.error("خطا در شناسایی محصول");
+        return;
+      }
 
       // Check if item already exists
       const existingItem = await new Promise<CartItem | null>((resolve) => {
@@ -310,9 +312,7 @@ export default function DetailPage() {
       const cartItem = {
         id: productId,
         name: product.name || "Unnamed Product",
-        price: parseFloat(
-          product.price?.replace(/[^0-9.-]+/g, "") || "0"
-        ),
+        price: parseFloat(product.price?.replace(/[^0-9.-]+/g, "") || "0"),
         quantity: existingItem ? existingItem.quantity + 1 : 1,
         image: selectedImage || "/assets/images/pro2.jpg",
       };
@@ -544,7 +544,7 @@ export default function DetailPage() {
 
               {/* Action Buttons */}
               <div className="space-y-3">
-                <button 
+                <button
                   onClick={addToCart}
                   disabled={isAddingToCart}
                   className="w-full px-6 py-3 add-to-cart-button rounded-lg font-medium"

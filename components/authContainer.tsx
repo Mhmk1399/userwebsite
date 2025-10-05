@@ -12,34 +12,36 @@ const AuthContainer: React.FC = () => {
   const [modalError, setModalError] = useState(false);
   const [modalSuccess, setModalSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState<'phone' | 'sms' | 'password'>('phone');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [smsCode, setSmsCode] = useState('');
+  const [step, setStep] = useState<"phone" | "sms" | "password">("phone");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [smsCode, setSmsCode] = useState("");
 
   const [smsLoading, setSmsLoading] = useState(false);
   const [isForgetPassword, setIsForgetPassword] = useState(false);
   const [countdown, setCountdown] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const sendSmsCode = async (phone: string) => {
     setSmsLoading(true);
     try {
-      const response = await fetch('/api/auth/send-code', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phoneNumber: phone })
+      const response = await fetch("/api/auth/send-code", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phoneNumber: phone }),
       });
-      
+
       if (response.ok) {
-        toast.success('کد تایید ارسال شد');
-        setStep('sms');
+        toast.success("کد تایید ارسال شد");
+        setStep("sms");
         setPhoneNumber(phone);
         setCountdown(60);
       } else {
-        toast.error('خطا در ارسال کد');
+        toast.error("خطا در ارسال کد");
       }
     } catch {
-      toast.error('خطا در ارسال کد');
+      toast.error("خطا در ارسال کد");
     } finally {
       setSmsLoading(false);
     }
@@ -48,20 +50,20 @@ const AuthContainer: React.FC = () => {
   const verifySmsCode = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/auth/verify-code', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phoneNumber, code: smsCode })
+      const response = await fetch("/api/auth/verify-code", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phoneNumber, code: smsCode }),
       });
-      
+
       if (response.ok) {
-        toast.success('کد تایید شد');
-        setStep('password');
+        toast.success("کد تایید شد");
+        setStep("password");
       } else {
-        toast.error('کد نامعتبر است');
+        toast.error("کد نامعتبر است");
       }
     } catch {
-      toast.error('خطا در تایید کد');
+      toast.error("خطا در تایید کد");
     } finally {
       setLoading(false);
     }
@@ -70,22 +72,26 @@ const AuthContainer: React.FC = () => {
   const resetPassword = async (password: string) => {
     setLoading(true);
     try {
-      const response = await fetch('/api/auth/reset-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phoneNumber, code: smsCode, newPassword: password })
+      const response = await fetch("/api/auth/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          phoneNumber,
+          code: smsCode,
+          newPassword: password,
+        }),
       });
-      
+
       if (response.ok) {
-        toast.success('رمز عبور با موفقیت تغییر کرد');
+        toast.success("رمز عبور با موفقیت تغییر کرد");
         setIsForgetPassword(false);
         setIsLogin(true);
-        setStep('phone');
+        setStep("phone");
       } else {
-        toast.error('خطا در تغییر رمز عبور');
+        toast.error("خطا در تغییر رمز عبور");
       }
     } catch {
-      toast.error('خطا در تغییر رمز عبور');
+      toast.error("خطا در تغییر رمز عبور");
     } finally {
       setLoading(false);
     }
@@ -103,40 +109,40 @@ const AuthContainer: React.FC = () => {
     const formData = new FormData(event.currentTarget);
     const formValues = Object.fromEntries(formData);
 
-    if (step === 'phone') {
+    if (step === "phone") {
       const phone = formValues.phone as string;
       if (!/^09\d{9}$/.test(phone)) {
-        toast.error('شماره تلفن نامعتبر است');
+        toast.error("شماره تلفن نامعتبر است");
         return;
       }
-      
+
       if (!isLogin && !isForgetPassword) {
         try {
-          const checkResponse = await fetch('/api/auth/check-phone', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ phoneNumber: phone })
+          const checkResponse = await fetch("/api/auth/check-phone", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ phoneNumber: phone }),
           });
           const checkData = await checkResponse.json();
-          
+
           if (checkData.exists) {
-            toast.error('کاربری با این شماره قبلاً ثبت نام کرده است');
+            toast.error("کاربری با این شماره قبلاً ثبت نام کرده است");
             setTimeout(() => {
               setIsLogin(true);
-              toast.success('لطفاً وارد شوید');
+              toast.success("لطفاً وارد شوید");
             }, 1500);
             return;
           }
         } catch (error) {
-          console.error('Phone check error:', error);
+          console.error("Phone check error:", error);
         }
       }
-      
+
       await sendSmsCode(phone);
       return;
     }
 
-    if (step === 'sms') {
+    if (step === "sms") {
       await verifySmsCode();
       return;
     }
@@ -144,7 +150,7 @@ const AuthContainer: React.FC = () => {
     if (isForgetPassword) {
       const { password, confirmPassword } = formValues;
       if (password !== confirmPassword) {
-        toast.error('رمزهای عبور مطابقت ندارند');
+        toast.error("رمزهای عبور مطابقت ندارند");
         return;
       }
       await resetPassword(password as string);
@@ -159,7 +165,7 @@ const AuthContainer: React.FC = () => {
         case true: {
           if (isSubmitting) return;
           setIsSubmitting(true);
-          
+
           const { password } = formValues;
           response = await fetch("/api/auth/login", {
             method: "POST",
@@ -206,7 +212,7 @@ const AuthContainer: React.FC = () => {
 
             setTimeout(() => {
               setIsLogin(true);
-              setStep('phone');
+              setStep("phone");
               const form = event.currentTarget;
               form.reset();
             }, 1500);
@@ -224,10 +230,11 @@ const AuthContainer: React.FC = () => {
     }
   };
 
-
-
   return (
-    <div className="relative min-h-screen flex items-center justify-center px-10 py-20 lg:p-0 bg-white" dir="rtl">
+    <div
+      className="relative min-h-screen flex items-center justify-center px-10 py-20 lg:p-0 bg-white"
+      dir="rtl"
+    >
       <div className="absolute inset-0 z-0">
         <Threads
           color={[0, 1, 4]}
@@ -236,7 +243,7 @@ const AuthContainer: React.FC = () => {
           enableMouseInteraction={true}
         />
       </div>
-      
+
       <div className="relative z-10 w-full max-w-md">
         {modalSuccess && (
           <Modal
@@ -278,15 +285,23 @@ const AuthContainer: React.FC = () => {
 
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              {step === 'phone' ? (isForgetPassword ? "بازیابی رمز عبور" : isLogin ? "ورود به حساب کاربری" : "ایجاد حساب کاربری") :
-               step === 'sms' ? "تایید شماره تلفن" :
-               isForgetPassword ? "رمز عبور جدید" : "تکمیل اطلاعات"}
+              {step === "phone"
+                ? isForgetPassword
+                  ? "بازیابی رمز عبور"
+                  : isLogin
+                  ? "ورود به حساب کاربری"
+                  : "ایجاد حساب کاربری"
+                : step === "sms"
+                ? "تایید شماره تلفن"
+                : isForgetPassword
+                ? "رمز عبور جدید"
+                : "تکمیل اطلاعات"}
             </h1>
             <div className="w-16 h-1 bg-gradient-to-r from-blue-500 to-blue-600 mx-auto rounded-full"></div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {step === 'phone' && (
+            {step === "phone" && (
               <div className="space-y-2">
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
                   شماره تلفن
@@ -306,7 +321,7 @@ const AuthContainer: React.FC = () => {
               </div>
             )}
 
-            {step === 'sms' && (
+            {step === "sms" && (
               <div className="space-y-2">
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
                   کد تایید ارسال شده به {phoneNumber}
@@ -343,7 +358,7 @@ const AuthContainer: React.FC = () => {
               </div>
             )}
 
-            {step === 'password' && (
+            {step === "password" && (
               <>
                 {!isLogin && !isForgetPassword && (
                   <>
@@ -383,32 +398,68 @@ const AuthContainer: React.FC = () => {
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
                     {isForgetPassword ? "رمز عبور جدید" : "گذرواژه"}
                   </label>
-                  <input
-                    name="password"
-                    type="password"
-                    placeholder={isForgetPassword ? "رمز عبور جدید" : "گذرواژه"}
-                    required
-                    className="w-full px-4 py-3 border-2 rounded-xl text-gray-800 placeholder-gray-400 
-                      transition-all duration-300 focus:outline-none focus:ring-0
-                      border-gray-200 bg-white focus:border-blue-500 focus:bg-blue-50
-                      hover:border-gray-300 focus:shadow-lg focus:shadow-blue-100"
-                  />
+                  <div className="relative">
+                    <input
+                      name="password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder={isForgetPassword ? "رمز عبور جدید" : "گذرواژه"}
+                      required
+                      className="w-full px-4 py-3 pr-12 border-2 rounded-xl text-gray-800 placeholder-gray-400 
+                        transition-all duration-300 focus:outline-none focus:ring-0
+                        border-gray-200 bg-white focus:border-blue-500 focus:bg-blue-50
+                        hover:border-gray-300 focus:shadow-lg focus:shadow-blue-100"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                    >
+                      {showPassword ? (
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
+                        </svg>
+                      ) : (
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                      )}
+                    </button>
+                  </div>
                 </div>
                 {(!isLogin || isForgetPassword) && (
                   <div className="space-y-2">
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
                       تکرار گذرواژه
                     </label>
-                    <input
-                      name="confirmPassword"
-                      type="password"
-                      placeholder="تکرار گذرواژه"
-                      required
-                      className="w-full px-4 py-3 border-2 rounded-xl text-gray-800 placeholder-gray-400 
-                        transition-all duration-300 focus:outline-none focus:ring-0
-                        border-gray-200 bg-white focus:border-blue-500 focus:bg-blue-50
-                        hover:border-gray-300 focus:shadow-lg focus:shadow-blue-100"
-                    />
+                    <div className="relative">
+                      <input
+                        name="confirmPassword"
+                        type={showConfirmPassword ? "text" : "password"}
+                        placeholder="تکرار گذرواژه"
+                        required
+                        className="w-full px-4 py-3 pr-12 border-2 rounded-xl text-gray-800 placeholder-gray-400 
+                          transition-all duration-300 focus:outline-none focus:ring-0
+                          border-gray-200 bg-white focus:border-blue-500 focus:bg-blue-50
+                          hover:border-gray-300 focus:shadow-lg focus:shadow-blue-100"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                      >
+                        {showConfirmPassword ? (
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
+                          </svg>
+                        ) : (
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          </svg>
+                        )}
+                      </button>
+                    </div>
                   </div>
                 )}
               </>
@@ -425,7 +476,7 @@ const AuthContainer: React.FC = () => {
                     : "bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-lg hover:shadow-xl"
                 }`}
             >
-              {(loading || smsLoading) ? (
+              {loading || smsLoading ? (
                 <div className="flex items-center justify-center gap-3">
                   <svg
                     className="animate-spin h-5 w-5 text-current"
@@ -450,16 +501,21 @@ const AuthContainer: React.FC = () => {
                 </div>
               ) : (
                 <span>
-                  {step === 'phone' ? 'ارسال کد تایید' : 
-                   step === 'sms' ? 'تایید کد' : 
-                   isForgetPassword ? 'تغییر رمز عبور' :
-                   isLogin ? 'ورود به حساب' : 'ایجاد حساب جدید'}
+                  {step === "phone"
+                    ? "ارسال کد تایید"
+                    : step === "sms"
+                    ? "تایید کد"
+                    : isForgetPassword
+                    ? "تغییر رمز عبور"
+                    : isLogin
+                    ? "ورود به حساب"
+                    : "ایجاد حساب جدید"}
                 </span>
               )}
             </button>
           </form>
 
-          {step === 'phone' && (
+          {step === "phone" && (
             <div className="mt-8 text-center">
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
@@ -513,7 +569,10 @@ const AuthContainer: React.FC = () => {
                   <p className="text-gray-600">
                     به صفحه ورود بازگردید؟{" "}
                     <button
-                      onClick={() => { setIsForgetPassword(false); setIsLogin(true); }}
+                      onClick={() => {
+                        setIsForgetPassword(false);
+                        setIsLogin(true);
+                      }}
                       className="font-semibold text-blue-600 hover:text-blue-700 transition-colors duration-200 
                         hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded px-1"
                     >
@@ -525,10 +584,10 @@ const AuthContainer: React.FC = () => {
             </div>
           )}
 
-          {step === 'sms' && (
+          {step === "sms" && (
             <div className="mt-4 text-center">
               <button
-                onClick={() => setStep('phone')}
+                onClick={() => setStep("phone")}
                 className="text-blue-600 hover:text-blue-700 transition-colors duration-200"
               >
                 بازگشت به مرحله قبل
