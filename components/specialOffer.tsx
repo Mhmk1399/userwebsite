@@ -2,11 +2,11 @@
 import styled from "styled-components";
 import { ProductCardData } from "@/lib/types";
 import type { SpecialOfferSection } from "@/lib/types";
-import ProductCard from "./productCard";
 import { useEffect, useState } from "react";
 import { useRef } from "react";
 import { useRouter } from "next/navigation";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
+import ProductCardCollection from "./productCardCollection";
 
 interface SpecialOfferProps {
   sections: SpecialOfferSection[];
@@ -54,8 +54,7 @@ const SpecialOfferSection = styled.section<{
   scroll-behavior: smooth;
   gap: 10px;
   padding: ${(props) => (props.$isMobile ? "10px" : "20px")};
-  background-color: ${(props) =>
-    props.$data.blocks?.setting?.backgroundColor || "#ef394e"};
+
   border-radius: ${(props) =>
     props.$data.blocks?.setting?.cardBorderRadius || "8"}px;
   direction: rtl;
@@ -286,7 +285,7 @@ export const SpecialOffer: React.FC<SpecialOfferProps> = ({
         console.log("No CollectionId provided");
         return;
       }
-      
+
       try {
         const response = await fetch("/api/collection", {
           method: "GET",
@@ -295,12 +294,12 @@ export const SpecialOffer: React.FC<SpecialOfferProps> = ({
             CollectionId: CollectionId,
           },
         });
-        
+
         if (!response.ok) {
           console.log(`API error: ${response.status} ${response.statusText}`);
           return;
         }
-        
+
         const data = await response.json();
         if (data && data.products) {
           setSpecialOfferProducts(data.products);
@@ -311,7 +310,7 @@ export const SpecialOffer: React.FC<SpecialOfferProps> = ({
         console.log("Error fetching special offers:", error);
       }
     };
-    
+
     fetchSpecialOffers();
   }, [CollectionId]);
 
@@ -358,7 +357,7 @@ export const SpecialOffer: React.FC<SpecialOfferProps> = ({
         </div>
 
         {specialOfferProducts.map((product) => (
-          <ProductCard key={product._id} productData={product} />
+          <ProductCardCollection key={product._id} productData={product} />
         ))}
         <button
           onClick={() => router.push(`/collection/${CollectionId}`)}

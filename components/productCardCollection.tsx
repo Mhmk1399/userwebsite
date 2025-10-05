@@ -29,11 +29,11 @@ const Card = styled.div<{
   display: flex;
   flex-direction: column;
   align-items: center;
-  border-radius: ${(props) => props.$setting?.cardBorderRadius}px;
-  background-color: ${(props) => props.$setting?.cardBackground};
-  height: 380px;
-  min-width: 250px;
+  background-color: white;
+  height: 350px;
+  border-radius: 5px;
   width: 100%;
+  max-width: 300px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
@@ -56,7 +56,7 @@ const ProductImage = styled(Image)<{
   object-fit: cover;
   width: 100%;
   height: 200px;
-  border-radius: ${(props) => props.$settings?.imageRadius}px;
+  border-radius: 5px;
   transition: all 0.3s ease;
 
   &:hover {
@@ -73,10 +73,10 @@ const ProductName = styled.h3<{
   $settings?: ProductCardSetting;
   $productData?: ProductCardData;
 }>`
-  font-size: ${(props) => props.$settings?.nameFontSize}px;
-  font-weight: ${(props) => props.$settings?.nameFontWeight};
-  color: ${(props) => props.$settings?.nameColor};
-  margin: 8px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: black;
+  margin: 6px 0;
   text-align: center;
 
   @media (max-width: 768px) {
@@ -89,11 +89,10 @@ const ProductDescription = styled.p<{
   $settings?: ProductCardSetting;
   $productData?: ProductCardData;
 }>`
-  font-size: ${(props) => props.$settings?.descriptionFontSize}px;
+  font-size: 14px;
   color: ${(props) => props.$settings?.descriptionColor};
   font-weight: ${(props) => props.$settings?.descriptionFontWeight};
   text-align: center;
-  margin: 8px 0;
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -110,10 +109,10 @@ const ProductPrice = styled.span<{
   $settings?: ProductBlockSetting;
   $productData?: ProductCardData;
 }>`
-  font-size: ${(props) => props.$settings?.priceFontSize}px;
-  color: ${(props) => props.$settings?.priceColor || "#ffffff"};
+  font-size: 12px;
+  color: black;
   font-weight: 700;
-  margin: 8px 0;
+  margin: 6px 0;
   text-align: center;
 `;
 
@@ -121,23 +120,19 @@ const AddToCartButton = styled.button<{
   $settings?: ProductBlockSetting;
   $productData?: ProductCardData;
 }>`
-  background-color: ${(props) => props.$settings?.cartBakground};
+  background-color: white;
   color: ${(props) => props.$settings?.cartColor};
   border: none;
   padding: 8px 20px;
   border-radius: ${(props) => props.$settings?.cartRadius}px;
   font-size: 0.9rem;
+  border-bottom: 1px solid black;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px ${(props) => props.$settings?.cartBakground};
-  }
-
-  &:active {
-    transform: translateY(0);
   }
 
   @media (max-width: 768px) {
@@ -147,7 +142,10 @@ const AddToCartButton = styled.button<{
   }
 `;
 
-const ProductCard: React.FC<ProductCardProps> = ({ productData, settings }) => {
+const ProductCardCollection: React.FC<ProductCardProps> = ({
+  productData,
+  settings,
+}) => {
   const router = useRouter();
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   // Early return if productData is null or undefined
@@ -296,4 +294,4 @@ async function openDB() {
   });
 }
 
-export default ProductCard;
+export default ProductCardCollection;

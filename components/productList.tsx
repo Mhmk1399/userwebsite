@@ -186,8 +186,8 @@ const ProductGrid = styled.div<{
     grid-template-columns: repeat(${
       props.$data.setting?.gridColumns || 3
     }, 1fr);
-    gap: 2rem;
-    padding: 2rem;
+    gap: 1rem;
+    padding: 1rem;
   `
       : `
     flex-wrap: nowrap;
@@ -685,65 +685,65 @@ const ProductList: React.FC<ProductListProps> = ({
               $data={sectionData.setting}
               dir="rtl"
             >
-            <div className="p-2 text-right">
-              <div className="grid grid-cols-1 md:grid-cols-1 gap-4 justify-start">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    دسته‌بندی
-                  </label>
-                  <select
-                    className="w-full border rounded-md p-2"
-                    value={selectedFilters.category}
-                    onChange={(e) =>
-                      setSelectedFilters((prev) => ({
-                        ...prev,
-                        category: e.target.value,
-                      }))
-                    }
-                  >
-                    <option value="">همه</option>
-                    {categories.map((category) => (
-                      <option key={category._id} value={category.name}>
-                        {category.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+              <div className="p-2 text-right">
+                <div className="grid grid-cols-1 md:grid-cols-1 gap-4 justify-start">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      دسته‌بندی
+                    </label>
+                    <select
+                      className="w-full border rounded-md p-2"
+                      value={selectedFilters.category}
+                      onChange={(e) =>
+                        setSelectedFilters((prev) => ({
+                          ...prev,
+                          category: e.target.value,
+                        }))
+                      }
+                    >
+                      <option value="">همه</option>
+                      {categories.map((category) => (
+                        <option key={category._id} value={category.name}>
+                          {category.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    رنگ‌ها
-                  </label>
-                  <button
-                    onClick={() => setShowColorModal(true)}
-                    className="px-4 py-2 w-full bg-gray-100 rounded-md hover:bg-gray-200 flex items-center gap-2"
-                  >
-                    انتخاب رنگ
-                    {selectedColors.length > 0 && (
-                      <span className="bg-blue-500 text-white rounded-full px-2 py-0.5 text-sm">
-                        {selectedColors.length}
-                      </span>
-                    )}
-                  </button>
-                </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      رنگ‌ها
+                    </label>
+                    <button
+                      onClick={() => setShowColorModal(true)}
+                      className="px-4 py-2 w-full bg-gray-100 rounded-md hover:bg-gray-200 flex items-center gap-2"
+                    >
+                      انتخاب رنگ
+                      {selectedColors.length > 0 && (
+                        <span className="bg-blue-500 text-white rounded-full px-2 py-0.5 text-sm">
+                          {selectedColors.length}
+                        </span>
+                      )}
+                    </button>
+                  </div>
 
-                {renderPriceFilter()}
+                  {renderPriceFilter()}
 
-                <div className="flex gap-3">
-                  <button
-                    onClick={resetFilters}
-                    className="flex-1 px-4 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors text-base font-medium"
-                  >
-                    بازنشانی
-                  </button>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={resetFilters}
+                      className="flex-1 px-4 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors text-base font-medium"
+                    >
+                      بازنشانی
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
             </FilterCardBg>
           )}
 
           {/* Products Section */}
-          <div className="flex-1 w-full">
+          <div className="flex-1 w-full" dir="rtl">
             <ProductGrid $data={sectionData} $isMobile={isMobile}>
               {loading ? (
                 <div className="col-span-full flex justify-center items-center py-20">
