@@ -12,7 +12,7 @@ const Section = styled.section<{
   $isMobile: boolean;
 }>`
   max-width: 100%;
-  margin-top: ${(props) => props.$data.setting.marginTop || "30"}px;
+  margin-top: ${(props) => props.$data.setting.marginTop}px;
   margin-bottom: ${(props) => props.$data.setting.marginBottom}px;
   margin-right: ${(props) => props.$data.setting.marginRight}px;
   margin-left: ${(props) => props.$data.setting.marginLeft}px;

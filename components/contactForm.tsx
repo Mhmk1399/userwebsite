@@ -112,9 +112,7 @@ const TextArea = styled.textarea<{
     box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.3);
   }
 
-  @media (max-width: 768px) {
-    width: 90%;
-  }
+  
 `;
 
 const SubmitButton = styled.button<{
@@ -135,8 +133,10 @@ const SubmitButton = styled.button<{
   max-width: 100%;
   text-align: center;
   &:hover {
-    opacity:0.8;
+    opacity: 0.8;
     transform: translateY(-1px);
+    box-shadow: 1px 1px 5px 1px
+      ${(props) => props.$data.blocks.setting?.btnBackgroundColor || "#007bff"};
   }
 
   /* Apply button animations */

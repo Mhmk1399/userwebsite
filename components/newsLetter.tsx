@@ -256,6 +256,8 @@ const NewsLetter: React.FC<NewsLetterProps> = ({
   );
   if (!sectionData) return null;
 
+  
+
   return (
     <Section dir="rtl" $data={sectionData} $isMobile={isMobile}>
       <Heading dir="rtl" $data={sectionData} $isMobile={isMobile}>
@@ -271,8 +273,8 @@ const NewsLetter: React.FC<NewsLetterProps> = ({
         <Input
           $isMobile={isMobile}
           $data={sectionData}
-          type="email"
-          placeholder="ایمیل خود را وارد کنید"
+          type="number"
+          placeholder="شماره خود را وارد کنید"
           required
         />
         <Button $data={sectionData} $isMobile={isMobile} type="submit">

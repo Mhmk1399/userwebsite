@@ -3,9 +3,12 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import styled from "styled-components";
 import DOMPurify from "dompurify"; // added for sanitization
-import { BlogDetailSection, HeaderSection, FooterSection, Section } from "@/lib/types";
-import Header from "@/components/header";
-import Footer from "@/components/footer";
+import {
+  BlogDetailSection,
+  HeaderSection,
+  FooterSection,
+  Section,
+} from "@/lib/types";
 
 interface BlogDetailData {
   _id: string;
@@ -95,7 +98,7 @@ const SectionBlogDetail = styled.div<{
           12,
           parseInt(props.$data?.setting?.contentFontSize || "18") * 0.7
         )}px;
-      
+
       img {
         margin: 12px auto;
         border-radius: 6px;
@@ -339,19 +342,19 @@ const BlogDetailContent: React.FC<BlogDetailProps & { blogId: string }> = ({
 }) => {
   const [blog, setBlog] = useState<BlogDetailData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [sectionData, setSectionData] = useState<BlogDetailSection | null>(null);
+  const [sectionData, setSectionData] = useState<BlogDetailSection | null>(
+    null
+  );
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [headerData, setHeaderData] = useState<HeaderSection | null>(null);
-  const [footerData, setFooterData] = useState<FooterSection | null>(null);
 
   const fetchLayoutData = async (activeMode: string) => {
     try {
       const response = await fetch("/api/layout-jason", {
         method: "GET",
         headers: {
-          selectedRoute: "blog",
+          selectedRoute: "blogsdetail",
           activeMode: activeMode,
         },
       });
@@ -361,15 +364,7 @@ const BlogDetailContent: React.FC<BlogDetailProps & { blogId: string }> = ({
       }
 
       const layoutData = await response.json();
-      
-      if (layoutData.sections?.sectionHeader) {
-        setHeaderData(layoutData.sections.sectionHeader);
-      }
-      
-      if (layoutData.sections?.sectionFooter) {
-        setFooterData(layoutData.sections.sectionFooter);
-      }
-      
+
       return layoutData;
     } catch (error) {
       console.error("Error fetching layout data:", error);
@@ -403,7 +398,6 @@ const BlogDetailContent: React.FC<BlogDetailProps & { blogId: string }> = ({
     const handleLayoutFetch = async () => {
       const activeMode = isMobile ? "sm" : "lg";
 
-
       try {
         setIsLoading(true);
         setError(null);
@@ -418,7 +412,9 @@ const BlogDetailContent: React.FC<BlogDetailProps & { blogId: string }> = ({
 
           if (layoutData.sections.children.metaData) {
             document.title = layoutData.sections.children.metaData.title;
-            const metaDescription = document.querySelector('meta[name="description"]');
+            const metaDescription = document.querySelector(
+              'meta[name="description"]'
+            );
             if (metaDescription) {
               metaDescription.setAttribute(
                 "content",
@@ -441,7 +437,6 @@ const BlogDetailContent: React.FC<BlogDetailProps & { blogId: string }> = ({
   if (isLoading || loading) {
     return (
       <>
-        <Header isMobile={isMobile} headerData={headerData ?? undefined} />
         <main>
           <div className="flex justify-center items-center h-screen">
             <div className="flex flex-row gap-2">
@@ -451,7 +446,6 @@ const BlogDetailContent: React.FC<BlogDetailProps & { blogId: string }> = ({
             </div>
           </div>
         </main>
-        <Footer footerData={footerData ?? undefined} />
       </>
     );
   }
@@ -459,7 +453,6 @@ const BlogDetailContent: React.FC<BlogDetailProps & { blogId: string }> = ({
   if (error) {
     return (
       <>
-        <Header isMobile={isMobile} headerData={headerData ?? undefined} />
         <main>
           <div className="flex justify-center items-center h-screen">
             <div className="text-center">
@@ -476,7 +469,6 @@ const BlogDetailContent: React.FC<BlogDetailProps & { blogId: string }> = ({
             </div>
           </div>
         </main>
-        <Footer footerData={footerData ?? undefined} />
       </>
     );
   }
@@ -484,7 +476,6 @@ const BlogDetailContent: React.FC<BlogDetailProps & { blogId: string }> = ({
   if (!blog || !sectionData) {
     return (
       <>
-        <Header isMobile={isMobile} headerData={headerData ?? undefined} />
         <main>
           <div className="flex justify-center items-center h-screen">
             <div className="text-center">
@@ -494,61 +485,63 @@ const BlogDetailContent: React.FC<BlogDetailProps & { blogId: string }> = ({
             </div>
           </div>
         </main>
-        <Footer footerData={footerData ?? undefined} />
       </>
     );
   }
 
   return (
     <>
-      <Header isMobile={isMobile} headerData={headerData ?? undefined} />
       <main>
         <SectionBlogDetail
           $data={sectionData}
           $isMobile={isMobile}
           className={`transition-all duration-150 ease-in-out relative`}
         >
-      <CoverImageContainer $data={sectionData} $isMobile={isMobile}>
-        <Image
-          src={
-            sectionData.setting.coverImage ||
-            blog.image || "/assets/images/pro2.jpg"
-          }
-          alt={blog.title}
-          fill
-          className="object-cover"
-          priority
-        />
-      </CoverImageContainer>
+          <CoverImageContainer $data={sectionData} $isMobile={isMobile}>
+            <Image
+              src={
+                sectionData.setting.coverImage ||
+                blog.image ||
+                "/assets/images/pro2.jpg"
+              }
+              alt={blog.title}
+              fill
+              className="object-cover"
+              priority
+            />
+          </CoverImageContainer>
 
-      <h1 className="blog-title text-right">{blog.title || "عنوان بلاگ"}</h1>
+          <h1 className="blog-title text-right">
+            {blog.title || "عنوان بلاگ"}
+          </h1>
 
-      <div className="blog-meta text-right">
-        <br />
-        <span>
-          تاریخ انتشار:
-          {blog.createdAt &&
-            new Intl.DateTimeFormat("fa-IR", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-              calendar: "persian",
-            }).format(new Date(blog.createdAt))}
-        </span>
-        {blog.readTime && <span> • زمان مطالعه: {blog.readTime} دقیقه</span>}
-      </div>
+          <div className="blog-meta text-right">
+            <br />
+            <span>
+              تاریخ انتشار:
+              {blog.createdAt &&
+                new Intl.DateTimeFormat("fa-IR", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                  calendar: "persian",
+                }).format(new Date(blog.createdAt))}
+            </span>
+            {blog.readTime && (
+              <span> • زمان مطالعه: {blog.readTime} دقیقه</span>
+            )}
+          </div>
 
-      <div
-        className="blog-content text-right"
-        dangerouslySetInnerHTML={{
-          __html: blog.content
-            ? DOMPurify.sanitize(robustDecode(blog.content))
-            : "محتوای بلاگ در اینجا نمایش داده میشود...",
-        }}
-      />
+          <div
+            className="blog-content text-right"
+            dangerouslySetInnerHTML={{
+              __html: blog.content
+                ? DOMPurify.sanitize(robustDecode(blog.content))
+                : "محتوای بلاگ در اینجا نمایش داده میشود...",
+            }}
+          />
         </SectionBlogDetail>
       </main>
-      <Footer footerData={footerData ?? undefined} />
     </>
   );
 };

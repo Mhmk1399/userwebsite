@@ -31,6 +31,7 @@ import {
   SpecialOfferSection,
   StorySection,
   VideoSection,
+  BrandsSection,
 } from "@/lib/types";
 import ImageText from "@/components/imageText";
 import ContactForm from "@/components/contactForm";
@@ -53,6 +54,7 @@ import { ProductsRow } from "@/components/productsRow";
 import { BlogSchema } from "@/components/schema/blogSchema";
 import BlogList from "@/components/blogList";
 import CanvasEditor from "@/components/canvasEditor";
+import { Brands } from "@/components/brands";
 
 type AllSections = Section &
   RichTextSection &
@@ -76,7 +78,8 @@ type AllSections = Section &
   BlogDetailBlock &
   ProductListSection &
   BlogListSection &
-  DetailPageBlock;
+  DetailPageBlock &
+  BrandsSection;
 
 interface TemplateData {
   sections: {
@@ -364,6 +367,7 @@ export default function Page() {
     ProductsRow,
     CanvasEditor,
     BlogList,
+    Brands,
   };
 
   if (isLoading) {

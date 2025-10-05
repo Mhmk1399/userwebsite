@@ -66,8 +66,14 @@ const BrandsGrid = styled.div<{
   display: flex;
   flex-wrap: nowrap;
   justify-content: start;
-  overflow-x: scroll;
+  overflow-x: auto;
+  overflow-y: hidden;
   scroll-behavior: smooth;
+  margin-top: 20px;
+  gap: 10px;
+  padding: 10px 0;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
 
   &::-webkit-scrollbar {
     display: none;
@@ -269,6 +275,8 @@ const BrandCard = styled.a<{
   background-color: ${(props) =>
     props.$data.blocks?.setting?.cardBackground || "#FFFFFF"};
   transition: all 0.3s ease;
+  flex-shrink: 0;
+  min-width: 120px;
 `;
 
 const BrandName = styled.span<{
@@ -307,7 +315,6 @@ export const Brands: React.FC<BrandsProps> = ({
   );
 
   if (!sectionData) {
-    // Optionally render nothing or a fallback UI if sectionData is not found
     return null;
   }
 
@@ -334,6 +341,7 @@ export const Brands: React.FC<BrandsProps> = ({
             className="border-l p-3"
             key={brand.id}
             $data={sectionData}
+            style={{ cursor: "pointer" }}
           >
             <div
               className="relative "
