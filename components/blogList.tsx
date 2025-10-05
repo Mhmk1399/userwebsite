@@ -185,7 +185,7 @@ const BlogList: React.FC<BlogListProps> = ({ sections, componentName }) => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        Loading...
+        در حال بارگذاری
       </div>
     );
   }

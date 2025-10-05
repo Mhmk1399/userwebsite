@@ -42,5 +42,6 @@ export const useUserInfo = () => {
     error,
     basic: userInfo?.basic,
     contact: userInfo?.contact,
+    design: userInfo?.design,
   };
 };

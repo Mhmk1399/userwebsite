@@ -36,8 +36,6 @@ import Video from "@/components/video";
 import { Collection } from "@/components/collection";
 import RichText from "@/components/richText";
 import ProductList from "@/components/productList";
-import Header from "@/components/header";
-import Footer from "@/components/footer";
 
 type AllSections = Section &
   RichTextSection &
@@ -62,15 +60,17 @@ type AllSections = Section &
 export default function CollectionPage() {
   const params = useParams();
   const collectionId = params.id as string;
-  
+
   const [data, setData] = useState<AllSections[]>([]);
   const [isMobile, setIsMobile] = useState(false);
   const [orders, setOrders] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [headerData, setHeaderData] = useState<HeaderSection | null>(null);
-  const [footerData, setFooterData] = useState<FooterSection | null>(null);
-  const [collectionData, setCollectionData] = useState<{name: string; products: ProductCardData[]} | null>(null);
+
+  const [collectionData, setCollectionData] = useState<{
+    name: string;
+    products: ProductCardData[];
+  } | null>(null);
 
   const componentMap = {
     RichText,
@@ -103,15 +103,7 @@ export default function CollectionPage() {
       }
 
       const layoutData = await response.json();
-      
-      if (layoutData.sections?.sectionHeader) {
-        setHeaderData(layoutData.sections.sectionHeader);
-      }
-      
-      if (layoutData.sections?.sectionFooter) {
-        setFooterData(layoutData.sections.sectionFooter);
-      }
-      
+
       return layoutData;
     } catch (error) {
       console.error("Error fetching layout data:", error);
@@ -155,13 +147,16 @@ export default function CollectionPage() {
         await fetchCollectionData();
 
         if (layoutData && layoutData.sections && layoutData.sections.children) {
-          const testData = layoutData.sections.children.sections as AllSections[];
+          const testData = layoutData.sections.children
+            .sections as AllSections[];
           setData(testData);
           setOrders(layoutData.sections.children.order);
 
           if (layoutData.sections.children.metaData) {
             document.title = layoutData.sections.children.metaData.title;
-            const metaDescription = document.querySelector('meta[name="description"]');
+            const metaDescription = document.querySelector(
+              'meta[name="description"]'
+            );
             if (metaDescription) {
               metaDescription.setAttribute(
                 "content",
@@ -170,7 +165,7 @@ export default function CollectionPage() {
             }
           }
         }
-        
+
         document.title = collectionData?.name || "مجموعه محصولات";
       } catch (error) {
         console.error("Error loading page data:", error);
@@ -220,11 +215,7 @@ export default function CollectionPage() {
 
   return (
     <>
-      <Header isMobile={isMobile} headerData={headerData ?? undefined} />
-      
       <main>
-      
-        
         <div className="grid grid-cols-1 pt-4 px-1">
           {orders.map((componentName, index) => {
             const baseComponentName = componentName.split("-")[0];
@@ -232,7 +223,11 @@ export default function CollectionPage() {
               componentMap[baseComponentName as keyof typeof componentMap];
 
             return Component ? (
-              <div key={componentName} style={{ order: index }} className="w-full">
+              <div
+                key={componentName}
+                style={{ order: index }}
+                className="w-full"
+              >
                 <Component
                   sections={data}
                   isMobile={isMobile}
@@ -245,8 +240,6 @@ export default function CollectionPage() {
           })}
         </div>
       </main>
-      
-      <Footer footerData={footerData ?? undefined} />
     </>
   );
 }

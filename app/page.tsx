@@ -10,11 +10,9 @@ import {
   CollectionSection,
   ContactFormDataSection,
   DetailPageBlock,
-  FooterSection,
   GalleryBlock,
   GallerySection,
   HeaderBlock,
-  HeaderSection,
   ImageTextBlock,
   ImageTextSection,
   MultiColumnBlock,
@@ -254,8 +252,6 @@ const extractBlogData = (template: TemplateData): BlogSchemaProps => {
   };
 };
 
-
-
 export default function HomePage() {
   const [data, setData] = useState<AllSections[]>([]);
   const [isMobile, setIsMobile] = useState(false);
@@ -299,7 +295,6 @@ export default function HomePage() {
 
         // Always use "home" for the home page
         const layoutData = await fetchLayoutData("home", activeMode);
-        
 
         if (layoutData && layoutData.sections && layoutData.sections.children) {
           const testData = layoutData.sections.children
@@ -405,7 +400,7 @@ export default function HomePage() {
   return (
     <>
       {blogData && <BlogSchema blogData={blogData} />}
-      
+
       <div className="grid grid-cols-1 pt-4">
         {orders.map((componentName, index) => {
           const baseComponentName = componentName.split("-")[0];

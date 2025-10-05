@@ -1,12 +1,15 @@
 "use client";
 import styled from "styled-components";
-import { BlogListSection, BlogListSetting, HeaderSection, FooterSection, Section } from "@/lib/types";
+import {
+  BlogListSection,
+  BlogListSetting,
+  HeaderSection,
+  FooterSection,
+  Section,
+} from "@/lib/types";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import Header from "@/components/header";
-import Footer from "@/components/footer";
-
 
 interface BlogData {
   blogId: number;
@@ -130,16 +133,16 @@ const PaginationContainer = styled.div`
 const PaginationButton = styled.button<{ $active?: boolean }>`
   padding: 8px 12px;
   border: 1px solid #ddd;
-  background: ${props => props.$active ? '#007bff' : '#fff'};
-  color: ${props => props.$active ? '#fff' : '#333'};
+  background: ${(props) => (props.$active ? "#007bff" : "#fff")};
+  color: ${(props) => (props.$active ? "#fff" : "#333")};
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s;
-  
+
   &:hover:not(:disabled) {
-    background: ${props => props.$active ? '#0056b3' : '#f8f9fa'};
+    background: ${(props) => (props.$active ? "#0056b3" : "#f8f9fa")};
   }
-  
+
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
@@ -153,15 +156,12 @@ export default function Page() {
     totalPages: 1,
     totalBlogs: 0,
     hasNext: false,
-    hasPrev: false
+    hasPrev: false,
   });
   const [loading, setLoading] = useState(false);
   const [sections, setSections] = useState<Section[]>([]);
-  const [isMobile, setIsMobile] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [headerData, setHeaderData] = useState<HeaderSection | null>(null);
-  const [footerData, setFooterData] = useState<FooterSection | null>(null);
 
   const fetchLayoutData = async (activeMode: string) => {
     try {
@@ -178,15 +178,7 @@ export default function Page() {
       }
 
       const layoutData = await response.json();
-      
-      if (layoutData.sections?.sectionHeader) {
-        setHeaderData(layoutData.sections.sectionHeader);
-      }
-      
-      if (layoutData.sections?.sectionFooter) {
-        setFooterData(layoutData.sections.sectionFooter);
-      }
-      
+
       return layoutData;
     } catch (error) {
       console.error("Error fetching layout data:", error);
@@ -214,12 +206,12 @@ export default function Page() {
           storeId: blog.storeId,
         }));
         setBlogData(blogInfo);
-        
+
         if (data.pagination) {
           setPagination(data.pagination);
         }
       } else {
-        console.error('Invalid API response structure:', data);
+        console.error("Invalid API response structure:", data);
         setBlogData([]);
       }
     } catch (error) {
@@ -232,7 +224,6 @@ export default function Page() {
   useEffect(() => {
     const handleResize = async () => {
       const isMobileView = window.innerWidth < 430;
-      setIsMobile(isMobileView);
 
       const activeMode = isMobileView ? "sm" : "lg";
 
@@ -247,7 +238,9 @@ export default function Page() {
 
           if (layoutData.sections.children.metaData) {
             document.title = layoutData.sections.children.metaData.title;
-            const metaDescription = document.querySelector('meta[name="description"]');
+            const metaDescription = document.querySelector(
+              'meta[name="description"]'
+            );
             if (metaDescription) {
               metaDescription.setAttribute(
                 "content",
@@ -315,7 +308,6 @@ export default function Page() {
   if (!sectionData) {
     return (
       <>
-        <Header isMobile={isMobile} headerData={headerData ?? undefined} />
         <main>
           <div className="flex justify-center items-center h-screen">
             <div className="text-center">
@@ -325,88 +317,97 @@ export default function Page() {
             </div>
           </div>
         </main>
-        <Footer footerData={footerData ?? undefined} />
       </>
     );
   }
 
   return (
     <>
-      <Header isMobile={isMobile} headerData={headerData ?? undefined} />
       <main>
         <SectionBlogList dir="rtl" $data={sectionData}>
-      {loading ? (
-        <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '20px' }}>
-          در حال بارگذاری...
-        </div>
-      ) : (
-        blogData.map((blog, index) => (
-          <BlogCard key={`blogs-${blog.id}-${index}`} $data={sectionData.setting}>
-            {blog.image ? (
-              <Image
-                src={blog.image || "/assets/images/pro2.jpg"}
-                alt={blog.title || "Blog image"}
-                width={1000}
-                height={800}
-              />
-            ) : null}
-            <div className="content">
-              <h2 className="title line-clamp-1">{blog.title}</h2>
-              <div className="meta">
-                <span>
-                  {blog.createdAt &&
-                    new Intl.DateTimeFormat("fa-IR", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                      calendar: "persian",
-                    }).format(new Date(blog.createdAt))}
-                </span>
-              </div>
-              <div
-                className="description mb-2 text-right"
-                dangerouslySetInnerHTML={{
-                  __html: blog.content.slice(0, 70) + "...",
-                }}
-              />
-              <Link href={`/blogs/${blog.id}`} className="read-more">
-                مطالعه بیشتر
-              </Link>
-            </div>
-          </BlogCard>
-        ))
-      )}
-      
-      {pagination.totalPages > 1 && (
-        <PaginationContainer>
-          <PaginationButton 
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={!pagination.hasPrev}
-          >
-            قبلی
-          </PaginationButton>
-          
-          {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map(page => (
-            <PaginationButton
-              key={page}
-              $active={page === currentPage}
-              onClick={() => handlePageChange(page)}
+          {loading ? (
+            <div
+              style={{
+                gridColumn: "1 / -1",
+                textAlign: "center",
+                padding: "20px",
+              }}
             >
-              {page}
-            </PaginationButton>
-          ))}
-          
-          <PaginationButton 
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={!pagination.hasNext}
-          >
-            بعدی
-          </PaginationButton>
-        </PaginationContainer>
-      )}
+              در حال بارگذاری...
+            </div>
+          ) : (
+            blogData.map((blog, index) => (
+              <BlogCard
+                key={`blogs-${blog.id}-${index}`}
+                $data={sectionData.setting}
+              >
+                {blog.image ? (
+                  <Image
+                    src={blog.image || "/assets/images/pro2.jpg"}
+                    alt={blog.title || "Blog image"}
+                    width={1000}
+                    height={800}
+                  />
+                ) : null}
+                <div className="content">
+                  <h2 className="title line-clamp-1">{blog.title}</h2>
+                  <div className="meta">
+                    <span>
+                      {blog.createdAt &&
+                        new Intl.DateTimeFormat("fa-IR", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                          calendar: "persian",
+                        }).format(new Date(blog.createdAt))}
+                    </span>
+                  </div>
+                  <div
+                    className="description mb-2 text-right"
+                    dangerouslySetInnerHTML={{
+                      __html: blog.content.slice(0, 70) + "...",
+                    }}
+                  />
+                  <Link href={`/blogs/${blog.id}`} className="read-more">
+                    مطالعه بیشتر
+                  </Link>
+                </div>
+              </BlogCard>
+            ))
+          )}
+
+          {pagination.totalPages > 1 && (
+            <PaginationContainer>
+              <PaginationButton
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={!pagination.hasPrev}
+              >
+                قبلی
+              </PaginationButton>
+
+              {Array.from(
+                { length: pagination.totalPages },
+                (_, i) => i + 1
+              ).map((page) => (
+                <PaginationButton
+                  key={page}
+                  $active={page === currentPage}
+                  onClick={() => handlePageChange(page)}
+                >
+                  {page}
+                </PaginationButton>
+              ))}
+
+              <PaginationButton
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={!pagination.hasNext}
+              >
+                بعدی
+              </PaginationButton>
+            </PaginationContainer>
+          )}
         </SectionBlogList>
       </main>
-      <Footer footerData={footerData ?? undefined} />
     </>
   );
 }

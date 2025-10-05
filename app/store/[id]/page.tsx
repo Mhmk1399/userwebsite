@@ -3,7 +3,16 @@ import React, { useEffect, useState } from "react";
 import { DetailPageSection, ProductCardData, ProductImage } from "@/lib/types";
 import Image from "next/image";
 import { styled } from "styled-components";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
+
+interface CartItem {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+  image: string;
+}
 
 const defaultProperties = [
   { key: "نوع اتصال", value: "بی‌سیم", tooltip: "بی‌سیم " },
@@ -112,7 +121,7 @@ const SectionDetailPage = styled.div<{
 
     @media (max-width: 768px) {
       width: 100%;
-      height: auto;
+      height: 250px;
     }
 
     img {
@@ -130,7 +139,9 @@ const SectionDetailPage = styled.div<{
 
 export default function DetailPage() {
   const [isMobile, setIsMobile] = useState(false);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
   const componentName = "DetailPage";
+  const router = useRouter();
 
   useEffect(() => {
     const handleResize = () => {
@@ -232,7 +243,7 @@ export default function DetailPage() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        Loading...
+        در حال بارگذاری
       </div>
     );
   }
@@ -240,7 +251,7 @@ export default function DetailPage() {
   if (!product) {
     return (
       <div className="flex justify-center items-center h-screen">
-        Product not found
+        محصول یافت نشد
       </div>
     );
   }
@@ -267,6 +278,71 @@ export default function DetailPage() {
           (section: Record<string, unknown>) => section.type === componentName
         )
       : null;
+
+  const addToCart = async () => {
+    // Check if user has token
+    const token = localStorage.getItem("tokenUser");
+    if (!token) {
+      toast.error("برای افزودن به سبد خرید ابتدا وارد شوید");
+      router.push("/login");
+      return;
+    }
+    
+    setIsAddingToCart(true);
+
+    try {
+      const db = await openDB();
+      const transaction = (db as IDBDatabase).transaction(
+        "cart",
+        "readwrite"
+      );
+      const store = transaction.objectStore("cart");
+
+      const productId = product.id || product._id;
+
+      // Check if item already exists
+      const existingItem = await new Promise<CartItem | null>((resolve) => {
+        const request = store.get(productId);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => resolve(null);
+      });
+
+      const cartItem = {
+        id: productId,
+        name: product.name || "Unnamed Product",
+        price: parseFloat(
+          product.price?.replace(/[^0-9.-]+/g, "") || "0"
+        ),
+        quantity: existingItem ? existingItem.quantity + 1 : 1,
+        image: selectedImage || "/assets/images/pro2.jpg",
+      };
+
+      await store.put(cartItem);
+      toast.success("محصول به سبد خرید اضافه شد");
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      toast.error("خطا در افزودن به سبد خرید");
+    } finally {
+      setIsAddingToCart(false);
+    }
+  };
+
+  // IndexedDB helper function
+  const openDB = async () => {
+    return await new Promise((resolve, reject) => {
+      const request = indexedDB.open("CartDB", 1);
+
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => resolve(request.result);
+
+      request.onupgradeneeded = (event) => {
+        const db = (event.target as IDBOpenDBRequest).result;
+        if (!db.objectStoreNames.contains("cart")) {
+          db.createObjectStore("cart", { keyPath: "id" });
+        }
+      };
+    });
+  };
 
   if (layoutLoading) {
     return (
@@ -300,7 +376,7 @@ export default function DetailPage() {
 
           <div className="relative">
             <div
-              className={`flex gap-3 py-2  ${
+              className={`flex gap-1 py-2 overflow-x-auto ${
                 isMobile ? "min-w-full" : " overflow-x-auto"
               }`}
             >
@@ -357,7 +433,7 @@ export default function DetailPage() {
         </div>
 
         {/* Product Info Section */}
-        <div className={`space-y-8 lg:-mr-64 ${isMobile ? "mt-96 pr-16" : ""}`}>
+        <div className={`space-y-8 lg:-mr-64 ${isMobile ? " " : ""}`}>
           <h1 className="product-name">{product.name || "نام محصول"}</h1>
           <p className="product-description text-wrap">
             {product.description ||
@@ -394,10 +470,11 @@ export default function DetailPage() {
               <div className="flex flex-col gap-2">
                 <div className="flex items-center justify-between">
                   <span className="product-price text-xl font-bold">
-                    {product.price || "80,000"} تومان
+                    {Number(product.price).toLocaleString("fa-IR") || "80,000"}{" "}
+                    تومان
                   </span>
                   {product.discount && (
-                    <span className="bg-red-100 text-red-600 px-3 py-1 rounded-full text-sm">
+                    <span className="bg-red-100 text-red-600 px-3 text-nowrap py-1 rounded-full text-sm">
                       {product.discount}% تخفیف
                     </span>
                   )}
@@ -407,7 +484,7 @@ export default function DetailPage() {
                     {(
                       Number(product.price?.replace(/,/g, "")) /
                       (1 - Number(product.discount) / 100)
-                    ).toLocaleString()}{" "}
+                    ).toLocaleString("fa-IR")}{" "}
                     تومان
                   </span>
                 )}
@@ -467,8 +544,12 @@ export default function DetailPage() {
 
               {/* Action Buttons */}
               <div className="space-y-3">
-                <button className="w-full px-6 py-3 add-to-cart-button rounded-lg font-medium">
-                  افزودن به سبد خرید
+                <button 
+                  onClick={addToCart}
+                  disabled={isAddingToCart}
+                  className="w-full px-6 py-3 add-to-cart-button rounded-lg font-medium"
+                >
+                  {isAddingToCart ? "در حال افزودن..." : "افزودن به سبد خرید"}
                 </button>
               </div>
 

@@ -344,7 +344,7 @@ const CollapseFaq: React.FC<CollapseFaqProps> = ({
           </FaqItem>
         ))
       ) : (
-        <div>Loading...</div>
+        <div> در حال بارگذاری</div>
       )}
     </Section>
   );

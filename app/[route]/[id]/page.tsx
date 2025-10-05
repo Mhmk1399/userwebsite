@@ -12,11 +12,9 @@ import {
   CollectionSection,
   ContactFormDataSection,
   DetailPageBlock,
-  FooterSection,
   GalleryBlock,
   GallerySection,
   HeaderBlock,
-  HeaderSection,
   ImageTextBlock,
   ImageTextSection,
   MultiColumnBlock,
@@ -56,8 +54,6 @@ import { ProductsRow } from "@/components/productsRow";
 import { BlogSchema } from "@/components/schema/blogSchema";
 import BlogList from "@/components/blogList";
 import CanvasEditor from "@/components/canvasEditor";
-import Footer from "@/components/footer";
-import Header from "@/components/header";
 
 type AllSections = Section &
   RichTextSection &
@@ -265,7 +261,6 @@ const extractBlogData = (template: TemplateData): BlogSchemaProps => {
 export default function Page() {
   const params = useParams();
   const route = params.route as string;
-  
 
   const [data, setData] = useState<AllSections[]>([]);
   const [isMobile, setIsMobile] = useState(false);
@@ -273,14 +268,9 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(true);
   const [blogData, setBlogData] = useState<BlogSchemaProps | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [headerData, setHeaderData] = useState<HeaderSection | null>(null);
-  const [footerData, setFooterData] = useState<FooterSection | null>(null);
 
   // Fetch layout data from API
-  const fetchLayoutData = async (
-    routeName: string,
-    activeMode: string
-  ) => {
+  const fetchLayoutData = async (routeName: string, activeMode: string) => {
     try {
       const response = await fetch("/api/layout-jason", {
         method: "GET",
@@ -295,25 +285,13 @@ export default function Page() {
       }
 
       const layoutData = await response.json();
-      
-      // Extract header and footer data
-      if (layoutData.sections?.sectionHeader) {
-        setHeaderData(layoutData.sections.sectionHeader);
-      }
-      
 
-      if (layoutData.sections?.sectionFooter) {
-        setFooterData(layoutData.sections.sectionFooter);
-      }
-      
       return layoutData;
     } catch (error) {
       console.error("Error fetching layout data:", error);
       throw error;
     }
   };
-
-
 
   useEffect(() => {
     const handleResize = async () => {
@@ -435,9 +413,6 @@ export default function Page() {
 
   return (
     <>
-      {/* Header with dynamic data */}
-      <Header isMobile={isMobile} headerData={headerData ?? undefined} />
-
       {/* Main content */}
       <main>
         {blogData && <BlogSchema blogData={blogData} />}
@@ -464,9 +439,6 @@ export default function Page() {
           })}
         </div>
       </main>
-
-      {/* Footer with dynamic data */}
-      <Footer footerData={footerData ?? undefined} />
     </>
   );
 }

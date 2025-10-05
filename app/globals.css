@@ -4,6 +4,36 @@
 
 body {
   font-family: var(--font-hezare), sans-serif;
+  transition: font-family 0.3s ease;
+}
+
+/* Font classes for dynamic switching */
+.font-hezare {
+  font-family: var(--font-hezare), sans-serif;
+}
+.font-esterdad {
+  font-family: var(--font-esterdad), sans-serif;
+}
+.font-sahel {
+  font-family: var(--font-sahel), sans-serif;
+}
+.font-rey {
+  font-family: var(--font-ray), sans-serif;
+}
+.font-vazir {
+  font-family: var(--font-vazir), sans-serif;
+}
+.font-cairo {
+  font-family: var(--font-cairo), sans-serif;
+}
+.font-amiri {
+  font-family: var(--font-amiri), sans-serif;
+}
+.font-almarai {
+  font-family: var(--font-almarai), sans-serif;
+}
+.font-markazitext {
+  font-family: var(--font-markazi-text), sans-serif;
 }
 .modalOverlay {
   position: fixed;
@@ -55,8 +85,6 @@ body {
     font-size: 16px;
   }
 }
-
-
 
 @layer base {
   :root {
@@ -113,8 +141,6 @@ body {
     --chart-5: 340 75% 55%;
   }
 }
-
-
 
 @layer base {
   * {

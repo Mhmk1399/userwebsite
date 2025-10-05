@@ -31,15 +31,15 @@ const LayoutProvider: React.FC<LayoutProviderProps> = ({ children }) => {
       }
 
       const layoutData = await response.json();
-      
+
       if (layoutData.sections?.sectionHeader) {
         setHeaderData(layoutData.sections.sectionHeader);
       }
-      
+
       if (layoutData.sections?.sectionFooter) {
         setFooterData(layoutData.sections.sectionFooter);
       }
-      
+
       return layoutData;
     } catch (error) {
       console.error("Error fetching layout data:", error);
@@ -53,7 +53,7 @@ const LayoutProvider: React.FC<LayoutProviderProps> = ({ children }) => {
       setIsMobile(isMobileView);
 
       const activeMode = isMobileView ? "sm" : "lg";
-      
+
       // Determine route name based on pathname
       let routeName = "home";
       if (pathname === "/blogs") routeName = "blogs";
@@ -68,6 +68,18 @@ const LayoutProvider: React.FC<LayoutProviderProps> = ({ children }) => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, [pathname]);
+
+  if (
+    pathname === "/login" ||
+    pathname === "/cart" ||
+    pathname === "/dashboard"
+  ) {
+    return (
+      <>
+        <main>{children}</main>
+      </>
+    );
+  }
 
   return (
     <>

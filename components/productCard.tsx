@@ -180,6 +180,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData, settings }) => {
 
     const addToCart = async (e: React.MouseEvent) => {
       e.stopPropagation();
+
+      // Check if user has token
+      const token = localStorage.getItem("tokenUser");
+      if (!token) {
+        toast.error("برای افزودن به سبد خرید ابتدا وارد شوید");
+        router.push("/login");
+        return;
+      }
+
       setIsAddingToCart(true);
 
       try {
