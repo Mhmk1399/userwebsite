@@ -1,6 +1,8 @@
 "use client";
 import styled from "styled-components";
 import { NewsLetterSection } from "@/lib/types";
+import { useState } from "react";
+import toast from "react-hot-toast";
 
 interface NewsLetterProps {
   sections: NewsLetterSection[]; // Changed from { SlideShow: SlideSection[] }
@@ -251,12 +253,48 @@ const NewsLetter: React.FC<NewsLetterProps> = ({
   isMobile,
   componentName,
 }) => {
+  const [phone, setPhone] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const sectionData = sections.find(
     (section) => section.type === componentName
   );
   if (!sectionData) return null;
 
-  
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!phone.trim()) {
+      toast.error("لطفاً شماره تلفن را وارد کنید");
+      return;
+    }
+
+    if (!/^09\d{9}$/.test(phone)) {
+      toast.error("شماره تلفن نامعتبر است");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          phoneNumber: phone,
+        }),
+      });
+
+      if (response.ok) {
+        toast.success("با موفقیت در خبرنامه عضو شدید");
+        setPhone("");
+      } else {
+        toast.error("خطا در ثبت نام");
+      }
+    } catch (error) {
+      toast.error("خطا در ارسال درخواست");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Section dir="rtl" $data={sectionData} $isMobile={isMobile}>
@@ -269,16 +307,25 @@ const NewsLetter: React.FC<NewsLetterProps> = ({
           "برای دریافت آخرین اخبار ایمیل خود را وارد کنید"}
       </Description>
 
-      <Form $isMobile={isMobile}>
+      <Form $isMobile={isMobile} onSubmit={handleSubmit}>
         <Input
+          dir="rtl"
+          className="text-center"
           $isMobile={isMobile}
           $data={sectionData}
-          type="number"
-          placeholder="شماره خود را وارد کنید"
+          type="tel"
+          placeholder="09120000000"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
           required
         />
-        <Button $data={sectionData} $isMobile={isMobile} type="submit">
-          {sectionData.blocks.btnText || "عضویت"}
+        <Button
+          $data={sectionData}
+          $isMobile={isMobile}
+          type="submit"
+          disabled={loading}
+        >
+          {loading ? "در حال ارسال..." : sectionData.blocks.btnText || "عضویت"}
         </Button>
       </Form>
     </Section>
