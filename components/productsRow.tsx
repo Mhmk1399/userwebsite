@@ -1,6 +1,6 @@
 "use client";
 import styled from "styled-components";
- import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import { ProductCardData, ProductRowSection, Section } from "@/lib/types";
 import { useRouter } from "next/navigation";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
@@ -34,6 +34,7 @@ const ScrollContainer = styled.div<{
      ${props.$data.blocks.setting?.shadowBlur || 10}px 
      ${props.$data.blocks.setting?.shadowSpread || 0}px 
      ${props.$data.blocks.setting?.shadowColor || "#fff"}`};
+  border-radius: ${(props) => props.$data.blocks?.setting?.Radius || "0"}px;
 `;
 
 const ProductsRowSection = styled.section<{
