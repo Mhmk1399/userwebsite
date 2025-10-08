@@ -15,7 +15,6 @@ export const useAuth = () => {
 
   const verifyToken = async (token: string) => {
     try {
-      console.log("Verifying token:", token?.substring(0, 20) + "...");
       const response = await fetch("/api/auth/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -23,7 +22,6 @@ export const useAuth = () => {
       });
 
       const data = await response.json();
-      console.log("Token verification response:", data);
       return data.valid ? data.user : null;
     } catch (error) {
       console.error("Token verification error:", error);
@@ -34,12 +32,10 @@ export const useAuth = () => {
   useEffect(() => {
     const checkAuth = async () => {
       const token = localStorage.getItem("tokenUser");
-      console.log("Checking auth, token exists:", !!token);
 
       if (token) {
         const userData = await verifyToken(token);
         if (userData) {
-          console.log("User authenticated:", userData);
           setUser(userData);
         } else {
           // Token is invalid or expired
@@ -49,7 +45,6 @@ export const useAuth = () => {
           setUser(null);
         }
       } else {
-        console.log("No token found");
         setUser(null);
       }
       setIsLoading(false);
