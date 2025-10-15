@@ -2,13 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import Order from "@/models/orders";
 import connect from "@/lib/data";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import { getStoreId } from "@/utils/getStoreId";
 
 interface CustomJwtPayload extends JwtPayload {
   userId: string;
   status: string;
 }
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   await connect();
   if (!connect) {
     return NextResponse.json({ error: "Connection failed!" });
@@ -26,7 +27,7 @@ if (!token) {
 }
  const decodedToken= jwt.decode(token) as CustomJwtPayload;
   try {
-    const storeId = process.env.STOREID
+     const storeId = getStoreId(req);
     const orderData = { ...body, storeId , userId: decodedToken.userId };
     console.log("Order Data:", orderData);
     const order = await Order.create(orderData);

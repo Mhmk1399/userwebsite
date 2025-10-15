@@ -1,11 +1,12 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import connect from "@/lib/data";
 import Contact from "@/models/contact";
+import { getStoreId } from "@/utils/getStoreId";
 
-export const POST = async (req: Request) => {
+export const POST = async (req: NextRequest) => {
   await connect();
   try {
-    const storeId = process.env.STOREID;
+     const storeId = getStoreId(req);
     if (!storeId) {
       return NextResponse.json({ error: "Storeid is empty" }, { status: 401 });
     }

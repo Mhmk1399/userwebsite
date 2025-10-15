@@ -1,9 +1,10 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import connect from "@/lib/data";
 import Blog from "@/models/blogs";
+import { getStoreId } from "@/utils/getStoreId";
 
 
-export const GET = async (request: Request) => {
+export const GET = async (request: NextRequest) => {
   await connect();
   if (!connect) {
     return new NextResponse("Database connection error", { status: 500 });
@@ -15,7 +16,7 @@ export const GET = async (request: Request) => {
     const limit = parseInt(searchParams.get('limit') || '6');
     const skip = (page - 1) * limit;
 
-    const storeId = process.env.STOREID;
+     const storeId = getStoreId(request);
     if (!storeId) {
       return NextResponse.json({ error: "Storeid is empty" }, { status: 401 });
     }

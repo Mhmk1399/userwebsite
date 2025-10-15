@@ -3,6 +3,7 @@ import  connect from "@/lib/data";
 import CustomerTicket from "@/models/customerTicket";
 import jwt from "jsonwebtoken";
 import StoreUsers from "@/models/storesUsers";
+import { getStoreId } from "@/utils/getStoreId";
 
 export async function GET(request: NextRequest) {
   try {
@@ -46,7 +47,8 @@ export async function POST(request: NextRequest) {
     if (!userId) {
       return NextResponse.json({ message: "شناسه کاربر یافت نشد" }, { status: 401 });
     }
-
+     const storeId = getStoreId(request);
+ 
     const { subject, content, priority } = await request.json();
 
     if (!subject || !content) {
@@ -61,7 +63,7 @@ export async function POST(request: NextRequest) {
         content,
         timestamp: new Date()
       }],
-      storeId: process.env.STOREID
+      storeId: storeId
     });
     console.log(ticket,"tiket")
 

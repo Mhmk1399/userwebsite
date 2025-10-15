@@ -1,15 +1,16 @@
 // app/api/store/route.ts
 import connect from "@/lib/data";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import Products from "../../../models/product";
 import Category from "../../../models/category";
 import mongoose from "mongoose";
+import { getStoreId } from "@/utils/getStoreId";
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
     await connect();
 
-    const storeId = process.env.STOREID;
+    const storeId = getStoreId(request);
     if (!storeId) {
       return NextResponse.json({ error: "Storeid is empty" }, { status: 401 });
     }

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import connect from "@/lib/data";
 import Order from "@/models/orders";
 import "@/lib/types";
+import { getStoreId } from "@/utils/getStoreId";
 
 export async function POST(request: NextRequest) {
   console.log("=== Payment Verify API Called ===");
@@ -88,6 +89,7 @@ export async function POST(request: NextRequest) {
       console.log("8. Preparing order data...");
       console.log("Pending order structure:", Object.keys(pendingOrder));
       console.log("Shipping address from pending order:", pendingOrder.shippingAddress);
+           const storeId = getStoreId(request);
       
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { authority: _authority, paymentAmount: _paymentAmount, expiresAt: _expiresAt, ...orderFields } = pendingOrder as Record<string, unknown>;
@@ -99,7 +101,7 @@ export async function POST(request: NextRequest) {
         paymentRefId: result.data.ref_id,
         cardPan: result.data.card_pan,
         verifiedAt: new Date(),
-        storeId: process.env.STOREID
+        storeId: storeId
       } as Record<string, unknown>;
       console.log("Order data to save:", JSON.stringify(orderData, null, 2));
       console.log("Final shipping address:", orderData.shippingAddress);
