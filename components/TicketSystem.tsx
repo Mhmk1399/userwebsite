@@ -52,7 +52,7 @@ const TicketSystem: React.FC<TicketSystemProps> = ({ isAuthenticated, logout }) 
         logout();
       }
     } catch (error) {
-      console.error("Error fetching tickets:", error);
+      console.log("Error fetching tickets:", error);
       toast.error("خطا در دریافت تیکتها");
     } finally {
       setIsLoadingTickets(false);
@@ -85,7 +85,7 @@ const TicketSystem: React.FC<TicketSystemProps> = ({ isAuthenticated, logout }) 
         toast.error("خطا در ایجاد تیکت");
       }
     } catch (error) {
-      console.error("Error creating ticket:", error);
+      console.log("Error creating ticket:", error);
       toast.error("خطای سرور");
     }
   };
@@ -113,7 +113,7 @@ const TicketSystem: React.FC<TicketSystemProps> = ({ isAuthenticated, logout }) 
         toast.error("خطا در ارسال پیام");
       }
     } catch (error) {
-      console.error("Error sending message:", error);
+      console.log("Error sending message:", error);
       toast.error("خطای سرور");
     }
   };

@@ -27,6 +27,7 @@ const Card = styled.div<{
   $setting?: ProductCardSetting;
 }>`
   display: flex;
+  position: relative;
   flex-direction: column;
   align-items: center;
   border-radius: ${(props) => props.$setting?.cardBorderRadius}px;
@@ -155,6 +156,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData, settings }) => {
     console.log("ProductCard: productData is null or undefined");
     return null;
   }
+  console.log(productData, "mmmmmmmmmm");
 
   try {
     // Use actual product image or fallback
@@ -209,12 +211,19 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData, settings }) => {
           request.onerror = () => resolve(null);
         });
 
+        // Calculate final price with discount
+        const originalPrice = parseFloat(
+          safeProductData.price?.replace(/[^0-9.-]+/g, "") || "0"
+        );
+        const finalPrice =
+          productData.discount && Number(productData.discount) > 0
+            ? originalPrice * (1 - Number(productData.discount) / 100)
+            : originalPrice;
+
         const cartItem = {
           id: productId,
           name: safeProductData.name || "Unnamed Product",
-          price: parseFloat(
-            safeProductData.price?.replace(/[^0-9.-]+/g, "") || "0"
-          ),
+          price: finalPrice,
           quantity: existingItem ? existingItem.quantity + 1 : 1,
           image: currentImage.imageSrc,
         };
@@ -222,7 +231,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData, settings }) => {
         await store.put(cartItem);
         toast.success("محصول به سبد خرید اضافه شد");
       } catch (error) {
-        console.error("Error adding to cart:", error);
+        console.log("Error adding to cart:", error);
         toast.error("خطا در افزودن به سبد خرید");
       } finally {
         setIsAddingToCart(false);
@@ -239,6 +248,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData, settings }) => {
         onClick={() => handleNavigate(productId)}
         dir="rtl"
       >
+        {productData?.discount && Number(productData.discount) > 0 && (
+          <span className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded text-xs font-bold">
+            {Number(productData.discount).toLocaleString("fa-IR")}%
+          </span>
+        )}
+
         <ProductImage
           $settings={settings}
           $productData={safeProductData}
@@ -257,12 +272,29 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData, settings }) => {
             : "توضیحات موجود نیست"}
         </ProductDescription>
 
-        <ProductPrice $settings={settings} $productData={productData}>
-          {productData?.price
-            ? Number(productData.price).toLocaleString("fa-IR")
-            : "قیمت مشخص نشده"}{" "}
-          تومان
-        </ProductPrice>
+        <div className="text-center mb-2">
+          {productData?.discount && Number(productData.discount) > 0 ? (
+            <>
+              <ProductPrice $settings={settings} $productData={productData}>
+                {(
+                  Number(productData.price) *
+                  (1 - Number(productData.discount) / 100)
+                ).toLocaleString("fa-IR")}{" "}
+                تومان
+                <span className="text-red-400 mr-3 line-through text-xs">
+                  {Number(productData.price).toLocaleString("fa-IR")}
+                </span>
+              </ProductPrice>
+            </>
+          ) : (
+            <ProductPrice $settings={settings} $productData={productData}>
+              {productData?.price
+                ? Number(productData.price).toLocaleString("fa-IR")
+                : "قیمت مشخص نشده"}{" "}
+              تومان
+            </ProductPrice>
+          )}
+        </div>
         <AddToCartButton
           onClick={addToCart}
           disabled={isAddingToCart}

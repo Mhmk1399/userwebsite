@@ -289,7 +289,7 @@ export default function Page() {
 
       return layoutData;
     } catch (error) {
-      console.error("Error fetching layout data:", error);
+      console.log("Error fetching layout data:", error);
       throw error;
     }
   };
@@ -332,7 +332,7 @@ export default function Page() {
           setBlogData(extractedBlogData);
         }
       } catch (error) {
-        console.error("Error loading page data:", error);
+        console.log("Error loading page data:", error);
         setError("خطا در بارگذاری صفحه");
       } finally {
         setIsLoading(false);

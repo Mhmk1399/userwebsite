@@ -40,7 +40,7 @@ export async function GET(request:NextRequest) {
       //   }
     );
   } catch (error) {
-    console.error("Error:", error);
+    console.log("Error:", error);
     return NextResponse.json(
       {
         error: "Internal Server Error",

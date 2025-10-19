@@ -19,7 +19,7 @@ export async function GET(request:NextRequest) {
     const stories = await Story.find({ storeId: storeId });
     return NextResponse.json(stories);
   } catch (error) {
-    console.error("Error fetching stories:", error);
+    console.log("Error fetching stories:", error);
     return NextResponse.json({ error: "Failed to fetch stories" });
   }
 }

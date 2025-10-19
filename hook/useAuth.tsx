@@ -24,7 +24,7 @@ export const useAuth = () => {
       const data = await response.json();
       return data.valid ? data.user : null;
     } catch (error) {
-      console.error("Token verification error:", error);
+      console.log("Token verification error:", error);
       return null;
     }
   };
@@ -64,7 +64,7 @@ export const useAuth = () => {
     try {
       await fetch("/api/auth/logout", { method: "POST" });
     } catch (error) {
-      console.error("Logout error:", error);
+      console.log("Logout error:", error);
     } finally {
       localStorage.removeItem("tokenUser");
       localStorage.removeItem("userId");

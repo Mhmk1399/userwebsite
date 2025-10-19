@@ -15,12 +15,24 @@ import Link from "next/link";
 import { useAuth } from "@/hook/useAuth";
 import TicketSystem from "./TicketSystem";
 
+interface OrderProduct {
+  productId: string;
+  quantity: number;
+  price: number;
+  colorCode?: string;
+  properties?: string[];
+  name?: string;
+  image?: string;
+  _id: string;
+}
+
 interface Order {
   _id: string;
   userId: string;
   date: string;
   status: string;
   totalAmount: number;
+  products: OrderProduct[];
   shippingAddress: {
     street: string;
     city: string;
@@ -98,7 +110,7 @@ const Dashboard = () => {
           logout();
         }
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.log("Error fetching user data:", error);
         toast.error("خطا در دریافت اطلاعات کاربر");
       }
     };
@@ -136,7 +148,7 @@ const Dashboard = () => {
         logout();
       }
     } catch (error) {
-      console.error("Error fetching orders:", error);
+      console.log("Error fetching orders:", error);
       toast.error("خطا در دریافت سفارشات");
     } finally {
       setIsLoadingOrders(false);
@@ -201,7 +213,7 @@ const Dashboard = () => {
         toast.error(result.message || "خطا در بهروزرسانی اطلاعات");
       }
     } catch (error) {
-      console.error("Error updating user:", error);
+      console.log("Error updating user:", error);
       toast.error("خطای سرور");
     }
   };
@@ -704,6 +716,64 @@ const Dashboard = () => {
                     </div>
                     <div className="text-gray-800 font-mono font-bold text-sm">
                       #{order._id.slice(-8)}
+                    </div>
+                  </div>
+
+                  <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-3 sm:p-4 border border-green-100">
+                    <div className="flex items-center gap-2 text-gray-700 font-bold mb-2 text-xs sm:text-sm">
+                      <svg
+                        className="w-4 h-4 text-green-500"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                        />
+                      </svg>
+                      محصولات ({order.products.length})
+                    </div>
+                    <div className="space-y-2">
+                      {order.products.map((product) => (
+                        <div key={product._id} className="bg-white/60 rounded-lg p-2 text-xs">
+                          <div className="flex items-center gap-3 mb-2">
+                            {product.image && (
+                              <img 
+                                src={product.image} 
+                                alt={product.name || 'محصول'}
+                                className="w-10 h-10 rounded-lg object-cover border border-gray-200"
+                              />
+                            )}
+                            <div className="flex-1">
+                              <div className="font-semibold text-gray-800 mb-1 text-sm">
+                                {product.name || 'محصول حذف شده'}
+                              </div>
+                              <div className="flex justify-between items-center">
+                                <span className="text-gray-600">تعداد: {product.quantity}</span>
+                                <span className="font-bold text-green-600">{product.price.toLocaleString()} تومان</span>
+                              </div>
+                            </div>
+                          </div>
+                          {product.colorCode && (
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="text-gray-600">رنگ:</span>
+                              <div 
+                                className="w-4 h-4 rounded-full border border-gray-300" 
+                                style={{ backgroundColor: product.colorCode }}
+                              ></div>
+                            </div>
+                          )}
+                          {product.properties && product.properties.length > 0 && (
+                            <div className="text-gray-600">
+                              <span>ویژگی‌ها: </span>
+                              <span className="font-medium">{product.properties.join(", ")}</span>
+                            </div>
+                          )}
+                        </div>
+                      ))}
                     </div>
                   </div>
 

@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
     
     return NextResponse.json({ user }, { status: 200 });
   } catch (error) {
-    console.error(error);
+    console.log(error);
     return NextResponse.json({ error: "Error fetching user" }, { status: 500 });
   }
 }
@@ -64,7 +64,7 @@ export async function PATCH(request: NextRequest) {
     
     return NextResponse.json({ user: updatedUser }, { status: 200 });
   } catch (error) {
-    console.error(error);
+    console.log(error);
     return NextResponse.json({ message: "Error updating user" }, { status: 500 });
   }
 }
@@ -94,7 +94,7 @@ export async function DELETE(request: NextRequest) {
     
     return NextResponse.json({ message: "User deleted successfully" });
   } catch (error) {
-    console.error(error);
+    console.log(error);
     return NextResponse.json({ message: "Error deleting user" }, { status: 500 });
   }
 }

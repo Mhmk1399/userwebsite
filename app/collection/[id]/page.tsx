@@ -104,7 +104,7 @@ export default function CollectionPage() {
 
       return layoutData;
     } catch (error) {
-      console.error("Error fetching layout data:", error);
+      console.log("Error fetching layout data:", error);
       throw error;
     }
   };
@@ -126,7 +126,7 @@ export default function CollectionPage() {
       const data = await response.json();
       setCollectionData(data);
     } catch (error) {
-      console.error("Error fetching collection data:", error);
+      console.log("Error fetching collection data:", error);
     }
   };
 
@@ -166,7 +166,7 @@ export default function CollectionPage() {
 
         document.title = collectionData?.name || "مجموعه محصولات";
       } catch (error) {
-        console.error("Error loading page data:", error);
+        console.log("Error loading page data:", error);
         setError("خطا در بارگذاری صفحه");
       } finally {
         setIsLoading(false);

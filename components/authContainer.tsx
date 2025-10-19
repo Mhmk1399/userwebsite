@@ -134,7 +134,7 @@ const AuthContainer: React.FC = () => {
             return;
           }
         } catch (error) {
-          console.error("Phone check error:", error);
+          console.log("Phone check error:", error);
         }
       }
 

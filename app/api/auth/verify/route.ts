@@ -44,7 +44,7 @@ export async function POST(request: Request) {
     });
 
   } catch (error) {
-    console.error('Token verification error:', error);
+    console.log('Token verification error:', error);
     return NextResponse.json(
       { valid: false, message: 'Token verification failed' },
       { status: 500 }
