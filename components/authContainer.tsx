@@ -209,11 +209,11 @@ const AuthContainer: React.FC = () => {
             }
 
             toast.success("ثبت نام با موفقیت انجام شد");
+            const form = event.currentTarget;
 
             setTimeout(() => {
               setIsLogin(true);
               setStep("phone");
-              const form = event.currentTarget;
               form.reset();
             }, 1500);
           } else {

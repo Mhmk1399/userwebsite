@@ -79,7 +79,7 @@ export default function CartPage() {
   };
 
   const calculateTotal = () =>
-    cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    cartItems.reduce((sum, item) => sum + item.price * 1000 * item.quantity, 0);
 
   const initiatePayment = async () => {
     setPaymentLoading(true);
@@ -409,7 +409,7 @@ export default function CartPage() {
                             <p className="text-gray-600 text-xs sm:text-sm">
                               جمع:{" "}
                               <span className="font-bold text-gray-800">
-                                {(item.price * item.quantity).toLocaleString()}{" "}
+                                {(item.price * 1000 * item.quantity).toLocaleString()}{" "}
                                 تومان
                               </span>
                             </p>
