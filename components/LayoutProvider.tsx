@@ -42,7 +42,7 @@ const LayoutProvider: React.FC<LayoutProviderProps> = ({ children }) => {
 
       return layoutData;
     } catch (error) {
-      console.error("Error fetching layout data:", error);
+      console.log("Error fetching layout data:", error);
       return null;
     }
   };

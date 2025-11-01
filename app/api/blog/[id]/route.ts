@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import connect from "@/lib/data";
 import Blog from "@/models/blogs";
+import { getStoreId } from "@/utils/getStoreId";
 
 export async function GET(request: NextRequest) {
   await connect();
@@ -9,7 +10,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const storeId = process.env.STOREID;
+     const storeId = getStoreId(request);
     if (!storeId) {
       return NextResponse.json({ error: "Storeid is empty" }, { status: 401 });
     }

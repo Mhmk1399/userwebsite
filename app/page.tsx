@@ -279,7 +279,7 @@ export default function HomePage() {
       const layoutData = await response.json();
       return layoutData;
     } catch (error) {
-      console.error("Error fetching layout data:", error);
+      console.log("Error fetching layout data:", error);
       throw error;
     }
   };
@@ -323,7 +323,7 @@ export default function HomePage() {
           setBlogData(extractedBlogData);
         }
       } catch (error) {
-        console.error("Error loading home page data:", error);
+        console.log("Error loading home page data:", error);
         setError("Failed to load home page content");
       } finally {
         setIsLoading(false);

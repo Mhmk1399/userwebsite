@@ -1183,7 +1183,6 @@ export interface ProductCardSetting {
   priceColor?: string;
   btnBackgroundColor?: string;
   btnColor?: string;
- 
 }
 
 // these new interfaces for DetailPage
@@ -1873,4 +1872,6 @@ export interface CartItem {
   productId: string;
   quantity: number;
   price: number;
+  colorCode?: string;
+  properties?: string[];
 }

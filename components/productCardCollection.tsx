@@ -220,7 +220,7 @@ const ProductCardCollection: React.FC<ProductCardProps> = ({
         await store.put(cartItem);
         toast.success("محصول به سبد خرید اضافه شد");
       } catch (error) {
-        console.error("Error adding to cart:", error);
+        console.log("Error adding to cart:", error);
         toast.error("خطا در افزودن به سبد خرید");
       } finally {
         setIsAddingToCart(false);

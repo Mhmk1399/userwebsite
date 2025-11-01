@@ -1,15 +1,16 @@
 // app/api/store/route.ts
 import connect from "@/lib/data";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import Products from "../../../models/product";
 import Category from "../../../models/category";
 import mongoose from "mongoose";
+import { getStoreId } from "@/utils/getStoreId";
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
     await connect();
 
-    const storeId = process.env.STOREID;
+    const storeId = getStoreId(request);
     if (!storeId) {
       return NextResponse.json({ error: "Storeid is empty" }, { status: 401 });
     }
@@ -147,11 +148,14 @@ export async function GET(request: Request) {
           images: 1,
           colors: 1,
           sizes: 1,
+          discount: 1,
+          status: 1,
+          inventory: 1,
+          properties: 1,
           category: "$categoryData",
           createdAt: 1,
           updatedAt: 1,
           storeId: 1,
-          // Include other fields you need
         },
       }
     );
@@ -168,7 +172,7 @@ export async function GET(request: Request) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.log("Error fetching products:", error);
     return NextResponse.json(
       { error: "Error fetching products" },
       { status: 500 }

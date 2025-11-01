@@ -12,6 +12,20 @@ interface CartItem {
   price: number;
   quantity: number;
   image: string;
+  colorCode: string;
+  properties: { name: string; value: string }[];
+}
+
+interface ProductColor {
+  code: string;
+  quantity: string;
+  _id?: string;
+}
+
+interface ProductProperty {
+  name: string;
+  value: string;
+  _id?: string;
 }
 
 const defaultProperties = [
@@ -100,7 +114,7 @@ const SectionDetailPage = styled.div<{
     border-radius: ${(props) => props.$data?.setting?.boxRadius || 10}px;
   }
   .property-key {
-    color: ${(props) => props.$data?.setting?.propertyKeyColor || "#e4e4e4"};
+    color: ${(props) => props.$data?.setting?.propertyKeyColor || "#000000"};
   }
   .property-value {
     color: ${(props) => props.$data?.setting?.propertyValueColor || "#000000"};
@@ -171,6 +185,12 @@ export default function DetailPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [data, setData] = useState<Record<string, unknown> | null>(null);
   const [layoutLoading, setLayoutLoading] = useState<boolean>(true);
+  const [selectedColor, setSelectedColor] = useState<string>("");
+  const [selectedProperties, setSelectedProperties] = useState<{
+    [key: string]: string;
+  }>({});
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [modalImageIndex, setModalImageIndex] = useState(0);
 
   const params = useParams();
   const productId = params.id as string;
@@ -204,7 +224,7 @@ export default function DetailPage() {
       // }
       return layoutData;
     } catch (error) {
-      console.error("Error fetching layout data:", error);
+      console.log("Error fetching layout data:", error);
       setLayoutLoading(false);
     }
   };
@@ -227,6 +247,10 @@ export default function DetailPage() {
         if (productData && productData.images) {
           setProduct(productData);
           setSelectedImage(productData?.images[0]?.imageSrc || "");
+          // Set default color if available
+          if (productData.colors && productData.colors.length > 0) {
+            setSelectedColor(productData.colors[0].code);
+          }
         }
       } catch (error) {
         console.log("Error fetching product details:", error);
@@ -288,6 +312,12 @@ export default function DetailPage() {
       return;
     }
 
+    // Validate color selection
+    if (product.colors && product.colors.length > 0 && !selectedColor) {
+      toast.error("لطفاً رنگ مورد نظر را انتخاب کنید");
+      return;
+    }
+
     setIsAddingToCart(true);
 
     try {
@@ -302,25 +332,41 @@ export default function DetailPage() {
         return;
       }
 
+      // Create unique key for cart item based on product, color, and properties
+      const cartKey = `${productId}_${selectedColor}_${JSON.stringify(
+        selectedProperties
+      )}`;
+
       // Check if item already exists
       const existingItem = await new Promise<CartItem | null>((resolve) => {
-        const request = store.get(productId);
+        const request = store.get(cartKey);
         request.onsuccess = () => resolve(request.result);
         request.onerror = () => resolve(null);
       });
 
+      // Calculate final price with discount
+      const originalPrice = parseFloat(product.price?.replace(/[^0-9.-]+/g, "") || "0");
+      const finalPrice = product.discount && Number(product.discount) > 0 
+        ? originalPrice * (1 - Number(product.discount) / 100)
+        : originalPrice;
+
       const cartItem = {
-        id: productId,
+        id: cartKey,
         name: product.name || "Unnamed Product",
-        price: parseFloat(product.price?.replace(/[^0-9.-]+/g, "") || "0"),
+        price: finalPrice,
         quantity: existingItem ? existingItem.quantity + 1 : 1,
         image: selectedImage || "/assets/images/pro2.jpg",
+        colorCode: selectedColor,
+        properties: Object.entries(selectedProperties).map(([name, value]) => ({
+          name,
+          value,
+        })),
       };
 
       await store.put(cartItem);
       toast.success("محصول به سبد خرید اضافه شد");
     } catch (error) {
-      console.error("Error adding to cart:", error);
+      console.log("Error adding to cart:", error);
       toast.error("خطا در افزودن به سبد خرید");
     } finally {
       setIsAddingToCart(false);
@@ -376,15 +422,17 @@ export default function DetailPage() {
 
           <div className="relative">
             <div
-              className={`flex gap-1 py-2 overflow-x-auto ${
+              className={`flex gap-1 py-2 px-1 overflow-x-auto ${
                 isMobile ? "min-w-full" : " overflow-x-auto"
               }`}
             >
               {Array.isArray(product.images) && product.images.length > 0
-                ? product.images.map((image: ProductImage, index: number) => (
-                    <div
-                      key={index}
-                      className={`relative min-w-[80px] h-[80px] cursor-pointer 
+                ? product.images
+                    .slice(0, isMobile ? product.images.length : 3)
+                    .map((image: ProductImage, index: number) => (
+                      <div
+                        key={index}
+                        className={`relative min-w-[80px] h-[80px] cursor-pointer 
               transition-all duration-300 ease-in-out hover:shadow-lg 
               ${
                 selectedImage === image.imageSrc
@@ -392,25 +440,38 @@ export default function DetailPage() {
                   : "border border-gray-200"
               }
               rounded-lg overflow-hidden`}
-                      onClick={() => setSelectedImage(image.imageSrc)}
-                    >
-                      <Image
-                        src={image.imageSrc}
-                        alt={image.imageAlt}
-                        fill
-                        className="object-cover hover:opacity-90"
-                      />
-                    </div>
-                  ))
-                : // Default static images
-                  [
-                    "/assets/images/pro1.jpg",
-                    "/assets/images/pro2.jpg",
-                    "/assets/images/pro3.jpg",
-                  ].map((defaultImage, index) => (
-                    <div
-                      key={index}
-                      className={`relative min-w-[94px] h-[80px] cursor-pointer 
+                        onClick={() => setSelectedImage(image.imageSrc)}
+                      >
+                        <Image
+                          src={image.imageSrc}
+                          alt={image.imageAlt}
+                          fill
+                          className="object-cover hover:opacity-90"
+                        />
+                      </div>
+                    ))
+                : null}
+              {!isMobile &&
+                Array.isArray(product.images) &&
+                product.images.length > 3 && (
+                  <button
+                    onClick={() => setShowImageModal(true)}
+                    className="min-w-[80px] h-[80px] bg-gray-100 border border-gray-300 rounded-lg flex flex-col items-center justify-center text-xs text-gray-600 hover:bg-gray-200 transition-colors"
+                  >
+                     <span>مشاهده همه</span>
+                  </button>
+                )}
+              {(!Array.isArray(product.images) ||
+                product.images.length === 0) &&
+                // Default static images
+                [
+                  "/assets/images/pro1.jpg",
+                  "/assets/images/pro2.jpg",
+                  "/assets/images/pro3.jpg",
+                ].map((defaultImage, index) => (
+                  <div
+                    key={index}
+                    className={`relative min-w-[94px] h-[80px] cursor-pointer 
               transition-all duration-300 ease-in-out hover:shadow-lg
               ${
                 selectedImage === defaultImage
@@ -418,28 +479,101 @@ export default function DetailPage() {
                   : "border border-gray-200"
               }
               rounded-lg overflow-hidden`}
-                      onClick={() => setSelectedImage(defaultImage)}
-                    >
-                      <Image
-                        src={defaultImage}
-                        alt={`Default product image ${index + 1}`}
-                        fill
-                        className="object-cover hover:opacity-90"
-                      />
-                    </div>
-                  ))}
+                    onClick={() => setSelectedImage(defaultImage)}
+                  >
+                    <Image
+                      src={defaultImage}
+                      alt={`Default product image ${index + 1}`}
+                      fill
+                      className="object-cover hover:opacity-90"
+                    />
+                  </div>
+                ))}
             </div>
           </div>
         </div>
 
         {/* Product Info Section */}
-        <div className={`space-y-8 lg:-mr-64 ${isMobile ? " " : ""}`}>
+        <div className={`space-y-8 lg:-mr-72 ${isMobile ? " " : ""}`}>
           <h1 className="product-name">{product.name || "نام محصول"}</h1>
-          <p className="product-description text-wrap">
+          <p className="product-description max-w-xl text-wrap">
             {product.description ||
               "توضیحات محصول در ابن قسمت نمایش داده می شود."}
           </p>
-          <div className=" max-w-sm rounded-lg p-4 ">
+
+          {/* Colors Section */}
+          {product.colors && product.colors.length > 0 && (
+            <div className="max-w-sm rounded-lg p-4 relative z-50">
+              <div className="text-sm font-bold mb-3">انتخاب رنگ</div>
+              <div className="flex flex-wrap gap-2">
+                {product.colors.map((color: ProductColor, index: number) => {
+                  const isAvailable = Number(color.quantity) > 0;
+                  return (
+                    <button
+                      key={index}
+                      onClick={() => setSelectedColor(color.code)}
+                      disabled={!isAvailable}
+                      className={`w-10 h-10 rounded-full border-2 transition-all relative ${
+                        selectedColor === color.code
+                          ? "border-blue-500 scale-110 ring-2 ring-blue-200"
+                          : "border-gray-300"
+                      } ${
+                        !isAvailable
+                          ? "opacity-30 cursor-not-allowed"
+                          : "hover:scale-105"
+                      }`}
+                      style={{ backgroundColor: color.code }}
+                      title={`رنگ ${color.code} - موجودی: ${color.quantity}`}
+                    >
+                      {!isAvailable && (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="w-6 h-0.5 bg-red-500 rotate-45"></div>
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Properties Section */}
+          {Array.isArray(product.properties) &&
+            product.properties.length > 0 && (
+              <div className="max-w-sm rounded-lg p-4 relative z-50">
+                <div className="text-sm font-bold mb-3">انتخاب ویژگی‌ها</div>
+                <div className="grid grid-cols-3 gap-1">
+                  {product.properties.map(
+                    (prop: ProductProperty, index: number) => {
+                      const isSelected =
+                        selectedProperties[prop.name] === prop.value;
+                      return (
+                        <button
+                          key={index}
+                          onClick={() =>
+                            setSelectedProperties((prev) => ({
+                              ...prev,
+                              [prop.name]: prop.value,
+                            }))
+                          }
+                          className={`w-full text-right px-3 py-2 border rounded-lg text-sm transition-all ${
+                            isSelected
+                              ? "border-blue-500 bg-blue-50 text-blue-700"
+                              : "border-gray-300 hover:border-gray-400"
+                          }`}
+                        >
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-600">{prop.name}</span>
+                            <span className="font-medium">{prop.value}</span>
+                          </div>
+                        </button>
+                      );
+                    }
+                  )}
+                </div>
+              </div>
+            )}
+          <div className=" max-w-xl rounded-lg p-4 ">
             <div className="text-sm font-bold mb-3">ویژگی‌های محصول</div>
             <div className=" flex flex-wrap gap-2">
               {(Array.isArray(product.properties) &&
@@ -449,10 +583,10 @@ export default function DetailPage() {
               ).map((prop, index) => (
                 <div
                   key={index}
-                  className="flex flex-col p-2 rounded-lg group relative property-bg"
+                  className="flex  p-2 rounded-lg group relative property-bg"
                 >
-                  <span className="text-gray-500 text-sm ml-2 property-key">
-                    {prop.key}:
+                  <span className="  text-sm ml-2 property-key">
+                    {prop.name}:
                   </span>
                   <span className="text-sm property-value">{prop.value}</span>
                 </div>
@@ -462,31 +596,40 @@ export default function DetailPage() {
 
           <div
             className={` ${
-              isMobile ? "   " : "lg:absolute lg:left-8 lg:-top-2 lg:w-[300px]"
+              isMobile
+                ? "   "
+                : "lg:absolute lg:left-8 lg:-top-2 lg:w-[300px] lg:z-10 lg:pointer-events-none"
             } `}
           >
-            <div className="bg-white bg-box rounded-xl shadow-lg p-6 space-y-3">
+            <div className="bg-white bg-box rounded-xl shadow-lg p-6 space-y-3 lg:pointer-events-auto">
               {/* Price and Discount Section */}
               <div className="flex flex-col gap-2">
-                <div className="flex items-center justify-between">
-                  <span className="product-price text-xl font-bold">
-                    {Number(product.price).toLocaleString("fa-IR") || "80,000"}{" "}
-                    تومان
-                  </span>
-                  {product.discount && (
-                    <span className="bg-red-100 text-red-600 px-3 text-nowrap py-1 rounded-full text-sm">
-                      {product.discount}% تخفیف
+                {product.discount && Number(product.discount) > 0 ? (
+                  <>
+                    <div className="flex items-center justify-between">
+                      <span className="product-price text-xl font-bold text-green-600">
+                        {(
+                          Number(product.price) *
+                          (1 - Number(product.discount) / 100)
+                        ).toLocaleString("fa-IR")}{" "}
+                        تومان
+                      </span>
+                      <span className="bg-red-100 text-red-600 px-3 text-nowrap py-1 rounded-full text-sm">
+                        {Number(product.discount).toLocaleString("fa-IR")}% تخفیف
+                      </span>
+                    </div>
+                    <span className="text-red-400 line-through text-sm">
+                      {Number(product.price).toLocaleString("fa-IR")} تومان
                     </span>
-                  )}
-                </div>
-                {product.discount && (
-                  <span className="text-red-300 line-through text-sm">
-                    {(
-                      Number(product.price?.replace(/,/g, "")) /
-                      (1 - Number(product.discount) / 100)
-                    ).toLocaleString("fa-IR")}{" "}
-                    تومان
-                  </span>
+                  </>
+                ) : (
+                  <div className="flex items-center justify-between">
+                    <span className="product-price text-xl font-bold">
+                      {Number(product.price).toLocaleString("fa-IR") ||
+                        "80,000"}{" "}
+                      تومان
+                    </span>
+                  </div>
                 )}
               </div>
 
@@ -530,24 +673,53 @@ export default function DetailPage() {
               <div className="flex items-center product-status gap-2">
                 <div
                   className={`w-3 h-3 rounded-full ${
-                    product.inventory && Number(product.inventory) > 0
+                    product.status === "available"
                       ? "bg-green-500"
                       : "bg-red-500"
                   }`}
                 ></div>
                 <span className=" product-status">
-                  {product.inventory && Number(product.inventory) > 0
+                  {product.status === "available"
                     ? "موجود در انبار"
                     : "ناموجود"}
                 </span>
               </div>
 
+              {/* Selected Options Display */}
+              {(selectedColor ||
+                Object.keys(selectedProperties).length > 0) && (
+                <div className="space-y-2 text-sm border-t pt-3">
+                  <div className="font-medium">انتخاب شما:</div>
+                  {selectedColor && (
+                    <div className="flex items-center gap-2">
+                      <span>رنگ:</span>
+                      <div
+                        className="w-4 h-4 rounded-full border"
+                        style={{ backgroundColor: selectedColor }}
+                      />
+                      <span>{selectedColor}</span>
+                    </div>
+                  )}
+                  {Object.entries(selectedProperties).map(([name, value]) => (
+                    <div key={name} className="flex justify-between">
+                      <span>{name}:</span>
+                      <span>{value}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
               {/* Action Buttons */}
               <div className="space-y-3">
                 <button
                   onClick={addToCart}
-                  disabled={isAddingToCart}
-                  className="w-full px-6 py-3 add-to-cart-button rounded-lg font-medium"
+                  disabled={
+                    isAddingToCart ||
+                    (product.colors &&
+                      product.colors.length > 0 &&
+                      !selectedColor)
+                  }
+                  className="w-full px-6 py-3 add-to-cart-button rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isAddingToCart ? "در حال افزودن..." : "افزودن به سبد خرید"}
                 </button>
@@ -564,6 +736,123 @@ export default function DetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Image Modal Slider */}
+      {showImageModal && Array.isArray(product.images) && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-[9999]"
+          onClick={() => setShowImageModal(false)}
+        >
+          <div
+            className="relative w-full max-w-4xl h-full flex items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setShowImageModal(false)}
+              className="absolute top-4 right-4 text-white hover:text-gray-300 z-10"
+            >
+              <svg
+                className="w-8 h-8"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+
+            {/* Main Image */}
+            <div className="relative w-full h-[70vh] mx-16">
+              <Image
+                src={product.images[modalImageIndex]?.imageSrc || ""}
+                alt={product.images[modalImageIndex]?.imageAlt || ""}
+                fill
+                className="object-contain"
+              />
+            </div>
+
+            {/* Navigation Buttons */}
+            <button
+              onClick={() =>
+                setModalImageIndex((prev) =>
+                  prev > 0 ? prev - 1 : product.images.length - 1
+                )
+              }
+              className="absolute left-4 top-1/2 -translate-y-1/2 bg-white bg-opacity-20 hover:bg-opacity-30 text-white p-2 rounded-full transition-all"
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+            </button>
+
+            <button
+              onClick={() =>
+                setModalImageIndex((prev) =>
+                  prev < product.images.length - 1 ? prev + 1 : 0
+                )
+              }
+              className="absolute right-4 top-1/2 -translate-y-1/2 bg-white bg-opacity-20 hover:bg-opacity-30 text-white p-2 rounded-full transition-all"
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </button>
+
+            {/* Image Counter */}
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full text-sm">
+              {modalImageIndex + 1} / {product.images.length}
+            </div>
+
+            {/* Thumbnail Strip */}
+            <div className="absolute bottom-16 left-1/2 -translate-x-1/2 flex gap-2 max-w-md overflow-x-auto">
+              {product.images.map((image: ProductImage, index: number) => (
+                <button
+                  key={index}
+                  onClick={() => setModalImageIndex(index)}
+                  className={`relative w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${
+                    modalImageIndex === index
+                      ? "border-white"
+                      : "border-transparent opacity-60"
+                  }`}
+                >
+                  <Image
+                    src={image.imageSrc}
+                    alt={image.imageAlt}
+                    fill
+                    className="object-cover"
+                  />
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </SectionDetailPage>
   );
 }

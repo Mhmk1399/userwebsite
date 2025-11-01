@@ -12,13 +12,14 @@ interface CartItem {
   price: number;
   quantity: number;
   image: string;
+  colorCode?: string;
+  properties?: { name: string; value: string }[];
 }
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [paymentLoading, setPaymentLoading] = useState(false);
-  const [userName, setUserName] = useState<string | null>(null);
   const [shippingAddress, setShippingAddress] = useState({
     street: "",
     city: "",
@@ -34,8 +35,7 @@ export default function CartPage() {
 
   useEffect(() => {
     // Only access localStorage on client side
-    if (typeof window !== 'undefined') {
-      setUserName(localStorage.getItem("userName"));
+    if (typeof window !== "undefined") {
       loadCartItems();
     }
   }, []);
@@ -50,7 +50,7 @@ export default function CartPage() {
       setLoading(false);
     };
     request.onerror = () => {
-      console.error("Failed to load cart items");
+      console.log("Failed to load cart items");
       setLoading(false);
     };
     setLoading(false);
@@ -79,17 +79,17 @@ export default function CartPage() {
   };
 
   const calculateTotal = () =>
-    cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    cartItems.reduce((sum, item) => sum + item.price * 1000 * item.quantity, 0);
 
   const initiatePayment = async () => {
     setPaymentLoading(true);
-    
+
     // Check if we're on client side
-    if (typeof window === 'undefined') {
+    if (typeof window === "undefined") {
       setPaymentLoading(false);
       return;
     }
-    
+
     const token = localStorage.getItem("tokenUser");
 
     if (!token) {
@@ -110,6 +110,9 @@ export default function CartPage() {
             productId: item.id,
             quantity: item.quantity,
             price: item.price,
+            ...(item.colorCode && { colorCode: item.colorCode }),
+            ...(item.properties &&
+              item.properties.length > 0 && { properties: item.properties }),
           })),
           shippingAddress: {
             street: shippingAddress.street,
@@ -120,28 +123,27 @@ export default function CartPage() {
         }),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.log(
-          errorData.message || `HTTP error! status: ${response.status}`
-        );
-      }
-
       const result = await response.json();
+
+      if (!response.ok) {
+        console.log(result.message || `HTTP error! status: ${response.status}`);
+        toast.error(result.message || "درخواست پرداخت ناموفق بود");
+        return;
+      }
       console.log("Payment response:", result);
 
       if (result.success && result.paymentUrl) {
-        if (typeof window !== 'undefined') {
+        if (typeof window !== "undefined") {
           localStorage.setItem("paymentAuthority", result.authority);
           console.log("Redirecting to:", result.paymentUrl);
           window.location.href = result.paymentUrl;
         }
       } else {
-        console.error("Payment failed:", result);
+        console.log("Payment failed:", result);
         toast.error(result.message || "درخواست پرداخت ناموفق بود");
       }
     } catch (error) {
-      console.error("Payment initiation error:", error);
+      console.log("Payment initiation error:", error);
       toast.error(
         error instanceof Error ? error.message : "خطا در ایجاد درخواست پرداخت"
       );
@@ -157,33 +159,33 @@ export default function CartPage() {
       state: "",
       postalCode: "",
     };
-    
+
     if (!shippingAddress.street.trim()) {
       errors.street = "آدرس خیابان الزامی است";
     } else if (shippingAddress.street.trim().length < 10) {
       errors.street = "آدرس باید حداقل ۱۰ کاراکتر باشد";
     }
-    
+
     if (!shippingAddress.city.trim()) {
       errors.city = "نام شهر الزامی است";
     } else if (shippingAddress.city.trim().length < 2) {
       errors.city = "نام شهر باید حداقل ۲ کاراکتر باشد";
     }
-    
+
     if (!shippingAddress.state.trim()) {
       errors.state = "نام استان الزامی است";
     } else if (shippingAddress.state.trim().length < 2) {
       errors.state = "نام استان باید حداقل ۲ کاراکتر باشد";
     }
-    
+
     if (!shippingAddress.postalCode.trim()) {
       errors.postalCode = "کد پستی الزامی است";
     } else if (!/^\d{10}$/.test(shippingAddress.postalCode.trim())) {
       errors.postalCode = "کد پستی باید ۱۰ رقم باشد";
     }
-    
+
     setFormErrors(errors);
-    return !Object.values(errors).some(error => error !== "");
+    return !Object.values(errors).some((error) => error !== "");
   };
 
   const submitOrder = (
@@ -207,7 +209,7 @@ export default function CartPage() {
   return (
     <div
       dir="rtl"
-      className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 px-3 sm:px-6 lg:px-8 pt-24 sm:pt-32 lg:pt-36 pb-10 relative overflow-hidden"
+      className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 px-3 sm:px-6 lg:px-8 pt-4   lg:pt-4 pb-10 relative overflow-hidden"
     >
       {/* Background Decorations */}
       <div className="absolute top-0 left-0 w-72 h-72 sm:w-96 sm:h-96 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
@@ -237,8 +239,8 @@ export default function CartPage() {
           transition={{ duration: 0.6 }}
           className="text-center mb-8 sm:mb-12"
         >
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-3 sm:mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 drop-shadow-sm px-2">
-            سبد خرید {userName || ""}
+          <h1 className="text-3xl sm:text-4xl md:text-5xl py-2 font-black  bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 drop-shadow-sm px-2">
+            سبد خرید
           </h1>
           <div className="flex items-center justify-center gap-2 text-gray-600">
             <div className="h-1 w-8 sm:w-12 bg-gradient-to-r from-transparent to-purple-400 rounded-full"></div>
@@ -407,7 +409,7 @@ export default function CartPage() {
                             <p className="text-gray-600 text-xs sm:text-sm">
                               جمع:{" "}
                               <span className="font-bold text-gray-800">
-                                {(item.price * item.quantity).toLocaleString()}{" "}
+                                {(item.price * 1000 * item.quantity).toLocaleString()}{" "}
                                 تومان
                               </span>
                             </p>
@@ -526,12 +528,14 @@ export default function CartPage() {
                           street: e.target.value,
                         }));
                         if (formErrors.street) {
-                          setFormErrors(prev => ({ ...prev, street: "" }));
+                          setFormErrors((prev) => ({ ...prev, street: "" }));
                         }
                       }}
                     />
                     {formErrors.street && (
-                      <p className="text-red-500 text-xs mt-1">{formErrors.street}</p>
+                      <p className="text-red-500 text-xs mt-1">
+                        {formErrors.street}
+                      </p>
                     )}
                   </div>
 
@@ -554,12 +558,14 @@ export default function CartPage() {
                           city: e.target.value,
                         }));
                         if (formErrors.city) {
-                          setFormErrors(prev => ({ ...prev, city: "" }));
+                          setFormErrors((prev) => ({ ...prev, city: "" }));
                         }
                       }}
                     />
                     {formErrors.city && (
-                      <p className="text-red-500 text-xs mt-1">{formErrors.city}</p>
+                      <p className="text-red-500 text-xs mt-1">
+                        {formErrors.city}
+                      </p>
                     )}
                   </div>
 
@@ -582,12 +588,14 @@ export default function CartPage() {
                           state: e.target.value,
                         }));
                         if (formErrors.state) {
-                          setFormErrors(prev => ({ ...prev, state: "" }));
+                          setFormErrors((prev) => ({ ...prev, state: "" }));
                         }
                       }}
                     />
                     {formErrors.state && (
-                      <p className="text-red-500 text-xs mt-1">{formErrors.state}</p>
+                      <p className="text-red-500 text-xs mt-1">
+                        {formErrors.state}
+                      </p>
                     )}
                   </div>
 
@@ -612,12 +620,17 @@ export default function CartPage() {
                           postalCode: value,
                         }));
                         if (formErrors.postalCode) {
-                          setFormErrors(prev => ({ ...prev, postalCode: "" }));
+                          setFormErrors((prev) => ({
+                            ...prev,
+                            postalCode: "",
+                          }));
                         }
                       }}
                     />
                     {formErrors.postalCode && (
-                      <p className="text-red-500 text-xs mt-1">{formErrors.postalCode}</p>
+                      <p className="text-red-500 text-xs mt-1">
+                        {formErrors.postalCode}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -760,7 +773,7 @@ export default function CartPage() {
                           پرداخت و ثبت سفارش
                         </span>
                         <svg
-                          className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform hidden sm:block"
+                          className="w-4 h-4 rotate-180 sm:w-5 sm:h-5 group-hover:-translate-x-1 transition-transform hidden sm:block"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"

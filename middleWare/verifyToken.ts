@@ -30,11 +30,11 @@ export const verifyToken = (token: string): DecodedToken | null => {
     return decoded;
   } catch (error) {
     if (error instanceof Jwt.TokenExpiredError) {
-      console.error("Token expired");
+      console.log("Token expired");
     } else if (error instanceof Jwt.JsonWebTokenError) {
-      console.error("Invalid token");
+      console.log("Invalid token");
     } else {
-      console.error("Token verification failed:", error);
+      console.log("Token verification failed:", error);
     }
     return null;
   }

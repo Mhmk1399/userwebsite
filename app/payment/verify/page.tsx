@@ -27,12 +27,7 @@ function PaymentVerifyContent() {
   }, [searchParams]);
 
   const verifyAndProcessOrder = async (authority: string) => {
-    console.log("=== CLIENT: Starting payment verification ===");
-    console.log("Authority:", authority);
-    
     try {
-      console.log("CLIENT: Sending verification request...");
-      // Verify payment with server-stored order data
       const verifyResponse = await fetch("/api/payment/verify", {
         method: "POST",
         headers: {
@@ -43,29 +38,26 @@ function PaymentVerifyContent() {
         }),
       });
 
-      console.log("CLIENT: Response status:", verifyResponse.status);
-      console.log("CLIENT: Response headers:", Object.fromEntries(verifyResponse.headers.entries()));
-
+      const responseText = await verifyResponse.text();
+      
       if (!verifyResponse.ok) {
-        const errorText = await verifyResponse.text();
-        console.error("CLIENT: Error response body:", errorText);
-        console.log(`HTTP error! status: ${verifyResponse.status}`);
+        setStatus("failed");
+        return;
       }
 
-      const responseText = await verifyResponse.text();
-      console.log("CLIENT: Response text:", responseText);
       let verifyResult;
       
       try {
         verifyResult = JSON.parse(responseText);
-        console.log("CLIENT: Parsed response:", verifyResult);
       } catch {
-        console.error("CLIENT: Failed to parse response as JSON:", responseText);
-        console.log("Server returned invalid response");
+        setStatus("failed");
+        return;
       }
 
       if (!verifyResult.success) {
-        console.log(verifyResult.message || "Payment verification failed");
+        setStatus("failed");
+        toast.error(verifyResult.message || "پرداخت تایید نشد");
+        return;
       }
 
       // Payment verified and order created successfully
@@ -81,7 +73,6 @@ function PaymentVerifyContent() {
       setStatus("success");
       toast.success("پرداخت با موفقیت انجام شد");
     } catch (error) {
-      console.error("Order processing error:", error);
       setStatus("failed");
       toast.error(error instanceof Error ? error.message : "خطا در پردازش سفارش");
     }

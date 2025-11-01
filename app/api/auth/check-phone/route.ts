@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connect from '@/lib/data';
 import StoreUsers from '@/models/storesUsers';
+import { getStoreId } from '@/utils/getStoreId';
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,7 +13,7 @@ export async function POST(request: NextRequest) {
 
     await connect();
 
-    const storeId = process.env.STOREID;
+     const storeId = getStoreId(request);
     const existingUser = await StoreUsers.findOne({ phone: phoneNumber, storeId });
 
     return NextResponse.json({ 
@@ -20,7 +21,7 @@ export async function POST(request: NextRequest) {
       message: existingUser ? 'User exists' : 'User not found'
     });
   } catch (error) {
-    console.error('Check phone error:', error);
+    console.log('Check phone error:', error);
     return NextResponse.json({ message: 'Server error' }, { status: 500 });
   }
 }
