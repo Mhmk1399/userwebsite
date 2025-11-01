@@ -4,7 +4,7 @@ import { getStoreId } from "@/utils/getStoreId";
 
 export async function GET(request:NextRequest) {
   try {
-     const storeId = getStoreId(request);
+     const storeId = getStoreId();
     console.log(storeId, "ssssssssssssss");
     const VPS_URL = process.env.VPS_URL;
 

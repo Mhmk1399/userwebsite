@@ -6,7 +6,7 @@ export async function POST(request: NextRequest) {
   try {
     await connect();
     const { phoneNumber } = await request.json();
-    const storeId = getStoreId(request);
+    const storeId = getStoreId();
 
     const newsletter = new NewsLetter({ storeId, phoneNumber });
     await newsletter.save();

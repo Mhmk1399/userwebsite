@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
     if (!userId) {
       return NextResponse.json({ message: "شناسه کاربر یافت نشد" }, { status: 401 });
     }
-     const storeId = getStoreId(request);
+     const storeId = getStoreId();
  
     const { subject, content, priority } = await request.json();
 

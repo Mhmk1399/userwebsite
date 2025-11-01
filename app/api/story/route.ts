@@ -12,7 +12,7 @@ export async function GET(request:NextRequest) {
       return NextResponse.json({ error: "Failed to connect to database" });
     }
 
-    const storeId = getStoreId(request);
+    const storeId = getStoreId();
     if (!storeId) {
       return NextResponse.json({ error: "Storeid is empty" }, { status: 401 });
     }

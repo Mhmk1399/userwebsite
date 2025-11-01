@@ -7,7 +7,7 @@ import { getStoreId } from "@/utils/getStoreId";
 
 export async function GET(request: NextRequest) {
   await connect();
-  const storeId = getStoreId(request);
+  const storeId = getStoreId();
   console.log("URL:", request.url);
   console.log("Hostname:", new URL(request.url).hostname);
   console.log("storeId extracted:", storeId);

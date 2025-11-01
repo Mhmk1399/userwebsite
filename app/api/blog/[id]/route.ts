@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-     const storeId = getStoreId(request);
+     const storeId = getStoreId();
     if (!storeId) {
       return NextResponse.json({ error: "Storeid is empty" }, { status: 401 });
     }

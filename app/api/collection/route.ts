@@ -8,7 +8,7 @@ import { getStoreId } from "@/utils/getStoreId";
 export async function GET(req: NextRequest) {
   await connect();
   const collectionId = req.headers.get("CollectionId");
-  const storeId = getStoreId(req);
+  const storeId = getStoreId();
 
   try {
     // Find collection by ID and storeId

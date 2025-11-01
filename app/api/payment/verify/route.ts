@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
 
     if (result.data?.code === 100 || result.data?.code === 101) {
       await connect();
-      const storeId = getStoreId(request);
+      const storeId = getStoreId();
 
       // Extract only the fields needed for Order model
       const orderData = {

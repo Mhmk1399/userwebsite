@@ -6,7 +6,7 @@ import { getStoreId } from "@/utils/getStoreId";
 export const POST = async (req: NextRequest) => {
   await connect();
   try {
-     const storeId = getStoreId(req);
+     const storeId = getStoreId();
     if (!storeId) {
       return NextResponse.json({ error: "Storeid is empty" }, { status: 401 });
     }

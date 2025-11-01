@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
 
     await connect();
 
-     const storeId = getStoreId(request);
+     const storeId = getStoreId();
     const existingUser = await StoreUsers.findOne({ phone: phoneNumber, storeId });
 
     return NextResponse.json({ 

@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
     if (!connect) {
       return NextResponse.json({ error: "Failed to connect to database" });
     }
-        const storeId = getStoreId(request);
+        const storeId = getStoreId();
 
           console.log("storeId read from subdomain", storeId);
     if (!storeId) {

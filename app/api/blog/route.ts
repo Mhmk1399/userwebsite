@@ -16,7 +16,7 @@ export const GET = async (request: NextRequest) => {
     const limit = parseInt(searchParams.get('limit') || '6');
     const skip = (page - 1) * limit;
 
-     const storeId = getStoreId(request);
+     const storeId = getStoreId();
     if (!storeId) {
       return NextResponse.json({ error: "Storeid is empty" }, { status: 401 });
     }

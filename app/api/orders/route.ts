@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
   }
   const decodedToken = jwt.decode(token) as CustomJwtPayload;
   try {
-    const storeId = getStoreId(req);
+    const storeId = getStoreId();
     const orderData = { ...body, storeId, userId: decodedToken.userId };
     console.log("Order Data:", orderData);
     const order = await Order.create(orderData);
