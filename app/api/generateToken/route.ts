@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
+import {  NextResponse } from "next/server";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { getStoreId } from "@/utils/getStoreId";
 
-export async function GET(request:NextRequest) {
+export async function GET() {
   try {
      const storeId = getStoreId();
     console.log(storeId, "ssssssssssssss");

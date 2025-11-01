@@ -1,9 +1,9 @@
 import connect from "@/lib/data";
-import { NextRequest, NextResponse } from "next/server";
+import {  NextResponse } from "next/server";
 import UserInfo from "@/models/userInfo";
 import { getStoreId } from "@/utils/getStoreId";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     await connect();
 
