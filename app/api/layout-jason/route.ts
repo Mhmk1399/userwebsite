@@ -3,11 +3,10 @@ import { NextRequest, NextResponse } from "next/server";
 import Jsons from "@/models/jsons";
 // import path from "path";
 // import fs from "fs/promises";
-import { getStoreId } from "@/utils/getStoreId";
 
 export async function GET(request: NextRequest) {
   await connect();
-  const storeId = getStoreId(request);
+  const storeId =process.env. STORE_ID;  
   console.log("URL:", request.url);
   console.log("Hostname:", new URL(request.url).hostname);
   console.log("storeId extracted:", storeId);

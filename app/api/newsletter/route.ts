@@ -1,13 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import connect from "@/lib/data";
 import NewsLetter from "@/models/newsLetter";
-import { getStoreId } from "@/utils/getStoreId";
 export async function POST(request: NextRequest) {
   try {
     await connect();
     const { phoneNumber } = await request.json();
-    const storeId = getStoreId(request);
-
+    const storeId =process.env. STORE_ID;
     const newsletter = new NewsLetter({ storeId, phoneNumber });
     await newsletter.save();
 

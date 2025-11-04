@@ -3,7 +3,6 @@ import Order from "@/models/orders";
 import Product from "@/models/product";
 import connect from "@/lib/data";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { getStoreId } from "@/utils/getStoreId";
 
 interface CustomJwtPayload extends JwtPayload {
   userId: string;
@@ -43,7 +42,7 @@ export async function POST(req: NextRequest) {
   }
   const decodedToken = jwt.decode(token) as CustomJwtPayload;
   try {
-    const storeId = getStoreId(req);
+    const storeId = process.env. STORE_ID;
     const orderData = { ...body, storeId, userId: decodedToken.userId };
     console.log("Order Data:", orderData);
     const order = await Order.create(orderData);
@@ -79,9 +78,9 @@ export async function GET(request: NextRequest) {
 
     const userId = verifiedToken.userId;
     const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get("page") || "1");
-    const limit = parseInt(searchParams.get("limit") || "6");
-    const status = searchParams.get("status");
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '6');
+    const status = searchParams.get('status');
 
     const skip = (page - 1) * limit;
 
@@ -94,58 +93,22 @@ export async function GET(request: NextRequest) {
     // Get total count for pagination
     const totalOrders = await Order.countDocuments(filter);
 
-    // Get orders with pagination and populate product details
+    // Get orders with pagination
     const orders = await Order.find(filter)
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
 
-    // Populate product details for each order
-    const ordersWithProducts = await Promise.all(
-      orders.map(async (order) => {
-        const productsWithDetails = await Promise.all(
-          order.products.map(async (product: OrderProduct) => {
-            try {
-              const productDetails = await Product.findById(product.productId);
-              return {
-                ...product.toObject(),
-                name: productDetails?.name || "محصول حذف شده",
-                image: productDetails?.images?.[0]?.imageSrc || null,
-                colorCode: product.colorCode || null,
-                properties: product.properties || [],
-              };
-            } catch {
-              return {
-                ...product.toObject(),
-                name: "محصول حذف شده",
-                image: null,
-                colorCode: product.colorCode || null,
-                properties: product.properties || [],
-              };
-            }
-          })
-        );
-
-        return {
-          ...order.toObject(),
-          products: productsWithDetails,
-        };
-      })
-    );
-
-    return NextResponse.json(
-      {
-        orders: ordersWithProducts,
-        pagination: {
-          currentPage: page,
-          totalPages: Math.ceil(totalOrders / limit),
-          totalOrders,
-          hasNext: page < Math.ceil(totalOrders / limit),
-          hasPrev: page > 1,
-        },
-      },
-      { status: 200 }
-    );
+    return NextResponse.json({
+      orders,
+      pagination: {
+        currentPage: page,
+        totalPages: Math.ceil(totalOrders / limit),
+        totalOrders,
+        hasNext: page < Math.ceil(totalOrders / limit),
+        hasPrev: page > 1
+      }
+    }, { status: 200 });
   } catch (error) {
     console.log("Error fetching orders:", error);
     return NextResponse.json(

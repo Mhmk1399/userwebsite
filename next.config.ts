@@ -5,7 +5,8 @@ const nextConfig: NextConfig = {
     domains: [
       'raw.githubusercontent.com',
       'github.com',
-      'dashboard-image.s3.ir-thr-at1.arvanstorage.ir'
+      'dashboard-image.s3.ir-thr-at1.arvanstorage.ir',
+      'arziplus.storage.c2.liara.space'
     ],
     remotePatterns: [
       {

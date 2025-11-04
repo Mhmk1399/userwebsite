@@ -1,14 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import  connect from "@/lib/data";
+import connect from "@/lib/data";
 import CustomerTicket from "@/models/customerTicket";
 import jwt from "jsonwebtoken";
 import StoreUsers from "@/models/storesUsers";
-import { getStoreId } from "@/utils/getStoreId";
 
 export async function GET(request: NextRequest) {
   try {
     await connect();
-    
+
     const token = request.headers.get("authorization")?.replace("Bearer ", "");
     if (!token) {
       return NextResponse.json({ message: "توکن احراز هویت مورد نیاز است" }, { status: 401 });
@@ -17,10 +16,10 @@ export async function GET(request: NextRequest) {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
     const userId = decoded.userId;
 
-    const tickets = await CustomerTicket.find({ customer: userId , })
+    const tickets = await CustomerTicket.find({ customer: userId, })
       .populate({
-        path:"customer",
-        model:StoreUsers
+        path: "customer",
+        model: StoreUsers
       })
       .sort({ updatedAt: -1 });
 
@@ -33,22 +32,21 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     await connect();
-    
+
     const token = request.headers.get("authorization")?.replace("Bearer ", "");
     if (!token) {
       return NextResponse.json({ message: "توکن احراز هویت مورد نیاز است" }, { status: 401 });
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
-    const userId = decoded.userId 
+    const userId = decoded.userId
     console.log("Decoded token:", decoded);
     console.log("User ID:", userId);
-   
+
     if (!userId) {
       return NextResponse.json({ message: "شناسه کاربر یافت نشد" }, { status: 401 });
     }
-     const storeId = getStoreId(request);
- 
+    const storeId = process.env. STORE_ID;
     const { subject, content, priority } = await request.json();
 
     if (!subject || !content) {
@@ -65,11 +63,11 @@ export async function POST(request: NextRequest) {
       }],
       storeId: storeId
     });
-    console.log(ticket,"tiket")
+    console.log(ticket, "tiket")
 
     const savedTicket = await ticket.save();
     console.log("Ticket saved successfully");
-    
+
     const populatedTicket = await CustomerTicket.findById(savedTicket._id).populate("customer", "name phone");
     console.log("Ticket populated successfully");
 

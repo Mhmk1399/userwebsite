@@ -1,11 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
+import {  NextResponse } from "next/server";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { getStoreId } from "@/utils/getStoreId";
 
-export async function GET(request:NextRequest) {
+export async function GET() {
   try {
-     const storeId = getStoreId(request);
-    console.log(storeId, "ssssssssssssss");
+    const storeId = process.env. STORE_ID;
     const VPS_URL = process.env.VPS_URL;
 
     // Generate a unique token for sections

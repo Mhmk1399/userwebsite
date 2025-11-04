@@ -4,14 +4,12 @@ import { NextRequest, NextResponse } from "next/server";
 import Products from "../../../models/product";
 import Category from "../../../models/category";
 import mongoose from "mongoose";
-import { getStoreId } from "@/utils/getStoreId";
 
 export async function GET(request: NextRequest) {
   try {
     await connect();
 
-    const storeId = getStoreId(request);
-    if (!storeId) {
+    const storeId =process.env. STORE_ID;    if (!storeId) {
       return NextResponse.json({ error: "Storeid is empty" }, { status: 401 });
     }
 
