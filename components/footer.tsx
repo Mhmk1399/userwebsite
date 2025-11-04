@@ -285,7 +285,7 @@ const Footer: React.FC<FooterProps> = ({ footerData }) => {
         const cateData = await response.json();
         setCategories(cateData);
       } catch (error) {
-        console.error("Error fetching categories:", error);
+        console.log("Error fetching categories:", error);
         setCategories([
           {
             _id: "1",

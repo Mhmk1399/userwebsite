@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
       message: existingUser ? 'User exists' : 'User not found'
     });
   } catch (error) {
-    console.error('Check phone error:', error);
+    console.log('Check phone error:', error);
     return NextResponse.json({ message: 'Server error' }, { status: 500 });
   }
 }

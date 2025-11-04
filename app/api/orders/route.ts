@@ -1,11 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
 import Order from "@/models/orders";
+import Product from "@/models/product";
 import connect from "@/lib/data";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
 interface CustomJwtPayload extends JwtPayload {
   userId: string;
   status: string;
+}
+
+interface OrderProduct {
+  productId: string;
+  quantity: number;
+  price: number;
+  colorCode?: string;
+  properties?: { name: string; value: string }[];
+  toObject(): {
+    productId: string;
+    quantity: number;
+    price: number;
+    colorCode?: string;
+    properties?: { name: string; value: string }[];
+  };
 }
 
 export async function POST(req: NextRequest) {
@@ -70,7 +86,7 @@ export async function GET(request: NextRequest) {
 
     // Build query filter
     const filter: Record<string, unknown> = { userId };
-    if (status && status !== 'all') {
+    if (status && status !== "all") {
       filter.status = status;
     }
 
@@ -101,5 +117,3 @@ export async function GET(request: NextRequest) {
     );
   }
 }
-
-

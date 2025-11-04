@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
+import {  NextResponse } from "next/server";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const storeId = process.env. STORE_ID;
     const VPS_URL = process.env.VPS_URL;
@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
       //   }
     );
   } catch (error) {
-    console.error("Error:", error);
+    console.log("Error:", error);
     return NextResponse.json(
       {
         error: "Internal Server Error",

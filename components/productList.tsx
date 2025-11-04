@@ -87,14 +87,15 @@ const ColorBox = styled.div<ColorBoxProps>`
 
 const PriceInputContainer = styled.div`
   display: flex;
+  align-items: center;
+  flex-direction:column;
   gap: 1rem;
   margin-top: 0.5rem;
   justify-content: space-between;
 `;
 
 const PriceInput = styled.input`
-  flex: 1;
-  padding: 0.75rem;
+   padding: 0.75rem;
   border: 1px solid #d1d5db;
   border-radius: 0.375rem;
   text-align: center;
@@ -462,13 +463,14 @@ const ProductList: React.FC<ProductListProps> = ({
         console.log(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
+      console.log(data , "lllllllllllllllllll")
       if (data?.products) {
         setProductData(data.products);
         setTotalPages(data.totalPages);
         setCurrentPage(page);
       }
     } catch (error) {
-      console.error("Error fetching products:", error);
+      console.log("Error fetching products:", error);
     } finally {
       setLoading(false);
     }

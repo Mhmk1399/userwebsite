@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ ticket: populatedTicket }, { status: 201 });
   } catch (error) {
-    console.error("Error in POST /api/tickets:", error);
+    console.log("Error in POST /api/tickets:", error);
     return NextResponse.json({ message: "خطای سرور" }, { status: 500 });
   }
 }

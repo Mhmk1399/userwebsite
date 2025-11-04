@@ -179,7 +179,7 @@ export default function Page() {
 
       return layoutData;
     } catch (error) {
-      console.error("Error fetching layout data:", error);
+      console.log("Error fetching layout data:", error);
       throw error;
     }
   };
@@ -209,7 +209,7 @@ export default function Page() {
           setPagination(data.pagination);
         }
       } else {
-        console.error("Invalid API response structure:", data);
+        console.log("Invalid API response structure:", data);
         setBlogData([]);
       }
     } catch (error) {
@@ -248,7 +248,7 @@ export default function Page() {
           }
         }
       } catch (error) {
-        console.error("Error loading page data:", error);
+        console.log("Error loading page data:", error);
         setError("خطا در بارگذاری صفحه");
       } finally {
         setIsLoading(false);

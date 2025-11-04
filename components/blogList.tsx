@@ -131,7 +131,7 @@ const BlogList: React.FC<BlogListProps> = ({ sections, componentName }) => {
         );
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching blogs:", error);
+        console.log("Error fetching blogs:", error);
         setLoading(false);
       }
     };

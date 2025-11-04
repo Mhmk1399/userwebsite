@@ -146,11 +146,14 @@ export async function GET(request: NextRequest) {
           images: 1,
           colors: 1,
           sizes: 1,
+          discount: 1,
+          status: 1,
+          inventory: 1,
+          properties: 1,
           category: "$categoryData",
           createdAt: 1,
           updatedAt: 1,
           storeId: 1,
-          // Include other fields you need
         },
       }
     );
@@ -167,7 +170,7 @@ export async function GET(request: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.log("Error fetching products:", error);
     return NextResponse.json(
       { error: "Error fetching products" },
       { status: 500 }
