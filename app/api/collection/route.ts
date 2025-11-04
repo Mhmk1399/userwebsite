@@ -7,12 +7,10 @@ import { ProductCardData } from "@/lib/types";
 export async function GET(req: NextRequest) {
   await connect();
   const collectionId = req.headers.get("CollectionId");
-const storeId =process.env. STORE_ID;
   try {
     // Find collection by ID and storeId
     const collection = await collections.findOne({
       _id: collectionId,
-      storeId: storeId,
     });
 
     if (!collection) {
@@ -30,7 +28,7 @@ const storeId =process.env. STORE_ID;
     if (productIds.length > 0) {
       const actualProducts = await products.find({
         _id: { $in: productIds },
-        storeId: storeId,
+       
       });
 
       return NextResponse.json(

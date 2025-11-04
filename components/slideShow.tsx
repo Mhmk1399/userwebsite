@@ -4,6 +4,7 @@ import React, { useState, useRef, useCallback, useEffect } from "react";
 import { SlideSection, SlideBlock } from "@/lib/types";
 import Link from "next/link";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
+import defaultImage from "@/public/assets/images/banner2.webp"
 
 interface SlideShowProps {
   sections: SlideSection[];
@@ -818,7 +819,7 @@ const SlideShow: React.FC<SlideShowProps> = ({
             {blocks.map((slide: SlideBlock, index: number) => (
               <Slide key={index}>
                 <SlideImage
-                  src={slide.imageSrc}
+                  src={slide.imageSrc || defaultImage.src}
                   alt={slide.imageAlt || "Slide"}
                   $data={sectionData.setting}
                 />

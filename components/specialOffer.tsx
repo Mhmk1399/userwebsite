@@ -287,12 +287,8 @@ export const SpecialOffer: React.FC<SpecialOfferProps> = ({
       }
 
       try {
-        const response = await fetch("/api/collection", {
+        const response = await fetch(`/api/collection/${CollectionId}`, {
           method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            CollectionId: CollectionId,
-          },
         });
 
         if (!response.ok) {
