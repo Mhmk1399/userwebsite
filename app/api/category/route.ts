@@ -1,7 +1,6 @@
 import connect from "@/lib/data";
 import Category from "@/models/category";
 import { NextResponse, NextRequest } from "next/server";
-import { getStoreId } from "@/utils/getStoreId";
 
 
 export async function GET(request: NextRequest) {
@@ -11,9 +10,8 @@ export async function GET(request: NextRequest) {
     if (!connect) {
       return NextResponse.json({ error: "Failed to connect to database" });
     }
-        const storeId = getStoreId(request);
-
-          console.log("storeId read from subdomain", storeId);
+    const storeId = process.env. STORE_ID;
+    console.log("storeId read from subdomain", storeId);
     if (!storeId) {
       return NextResponse.json({ error: "Miss storeId" }, { status: 401 });
     }

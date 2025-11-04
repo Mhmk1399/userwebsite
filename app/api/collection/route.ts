@@ -3,13 +3,11 @@ import { NextRequest, NextResponse } from "next/server";
 import collections from "@/models/collection";
 import products from "@/models/product";
 import { ProductCardData } from "@/lib/types";
-import { getStoreId } from "@/utils/getStoreId";
 
 export async function GET(req: NextRequest) {
   await connect();
   const collectionId = req.headers.get("CollectionId");
-     const storeId = getStoreId(req);
-
+const storeId =process.env. STORE_ID;
   try {
     // Find collection by ID and storeId
     const collection = await collections.findOne({ 

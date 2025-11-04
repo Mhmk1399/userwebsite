@@ -1,14 +1,12 @@
 import connect from "@/lib/data";
 import { NextRequest, NextResponse } from "next/server";
 import UserInfo from "@/models/userInfo";
-import { getStoreId } from "@/utils/getStoreId";
 
 export async function GET(request: NextRequest) {
   try {
     await connect();
 
-    const storeId = getStoreId(request)
-
+    const storeId =process.env. STORE_ID;
     if (!storeId) {
       return NextResponse.json(
         { error: "Store ID not configured" },

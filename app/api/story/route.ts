@@ -1,10 +1,9 @@
 import Story from "../../../models/story";
-import { NextRequest, NextResponse } from "next/server";
+import {  NextResponse } from "next/server";
 import connect from "@/lib/data";
-import { getStoreId } from "@/utils/getStoreId";
 
 
-export async function GET(request:NextRequest) {
+export async function GET() {
   try {
     await connect();
     console.log("Connected to MongoDB");
@@ -12,8 +11,7 @@ export async function GET(request:NextRequest) {
       return NextResponse.json({ error: "Failed to connect to database" });
     }
 
-    const storeId = getStoreId(request);
-    if (!storeId) {
+    const storeId = process.env. STORE_ID; if (!storeId) {
       return NextResponse.json({ error: "Storeid is empty" }, { status: 401 });
     }
     const stories = await Story.find({ storeId: storeId });

@@ -3,7 +3,6 @@ import connect from "@/lib/data";
 import StoreUsers from "../../../models/storesUsers";
 import bcrypt from "bcryptjs";
 import { NextRequest } from "next/server";
-import { getStoreId } from "@/utils/getStoreId";
 
 export async function GET() {
   await connect();
@@ -31,7 +30,7 @@ export async function POST(request: NextRequest) {
   try {
     const { name, phone, password } = await request.json();
 
-    const storeId = getStoreId(request);
+    const storeId =process.env. STORE_ID;
 
     // Check if user already exists with this phone and storeId
     const existingUser = await StoreUsers.findOne({ phone, storeId });
