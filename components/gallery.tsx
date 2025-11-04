@@ -3,7 +3,11 @@ import styled from "styled-components";
 import Image from "next/image";
 import Link from "next/link";
 import { GallerySection } from "@/lib/types";
+import defaultImage from "@/public/assets/images/banner2.webp"
 
+const getImageSrc = (imageSrc: string) => {
+  return imageSrc?.includes('https') ? imageSrc : defaultImage.src;
+};
 interface GalleryProps {
   sections: GallerySection[];
   isMobile: boolean;
@@ -273,7 +277,7 @@ const Gallery: React.FC<GalleryProps> = ({
           <ImageWrapper key={index} $data={sectionData} $isMobile={isMobile}>
             <Link href={image.imageLink || "#"}>
               <Image
-                src={image.imageSrc}
+                src={getImageSrc(image.imageSrc)}
                 alt={image.imageAlt}
                 width={3000}
                 height={3000}

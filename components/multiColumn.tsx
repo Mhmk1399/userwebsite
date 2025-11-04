@@ -1,7 +1,11 @@
 "use client";
 import { MultiColumnSection } from "@/lib/types";
 import styled from "styled-components";
+import defaultImage from "@/public/assets/images/banner2.webp"
 
+const getImageSrc = (imageSrc: string) => {
+  return imageSrc?.includes('https') ? imageSrc : defaultImage.src;
+};
 interface MultiColumnProps {
   sections: MultiColumnSection[];
   isMobile: boolean;
@@ -522,10 +526,10 @@ const MultiColumn: React.FC<MultiColumnProps> = ({
                 }
               </Description>
               <Image
-                src={
-                  (typedBlock[
+                src={getImageSrc(   (typedBlock[
                     `imageSrc${index + 1}` as keyof MultiColumnSection
-                  ] as string) || "/assets/images/banner2.webp"
+                  ] as string) || "/assets/images/banner2.webp")
+               
                 }
                 alt={
                   (typedBlock[

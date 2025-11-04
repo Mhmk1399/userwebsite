@@ -1,7 +1,11 @@
 "use client";
 import styled from "styled-components";
 import { ImageTextSection } from "@/lib/types";
+import defaultImage from "@/public/assets/images/banner2.webp"
 
+const getImageSrc = (imageSrc: string) => {
+  return imageSrc?.includes('https') ? imageSrc : defaultImage.src;
+};
 interface ImageTextProps {
   sections: ImageTextSection[];
   isMobile: boolean;
@@ -446,7 +450,7 @@ const ImageText: React.FC<ImageTextProps> = ({
       <Image
         className="rounded-xl "
         $data={sectionData}
-        src={imageSrc || "/assets/images/banner2.webp"}
+        src={getImageSrc(imageSrc)}
         alt={imageAlt || "Image"}
       />
       <TextContainer $isMobile={isMobile} $data={sectionData}>

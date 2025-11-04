@@ -3,7 +3,11 @@ import React from "react";
 import styled from "styled-components";
 import { AnimationConfig, AnimationEffect } from "@/lib/types";
 import Link from "next/link";
+import defaultImage from "@/public/assets/images/banner2.webp"
 
+const getImageSrc = (imageSrc: string) => {
+  return imageSrc?.includes('https') ? imageSrc : defaultImage.src;
+};
 // Define types for the Canvas Editor
 export interface CanvasElementStyle {
   x: number;
@@ -346,7 +350,7 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({
       case "image":
         return (
           <img
-            src={element.src || "/assets/images/placeholder.jpg"}
+            src={getImageSrc(element.src || defaultImage.src)}
             alt={element.alt || "Canvas image"}
             style={{
               ...commonStyles,

@@ -6,6 +6,10 @@ import Link from "next/link";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import defaultImage from "@/public/assets/images/banner2.webp"
 
+const getImageSrc = (imageSrc: string) => {
+  return imageSrc?.includes('https') ? imageSrc : defaultImage.src;
+};
+
 interface SlideShowProps {
   sections: SlideSection[];
   isMobile: boolean;
@@ -819,7 +823,7 @@ const SlideShow: React.FC<SlideShowProps> = ({
             {blocks.map((slide: SlideBlock, index: number) => (
               <Slide key={index}>
                 <SlideImage
-                  src={slide.imageSrc || defaultImage.src}
+                  src={getImageSrc(slide.imageSrc)}
                   alt={slide.imageAlt || "Slide"}
                   $data={sectionData.setting}
                 />

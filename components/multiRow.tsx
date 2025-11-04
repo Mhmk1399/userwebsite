@@ -1,7 +1,11 @@
 "use client";
 import { MultiRowSection, MultiRowBlock } from "@/lib/types";
 import styled from "styled-components";
+import defaultImage from "@/public/assets/images/banner2.webp"
 
+const getImageSrc = (imageSrc: string) => {
+  return imageSrc?.includes('https') ? imageSrc : defaultImage.src;
+};
 interface MultiRowShowProps {
   sections: MultiRowSection[];
   isMobile: boolean;
@@ -510,7 +514,7 @@ const MultiRow: React.FC<MultiRowShowProps> = ({
             <Row key={idx} $data={sectionData} $isMobile={isMobile}>
               <Image
                 $isMobile={isMobile}
-                src={block.imageSrc || "/default-image.jpg"}
+                src={getImageSrc(block.imageSrc || "/default-image.jpg")}
                 alt={block.imageAlt || ""}
                 $data={sectionData}
               />
