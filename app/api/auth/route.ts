@@ -32,6 +32,8 @@ export async function POST(request: NextRequest) {
 
     const storeId =process.env. STORE_ID;
 
+    console.log(storeId)
+
     // Check if user already exists with this phone and storeId
     const existingUser = await StoreUsers.findOne({ phone, storeId });
     if (existingUser) {
@@ -48,6 +50,8 @@ export async function POST(request: NextRequest) {
       phone,
       password: hashedPassword,
     });
+
+    console.log(newUser)
 
     await newUser.save();
     return NextResponse.json(
