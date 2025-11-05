@@ -10,9 +10,22 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Connection failed!" });
   }
   try {
+    const storeId = process.env.STORE_ID;
+
     const { phone, password } = await request.json();
 
+    const existingUser = await StoreUsers.findOne({
+      phone: phone,
+      storeId: storeId,
+    });
+    if (existingUser) {
+      return NextResponse.json(
+        { message: "کاربری با این شماره تلفن قبلاً ثبت نام کرده است" },
+        { status: 400 }
+      );
+    }
     const user = await StoreUsers.findOne({ phone });
+
     if (!user) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
