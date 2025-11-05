@@ -8,13 +8,12 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import {
-  ShoppingCart,
-  Menu,
-  MenuIcon,
-  X,
-  ChevronUp,
-  ChevronDown,
-} from "lucide-react";
+  FaChevronDown,
+  FaChevronUp,
+  FaBars,
+  FaShoppingCart,
+  FaTimes,
+} from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import UserMenu from "./userMenu";
 import { useAuth } from "@/hook/useAuth";
@@ -731,7 +730,7 @@ const Header: React.FC<HeaderProps> = ({ headerData, isMobile }) => {
             onClick={toggleMenu}
             aria-label="Toggle mobile menu"
           >
-            <Menu size={20} />
+            <FaBars size={20} />
           </MobileMenuButton>
 
           <LogoContainer>
@@ -761,7 +760,7 @@ const Header: React.FC<HeaderProps> = ({ headerData, isMobile }) => {
                       >
                         <CategoryIconWrapper $data={sectionData}>
                           {link.name}
-                          <MenuIcon size={16} />
+                          <FaBars size={16} />
                         </CategoryIconWrapper>
                       </NavItem>
                       <MegaMenu $data={sectionData}>
@@ -832,7 +831,7 @@ const Header: React.FC<HeaderProps> = ({ headerData, isMobile }) => {
             <div className="flex   items-center gap-2">
               {isAuthenticated && (
                 <>
-                  <ShoppingCart
+                  <FaShoppingCart
                     className="cursor-pointer"
                     size={24}
                     onClick={handleNavigate}
@@ -871,7 +870,7 @@ const Header: React.FC<HeaderProps> = ({ headerData, isMobile }) => {
             style={{ width: "50px", height: "50px" }}
           />
           <CloseButton onClick={toggleMenu} aria-label="Close menu">
-            <X size={18} />
+            <FaTimes size={18} />
           </CloseButton>
         </MobileMenuHeader>
 
@@ -886,9 +885,9 @@ const Header: React.FC<HeaderProps> = ({ headerData, isMobile }) => {
                   >
                     {link.name}
                     {mobileDropdownOpen ? (
-                      <ChevronUp size={18} />
+                      <FaChevronUp size={18} />
                     ) : (
-                      <ChevronDown size={18} />
+                      <FaChevronDown size={18} />
                     )}
                   </MobileNavItemButton>
 

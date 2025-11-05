@@ -4,7 +4,11 @@ import Image from "next/image";
 import { SlideBannerSection } from "@/lib/types";
 import { useState } from "react";
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
+import defaultImage from "@/public/assets/images/banner2.webp"
 
+const getImageSrc = (imageSrc: string) => {
+  return imageSrc?.includes('https') ? imageSrc : defaultImage.src;
+};
 interface SlideBannerProps {
   sections: SlideBannerSection[];
   isMobile: boolean;
@@ -309,7 +313,7 @@ const SlideBanner: React.FC<SlideBannerProps> = ({
             $isMobile={isMobile}
           >
             <Image
-              src={slide.imageSrc}
+              src={getImageSrc(slide.imageSrc)}
               alt={slide.imageAlt}
               width={isMobile ? 2000 : 3000}
               height={isMobile ? 2000 : 3000}

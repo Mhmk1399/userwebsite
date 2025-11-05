@@ -4,7 +4,11 @@ import Image from "next/image";
 import { useRef } from "react";
 import type { BrandsSection } from "@/lib/types";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
+import defaultImage from "@/public/assets/images/banner2.webp"
 
+const getImageSrc = (imageSrc: string) => {
+  return imageSrc?.includes('https') ? imageSrc : defaultImage.src;
+};
 interface BrandsProps {
   sections: BrandsSection[];
   isMobile: boolean;
@@ -351,7 +355,7 @@ export const Brands: React.FC<BrandsProps> = ({
               }}
             >
               <Image
-                src={brand.logo}
+                src={getImageSrc(brand.logo)}
                 alt={brand.name}
                 fill
                 className="object-contain"

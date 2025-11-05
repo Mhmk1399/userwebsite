@@ -2,7 +2,7 @@
 import styled from "styled-components";
 import Image from "next/image";
 import { BannerSection } from "@/lib/types";
-
+import defaultImage from "@/public/assets/images/banner2.webp"
 interface props {
   sections: BannerSection[];
   isMobile: boolean;
@@ -259,7 +259,7 @@ const Banner: React.FC<props> = ({ sections, isMobile, componentName }) => {
       <BannerImage
         $data={sectionData}
         alt={imageAlt || "banner"}
-        src={imageSrc || "/assets/images/banner2.webp"}
+        src={imageSrc || defaultImage}
         fill
         priority
       />

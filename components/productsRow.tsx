@@ -285,12 +285,8 @@ export const ProductsRow: React.FC<ProductsRowProps> = ({
   useEffect(() => {
     const fetchSpecialOffers = async () => {
       try {
-        const response = await fetch("/api/collection", {
+        const response = await fetch(`/api/collection/${CollectionId}`, {
           method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            CollectionId: CollectionId,
-          },
         });
 
         if (!response.ok) {
