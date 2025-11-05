@@ -55,6 +55,7 @@ import { BlogSchema } from "@/components/schema/blogSchema";
 import BlogList from "@/components/blogList";
 import CanvasEditor from "@/components/canvasEditor";
 import { Brands } from "@/components/brands";
+import EmptyState from "@/components/EmptyState";
 
 type AllSections = Section &
   RichTextSection &
@@ -263,6 +264,7 @@ const extractBlogData = (template: TemplateData): BlogSchemaProps => {
 export default function Page() {
   const params = useParams();
   const route = params.route as string;
+  console.log(route, "rrrrrrrrrrrr");
 
   const [data, setData] = useState<AllSections[]>([]);
   const [isMobile, setIsMobile] = useState(false);
@@ -286,6 +288,7 @@ export default function Page() {
       }
 
       const layoutData = await response.json();
+      console.log(layoutData , "///////////////////")
 
       return layoutData;
     } catch (error) {
@@ -300,6 +303,7 @@ export default function Page() {
       setIsMobile(isMobileView);
 
       const activeMode = isMobileView ? "sm" : "lg";
+      console.log(activeMode, "activeMode");
 
       try {
         setIsLoading(true);
@@ -403,13 +407,10 @@ export default function Page() {
 
   if (!data.length) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-600 mb-4">
-            صفحه مورد نظر خالی است
-          </h1>
-        </div>
-      </div>
+      <EmptyState
+        title="صفحه مورد نظر خالی است"
+        description="هیچ صفحه ای یافت نشد"
+      />
     );
   }
 

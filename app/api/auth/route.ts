@@ -30,12 +30,18 @@ export async function POST(request: NextRequest) {
   try {
     const { name, phone, password } = await request.json();
 
-    const storeId =process.env. STORE_ID;
+    const storeId = process.env.STORE_ID;
 
-    console.log(storeId)
-
-    // Check if user already exists with this phone and storeId
-    const existingUser = await StoreUsers.findOne({ phone, storeId });
+    if (!storeId) {
+      return NextResponse.json(
+        { message: "storeId is not defined" },
+        { status: 400 }
+      );
+    } // Check if user already exists with this phone and storeId
+    const existingUser = await StoreUsers.findOne({
+      phone: phone,
+      storeId: storeId,
+    });
     if (existingUser) {
       return NextResponse.json(
         { message: "کاربری با این شماره تلفن قبلاً ثبت نام کرده است" },
@@ -51,7 +57,7 @@ export async function POST(request: NextRequest) {
       password: hashedPassword,
     });
 
-    console.log(newUser)
+    console.log(newUser);
 
     await newUser.save();
     return NextResponse.json(

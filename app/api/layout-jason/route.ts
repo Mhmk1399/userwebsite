@@ -6,7 +6,7 @@ import Jsons from "@/models/jsons";
 
 export async function GET(request: NextRequest) {
   await connect();
-  const storeId =process.env. STORE_ID;  
+  const storeId =process.env.STORE_ID;  
   console.log("URL:", request.url);
   console.log("Hostname:", new URL(request.url).hostname);
   console.log("storeId extracted:", storeId);
@@ -45,6 +45,7 @@ export async function GET(request: NextRequest) {
       }
       const homeContent =
         activeMode === "lg" ? homeDoc.lgContent : homeDoc.smContent;
+        console.log(homeContent , "jsssssssss")
       return NextResponse.json(homeContent, { status: 200, headers });
     }
 

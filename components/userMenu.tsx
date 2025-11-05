@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { User, LogOut, ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hook/useAuth";
+import { FaUser } from "react-icons/fa";
 
 interface LoginButtonProps {
   href: string;
@@ -43,7 +44,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ color = "#fff" }) => {
   if (!isAuthenticated || !user) {
     return (
       <LoginButton color={color} href="/login">
-        <User size={18} /> ورود | ثبت‌نام
+      ورود | ثبت‌نام  <FaUser size={18} /> 
       </LoginButton>
     );
   }
@@ -55,8 +56,8 @@ const UserMenu: React.FC<UserMenuProps> = ({ color = "#fff" }) => {
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
         className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors"
       >
-        <User style={{ color }} size={18} />
         <span> {user.name}</span>
+        <FaUser style={{ color }} size={18} />
         <ChevronDown
           size={16}
           className={`transition-transform ${

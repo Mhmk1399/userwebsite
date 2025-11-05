@@ -1,13 +1,10 @@
 "use client";
 import styled from "styled-components";
-import {
-  BlogListSection,
-  BlogListSetting,
-  Section,
-} from "@/lib/types";
+import { BlogListSection, BlogListSetting, Section } from "@/lib/types";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import EmptyState from "@/components/EmptyState";
 
 interface BlogData {
   blogId: number;
@@ -306,16 +303,12 @@ export default function Page() {
   if (!sectionData) {
     return (
       <>
-        <main>
-          <div className="flex justify-center items-center h-screen">
-            <div className="text-center">
-              <h1 className="text-2xl font-bold text-gray-600 mb-4">
-                صفحه مورد نظر خالی است
-              </h1>
-            </div>
-          </div>
-        </main>
-      </>
+       
+          <EmptyState
+            title="صفحه مورد نظر خالی است"
+            description="هیچ صفحه ای یافت نشد"
+          />
+       </>
     );
   }
 

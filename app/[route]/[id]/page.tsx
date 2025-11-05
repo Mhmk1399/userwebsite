@@ -54,6 +54,7 @@ import { ProductsRow } from "@/components/productsRow";
 import { BlogSchema } from "@/components/schema/blogSchema";
 import BlogList from "@/components/blogList";
 import CanvasEditor from "@/components/canvasEditor";
+import EmptyState from "@/components/EmptyState";
 
 type AllSections = Section &
   RichTextSection &
@@ -399,17 +400,14 @@ export default function Page() {
     );
   }
 
-  if (!data.length) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-600 mb-4">
-            صفحه مورد نظر خالی است
-          </h1>
-        </div>
-      </div>
-    );
-  }
+if (!data.length) {
+  return (
+    <EmptyState 
+      title="صفحه مورد نظر خالی است"
+      description="هیچ صفحه ای یافت نشد"
+    />
+  );
+}
 
   return (
     <>

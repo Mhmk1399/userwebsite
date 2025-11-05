@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import connect from "@/lib/data";
 import Order from "@/models/orders";
 import "@/lib/types";
-import { getStoreId } from "@/utils/getStoreId";
 
 export async function POST(request: NextRequest) {
   try {
@@ -72,7 +71,7 @@ export async function POST(request: NextRequest) {
 
     if (result.data?.code === 100 || result.data?.code === 101) {
       await connect();
-      const storeId = getStoreId();
+      const storeId = process.env.STORE_ID;
 
       // Extract only the fields needed for Order model
       const orderData = {
