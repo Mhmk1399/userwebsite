@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useRef } from "react";
 import type { BrandsSection } from "@/lib/types";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
-import defaultImage from "@/public/assets/images/banner2.webp"
+import defaultImage from "@/public/assets/images/defaultimage.jpg"
 
 const getImageSrc = (imageSrc: string) => {
   return imageSrc?.includes('https') ? imageSrc : defaultImage.src;

@@ -2,7 +2,7 @@
 import styled from "styled-components";
 import Image from "next/image";
 import { BannerSection } from "@/lib/types";
-import defaultImage from "@/public/assets/images/banner2.webp"
+import defaultImage from "@/public/assets/images/defaultimage.jpg"
 interface props {
   sections: BannerSection[];
   isMobile: boolean;

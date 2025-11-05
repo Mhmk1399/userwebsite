@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Image from "next/image";
 import Link from "next/link";
 import { GallerySection } from "@/lib/types";
-import defaultImage from "@/public/assets/images/banner2.webp"
+import defaultImage from "@/public/assets/images/defaultimage.jpg"
 
 const getImageSrc = (imageSrc: string) => {
   return imageSrc?.includes('https') ? imageSrc : defaultImage.src;
