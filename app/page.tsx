@@ -277,6 +277,7 @@ export default function HomePage() {
       }
 
       const layoutData = await response.json();
+      console.log(layoutData,"secondfetch")
       return layoutData;
     } catch (error) {
       console.log("Error fetching layout data:", error);

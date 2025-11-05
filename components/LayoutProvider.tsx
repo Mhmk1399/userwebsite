@@ -31,6 +31,7 @@ const LayoutProvider: React.FC<LayoutProviderProps> = ({ children }) => {
       }
 
       const layoutData = await response.json();
+      console.log(layoutData,"firstfetchhh")
 
       if (layoutData.sections?.sectionHeader) {
         setHeaderData(layoutData.sections.sectionHeader);
