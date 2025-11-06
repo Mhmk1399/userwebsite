@@ -99,7 +99,8 @@ export default function CartPage() {
     }
 
     try {
-      const response = await fetch("/api/payment/request", {
+      // Use new checkout endpoint for vendor dashboard payment flow
+      const response = await fetch("/api/payment/checkout", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -134,8 +135,10 @@ export default function CartPage() {
 
       if (result.success && result.paymentUrl) {
         if (typeof window !== "undefined") {
-          localStorage.setItem("paymentAuthority", result.authority);
-          console.log("Redirecting to:", result.paymentUrl);
+          // Store order ID for later reference
+          localStorage.setItem("pendingOrderId", result.orderId);
+          console.log("Redirecting to vendor dashboard:", result.paymentUrl);
+          // Redirect to vendor dashboard for payment
           window.location.href = result.paymentUrl;
         }
       } else {
