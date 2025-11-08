@@ -10,6 +10,7 @@ import { useEffect, useState, useCallback } from "react";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import React from "react";
 import { FiFilter } from "react-icons/fi";
+import { FaSpinner, FaBoxOpen } from "react-icons/fa";
 import toast from "react-hot-toast";
 
 interface ProductListProps {
@@ -88,14 +89,14 @@ const ColorBox = styled.div<ColorBoxProps>`
 const PriceInputContainer = styled.div`
   display: flex;
   align-items: center;
-  flex-direction:column;
+  flex-direction: column;
   gap: 1rem;
   margin-top: 0.5rem;
   justify-content: space-between;
 `;
 
 const PriceInput = styled.input`
-   padding: 0.75rem;
+  padding: 0.75rem;
   border: 1px solid #d1d5db;
   border-radius: 0.375rem;
   text-align: center;
@@ -463,7 +464,7 @@ const ProductList: React.FC<ProductListProps> = ({
         console.log(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      console.log(data , "lllllllllllllllllll")
+      console.log(data, "lllllllllllllllllll");
       if (data?.products) {
         setProductData(data.products);
         setTotalPages(data.totalPages);
@@ -748,12 +749,18 @@ const ProductList: React.FC<ProductListProps> = ({
           <div className="flex-1 w-full" dir="rtl">
             <ProductGrid $data={sectionData} $isMobile={isMobile}>
               {loading ? (
-                <div className="col-span-full flex justify-center items-center py-20">
-                  <div className="text-gray-500">در حال بارگذاری...</div>
+                <div className="col-span-full flex flex-col justify-center items-center py-20 gap-3">
+                  <FaSpinner className="text-4xl text-blue-500 animate-spin" />
+                  <div className="text-gray-600 text-lg">
+                    در حال بارگذاری...
+                  </div>
                 </div>
               ) : productData.length === 0 ? (
-                <div className="col-span-full flex justify-center items-center py-20">
-                  <div className="text-gray-500">محصولی یافت نشد</div>
+                <div className="col-span-full flex flex-col justify-center items-center py-20 gap-3">
+                  <FaBoxOpen className="text-5xl text-gray-400" />
+                  <div className="text-gray-600 text-lg font-medium">
+                    محصولی یافت نشد
+                  </div>
                 </div>
               ) : (
                 productData.map((product) => (
@@ -879,6 +886,7 @@ const ProductList: React.FC<ProductListProps> = ({
           </ColorModal>
         )}
       </div>
+      
       {isMobileFilterOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end justify-center md:hidden">
           <MobileFilterModal dir="rtl">
