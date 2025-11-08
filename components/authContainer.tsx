@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import Threads from "./Threads";
+import { authFlow, smsActions, authActions } from "@/lib/api-actions";
 
 const AuthContainer: React.FC = () => {
   const router = useRouter();
@@ -26,22 +27,25 @@ const AuthContainer: React.FC = () => {
   const sendSmsCode = async (phone: string) => {
     setSmsLoading(true);
     try {
-      const response = await fetch("/api/auth/send-code", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phoneNumber: phone }),
-      });
+      // Determine purpose based on current mode
+      const purpose = isForgetPassword 
+        ? 'reset-password' 
+        : isLogin 
+          ? 'login' 
+          : 'register';
 
-      if (response.ok) {
+      const result = await smsActions.sendCode(phone, purpose);
+      
+      if (result.success) {
         toast.success("کد تایید ارسال شد");
         setStep("sms");
         setPhoneNumber(phone);
         setCountdown(60);
       } else {
-        toast.error("خطا در ارسال کد");
+        toast.error(result.message || "خطا در ارسال کد");
       }
-    } catch {
-      toast.error("خطا در ارسال کد");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "خطا در ارسال کد");
     } finally {
       setSmsLoading(false);
     }
@@ -50,20 +54,16 @@ const AuthContainer: React.FC = () => {
   const verifySmsCode = async () => {
     setLoading(true);
     try {
-      const response = await fetch("/api/auth/verify-code", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phoneNumber, code: smsCode }),
-      });
-
-      if (response.ok) {
+      const result = await smsActions.verifyCode(phoneNumber, smsCode);
+      
+      if (result.success) {
         toast.success("کد تایید شد");
         setStep("password");
       } else {
-        toast.error("کد نامعتبر است");
+        toast.error(result.message || "کد نامعتبر است");
       }
-    } catch {
-      toast.error("خطا در تایید کد");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "خطا در تایید کد");
     } finally {
       setLoading(false);
     }
@@ -72,26 +72,24 @@ const AuthContainer: React.FC = () => {
   const resetPassword = async (password: string) => {
     setLoading(true);
     try {
-      const response = await fetch("/api/auth/reset-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          phoneNumber,
-          code: smsCode,
-          newPassword: password,
-        }),
-      });
+      const result = await authFlow.completePasswordReset(
+        phoneNumber,
+        smsCode,
+        password
+      );
 
-      if (response.ok) {
+      if (result.success) {
         toast.success("رمز عبور با موفقیت تغییر کرد");
         setIsForgetPassword(false);
         setIsLogin(true);
         setStep("phone");
+        setSmsCode("");
+        setPhoneNumber("");
       } else {
-        toast.error("خطا در تغییر رمز عبور");
+        toast.error(result.message || "خطا در تغییر رمز عبور");
       }
-    } catch {
-      toast.error("خطا در تغییر رمز عبور");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "خطا در تغییر رمز عبور");
     } finally {
       setLoading(false);
     }
@@ -118,14 +116,9 @@ const AuthContainer: React.FC = () => {
 
       if (!isLogin && !isForgetPassword) {
         try {
-          const checkResponse = await fetch("/api/auth/check-phone", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ phoneNumber: phone }),
-          });
-          const checkData = await checkResponse.json();
+          const checkResult = await authActions.checkPhone(phone);
 
-          if (checkData.exists) {
+          if (checkResult.exists) {
             toast.error("کاربری با این شماره قبلاً ثبت نام کرده است");
             setTimeout(() => {
               setIsLogin(true);
@@ -160,29 +153,24 @@ const AuthContainer: React.FC = () => {
     setLoading(true);
 
     try {
-      let response;
       switch (isLogin) {
         case true: {
           if (isSubmitting) return;
           setIsSubmitting(true);
 
           const { password } = formValues;
-          response = await fetch("/api/auth/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ phone: phoneNumber, password }),
-          });
-          const data = await response.json();
-          if (response.ok && data.token) {
-            localStorage.setItem("tokenUser", data.token);
-            localStorage.setItem("userId", data.userId);
-            if (data.newUser && data.newUser.name) {
-              localStorage.setItem("userName", data.newUser.name);
-            }
+          
+          const result = await authFlow.completeLogin(
+            phoneNumber,
+            password as string,
+            smsCode
+          );
+          
+          if (result.success) {
             toast.success("ورود با موفقیت انجام شد");
             router.push(`/dashboard`);
           } else {
-            toast.error("ورود با موفقیت انجام نشد");
+            toast.error(result.message || "ورود با موفقیت انجام نشد");
             setIsSubmitting(false);
           }
           break;
@@ -191,40 +179,31 @@ const AuthContainer: React.FC = () => {
         case false: {
           const { name, email, password, confirmPassword } = formValues;
           if (password !== confirmPassword) {
-            setModalError(true);
+            toast.error("رمزهای عبور مطابقت ندارند");
             return;
           }
-          response = await fetch("/api/auth", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name, phone: phoneNumber, email, password }),
-          });
 
-          if (response.ok) {
-            const data = await response.json();
-            localStorage.setItem("tokenUser", data.token);
-            localStorage.setItem("userId", data.userId);
-            if (data.newUser && data.newUser.name) {
-              localStorage.setItem("userName", data.newUser.name);
-            }
+          const result = await authFlow.completeRegistration(
+            phoneNumber,
+            smsCode,
+            name as string,
+            password as string,
+            email as string
+          );
 
+          if (result.success) {
             toast.success("ثبت نام با موفقیت انجام شد");
-            const form = event.currentTarget;
-
-            setTimeout(() => {
-              setIsLogin(true);
-              setStep("phone");
-              form.reset();
-            }, 1500);
+            router.push(`/dashboard`);
           } else {
-            toast.error("ثبت نام با موفقیت انجام نشد");
+            toast.error(result.message || "ثبت نام با موفقیت انجام نشد");
           }
           break;
         }
       }
     } catch (error) {
-      setModalError(true);
+      toast.error(error instanceof Error ? error.message : "خطا در عملیات");
       console.log("Error:", error);
+      setIsSubmitting(false);
     } finally {
       setLoading(false);
     }
