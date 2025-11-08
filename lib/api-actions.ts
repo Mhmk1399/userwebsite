@@ -2,25 +2,30 @@
  * Unified API Actions Client
  * Helper functions for calling action-based API endpoints
  */
-
+interface data {}
 // Base API URLs
-const AUTH_API = '/api/actions/auth';
-const SMS_API = '/api/actions/sms';
+const AUTH_API = "/api/actions/auth";
+const SMS_API = "/api/actions/sms";
 
 /**
  * Generic action caller
  */
-async function callAction(endpoint: string, action: string, data?: any, token?: string) {
+async function callAction(
+  endpoint: string,
+  action: string,
+  data?: data,
+  token?: string
+) {
   const headers: HeadersInit = {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   };
 
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+    headers["Authorization"] = `Bearer ${token}`;
   }
 
   const response = await fetch(endpoint, {
-    method: 'POST',
+    method: "POST",
     headers,
     body: JSON.stringify({ action, data }),
   });
@@ -28,7 +33,7 @@ async function callAction(endpoint: string, action: string, data?: any, token?: 
   const result = await response.json();
 
   if (!response.ok) {
-    throw new Error(result.message || 'Request failed');
+    throw new Error(result.message || "Request failed");
   }
 
   return result;
@@ -48,32 +53,28 @@ export const authActions = {
     password: string;
     smsCode: string;
   }) => {
-    return callAction(AUTH_API, 'register', data);
+    return callAction(AUTH_API, "register", data);
   },
 
   /**
    * Login user
    */
-  login: async (data: {
-    phone: string;
-    password: string;
-    smsCode: string;
-  }) => {
-    return callAction(AUTH_API, 'login', data);
+  login: async (data: { phone: string; password: string; smsCode: string }) => {
+    return callAction(AUTH_API, "login", data);
   },
 
   /**
    * Verify JWT token
    */
   verifyToken: async (token: string) => {
-    return callAction(AUTH_API, 'verify-token', { token });
+    return callAction(AUTH_API, "verify-token", { token });
   },
 
   /**
    * Check if phone exists
    */
   checkPhone: async (phoneNumber: string) => {
-    return callAction(AUTH_API, 'check-phone', { phoneNumber });
+    return callAction(AUTH_API, "check-phone", { phoneNumber });
   },
 
   /**
@@ -87,28 +88,28 @@ export const authActions = {
     },
     token: string
   ) => {
-    return callAction(AUTH_API, 'update-profile', data, token);
+    return callAction(AUTH_API, "update-profile", data, token);
   },
 
   /**
    * Delete user account
    */
   deleteAccount: async (token: string) => {
-    return callAction(AUTH_API, 'delete-account', {}, token);
+    return callAction(AUTH_API, "delete-account", {}, token);
   },
 
   /**
    * Logout user
    */
   logout: async () => {
-    return callAction(AUTH_API, 'logout');
+    return callAction(AUTH_API, "logout");
   },
 
   /**
    * Get user profile
    */
   getProfile: async (userId: string, token: string) => {
-    return callAction(AUTH_API, 'get-profile', { userId }, token);
+    return callAction(AUTH_API, "get-profile", { userId }, token);
   },
 };
 
@@ -119,22 +120,25 @@ export const smsActions = {
   /**
    * Send SMS verification code
    */
-  sendCode: async (phoneNumber: string, purpose?: 'register' | 'login' | 'reset-password') => {
-    return callAction(SMS_API, 'send-code', { phoneNumber, purpose });
+  sendCode: async (
+    phoneNumber: string,
+    purpose?: "register" | "login" | "reset-password"
+  ) => {
+    return callAction(SMS_API, "send-code", { phoneNumber, purpose });
   },
 
   /**
    * Verify SMS code
    */
   verifyCode: async (phoneNumber: string, code: string) => {
-    return callAction(SMS_API, 'verify-code', { phoneNumber, code });
+    return callAction(SMS_API, "verify-code", { phoneNumber, code });
   },
 
   /**
    * Resend SMS code
    */
   resendCode: async (phoneNumber: string) => {
-    return callAction(SMS_API, 'resend-code', { phoneNumber });
+    return callAction(SMS_API, "resend-code", { phoneNumber });
   },
 
   /**
@@ -145,7 +149,7 @@ export const smsActions = {
     code: string;
     newPassword: string;
   }) => {
-    return callAction(SMS_API, 'reset-password', data);
+    return callAction(SMS_API, "reset-password", data);
   },
 };
 
@@ -173,10 +177,10 @@ export const authFlow = {
       });
 
       if (result.success && result.token) {
-        localStorage.setItem('tokenUser', result.token);
-        localStorage.setItem('userId', result.userId);
+        localStorage.setItem("tokenUser", result.token);
+        localStorage.setItem("userId", result.userId);
         if (result.user?.name) {
-          localStorage.setItem('userName', result.user.name);
+          localStorage.setItem("userName", result.user.name);
         }
       }
 
@@ -198,10 +202,10 @@ export const authFlow = {
       });
 
       if (result.success && result.token) {
-        localStorage.setItem('tokenUser', result.token);
-        localStorage.setItem('userId', result.userId);
+        localStorage.setItem("tokenUser", result.token);
+        localStorage.setItem("userId", result.userId);
         if (result.user?.name) {
-          localStorage.setItem('userName', result.user.name);
+          localStorage.setItem("userName", result.user.name);
         }
       }
 
@@ -217,14 +221,14 @@ export const authFlow = {
   async completeLogout() {
     try {
       await authActions.logout();
-      localStorage.removeItem('tokenUser');
-      localStorage.removeItem('userId');
-      localStorage.removeItem('userName');
+      localStorage.removeItem("tokenUser");
+      localStorage.removeItem("userId");
+      localStorage.removeItem("userName");
     } catch (error) {
       // Still clear local storage even if API call fails
-      localStorage.removeItem('tokenUser');
-      localStorage.removeItem('userId');
-      localStorage.removeItem('userName');
+      localStorage.removeItem("tokenUser");
+      localStorage.removeItem("userId");
+      localStorage.removeItem("userName");
       throw error;
     }
   },
@@ -232,7 +236,11 @@ export const authFlow = {
   /**
    * Complete password reset flow
    */
-  async completePasswordReset(phone: string, code: string, newPassword: string) {
+  async completePasswordReset(
+    phone: string,
+    code: string,
+    newPassword: string
+  ) {
     try {
       return await smsActions.resetPassword({
         phoneNumber: phone,
@@ -249,8 +257,8 @@ export const authFlow = {
  * Hook-like helper for checking authentication
  */
 export const checkAuth = async () => {
-  const token = localStorage.getItem('tokenUser');
-  
+  const token = localStorage.getItem("tokenUser");
+
   if (!token) {
     return { isAuthenticated: false, user: null };
   }
@@ -262,9 +270,10 @@ export const checkAuth = async () => {
       user: result.user,
     };
   } catch (error) {
-    localStorage.removeItem('tokenUser');
-    localStorage.removeItem('userId');
-    localStorage.removeItem('userName');
+    console.log(error);
+    localStorage.removeItem("tokenUser");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("userName");
     return { isAuthenticated: false, user: null };
   }
 };

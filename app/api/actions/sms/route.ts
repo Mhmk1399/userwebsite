@@ -18,7 +18,7 @@ type SmsAction =
 
 interface SmsRequest {
   action: SmsAction;
-  data?: any;
+  data?: string|undefined;
 }
 
 export async function POST(request: NextRequest) {
@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
 /**
  * Send SMS verification code
  */
-async function handleSendCode(data: any) {
+async function handleSendCode(data: {phoneNumber:string,purpose:string}) {
   try {
     const { phoneNumber, purpose } = data;
 
@@ -172,7 +172,7 @@ async function handleSendCode(data: any) {
 /**
  * Verify SMS code
  */
-async function handleVerifyCode(data: any) {
+async function handleVerifyCode(data: {phoneNumber:string,code:string}) {
   try {
     const { phoneNumber, code } = data;
 
@@ -223,7 +223,7 @@ async function handleVerifyCode(data: any) {
 /**
  * Resend SMS code
  */
-async function handleResendCode(data: any) {
+async function handleResendCode(data: {phoneNumber:string}) {
   try {
     const { phoneNumber } = data;
 
@@ -274,7 +274,7 @@ async function handleResendCode(data: any) {
 /**
  * Reset password with SMS verification
  */
-async function handleResetPassword(data: any) {
+async function handleResetPassword(data: {phoneNumber:number,code:string,newPassword:string}) {
   try {
     const { phoneNumber, code, newPassword } = data;
 

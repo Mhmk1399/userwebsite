@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
 
     let totalAmount = 0;
     const validatedItems: CartItem[] = [];
-    const itemsWithNames: any[] = [];
+    const itemsWithNames: CartItem[] = [];
 
     for (const item of cartItems) {
       console.log('Processing cart item:', { productId: item.productId, quantity: item.quantity });

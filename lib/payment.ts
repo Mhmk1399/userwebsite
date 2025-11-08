@@ -112,7 +112,7 @@ export function generatePaymentToken(orderData: OrderData): string {
  * @param token - JWT token from vendor dashboard
  * @returns Decoded token payload
  */
-export function verifyReturnToken(token: string): any {
+export function verifyReturnToken(token: string) {
   const JWT_SECRET = process.env.JWT_SECRET;
 
   if (!JWT_SECRET) {

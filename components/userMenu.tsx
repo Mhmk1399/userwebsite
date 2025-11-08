@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { User, LogOut, ChevronDown } from "lucide-react";
+import {  LogOut, ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hook/useAuth";
 import { FaUser } from "react-icons/fa";

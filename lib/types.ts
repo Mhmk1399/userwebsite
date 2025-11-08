@@ -1870,8 +1870,9 @@ export interface CanvasElementStyle {
 
 export interface CartItem {
   productId: string;
+  name?: string;
   quantity: number;
   price: number;
   colorCode?: string;
-  properties?: string[];
+  properties?: { name: string; value: string }[] | string[];
 }
