@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { User, LogOut, ChevronDown } from "lucide-react";
+import { LogOut, ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hook/useAuth";
 import { FaUser } from "react-icons/fa";
@@ -44,7 +44,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ color = "#fff" }) => {
   if (!isAuthenticated || !user) {
     return (
       <LoginButton color={color} href="/login">
-      ورود | ثبت‌نام  <FaUser size={18} /> 
+        ورود | ثبت‌نام <FaUser size={18} />
       </LoginButton>
     );
   }

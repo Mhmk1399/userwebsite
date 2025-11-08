@@ -1,27 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import Order from "@/models/orders";
-import Product from "@/models/product";
 import connect from "@/lib/data";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
 interface CustomJwtPayload extends JwtPayload {
   userId: string;
   status: string;
-}
-
-interface OrderProduct {
-  productId: string;
-  quantity: number;
-  price: number;
-  colorCode?: string;
-  properties?: { name: string; value: string }[];
-  toObject(): {
-    productId: string;
-    quantity: number;
-    price: number;
-    colorCode?: string;
-    properties?: { name: string; value: string }[];
-  };
 }
 
 export async function POST(req: NextRequest) {
@@ -42,7 +26,7 @@ export async function POST(req: NextRequest) {
   }
   const decodedToken = jwt.decode(token) as CustomJwtPayload;
   try {
-    const storeId = process.env. STORE_ID;
+    const storeId = process.env.STORE_ID;
     const orderData = { ...body, storeId, userId: decodedToken.userId };
     console.log("Order Data:", orderData);
     const order = await Order.create(orderData);
@@ -78,9 +62,9 @@ export async function GET(request: NextRequest) {
 
     const userId = verifiedToken.userId;
     const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '6');
-    const status = searchParams.get('status');
+    const page = parseInt(searchParams.get("page") || "1");
+    const limit = parseInt(searchParams.get("limit") || "6");
+    const status = searchParams.get("status");
 
     const skip = (page - 1) * limit;
 
@@ -99,16 +83,19 @@ export async function GET(request: NextRequest) {
       .skip(skip)
       .limit(limit);
 
-    return NextResponse.json({
-      orders,
-      pagination: {
-        currentPage: page,
-        totalPages: Math.ceil(totalOrders / limit),
-        totalOrders,
-        hasNext: page < Math.ceil(totalOrders / limit),
-        hasPrev: page > 1
-      }
-    }, { status: 200 });
+    return NextResponse.json(
+      {
+        orders,
+        pagination: {
+          currentPage: page,
+          totalPages: Math.ceil(totalOrders / limit),
+          totalOrders,
+          hasNext: page < Math.ceil(totalOrders / limit),
+          hasPrev: page > 1,
+        },
+      },
+      { status: 200 }
+    );
   } catch (error) {
     console.log("Error fetching orders:", error);
     return NextResponse.json(
