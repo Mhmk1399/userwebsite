@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import { CartItem } from './types';
 
 /**
  * Generate Payment Token for Vendor Dashboard
@@ -9,14 +10,6 @@ import jwt from 'jsonwebtoken';
  * @param orderData - Order information including items, total, user, etc.
  * @returns JWT token string
  */
-interface CartItem {
-  productId: string;
-  quantity: number;
-  price: number;
-  name: string;
-  colorCode?: string;
-  properties?: { name: string; value: string }[];
-}
 
 interface OrderData {
   orderId: string;
@@ -60,8 +53,8 @@ export function generatePaymentToken(orderData: OrderData): string {
     // Cart/Items (provide both formats for compatibility)
     items: orderData.items.map(item => ({
       productId: item.productId,
-      productName: item.name,
-      name: item.name, // Alias
+      productName: item.name || '',
+      name: item.name || '', // Alias
       quantity: item.quantity,
       price: item.price,
       ...(item.colorCode && { colorCode: item.colorCode }),
@@ -69,7 +62,7 @@ export function generatePaymentToken(orderData: OrderData): string {
     })),
     cart: orderData.items.map(item => ({
       productId: item.productId,
-      productName: item.name,
+      productName: item.name || '',
       quantity: item.quantity,
       price: item.price,
     })),

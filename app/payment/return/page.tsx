@@ -1,15 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { toast } from "react-hot-toast";
 
-export default function PaymentReturnPage() {
+function PaymentReturnContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
-  const [verificationData, setVerificationData] = useState<any>(null);
+  const [verificationData, setVerificationData] = useState<{
+    paymentStatus: string;
+    refId: string;
+    orderId: string;
+    amount: number;
+  } | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -46,7 +51,7 @@ export default function PaymentReturnPage() {
 
         if (data.paymentStatus === "success") {
           toast.success("پرداخت با موفقیت انجام شد");
-          
+
           // Clear cart after successful payment
           if (typeof window !== "undefined") {
             const db = await openDB();
@@ -81,7 +86,6 @@ export default function PaymentReturnPage() {
     verifyPayment();
   }, [searchParams, router]);
 
-  // IndexedDB helper
   const openDB = (): Promise<IDBDatabase> => {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open("CartDB", 1);
@@ -175,13 +179,9 @@ export default function PaymentReturnPage() {
               />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">
-            پرداخت موفق
-          </h2>
-          <p className="text-gray-600 mb-4">
-            پرداخت شما با موفقیت انجام شد
-          </p>
-          
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">پرداخت موفق</h2>
+          <p className="text-gray-600 mb-4">پرداخت شما با موفقیت انجام شد</p>
+
           <div className="bg-gray-50 p-4 rounded-lg mb-6 text-right">
             <div className="flex justify-between mb-2">
               <span className="text-gray-600">کد پیگیری:</span>
@@ -208,7 +208,9 @@ export default function PaymentReturnPage() {
           </p>
 
           <button
-            onClick={() => router.push(`/dashboard/orders/${verificationData.orderId}`)}
+            onClick={() =>
+              router.push(`/dashboard/orders/${verificationData.orderId}`)
+            }
             className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors w-full"
           >
             مشاهده سفارش
@@ -241,9 +243,7 @@ export default function PaymentReturnPage() {
             />
           </svg>
         </div>
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">
-          پرداخت ناموفق
-        </h2>
+        <h2 className="text-2xl font-bold text-gray-800 mb-2">پرداخت ناموفق</h2>
         <p className="text-gray-600 mb-6">
           متأسفانه پرداخت شما با موفقیت انجام نشد
         </p>
@@ -255,5 +255,20 @@ export default function PaymentReturnPage() {
         </button>
       </motion.div>
     </div>
+  );
+}
+
+export default function PaymentReturnPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div className="bg-white p-8 rounded-2xl shadow-xl text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">در حال بارگذاری...</h2>
+        </div>
+      </div>
+    }>
+      <PaymentReturnContent />
+    </Suspense>
   );
 }

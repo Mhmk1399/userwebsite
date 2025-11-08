@@ -2,7 +2,6 @@
  * Unified API Actions Client
  * Helper functions for calling action-based API endpoints
  */
-interface data {}
 // Base API URLs
 const AUTH_API = "/api/actions/auth";
 const SMS_API = "/api/actions/sms";
@@ -13,7 +12,7 @@ const SMS_API = "/api/actions/sms";
 async function callAction(
   endpoint: string,
   action: string,
-  data?: data,
+  data?: unknown,
   token?: string
 ) {
   const headers: HeadersInit = {

@@ -278,7 +278,7 @@ export default function HomePage() {
       }
 
       const layoutData = await response.json();
-      console.log(layoutData,"secondfetch")
+      console.log(layoutData, "secondfetch");
       return layoutData;
     } catch (error) {
       console.log("Error fetching layout data:", error);
@@ -389,14 +389,14 @@ export default function HomePage() {
     );
   }
 
-if (!data.length) {
-  return (
-    <EmptyState 
-      title="صفحه مورد نظر خالی است"
-      description="هیچ محصولی در این دسته‌بندی یافت نشد"
-    />
-  );
-}
+  if (!data.length) {
+    return (
+      <EmptyState
+        title="صفحه مورد نظر خالی است"
+        description="هیچ محصولی در این دسته‌بندی یافت نشد"
+      />
+    );
+  }
 
   return (
     <>

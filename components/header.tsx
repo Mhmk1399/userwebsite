@@ -116,10 +116,10 @@ const AnnouncementBar = styled.div<{
   font-weight: 500;
   letter-spacing: 0.025em;
   overflow: hidden;
-  transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
-  max-height: ${(props) => (props.$isScrolled ? "0" : "200px")};
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  max-height: ${(props) => (props.$isScrolled ? "0" : "100px")};
   opacity: ${(props) => (props.$isScrolled ? "0" : "1")};
-  padding: ${(props) => (props.$isScrolled ? "0" : "12px 24px")};
+  padding: ${(props) => (props.$isScrolled ? "0 24px" : "12px 24px")};
   border-top-left-radius: ${(props) =>
     props.$data?.blocks?.setting?.bgRadius || "2"}px;
   border-top-right-radius: ${(props) =>
@@ -127,7 +127,7 @@ const AnnouncementBar = styled.div<{
 
   @media (max-width: 768px) {
     font-size: 12px;
-    padding: ${(props) => (props.$isScrolled ? "0" : "8px 16px")};
+    padding: ${(props) => (props.$isScrolled ? "0 16px" : "8px 16px")};
   }
 `;
 
@@ -619,12 +619,24 @@ const Header: React.FC<HeaderProps> = ({ headerData, isMobile }) => {
 
   useEffect(() => {
     let ticking = false;
+    const SCROLL_THRESHOLD_SHOW = 30;
+    const SCROLL_THRESHOLD_HIDE = 80;
 
     const handleScroll = () => {
       if (!ticking) {
         requestAnimationFrame(() => {
-          const scrolled = window.scrollY > 50;
-          setIsScrolled((prev) => (prev !== scrolled ? scrolled : prev));
+          const scrollY = window.scrollY;
+          
+          setIsScrolled((prev) => {
+            if (!prev && scrollY > SCROLL_THRESHOLD_HIDE) {
+              return true;
+            }
+            if (prev && scrollY < SCROLL_THRESHOLD_SHOW) {
+              return false;
+            }
+            return prev;
+          });
+          
           ticking = false;
         });
         ticking = true;
@@ -769,7 +781,7 @@ const Header: React.FC<HeaderProps> = ({ headerData, isMobile }) => {
                             ?.filter((category) => category.children.length > 0)
                             .map((category, idx) => (
                               <Link
-                                href={`/store?categoryId=${category._id}`}
+                                href={`/store?category=${category.name}`}
                                 key={category._id}
                                 className="block"
                               >
@@ -797,10 +809,10 @@ const Header: React.FC<HeaderProps> = ({ headerData, isMobile }) => {
                               )
                               [hoverd]?.children.map((child) => (
                                 <Link
-                                  href={`/store?categoryId=${
+                                  href={`/store?category=${
                                     categories?.filter(
                                       (category) => category.children.length > 0
-                                    )[hoverd]?._id
+                                    )[hoverd]?.name
                                   }`}
                                   key={child._id}
                                   className="p-3 hover:translate-x-[2px] rounded-lg transition-all duration-300 text-right group"

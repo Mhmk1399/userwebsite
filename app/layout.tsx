@@ -4,6 +4,7 @@ import { fontMap } from "@/lib/fontManager";
 import { Toaster } from "react-hot-toast";
 import ClientWrapper from "@/components/ClientWrapper";
 import LayoutProvider from "@/components/LayoutProvider";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 const allFontVariables = Object.values(fontMap)
   .map((font) => font.variable)
@@ -17,12 +18,14 @@ export default function RootLayout({
   return (
     <html lang="fa">
       <body className={`${allFontVariables} ${fontMap.hezare.className}`}>
-        <StyledComponentsRegistry>
-          <ClientWrapper>
-            <Toaster position="top-center" />
-            <LayoutProvider>{children}</LayoutProvider>
-          </ClientWrapper>
-        </StyledComponentsRegistry>
+        <ErrorBoundary>
+          <StyledComponentsRegistry>
+            <ClientWrapper>
+              <Toaster position="top-center" />
+              <LayoutProvider>{children}</LayoutProvider>
+            </ClientWrapper>
+          </StyledComponentsRegistry>
+        </ErrorBoundary>
       </body>
     </html>
   );

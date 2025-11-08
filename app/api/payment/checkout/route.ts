@@ -18,15 +18,18 @@ interface PropertyItem {
 
 export async function POST(request: NextRequest) {
   try {
-    console.log('=== Vendor Dashboard Payment Request Started ===');
+    console.log("=== Vendor Dashboard Payment Request Started ===");
     const { cartItems, shippingAddress } = await request.json();
-    console.log('Request data:', { cartItemsCount: cartItems?.length, hasShippingAddress: !!shippingAddress });
+    console.log("Request data:", {
+      cartItemsCount: cartItems?.length,
+      hasShippingAddress: !!shippingAddress,
+    });
 
     // Verify authentication
     const token = request.headers.get("Authorization")?.split(" ")[1];
-    console.log('Token present:', !!token);
+    console.log("Token present:", !!token);
     if (!token) {
-      console.log('ERROR: No token provided');
+      console.log("ERROR: No token provided");
       return NextResponse.json(
         {
           success: false,
@@ -43,9 +46,9 @@ export async function POST(request: NextRequest) {
         process.env.JWT_SECRET!
       ) as CustomJwtPayload;
       userId = decoded.userId;
-      console.log('Token verified, userId:', userId);
+      console.log("Token verified, userId:", userId);
     } catch (error) {
-      console.log('ERROR: Token verification failed:', error);
+      console.log("ERROR: Token verification failed:", error);
       return NextResponse.json(
         {
           success: false,
@@ -57,7 +60,10 @@ export async function POST(request: NextRequest) {
 
     // Validate cart items
     if (!cartItems || !Array.isArray(cartItems) || cartItems.length === 0) {
-      console.log('ERROR: Invalid cart items:', { cartItems, isArray: Array.isArray(cartItems) });
+      console.log("ERROR: Invalid cart items:", {
+        cartItems,
+        isArray: Array.isArray(cartItems),
+      });
       return NextResponse.json(
         {
           success: false,
@@ -66,25 +72,28 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    console.log('Cart validation passed, items count:', cartItems.length);
+    console.log("Cart validation passed, items count:", cartItems.length);
 
     // Connect to database and validate products
-    console.log('Connecting to database...');
+    console.log("Connecting to database...");
     await connect();
-    console.log('Database connected successfully');
+    console.log("Database connected successfully");
 
     let totalAmount = 0;
     const validatedItems: CartItem[] = [];
     const itemsWithNames: CartItem[] = [];
 
     for (const item of cartItems) {
-      console.log('Processing cart item:', { productId: item.productId, quantity: item.quantity });
+      console.log("Processing cart item:", {
+        productId: item.productId,
+        quantity: item.quantity,
+      });
       // Extract actual product ID from composite key (format: productId_#colorCode_{properties})
       const actualProductId = item.productId.split("_")[0];
-      console.log('Extracted product ID:', actualProductId);
+      console.log("Extracted product ID:", actualProductId);
       const product = await Product.findById(actualProductId);
       if (!product) {
-        console.log('ERROR: Product not found:', actualProductId);
+        console.log("ERROR: Product not found:", actualProductId);
         return NextResponse.json(
           {
             success: false,
@@ -93,7 +102,12 @@ export async function POST(request: NextRequest) {
           { status: 400 }
         );
       }
-      console.log('Product found:', { id: product._id, name: product.name, price: product.price, discount: product.discount });
+      console.log("Product found:", {
+        id: product._id,
+        name: product.name,
+        price: product.price,
+        discount: product.discount,
+      });
 
       // Use server-side price, not client-side price
       let serverPrice = parseFloat(product.price);
@@ -105,7 +119,11 @@ export async function POST(request: NextRequest) {
       }
 
       if (isNaN(serverPrice)) {
-        console.log('ERROR: Invalid server price:', { serverPrice, originalPrice: product.price, discount: product.discount });
+        console.log("ERROR: Invalid server price:", {
+          serverPrice,
+          originalPrice: product.price,
+          discount: product.discount,
+        });
         return NextResponse.json(
           {
             success: false,
@@ -117,7 +135,12 @@ export async function POST(request: NextRequest) {
 
       const itemTotal = serverPrice * item.quantity;
       totalAmount += itemTotal;
-      console.log('Item processed:', { productId: actualProductId, serverPrice, quantity: item.quantity, itemTotal });
+      console.log("Item processed:", {
+        productId: actualProductId,
+        serverPrice,
+        quantity: item.quantity,
+        itemTotal,
+      });
 
       const validatedItem: CartItem = {
         productId: actualProductId,
@@ -145,23 +168,31 @@ export async function POST(request: NextRequest) {
       }
 
       validatedItems.push(validatedItem);
-      
+
       // Store item with name for payment token
-      itemsWithNames.push({
+      const itemWithName: CartItem = {
         productId: actualProductId,
         name: product.name,
         quantity: item.quantity,
         price: serverPrice,
-        ...(item.colorCode && { colorCode: item.colorCode }),
-        ...(validatedItem.properties && { properties: validatedItem.properties }),
-      });
+      };
+
+      if (item.colorCode) {
+        itemWithName.colorCode = item.colorCode;
+      }
+
+      if (validatedItem.properties) {
+        itemWithName.properties = validatedItem.properties;
+      }
+
+      itemsWithNames.push(itemWithName);
     }
-    console.log('All items validated. Total amount:', totalAmount, 'Toman');
+    console.log("All items validated. Total amount:", totalAmount, "Toman");
 
     // Create pending order in database
     const storeId = process.env.STORE_ID;
     if (!storeId) {
-      console.log('ERROR: STORE_ID not configured');
+      console.log("ERROR: STORE_ID not configured");
       return NextResponse.json(
         {
           success: false,
@@ -181,7 +212,7 @@ export async function POST(request: NextRequest) {
       paymentStatus: "pending",
     });
 
-    console.log('Order created:', newOrder._id.toString());
+    console.log("Order created:", newOrder._id.toString());
 
     // Fetch user info from database for payment token
     let userInfo = {
@@ -191,20 +222,23 @@ export async function POST(request: NextRequest) {
     };
 
     try {
-      const StoreUsers = (await import('@/models/storesUsers')).default;
-      const user = await StoreUsers.findById(userId).select('name phone email');
+      const StoreUsers = (await import("@/models/storesUsers")).default;
+      const user = await StoreUsers.findById(userId).select("name phone email");
       if (user) {
         userInfo = {
           name: user.name || "Customer",
           email: user.email || "",
           phone: user.phone || "0000000000",
         };
-        console.log('User info fetched:', { name: userInfo.name, phone: userInfo.phone });
+        console.log("User info fetched:", {
+          name: userInfo.name,
+          phone: userInfo.phone,
+        });
       } else {
-        console.log('Warning: User not found, using default info');
+        console.log("Warning: User not found, using default info");
       }
     } catch (error) {
-      console.log('Warning: Could not fetch user info:', error);
+      console.log("Warning: Could not fetch user info:", error);
     }
 
     // Generate payment token for vendor dashboard
@@ -220,11 +254,11 @@ export async function POST(request: NextRequest) {
         shippingAddress,
       });
 
-      console.log('Payment token generated successfully');
+      console.log("Payment token generated successfully");
 
       // Build vendor dashboard URL
       const paymentUrl = buildPaymentUrl(paymentToken);
-      console.log('Payment URL generated:', paymentUrl);
+      console.log("Payment URL generated:", paymentUrl);
 
       return NextResponse.json({
         success: true,
@@ -233,7 +267,7 @@ export async function POST(request: NextRequest) {
         amount: totalAmount,
       });
     } catch (error) {
-      console.log('ERROR: Token generation failed:', error);
+      console.log("ERROR: Token generation failed:", error);
       return NextResponse.json(
         {
           success: false,

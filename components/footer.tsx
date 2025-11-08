@@ -447,7 +447,7 @@ const Footer: React.FC<FooterProps> = ({ footerData }) => {
               <CategorySection key={category._id}>
                 <ParentContainer>
                   <ParentCategoryLink
-                    href={`/store?categoryId=${category._id}`}
+                    href={`/store?category=${category.name}`}
                     $data={sectionData}
                   >
                     {category.name}
@@ -458,7 +458,7 @@ const Footer: React.FC<FooterProps> = ({ footerData }) => {
                   {category.children.map((child) => (
                     <ChildCategoryLink
                       key={child._id}
-                      href={`/store?categoryId=${child._id}`}
+                      href={`/store?category=${child.name}`}
                       $data={sectionData}
                     >
                       {child.name}

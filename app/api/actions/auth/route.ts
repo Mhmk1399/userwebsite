@@ -1,29 +1,61 @@
-import { NextRequest, NextResponse } from 'next/server';
-import connect from '@/lib/data';
-import StoreUsers from '@/models/storesUsers';
-import Verification from '@/models/verification';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-import { verifyToken } from '@/middleWare/verifyToken';
+import { NextRequest, NextResponse } from "next/server";
+import connect from "@/lib/data";
+import StoreUsers from "@/models/storesUsers";
+import Verification from "@/models/verification";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import { verifyToken } from "@/middleWare/verifyToken";
 
 /**
  * Unified Auth Action Handler
  * All authentication actions go through this single endpoint
  */
 
-type AuthAction = 
-  | 'register'
-  | 'login'
-  | 'verify-token'
-  | 'check-phone'
-  | 'update-profile'
-  | 'delete-account'
-  | 'logout'
-  | 'get-profile';
+type AuthAction =
+  | "register"
+  | "login"
+  | "verify-token"
+  | "check-phone"
+  | "update-profile"
+  | "delete-account"
+  | "logout"
+  | "get-profile";
 
 interface AuthRequest {
   action: AuthAction;
-  data?: any;
+  data?: unknown;
+}
+
+interface RegisterData {
+  name: string;
+  phone: string;
+  email?: string;
+  password: string;
+  smsCode: string;
+}
+
+interface LoginData {
+  phone: string;
+  password: string;
+  smsCode: string;
+}
+
+interface VerifyTokenData {
+  token: string;
+}
+
+interface CheckPhoneData {
+  phoneNumber: string;
+}
+
+interface UpdateProfileData {
+  userId: string;
+  name?: string;
+  phone?: string;
+}
+
+interface GetProfileData {
+  userId?: string;
 }
 
 export async function POST(request: NextRequest) {
@@ -32,7 +64,7 @@ export async function POST(request: NextRequest) {
 
     if (!action) {
       return NextResponse.json(
-        { success: false, message: 'Action is required' },
+        { success: false, message: "Action is required" },
         { status: 400 }
       );
     }
@@ -40,42 +72,43 @@ export async function POST(request: NextRequest) {
     await connect();
 
     switch (action) {
-      case 'register':
+      case "register":
         return await handleRegister(data);
 
-      case 'login':
+      case "login":
         return await handleLogin(data, request);
 
-      case 'verify-token':
+      case "verify-token":
         return await handleVerifyToken(data);
 
-      case 'check-phone':
+      case "check-phone":
         return await handleCheckPhone(data);
 
-      case 'update-profile':
+      case "update-profile":
         return await handleUpdateProfile(data, request);
 
-      case 'delete-account':
+      case "delete-account":
         return await handleDeleteAccount(request);
 
-      case 'logout':
+      case "logout":
         return await handleLogout();
 
-      case 'get-profile':
+      case "get-profile":
         return await handleGetProfile(data, request);
 
       default:
         return NextResponse.json(
-          { success: false, message: 'Invalid action' },
+          { success: false, message: "Invalid action" },
           { status: 400 }
         );
     }
   } catch (error) {
-    console.error('Auth action error:', error);
+    console.error("Auth action error:", error);
     return NextResponse.json(
-      { 
-        success: false, 
-        message: error instanceof Error ? error.message : 'Internal server error' 
+      {
+        success: false,
+        message:
+          error instanceof Error ? error.message : "Internal server error",
       },
       { status: 500 }
     );
@@ -85,14 +118,14 @@ export async function POST(request: NextRequest) {
 /**
  * Register new user
  */
-async function handleRegister(data: any) {
+async function handleRegister(data: unknown) {
   try {
-    const { name, phone, email, password, smsCode } = data;
+    const { name, phone, email, password, smsCode } = data as RegisterData;
 
     // Validate required fields
     if (!name || !phone || !password || !smsCode) {
       return NextResponse.json(
-        { success: false, message: 'جمیع الحقول مطلوبة' },
+        { success: false, message: "جمیع الحقول مطلوبة" },
         { status: 400 }
       );
     }
@@ -102,12 +135,12 @@ async function handleRegister(data: any) {
       phone,
       code: smsCode,
       verified: true,
-      expiresAt: { $gt: new Date() }
+      expiresAt: { $gt: new Date() },
     });
 
     if (!verification) {
       return NextResponse.json(
-        { success: false, message: 'کد تایید نامعتبر است' },
+        { success: false, message: "کد تایید نامعتبر است" },
         { status: 400 }
       );
     }
@@ -115,7 +148,7 @@ async function handleRegister(data: any) {
     const storeId = process.env.STORE_ID;
     if (!storeId) {
       return NextResponse.json(
-        { success: false, message: 'تنظیمات سیستم نامعتبر است' },
+        { success: false, message: "تنظیمات سیستم نامعتبر است" },
         { status: 500 }
       );
     }
@@ -124,7 +157,10 @@ async function handleRegister(data: any) {
     const existingUser = await StoreUsers.findOne({ phone, storeId });
     if (existingUser) {
       return NextResponse.json(
-        { success: false, message: 'کاربری با این شماره تلفن قبلاً ثبت نام کرده است' },
+        {
+          success: false,
+          message: "کاربری با این شماره تلفن قبلاً ثبت نام کرده است",
+        },
         { status: 400 }
       );
     }
@@ -145,7 +181,7 @@ async function handleRegister(data: any) {
     const jwtSecret = process.env.JWT_SECRET;
     if (!jwtSecret) {
       return NextResponse.json(
-        { success: false, message: 'تنظیمات سیستم نامعتبر است' },
+        { success: false, message: "تنظیمات سیستم نامعتبر است" },
         { status: 500 }
       );
     }
@@ -156,10 +192,10 @@ async function handleRegister(data: any) {
         storeId: newUser.storeId,
         name: newUser.name,
         phone: newUser.phone,
-        role: 'user',
+        role: "user",
       },
       jwtSecret,
-      { expiresIn: '10h' }
+      { expiresIn: "10h" }
     );
 
     // Delete verification record
@@ -167,28 +203,28 @@ async function handleRegister(data: any) {
 
     const response = NextResponse.json({
       success: true,
-      message: 'ثبت نام با موفقیت انجام شد',
+      message: "ثبت نام با موفقیت انجام شد",
       token,
       userId: newUser._id.toString(),
       user: {
         name: newUser.name,
         phone: newUser.phone,
         email: newUser.email,
-      }
+      },
     });
 
     // Set cookie
-    response.cookies.set('tokenUser', token, {
+    response.cookies.set("tokenUser", token, {
       httpOnly: false,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
       maxAge: 10 * 60 * 60,
-      path: '/',
+      path: "/",
     });
 
     return response;
   } catch (error) {
-    console.error('Register error:', error);
+    console.error("Register error:", error);
     throw error;
   }
 }
@@ -196,13 +232,17 @@ async function handleRegister(data: any) {
 /**
  * Login user
  */
-async function handleLogin(data: any, request: NextRequest) {
+async function handleLogin(data: unknown, request: NextRequest) {
+  console.log(request);
   try {
-    const { phone, password, smsCode } = data;
+    const { phone, password, smsCode } = data as LoginData;
 
     if (!phone || !password || !smsCode) {
       return NextResponse.json(
-        { success: false, message: 'شماره تلفن، رمز عبور و کد تایید الزامی است' },
+        {
+          success: false,
+          message: "شماره تلفن، رمز عبور و کد تایید الزامی است",
+        },
         { status: 400 }
       );
     }
@@ -212,12 +252,12 @@ async function handleLogin(data: any, request: NextRequest) {
       phone,
       code: smsCode,
       verified: true,
-      expiresAt: { $gt: new Date() }
+      expiresAt: { $gt: new Date() },
     });
 
     if (!verification) {
       return NextResponse.json(
-        { success: false, message: 'کد تایید نامعتبر است' },
+        { success: false, message: "کد تایید نامعتبر است" },
         { status: 400 }
       );
     }
@@ -228,7 +268,7 @@ async function handleLogin(data: any, request: NextRequest) {
     const user = await StoreUsers.findOne({ phone, storeId });
     if (!user) {
       return NextResponse.json(
-        { success: false, message: 'کاربر یافت نشد' },
+        { success: false, message: "کاربر یافت نشد" },
         { status: 404 }
       );
     }
@@ -237,7 +277,7 @@ async function handleLogin(data: any, request: NextRequest) {
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       return NextResponse.json(
-        { success: false, message: 'رمز عبور نامعتبر است' },
+        { success: false, message: "رمز عبور نامعتبر است" },
         { status: 401 }
       );
     }
@@ -246,7 +286,7 @@ async function handleLogin(data: any, request: NextRequest) {
     const jwtSecret = process.env.JWT_SECRET;
     if (!jwtSecret) {
       return NextResponse.json(
-        { success: false, message: 'تنظیمات سیستم نامعتبر است' },
+        { success: false, message: "تنظیمات سیستم نامعتبر است" },
         { status: 500 }
       );
     }
@@ -257,10 +297,10 @@ async function handleLogin(data: any, request: NextRequest) {
         storeId: user.storeId,
         name: user.name,
         phone: user.phone,
-        role: user.role || 'user',
+        role: user.role || "user",
       },
       jwtSecret,
-      { expiresIn: '10h' }
+      { expiresIn: "10h" }
     );
 
     // Delete verification record
@@ -268,27 +308,27 @@ async function handleLogin(data: any, request: NextRequest) {
 
     const response = NextResponse.json({
       success: true,
-      message: 'ورود با موفقیت انجام شد',
+      message: "ورود با موفقیت انجام شد",
       token,
       userId: user._id.toString(),
       user: {
         name: user.name,
         phone: user.phone,
-      }
+      },
     });
 
     // Set cookie
-    response.cookies.set('tokenUser', token, {
+    response.cookies.set("tokenUser", token, {
       httpOnly: false,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
       maxAge: 10 * 60 * 60,
-      path: '/',
+      path: "/",
     });
 
     return response;
   } catch (error) {
-    console.error('Login error:', error);
+    console.error("Login error:", error);
     throw error;
   }
 }
@@ -296,13 +336,13 @@ async function handleLogin(data: any, request: NextRequest) {
 /**
  * Verify JWT token
  */
-async function handleVerifyToken(data: any) {
+async function handleVerifyToken(data: unknown) {
   try {
-    const { token } = data;
+    const { token } = data as VerifyTokenData;
 
     if (!token) {
       return NextResponse.json(
-        { success: false, valid: false, message: 'توکن الزامی است' },
+        { success: false, valid: false, message: "توکن الزامی است" },
         { status: 400 }
       );
     }
@@ -310,16 +350,22 @@ async function handleVerifyToken(data: any) {
     const decoded = verifyToken(token);
     if (!decoded) {
       return NextResponse.json(
-        { success: false, valid: false, message: 'توکن نامعتبر یا منقضی شده است' },
+        {
+          success: false,
+          valid: false,
+          message: "توکن نامعتبر یا منقضی شده است",
+        },
         { status: 401 }
       );
     }
 
     // Optional: Verify user still exists
-    const user = await StoreUsers.findById(decoded.userId).select('_id name phone email');
+    const user = await StoreUsers.findById(decoded.userId).select(
+      "_id name phone email"
+    );
     if (!user) {
       return NextResponse.json(
-        { success: false, valid: false, message: 'کاربر یافت نشد' },
+        { success: false, valid: false, message: "کاربر یافت نشد" },
         { status: 404 }
       );
     }
@@ -332,10 +378,10 @@ async function handleVerifyToken(data: any) {
         name: user.name,
         phone: user.phone,
         email: user.email,
-      }
+      },
     });
   } catch (error) {
-    console.error('Verify token error:', error);
+    console.error("Verify token error:", error);
     throw error;
   }
 }
@@ -343,27 +389,30 @@ async function handleVerifyToken(data: any) {
 /**
  * Check if phone exists
  */
-async function handleCheckPhone(data: any) {
+async function handleCheckPhone(data: unknown) {
   try {
-    const { phoneNumber } = data;
+    const { phoneNumber } = data as CheckPhoneData;
 
     if (!phoneNumber) {
       return NextResponse.json(
-        { success: false, message: 'شماره تلفن الزامی است' },
+        { success: false, message: "شماره تلفن الزامی است" },
         { status: 400 }
       );
     }
 
     const storeId = process.env.STORE_ID;
-    const existingUser = await StoreUsers.findOne({ phone: phoneNumber, storeId });
+    const existingUser = await StoreUsers.findOne({
+      phone: phoneNumber,
+      storeId,
+    });
 
     return NextResponse.json({
       success: true,
       exists: !!existingUser,
-      message: existingUser ? 'کاربر وجود دارد' : 'کاربر یافت نشد'
+      message: existingUser ? "کاربر وجود دارد" : "کاربر یافت نشد",
     });
   } catch (error) {
-    console.error('Check phone error:', error);
+    console.error("Check phone error:", error);
     throw error;
   }
 }
@@ -371,7 +420,7 @@ async function handleCheckPhone(data: any) {
 /**
  * Update user profile
  */
-async function handleUpdateProfile(data: any, request: NextRequest) {
+async function handleUpdateProfile(data: unknown, request: NextRequest) {
   try {
     // Validate token
     const authResult = await validateRequestAuth(request);
@@ -379,11 +428,11 @@ async function handleUpdateProfile(data: any, request: NextRequest) {
       return authResult;
     }
 
-    const { userId, name, phone } = data;
+    const { userId, name, phone } = data as UpdateProfileData;
 
     if (!userId) {
       return NextResponse.json(
-        { success: false, message: 'شناسه کاربر الزامی است' },
+        { success: false, message: "شناسه کاربر الزامی است" },
         { status: 400 }
       );
     }
@@ -391,7 +440,7 @@ async function handleUpdateProfile(data: any, request: NextRequest) {
     // Ensure user can only update their own data
     if (authResult.userId !== userId) {
       return NextResponse.json(
-        { success: false, message: 'دسترسی غیرمجاز' },
+        { success: false, message: "دسترسی غیرمجاز" },
         { status: 403 }
       );
     }
@@ -399,23 +448,23 @@ async function handleUpdateProfile(data: any, request: NextRequest) {
     const updatedUser = await StoreUsers.findByIdAndUpdate(
       userId,
       { name, phone },
-      { new: true, select: '-password' }
+      { new: true, select: "-password" }
     );
 
     if (!updatedUser) {
       return NextResponse.json(
-        { success: false, message: 'کاربر یافت نشد' },
+        { success: false, message: "کاربر یافت نشد" },
         { status: 404 }
       );
     }
 
     return NextResponse.json({
       success: true,
-      message: 'پروفایل با موفقیت به‌روزرسانی شد',
-      user: updatedUser
+      message: "پروفایل با موفقیت به‌روزرسانی شد",
+      user: updatedUser,
     });
   } catch (error) {
-    console.error('Update profile error:', error);
+    console.error("Update profile error:", error);
     throw error;
   }
 }
@@ -435,28 +484,28 @@ async function handleDeleteAccount(request: NextRequest) {
 
     if (!user) {
       return NextResponse.json(
-        { success: false, message: 'کاربر یافت نشد' },
+        { success: false, message: "کاربر یافت نشد" },
         { status: 404 }
       );
     }
 
     const response = NextResponse.json({
       success: true,
-      message: 'حساب کاربری با موفقیت حذف شد'
+      message: "حساب کاربری با موفقیت حذف شد",
     });
 
     // Clear cookie
-    response.cookies.set('tokenUser', '', {
+    response.cookies.set("tokenUser", "", {
       httpOnly: false,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
       maxAge: 0,
-      path: '/',
+      path: "/",
     });
 
     return response;
   } catch (error) {
-    console.error('Delete account error:', error);
+    console.error("Delete account error:", error);
     throw error;
   }
 }
@@ -468,21 +517,21 @@ async function handleLogout() {
   try {
     const response = NextResponse.json({
       success: true,
-      message: 'خروج با موفقیت انجام شد'
+      message: "خروج با موفقیت انجام شد",
     });
 
     // Clear cookie
-    response.cookies.set('tokenUser', '', {
+    response.cookies.set("tokenUser", "", {
       httpOnly: false,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
       maxAge: 0,
-      path: '/',
+      path: "/",
     });
 
     return response;
   } catch (error) {
-    console.error('Logout error:', error);
+    console.error("Logout error:", error);
     throw error;
   }
 }
@@ -490,7 +539,7 @@ async function handleLogout() {
 /**
  * Get user profile
  */
-async function handleGetProfile(data: any, request: NextRequest) {
+async function handleGetProfile(data: unknown, request: NextRequest) {
   try {
     // Validate token
     const authResult = await validateRequestAuth(request);
@@ -498,31 +547,33 @@ async function handleGetProfile(data: any, request: NextRequest) {
       return authResult;
     }
 
-    const { userId } = data;
+    const { userId } = data as GetProfileData;
 
     // Ensure user can only access their own data
     if (userId && authResult.userId !== userId) {
       return NextResponse.json(
-        { success: false, message: 'دسترسی غیرمجاز' },
+        { success: false, message: "دسترسی غیرمجاز" },
         { status: 403 }
       );
     }
 
-    const user = await StoreUsers.findById(authResult.userId).select('-password');
+    const user = await StoreUsers.findById(authResult.userId).select(
+      "-password"
+    );
 
     if (!user) {
       return NextResponse.json(
-        { success: false, message: 'کاربر یافت نشد' },
+        { success: false, message: "کاربر یافت نشد" },
         { status: 404 }
       );
     }
 
     return NextResponse.json({
       success: true,
-      user
+      user,
     });
   } catch (error) {
-    console.error('Get profile error:', error);
+    console.error("Get profile error:", error);
     throw error;
   }
 }

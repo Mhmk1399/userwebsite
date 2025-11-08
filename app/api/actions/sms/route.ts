@@ -1,24 +1,20 @@
-import { NextRequest, NextResponse } from 'next/server';
-import connect from '@/lib/data';
-import Verification from '@/models/verification';
-import StoreUsers from '@/models/storesUsers';
-import bcrypt from 'bcryptjs';
-import { sendVerificationCode, generateVerificationCode } from '@/lib/sms';
+import { NextRequest, NextResponse } from "next/server";
+import connect from "@/lib/data";
+import Verification from "@/models/verification";
+import StoreUsers from "@/models/storesUsers";
+import bcrypt from "bcryptjs";
+import { sendVerificationCode, generateVerificationCode } from "@/lib/sms";
 
 /**
  * Unified SMS Action Handler
  * All SMS-related actions go through this single endpoint
  */
 
-type SmsAction = 
-  | 'send-code'
-  | 'verify-code'
-  | 'resend-code'
-  | 'reset-password';
+type SmsAction = "send-code" | "verify-code" | "resend-code" | "reset-password";
 
 interface SmsRequest {
   action: SmsAction;
-  data?: string|undefined;
+  data?: string | undefined;
 }
 
 export async function POST(request: NextRequest) {
@@ -27,7 +23,7 @@ export async function POST(request: NextRequest) {
 
     if (!action) {
       return NextResponse.json(
-        { success: false, message: 'Action is required' },
+        { success: false, message: "Action is required" },
         { status: 400 }
       );
     }
@@ -35,30 +31,31 @@ export async function POST(request: NextRequest) {
     await connect();
 
     switch (action) {
-      case 'send-code':
+      case "send-code":
         return await handleSendCode(data);
 
-      case 'verify-code':
+      case "verify-code":
         return await handleVerifyCode(data);
 
-      case 'resend-code':
+      case "resend-code":
         return await handleResendCode(data);
 
-      case 'reset-password':
+      case "reset-password":
         return await handleResetPassword(data);
 
       default:
         return NextResponse.json(
-          { success: false, message: 'Invalid action' },
+          { success: false, message: "Invalid action" },
           { status: 400 }
         );
     }
   } catch (error) {
-    console.error('SMS action error:', error);
+    console.error("SMS action error:", error);
     return NextResponse.json(
-      { 
-        success: false, 
-        message: error instanceof Error ? error.message : 'Internal server error' 
+      {
+        success: false,
+        message:
+          error instanceof Error ? error.message : "Internal server error",
       },
       { status: 500 }
     );
@@ -68,21 +65,28 @@ export async function POST(request: NextRequest) {
 /**
  * Send SMS verification code
  */
-async function handleSendCode(data: {phoneNumber:string,purpose:string}) {
+async function handleSendCode(data: string | undefined) {
   try {
-    const { phoneNumber, purpose } = data;
+    if (!data) {
+      return NextResponse.json(
+        { success: false, message: "Data is required" },
+        { status: 400 }
+      );
+    }
+
+    const { phoneNumber, purpose } = JSON.parse(data);
 
     // Validate phone number
     if (!phoneNumber) {
       return NextResponse.json(
-        { success: false, message: 'شماره تلفن الزامی است' },
+        { success: false, message: "شماره تلفن الزامی است" },
         { status: 400 }
       );
     }
 
     if (!/^09\d{9}$/.test(phoneNumber)) {
       return NextResponse.json(
-        { success: false, message: 'فرمت شماره تلفن نامعتبر است' },
+        { success: false, message: "فرمت شماره تلفن نامعتبر است" },
         { status: 400 }
       );
     }
@@ -90,42 +94,53 @@ async function handleSendCode(data: {phoneNumber:string,purpose:string}) {
     // Check for existing non-expired verification (rate limiting)
     const existingVerification = await Verification.findOne({
       phone: phoneNumber,
-      expiresAt: { $gt: new Date() }
+      expiresAt: { $gt: new Date() },
     });
 
     if (existingVerification) {
-      const timeLeft = Math.ceil((existingVerification.expiresAt.getTime() - Date.now()) / 1000);
+      const timeLeft = Math.ceil(
+        (existingVerification.expiresAt.getTime() - Date.now()) / 1000
+      );
       return NextResponse.json(
-        { 
-          success: false, 
+        {
+          success: false,
           message: `لطفاً ${timeLeft} ثانیه دیگر تلاش کنید`,
-          timeLeft 
+          timeLeft,
         },
         { status: 429 }
       );
     }
 
     // For registration, check if user already exists
-    if (purpose === 'register') {
+    if (purpose === "register") {
       const storeId = process.env.STORE_ID;
-      const existingUser = await StoreUsers.findOne({ phone: phoneNumber, storeId });
-      
+      const existingUser = await StoreUsers.findOne({
+        phone: phoneNumber,
+        storeId,
+      });
+
       if (existingUser) {
         return NextResponse.json(
-          { success: false, message: 'کاربری با این شماره تلفن قبلاً ثبت نام کرده است' },
+          {
+            success: false,
+            message: "کاربری با این شماره تلفن قبلاً ثبت نام کرده است",
+          },
           { status: 400 }
         );
       }
     }
 
     // For login/reset, check if user exists
-    if (purpose === 'login' || purpose === 'reset-password') {
+    if (purpose === "login" || purpose === "reset-password") {
       const storeId = process.env.STORE_ID;
-      const existingUser = await StoreUsers.findOne({ phone: phoneNumber, storeId });
-      
+      const existingUser = await StoreUsers.findOne({
+        phone: phoneNumber,
+        storeId,
+      });
+
       if (!existingUser) {
         return NextResponse.json(
-          { success: false, message: 'کاربری با این شماره تلفن یافت نشد' },
+          { success: false, message: "کاربری با این شماره تلفن یافت نشد" },
           { status: 404 }
         );
       }
@@ -138,11 +153,11 @@ async function handleSendCode(data: {phoneNumber:string,purpose:string}) {
     // Save verification to database
     await Verification.findOneAndUpdate(
       { phone: phoneNumber },
-      { 
-        code, 
-        expiresAt, 
+      {
+        code,
+        expiresAt,
         verified: false,
-        purpose: purpose || 'general'
+        purpose: purpose || "general",
       },
       { upsert: true, new: true }
     );
@@ -152,19 +167,19 @@ async function handleSendCode(data: {phoneNumber:string,purpose:string}) {
 
     if (!sent) {
       return NextResponse.json(
-        { success: false, message: 'خطا در ارسال پیامک' },
+        { success: false, message: "خطا در ارسال پیامک" },
         { status: 500 }
       );
     }
 
     return NextResponse.json({
       success: true,
-      message: 'کد تایید ارسال شد',
+      message: "کد تایید ارسال شد",
       expiresAt: expiresAt.toISOString(),
-      expiresIn: 300 // seconds
+      expiresIn: 300, // seconds
     });
   } catch (error) {
-    console.error('Send code error:', error);
+    console.error("Send code error:", error);
     throw error;
   }
 }
@@ -172,21 +187,28 @@ async function handleSendCode(data: {phoneNumber:string,purpose:string}) {
 /**
  * Verify SMS code
  */
-async function handleVerifyCode(data: {phoneNumber:string,code:string}) {
+async function handleVerifyCode(data: string | undefined) {
   try {
-    const { phoneNumber, code } = data;
+    if (!data) {
+      return NextResponse.json(
+        { success: false, message: "Data is required" },
+        { status: 400 }
+      );
+    }
+
+    const { phoneNumber, code } = JSON.parse(data);
 
     // Validate inputs
     if (!phoneNumber || !code) {
       return NextResponse.json(
-        { success: false, message: 'شماره تلفن و کد تایید الزامی است' },
+        { success: false, message: "شماره تلفن و کد تایید الزامی است" },
         { status: 400 }
       );
     }
 
     if (code.length !== 6 || !/^\d{6}$/.test(code)) {
       return NextResponse.json(
-        { success: false, message: 'کد باید ۶ رقمی باشد' },
+        { success: false, message: "کد باید ۶ رقمی باشد" },
         { status: 400 }
       );
     }
@@ -195,12 +217,12 @@ async function handleVerifyCode(data: {phoneNumber:string,code:string}) {
     const verification = await Verification.findOne({
       phone: phoneNumber,
       code,
-      expiresAt: { $gt: new Date() }
+      expiresAt: { $gt: new Date() },
     });
 
     if (!verification) {
       return NextResponse.json(
-        { success: false, message: 'کد نامعتبر یا منقضی شده است' },
+        { success: false, message: "کد نامعتبر یا منقضی شده است" },
         { status: 400 }
       );
     }
@@ -211,11 +233,11 @@ async function handleVerifyCode(data: {phoneNumber:string,code:string}) {
 
     return NextResponse.json({
       success: true,
-      message: 'کد با موفقیت تایید شد',
-      verified: true
+      message: "کد با موفقیت تایید شد",
+      verified: true,
     });
   } catch (error) {
-    console.error('Verify code error:', error);
+    console.error("Verify code error:", error);
     throw error;
   }
 }
@@ -223,13 +245,20 @@ async function handleVerifyCode(data: {phoneNumber:string,code:string}) {
 /**
  * Resend SMS code
  */
-async function handleResendCode(data: {phoneNumber:string}) {
+async function handleResendCode(data: string | undefined) {
   try {
-    const { phoneNumber } = data;
+    if (!data) {
+      return NextResponse.json(
+        { success: false, message: "Data is required" },
+        { status: 400 }
+      );
+    }
+
+    const { phoneNumber } = JSON.parse(data);
 
     if (!phoneNumber) {
       return NextResponse.json(
-        { success: false, message: 'شماره تلفن الزامی است' },
+        { success: false, message: "شماره تلفن الزامی است" },
         { status: 400 }
       );
     }
@@ -246,7 +275,7 @@ async function handleResendCode(data: {phoneNumber:string}) {
       phone: phoneNumber,
       code,
       expiresAt,
-      verified: false
+      verified: false,
     });
 
     // Send SMS
@@ -254,19 +283,19 @@ async function handleResendCode(data: {phoneNumber:string}) {
 
     if (!sent) {
       return NextResponse.json(
-        { success: false, message: 'خطا در ارسال مجدد پیامک' },
+        { success: false, message: "خطا در ارسال مجدد پیامک" },
         { status: 500 }
       );
     }
 
     return NextResponse.json({
       success: true,
-      message: 'کد تایید مجدداً ارسال شد',
+      message: "کد تایید مجدداً ارسال شد",
       expiresAt: expiresAt.toISOString(),
-      expiresIn: 300
+      expiresIn: 300,
     });
   } catch (error) {
-    console.error('Resend code error:', error);
+    console.error("Resend code error:", error);
     throw error;
   }
 }
@@ -274,14 +303,21 @@ async function handleResendCode(data: {phoneNumber:string}) {
 /**
  * Reset password with SMS verification
  */
-async function handleResetPassword(data: {phoneNumber:number,code:string,newPassword:string}) {
+async function handleResetPassword(data: string | undefined) {
   try {
-    const { phoneNumber, code, newPassword } = data;
+    if (!data) {
+      return NextResponse.json(
+        { success: false, message: "Data is required" },
+        { status: 400 }
+      );
+    }
+
+    const { phoneNumber, code, newPassword } = JSON.parse(data);
 
     // Validate inputs
     if (!phoneNumber || !code || !newPassword) {
       return NextResponse.json(
-        { success: false, message: 'تمامی فیلدها الزامی است' },
+        { success: false, message: "تمامی فیلدها الزامی است" },
         { status: 400 }
       );
     }
@@ -291,12 +327,12 @@ async function handleResetPassword(data: {phoneNumber:number,code:string,newPass
       phone: phoneNumber,
       code,
       verified: true,
-      expiresAt: { $gt: new Date() }
+      expiresAt: { $gt: new Date() },
     });
 
     if (!verification) {
       return NextResponse.json(
-        { success: false, message: 'کد تایید نامعتبر است' },
+        { success: false, message: "کد تایید نامعتبر است" },
         { status: 400 }
       );
     }
@@ -307,7 +343,7 @@ async function handleResetPassword(data: {phoneNumber:number,code:string,newPass
 
     if (!user) {
       return NextResponse.json(
-        { success: false, message: 'کاربر یافت نشد' },
+        { success: false, message: "کاربر یافت نشد" },
         { status: 404 }
       );
     }
@@ -324,10 +360,10 @@ async function handleResetPassword(data: {phoneNumber:number,code:string,newPass
 
     return NextResponse.json({
       success: true,
-      message: 'رمز عبور با موفقیت تغییر کرد'
+      message: "رمز عبور با موفقیت تغییر کرد",
     });
   } catch (error) {
-    console.error('Reset password error:', error);
+    console.error("Reset password error:", error);
     throw error;
   }
 }
