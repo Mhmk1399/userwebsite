@@ -4,10 +4,10 @@ import React, { useState, useRef, useCallback, useEffect } from "react";
 import { SlideSection, SlideBlock } from "@/lib/types";
 import Link from "next/link";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
-import defaultImage from "@/public/assets/images/defaultimage.jpg"
+import defaultImage from "@/public/assets/images/defaultimage.jpg";
 
 const getImageSrc = (imageSrc: string) => {
-  return imageSrc?.includes('https') ? imageSrc : defaultImage.src;
+  return imageSrc?.includes("https") ? imageSrc : defaultImage.src;
 };
 
 interface SlideShowProps {
@@ -61,21 +61,10 @@ const SlideContainer = styled.div<{
   border-radius: 16px;
 `;
 
-const SlidesWrapper = styled.div<{
-  $currentIndex: number;
-  $isDragging?: boolean;
-  $dragOffset?: number;
-}>`
+const SlidesWrapper = styled.div`
+  width: 100%;
   display: flex;
-  transition: ${(props) =>
-    props.$isDragging ? "none" : "transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)"};
-  transform: translateX(
-    ${(props) => props.$currentIndex * -100 + (props.$dragOffset || 0)}%
-  );
-  will-change: transform;
-  touch-action: pan-y;
-  user-select: none;
-  cursor: ${(props) => (props.$isDragging ? "grabbing" : "grab")};
+  justify-content: center;
 `;
 
 const Slide = styled.div`
@@ -85,7 +74,7 @@ const Slide = styled.div`
   align-items: center;
   padding: 10px 0;
 
-  /* Smooth fade-in on mount */
+  /* Smooth fade-in on slide change */
   animation: fadeIn 0.5s ease;
   @keyframes fadeIn {
     from {
@@ -105,8 +94,13 @@ const SlideImage = styled.img.withConfig({
   $data: SlideSection["setting"];
   $imageAnimation?: SlideSection["setting"]["imageAnimation"];
 }>`
-  width: ${(props) => props.$data?.imageWidth || "200"}px;
+  width: ${(props) => {
+    const w = props.$data?.imageWidth;
+    if (!w) return "200px";
+    return typeof w === "string" && w.includes("%") ? w : `${w}px`;
+  }};
   height: ${(props) => props.$data?.imageHeight || "200"}px;
+  max-width: 100%;
   position: relative;
   border-radius: ${(props) => props.$data?.imageRadious || "10"}px;
   opacity: ${(props) => props.$data?.opacityImage || 1};
@@ -781,7 +775,7 @@ const SlideShow: React.FC<SlideShowProps> = ({
       document.removeEventListener("touchend", handleGlobalTouchEnd);
     };
   }, [dragState.isDragging, handleDragMove, handleDragEnd]);
-  
+
   const sectionData = sections.find(
     (section) => section.type === componentName
   );
@@ -799,33 +793,28 @@ const SlideShow: React.FC<SlideShowProps> = ({
       setCurrentIndex((prev) => prev - 1);
     }
   };
-  
+
   if (!sectionData) return null;
+  const currentSlide: SlideBlock | undefined = blocks[currentIndex];
 
   return (
     <SectionSlideShow $isMobile={isMobile} $data={sectionData}>
       <SlideContainer $isMobile={isMobile}>
         <div
-          ref={containerRef}
-          onMouseDown={handleMouseDown}
-          onTouchStart={handleTouchStart}
           style={{
             position: "relative",
             overflow: "hidden",
             borderRadius: "16px",
           }}
         >
-          <SlidesWrapper
-            $currentIndex={currentIndex}
-            $isDragging={dragState.isDragging}
-            $dragOffset={dragOffset}
-          >
-            {blocks.map((slide: SlideBlock, index: number) => (
-              <Slide key={index}>
+          <SlidesWrapper>
+            {currentSlide && (
+              <Slide>
                 <SlideImage
-                  src={getImageSrc(slide.imageSrc)}
-                  alt={slide.imageAlt || "Slide"}
+                  src={getImageSrc(currentSlide.imageSrc)}
+                  alt={currentSlide.imageAlt || "Slide"}
                   $data={sectionData.setting}
+                  $imageAnimation={sectionData.setting?.imageAnimation}
                 />
                 <SlideTextBox>
                   <SlideHeading
@@ -833,32 +822,38 @@ const SlideShow: React.FC<SlideShowProps> = ({
                     $isMobile={isMobile}
                     $data={sectionData}
                   >
-                    {slide.text}
+                    {currentSlide.text}
                   </SlideHeading>
                   <SlideDescription
                     dir="rtl"
                     $isMobile={isMobile}
                     $data={sectionData}
                   >
-                    {slide.description}
+                    {currentSlide.description}
                   </SlideDescription>
-                  <Button $data={sectionData}>
+                  <Button
+                    $data={sectionData}
+                    $btnAnimation={sectionData.setting?.btnAnimation}
+                  >
                     <Link
-                      href={slide.btnLink ? slide.btnLink : "#"}
+                      href={currentSlide.btnLink ? currentSlide.btnLink : "#"}
                       target="_blank"
                     >
-                      {slide.btnText ? slide.btnText : "بیشتر بخوانید"}
+                      {currentSlide.btnText
+                        ? currentSlide.btnText
+                        : "بیشتر بخوانید"}
                     </Link>
                   </Button>
                 </SlideTextBox>
               </Slide>
-            ))}
+            )}
           </SlidesWrapper>
 
           {totalSlides > 1 && (
             <>
               <PrevButton
                 $data={sectionData}
+                $navAnimation={sectionData.setting?.navAnimation}
                 onClick={handlePrev}
                 disabled={currentIndex === 0}
                 style={{ opacity: currentIndex === 0 ? 0.5 : 1 }}
@@ -867,6 +862,7 @@ const SlideShow: React.FC<SlideShowProps> = ({
               </PrevButton>
               <NextButton
                 $data={sectionData}
+                $navAnimation={sectionData.setting?.navAnimation}
                 onClick={handleNext}
                 disabled={currentIndex === totalSlides - 1}
                 style={{ opacity: currentIndex === totalSlides - 1 ? 0.5 : 1 }}
