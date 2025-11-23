@@ -668,28 +668,12 @@ const SlideShow: React.FC<SlideShowProps> = ({
     currentX: 0,
     startTime: 0,
   });
-  const [dragOffset, setDragOffset] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  const handleDragStart = useCallback((clientX: number) => {
-    setDragState({
-      isDragging: true,
-      startX: clientX,
-      currentX: clientX,
-      startTime: Date.now(),
-    });
-    setDragOffset(0);
-  }, []);
 
   const handleDragMove = useCallback(
     (clientX: number) => {
       if (!dragState.isDragging || !containerRef.current) return;
 
-      const containerWidth = containerRef.current.offsetWidth;
-      const deltaX = clientX - dragState.startX;
-      const offsetPercent = (deltaX / containerWidth) * 100;
-
-      setDragOffset(offsetPercent);
       setDragState((prev) => ({ ...prev, currentX: clientX }));
     },
     [dragState.isDragging, dragState.startX]
@@ -726,23 +710,7 @@ const SlideShow: React.FC<SlideShowProps> = ({
       currentX: 0,
       startTime: 0,
     });
-    setDragOffset(0);
   }, [dragState, currentIndex, sections, componentName]);
-
-  const handleMouseDown = useCallback(
-    (e: React.MouseEvent) => {
-      e.preventDefault();
-      handleDragStart(e.clientX);
-    },
-    [handleDragStart]
-  );
-
-  const handleTouchStart = useCallback(
-    (e: React.TouchEvent) => {
-      handleDragStart(e.touches[0].clientX);
-    },
-    [handleDragStart]
-  );
 
   useEffect(() => {
     if (!dragState.isDragging) return;

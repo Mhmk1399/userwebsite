@@ -1,10 +1,10 @@
 "use client";
 import { MultiRowSection, MultiRowBlock } from "@/lib/types";
 import styled from "styled-components";
-import defaultImage from "@/public/assets/images/defaultimage.jpg"
+import defaultImage from "@/public/assets/images/defaultimage.jpg";
 
 const getImageSrc = (imageSrc: string) => {
-  return imageSrc?.includes('https') ? imageSrc : defaultImage.src;
+  return imageSrc?.includes("https") ? imageSrc : defaultImage.src;
 };
 interface MultiRowShowProps {
   sections: MultiRowSection[];
@@ -57,7 +57,10 @@ const Row = styled.div<{
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-direction: row;
+  flex-direction: ${(props) =>
+    props.$isMobile
+      ? "column"
+      : props.$data.setting?.imageAlign || "row-reverse"};
   gap: ${(props) => (props.$isMobile ? "10px" : "20px")};
   padding: ${(props) => (props.$isMobile ? "15px" : "30px")};
   background-color: ${(props) =>
