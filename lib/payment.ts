@@ -30,7 +30,7 @@ interface OrderData {
 export function generatePaymentToken(orderData: OrderData): string {
   const JWT_SECRET = process.env.JWT_SECRET;
   const STORE_ID = process.env.STORE_ID;
-  const RETURN_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+  const RETURN_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
   if (!JWT_SECRET) {
     throw new Error('JWT_SECRET is not configured');
@@ -40,57 +40,39 @@ export function generatePaymentToken(orderData: OrderData): string {
     throw new Error('STORE_ID is not configured');
   }
 
-  // Create payload with all fields required by Domain B
+  // Create payload matching Vendor Payment Integration Guide format
   const payload = {
     // Core identifiers
     storeId: STORE_ID,
-    orderId: orderData.orderId,
-    
-    // User identifiers (normalized for backward compatibility)
-    userId: orderData.userId,
-    storeUserId: orderData.userId, // Alias for Domain B
-    
-    // Cart/Items (provide both formats for compatibility)
-    items: orderData.items.map(item => ({
-      productId: item.productId,
-      productName: item.name || '',
-      name: item.name || '', // Alias
-      quantity: item.quantity,
-      price: item.price,
-      ...(item.colorCode && { colorCode: item.colorCode }),
-      ...(item.properties && { properties: item.properties }),
-    })),
-    cart: orderData.items.map(item => ({
-      productId: item.productId,
-      productName: item.name || '',
-      quantity: item.quantity,
-      price: item.price,
-    })),
-    
-    // Amount
-    totalAmount: orderData.totalAmount,
+    storeUserId: orderData.userId, // Customer ID in your system
     
     // Customer information
     customerName: orderData.customerName,
-    customerEmail: orderData.customerEmail || '',
     customerPhone: orderData.customerPhone || '0000000000',
     
-    // Shipping address
-    shippingAddress: orderData.shippingAddress,
+    // Shopping cart (required format)
+    cart: orderData.items.map(item => ({
+      productId: item.productId,
+      productName: item.name || '',
+      price: item.price,
+      quantity: item.quantity,
+      ...(item.colorCode && { color: item.colorCode }), // Changed colorCode to color
+    })),
     
-    // Return URL for Domain B to redirect back
+    // Total amount in Toman
+    totalAmount: orderData.totalAmount,
+    
+    // Return URL for callback
     returnUrl: `${RETURN_URL}/payment/return`,
     
-    // Metadata for additional order information
+    // IMPORTANT: Shipping address in metadata (required for order creation)
     metadata: {
       orderId: orderData.orderId,
-      userId: orderData.userId,
-      storeId: STORE_ID,
-      createdAt: new Date().toISOString(),
+      shippingAddress: orderData.shippingAddress.street,
+      city: orderData.shippingAddress.city,
+      state: orderData.shippingAddress.state,
+      postalCode: orderData.shippingAddress.postalCode,
     },
-    
-    // Timestamp
-    timestamp: Date.now(),
   };
 
   // Token expires in 15 minutes
@@ -123,19 +105,20 @@ export function verifyReturnToken(token: string) {
  * Build Vendor Dashboard Payment URL
  * 
  * Creates the full URL to redirect user to vendor dashboard for payment
+ * Per Vendor Payment Integration Guide: redirect to /vendorsPaymentPage?token=xxx
  * 
  * @param paymentToken - JWT payment token
  * @returns Full payment URL
  */
 export function buildPaymentUrl(paymentToken: string): string {
   const VENDOR_DASHBOARD_URL = process.env.VENDOR_DASHBOARD_URL;
-  const RETURN_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
   if (!VENDOR_DASHBOARD_URL) {
     throw new Error('VENDOR_DASHBOARD_URL is not configured');
   }
 
-  const returnUrl = `${RETURN_URL}/payment/return`;
+  // Remove trailing slash if present
+  const baseUrl = VENDOR_DASHBOARD_URL.replace(/\/$/, '');
   
-  return `${VENDOR_DASHBOARD_URL}/vendor/payment?token=${encodeURIComponent(paymentToken)}&returnUrl=${encodeURIComponent(returnUrl)}`;
+  return `${baseUrl}/vendorsPaymentPage?token=${encodeURIComponent(paymentToken)}`;
 }

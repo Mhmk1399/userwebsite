@@ -12,9 +12,31 @@ import { sendVerificationCode, generateVerificationCode } from "@/lib/sms";
 
 type SmsAction = "send-code" | "verify-code" | "resend-code" | "reset-password";
 
+interface SendCodeData {
+  phoneNumber: string;
+  purpose?: 'register' | 'login' | 'reset-password';
+}
+
+interface VerifyCodeData {
+  phoneNumber: string;
+  code: string;
+}
+
+interface ResendCodeData {
+  phoneNumber: string;
+}
+
+interface ResetPasswordData {
+  phoneNumber: string;
+  code: string;
+  newPassword: string;
+}
+
+type SmsActionData = SendCodeData | VerifyCodeData | ResendCodeData | ResetPasswordData;
+
 interface SmsRequest {
   action: SmsAction;
-  data?: string | undefined;
+  data?: SmsActionData;
 }
 
 export async function POST(request: NextRequest) {
@@ -65,7 +87,7 @@ export async function POST(request: NextRequest) {
 /**
  * Send SMS verification code
  */
-async function handleSendCode(data: string | undefined) {
+async function handleSendCode(data: SmsActionData | undefined) {
   try {
     if (!data) {
       return NextResponse.json(
@@ -74,7 +96,7 @@ async function handleSendCode(data: string | undefined) {
       );
     }
 
-    const { phoneNumber, purpose } = JSON.parse(data);
+    const { phoneNumber, purpose } = data as SendCodeData;
 
     // Validate phone number
     if (!phoneNumber) {
@@ -187,7 +209,7 @@ async function handleSendCode(data: string | undefined) {
 /**
  * Verify SMS code
  */
-async function handleVerifyCode(data: string | undefined) {
+async function handleVerifyCode(data: SmsActionData | undefined) {
   try {
     if (!data) {
       return NextResponse.json(
@@ -196,7 +218,7 @@ async function handleVerifyCode(data: string | undefined) {
       );
     }
 
-    const { phoneNumber, code } = JSON.parse(data);
+    const { phoneNumber, code } = data as VerifyCodeData;
 
     // Validate inputs
     if (!phoneNumber || !code) {
@@ -245,7 +267,7 @@ async function handleVerifyCode(data: string | undefined) {
 /**
  * Resend SMS code
  */
-async function handleResendCode(data: string | undefined) {
+async function handleResendCode(data: SmsActionData | undefined) {
   try {
     if (!data) {
       return NextResponse.json(
@@ -254,7 +276,7 @@ async function handleResendCode(data: string | undefined) {
       );
     }
 
-    const { phoneNumber } = JSON.parse(data);
+    const { phoneNumber } = data as ResendCodeData;
 
     if (!phoneNumber) {
       return NextResponse.json(
@@ -303,7 +325,7 @@ async function handleResendCode(data: string | undefined) {
 /**
  * Reset password with SMS verification
  */
-async function handleResetPassword(data: string | undefined) {
+async function handleResetPassword(data: SmsActionData | undefined) {
   try {
     if (!data) {
       return NextResponse.json(
@@ -312,7 +334,7 @@ async function handleResetPassword(data: string | undefined) {
       );
     }
 
-    const { phoneNumber, code, newPassword } = JSON.parse(data);
+    const { phoneNumber, code, newPassword } = data as ResetPasswordData;
 
     // Validate inputs
     if (!phoneNumber || !code || !newPassword) {

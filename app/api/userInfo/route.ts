@@ -19,7 +19,7 @@ export async function GET() {
     if (!userInfo) {
       return NextResponse.json(
         { error: "User info not found" },
-        { status: 404 }
+        { status: 408 }
       );
     }
 

@@ -30,12 +30,9 @@ export async function GET(request: NextRequest) {
 
     if (routeName === "home") {
       const homeDoc = await Jsons.findOne({ storeId, route: "home" });
-      console.log("Searching for home doc with storeId:", storeId);
-      console.log("Home doc found:", !!homeDoc);
 
       // Debug: Check what store IDs exist in database
       const allDocs = await Jsons.find({}, { storeId: 1, route: 1 }).limit(5);
-      console.log("Available docs in DB:", allDocs);
 
       if (!homeDoc) {
         return NextResponse.json(
@@ -45,7 +42,6 @@ export async function GET(request: NextRequest) {
       }
       const homeContent =
         activeMode === "lg" ? homeDoc.lgContent : homeDoc.smContent;
-        console.log(homeContent , "jsssssssss")
       return NextResponse.json(homeContent, { status: 200, headers });
     }
 
