@@ -34,6 +34,8 @@ export async function GET(request: NextRequest) {
       // Debug: Check what store IDs exist in database
       const allDocs = await Jsons.find({}, { storeId: 1, route: 1 }).limit(5);
 
+      console.log(allDocs)
+
       if (!homeDoc) {
         return NextResponse.json(
           { error: `Home content not found for storeId: ${storeId}` },
