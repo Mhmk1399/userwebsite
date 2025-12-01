@@ -5,6 +5,7 @@ import Image from "next/image";
 import { styled } from "styled-components";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
+import { cartService } from "@/lib/cartService";
 
 interface CartItem {
   id: string;
@@ -321,28 +322,12 @@ export default function DetailPage() {
     setIsAddingToCart(true);
 
     try {
-      const db = await openDB();
-      const transaction = (db as IDBDatabase).transaction("cart", "readwrite");
-      const store = transaction.objectStore("cart");
-
       const productId = product.id || product._id;
 
       if (!productId) {
         toast.error("خطا در شناسایی محصول");
         return;
       }
-
-      // Create unique key for cart item based on product, color, and properties
-      const cartKey = `${productId}_${selectedColor}_${JSON.stringify(
-        selectedProperties
-      )}`;
-
-      // Check if item already exists
-      const existingItem = await new Promise<CartItem | null>((resolve) => {
-        const request = store.get(cartKey);
-        request.onsuccess = () => resolve(request.result);
-        request.onerror = () => resolve(null);
-      });
 
       // Calculate final price with discount
       const originalPrice = parseFloat(product.price?.replace(/[^0-9.-]+/g, "") || "0");
@@ -351,10 +336,10 @@ export default function DetailPage() {
         : originalPrice;
 
       const cartItem = {
-        id: cartKey,
+        productId: productId,
         name: product.name || "Unnamed Product",
         price: finalPrice,
-        quantity: existingItem ? existingItem.quantity + 1 : 1,
+        quantity: 1,
         image: selectedImage || "/assets/images/pro2.jpg",
         colorCode: selectedColor,
         properties: Object.entries(selectedProperties).map(([name, value]) => ({
@@ -363,7 +348,7 @@ export default function DetailPage() {
         })),
       };
 
-      await store.put(cartItem);
+      await cartService.addToCart(cartItem);
       toast.success("محصول به سبد خرید اضافه شد");
     } catch (error) {
       console.log("Error adding to cart:", error);
@@ -371,23 +356,6 @@ export default function DetailPage() {
     } finally {
       setIsAddingToCart(false);
     }
-  };
-
-  // IndexedDB helper function
-  const openDB = async () => {
-    return await new Promise((resolve, reject) => {
-      const request = indexedDB.open("CartDB", 1);
-
-      request.onerror = () => reject(request.error);
-      request.onsuccess = () => resolve(request.result);
-
-      request.onupgradeneeded = (event) => {
-        const db = (event.target as IDBOpenDBRequest).result;
-        if (!db.objectStoreNames.contains("cart")) {
-          db.createObjectStore("cart", { keyPath: "id" });
-        }
-      };
-    });
   };
 
   if (layoutLoading) {

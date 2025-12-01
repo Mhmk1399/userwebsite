@@ -3,6 +3,7 @@ import { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { toast, Toaster } from "react-hot-toast";
+import { cartService } from "@/lib/cartService";
 
 function PaymentVerifyContent() {
   const [status, setStatus] = useState<"loading" | "success" | "failed">("loading");
@@ -62,10 +63,7 @@ function PaymentVerifyContent() {
 
       // Payment verified and order created successfully
       // Clear cart
-      const db = await openDB();
-      const transaction = (db as IDBDatabase).transaction("cart", "readwrite");
-      const store = transaction.objectStore("cart");
-      await store.clear();
+      await cartService.clearCart();
       
       // Clear stored authority
       localStorage.removeItem("paymentAuthority");
@@ -153,16 +151,4 @@ export default function PaymentVerifyPage() {
   );
 }
 
-async function openDB() {
-  return await new Promise((resolve, reject) => {
-    const request = indexedDB.open("CartDB", 1);
-    request.onerror = () => reject(request.error);
-    request.onsuccess = () => resolve(request.result);
-    request.onupgradeneeded = (event) => {
-      const db = (event.target as IDBOpenDBRequest).result;
-      if (!db.objectStoreNames.contains("cart")) {
-        db.createObjectStore("cart", { keyPath: "id" });
-      }
-    };
-  });
-}
+// IndexedDB removed - using backend API via cartService

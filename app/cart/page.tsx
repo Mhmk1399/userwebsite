@@ -5,9 +5,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-hot-toast";
 import Link from "next/link";
 import { FaHome, FaShopify } from "react-icons/fa";
+import { cartService } from "@/lib/cartService";
 
 interface CartItem {
   id: string;
+  productId: string;
   name: string;
   price: number;
   quantity: number;
@@ -41,40 +43,27 @@ export default function CartPage() {
   }, []);
 
   const loadCartItems = async () => {
-    const db = await openDB();
-    const transaction = (db as IDBDatabase).transaction("cart", "readonly");
-    const store = transaction.objectStore("cart");
-    const request = store.getAll();
-    request.onsuccess = () => {
-      setCartItems(request.result as CartItem[]);
+    try {
+      const items = await cartService.loadCart();
+      setCartItems(items);
+    } catch (error) {
+      console.log("Failed to load cart items:", error);
+      toast.error("خطا در بارگذاری سبد خرید");
+    } finally {
       setLoading(false);
-    };
-    request.onerror = () => {
-      console.log("Failed to load cart items");
-      setLoading(false);
-    };
-    setLoading(false);
+    }
   };
 
   const updateQuantity = async (itemId: string, change: number) => {
-    const db = await openDB();
-    const transaction = (db as IDBDatabase).transaction("cart", "readwrite");
-    const store = transaction.objectStore("cart");
-
-    const item = cartItems.find((item) => item.id === itemId);
-    if (!item) return;
-
-    const newQuantity = Math.max(0, item.quantity + change);
-
-    if (newQuantity === 0) {
-      await store.delete(itemId);
-      setCartItems((prev) => prev.filter((item) => item.id !== itemId));
-    } else {
-      const updatedItem = { ...item, quantity: newQuantity };
-      await store.put(updatedItem);
-      setCartItems((prev) =>
-        prev.map((item) => (item.id === itemId ? updatedItem : item))
-      );
+    try {
+      await cartService.updateQuantity(itemId, change);
+      
+      // Reload cart to reflect changes
+      const updatedItems = await cartService.loadCart();
+      setCartItems(updatedItems);
+    } catch (error) {
+      console.log("Error updating quantity:", error);
+      toast.error("خطا در به‌روزرسانی تعداد");
     }
   };
 
@@ -108,7 +97,7 @@ export default function CartPage() {
         },
         body: JSON.stringify({
           cartItems: cartItems.map((item) => ({
-            productId: item.id,
+            productId: item.productId || item.id?.split("_")[0] || item.id,
             quantity: item.quantity,
             price: item.price,
             ...(item.colorCode && { colorCode: item.colorCode }),
@@ -897,18 +886,4 @@ export default function CartPage() {
   );
 }
 
-async function openDB() {
-  return await new Promise((resolve, reject) => {
-    const request = indexedDB.open("CartDB", 1);
-
-    request.onerror = () => reject(request.error);
-    request.onsuccess = () => resolve(request.result);
-
-    request.onupgradeneeded = (event) => {
-      const db = (event.target as IDBOpenDBRequest).result;
-      if (!db.objectStoreNames.contains("cart")) {
-        db.createObjectStore("cart", { keyPath: "id" });
-      }
-    };
-  });
-}
+// IndexedDB functions removed - using backend API via cartService

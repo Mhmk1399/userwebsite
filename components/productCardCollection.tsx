@@ -16,6 +16,7 @@ interface CartItem {
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
+import { cartService } from "@/lib/cartService";
 
 interface ProductCardProps {
   productData: ProductCardData;
@@ -190,34 +191,20 @@ const ProductCardCollection: React.FC<ProductCardProps> = ({
       setIsAddingToCart(true);
 
       try {
-        const db = await openDB();
-        const transaction = (db as IDBDatabase).transaction(
-          "cart",
-          "readwrite"
-        );
-        const store = transaction.objectStore("cart");
-
         // Use _id or id, whichever is available
         const productId = productData._id || productData.id;
 
-        // Check if item already exists
-        const existingItem = await new Promise<CartItem | null>((resolve) => {
-          const request = store.get(productId);
-          request.onsuccess = () => resolve(request.result);
-          request.onerror = () => resolve(null);
-        });
-
         const cartItem = {
-          id: productId,
+          productId: productId,
           name: safeProductData.name || "Unnamed Product",
           price: parseFloat(
             safeProductData.price?.replace(/[^0-9.-]+/g, "") || "0"
           ),
-          quantity: existingItem ? existingItem.quantity + 1 : 1,
+          quantity: 1,
           image: currentImage.imageSrc,
         };
 
-        await store.put(cartItem);
+        await cartService.addToCart(cartItem);
         toast.success("محصول به سبد خرید اضافه شد");
       } catch (error) {
         console.log("Error adding to cart:", error);
@@ -277,21 +264,6 @@ const ProductCardCollection: React.FC<ProductCardProps> = ({
   }
 };
 
-// IndexedDB helper function
-async function openDB() {
-  return await new Promise((resolve, reject) => {
-    const request = indexedDB.open("CartDB", 1);
-
-    request.onerror = () => reject(request.error);
-    request.onsuccess = () => resolve(request.result);
-
-    request.onupgradeneeded = (event) => {
-      const db = (event.target as IDBOpenDBRequest).result;
-      if (!db.objectStoreNames.contains("cart")) {
-        db.createObjectStore("cart", { keyPath: "id" });
-      }
-    };
-  });
-}
+// IndexedDB removed - using backend API via cartService
 
 export default ProductCardCollection;

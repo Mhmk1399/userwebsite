@@ -85,12 +85,25 @@ export async function POST(request: NextRequest) {
 
     for (const item of cartItems) {
       console.log("Processing cart item:", {
-        productId: item.productId,
+        productId: item.productId._id,
         quantity: item.quantity,
-      });
-      // Extract actual product ID from composite key (format: productId_#colorCode_{properties})
-      const actualProductId = item.productId.split("_")[0];
-      console.log("Extracted product ID:", actualProductId);
+      });     
+      
+      // Validate productId exists and is a string
+      if (!item.productId._id || typeof item.productId._id !== 'string') {
+        console.log("ERROR: Invalid productId:", item.productId);
+        return NextResponse.json(
+          {
+            success: false,
+            message: `Invalid product ID for item`,
+          },
+          { status: 400 }
+        );
+      }
+      
+      // Use productId directly (should already be the actual product ID from cart page)
+      const actualProductId = item.productId;
+      console.log("Using product ID:", actualProductId);
       const product = await Product.findById(actualProductId);
       if (!product) {
         console.log("ERROR: Product not found:", actualProductId);

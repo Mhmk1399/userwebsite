@@ -4,6 +4,7 @@ import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { toast } from "react-hot-toast";
+import { cartService } from "@/lib/cartService";
 
 function PaymentReturnContent() {
   const router = useRouter();
@@ -54,10 +55,7 @@ function PaymentReturnContent() {
 
           // Clear cart after successful payment
           if (typeof window !== "undefined") {
-            const db = await openDB();
-            const transaction = db.transaction("cart", "readwrite");
-            const store = transaction.objectStore("cart");
-            await store.clear();
+            await cartService.clearCart();
           }
 
           // Redirect to order details after 3 seconds
@@ -86,19 +84,7 @@ function PaymentReturnContent() {
     verifyPayment();
   }, [searchParams, router]);
 
-  const openDB = (): Promise<IDBDatabase> => {
-    return new Promise((resolve, reject) => {
-      const request = indexedDB.open("CartDB", 1);
-      request.onerror = () => reject(request.error);
-      request.onsuccess = () => resolve(request.result);
-      request.onupgradeneeded = (event) => {
-        const db = (event.target as IDBOpenDBRequest).result;
-        if (!db.objectStoreNames.contains("cart")) {
-          db.createObjectStore("cart", { keyPath: "id" });
-        }
-      };
-    });
-  };
+  // IndexedDB removed - using backend API via cartService
 
   if (loading) {
     return (

@@ -5,6 +5,7 @@ import { Toaster } from "react-hot-toast";
 import ClientWrapper from "@/components/ClientWrapper";
 import LayoutProvider from "@/components/LayoutProvider";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import CartIcon from "@/components/CartIcon";
 
 const allFontVariables = Object.values(fontMap)
   .map((font) => font.variable)
@@ -23,6 +24,7 @@ export default function RootLayout({
             <ClientWrapper>
               <Toaster position="top-center" />
               <LayoutProvider>{children}</LayoutProvider>
+              <CartIcon />
             </ClientWrapper>
           </StyledComponentsRegistry>
         </ErrorBoundary>

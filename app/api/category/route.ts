@@ -6,12 +6,10 @@ import { NextResponse,   } from "next/server";
 export async function GET() {
   try {
     await connect();
-    console.log("Connected to MongoDB");
     if (!connect) {
       return NextResponse.json({ error: "Failed to connect to database" });
     }
     const storeId = process.env. STORE_ID;
-    console.log("storeId read from subdomain", storeId);
     if (!storeId) {
       return NextResponse.json({ error: "Miss storeId" }, { status: 401 });
     }
