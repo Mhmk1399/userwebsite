@@ -88,7 +88,7 @@ export default function CartPage() {
     }
 
     try {
-      // Use new checkout endpoint for vendor dashboard payment flow
+      // Call checkout endpoint for direct ZarinPal payment
       const response = await fetch("/api/payment/checkout", {
         method: "POST",
         headers: {
@@ -117,18 +117,33 @@ export default function CartPage() {
 
       if (!response.ok) {
         console.log(result.message || `HTTP error! status: ${response.status}`);
-        toast.error(result.message || "درخواست پرداخت ناموفق بود");
+        toast.error(result.message || result.error || "درخواست پرداخت ناموفق بود");
         return;
       }
+      
       console.log("Payment response:", result);
+      console.log("Payment URL from backend:", result.data?.paymentUrl);
+      console.log("Payment URL type:", typeof result.data?.paymentUrl);
 
-      if (result.success && result.paymentUrl) {
+      if (result.success && result.data?.paymentUrl) {
         if (typeof window !== "undefined") {
-          // Store order ID for later reference
-          localStorage.setItem("pendingOrderId", result.orderId);
-          console.log("Redirecting to vendor dashboard:", result.paymentUrl);
-          // Redirect to vendor dashboard for payment
-          window.location.href = result.paymentUrl;
+          const paymentUrl = result.data.paymentUrl;
+          console.log("About to redirect to:", paymentUrl);
+          console.log("URL starts with https://payment.zarinpal.com:", paymentUrl.startsWith("https://payment.zarinpal.com"));
+          
+          // Validate the URL is absolute and points to ZarinPal
+          if (!paymentUrl.startsWith("https://payment.zarinpal.com")) {
+            console.error("INVALID PAYMENT URL:", paymentUrl);
+            console.error("Expected URL to start with: https://payment.zarinpal.com");
+            toast.error("خطا در URL پرداخت - لطفا با پشتیبانی تماس بگیرید");
+            return;
+          }
+          
+          // IMPORTANT: Use the full absolute URL returned by backend
+          // DO NOT modify, parse, or construct the URL on the frontend
+          // The URL must be used exactly as returned from the API
+          console.log("Redirecting to ZarinPal gateway...");
+          window.location.href = paymentUrl;
         }
       } else {
         console.log("Payment failed:", result);

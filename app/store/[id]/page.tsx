@@ -7,15 +7,7 @@ import { useParams, useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import { cartService } from "@/lib/cartService";
 
-interface CartItem {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-  image: string;
-  colorCode: string;
-  properties: { name: string; value: string }[];
-}
+
 
 interface ProductColor {
   code: string;

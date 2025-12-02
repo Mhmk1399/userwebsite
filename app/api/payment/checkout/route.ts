@@ -2,9 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import connect from "@/lib/data";
 import Product from "@/models/product";
-import Order from "@/models/orders";
 import { CartItem } from "@/lib/types";
-import { generatePaymentToken, buildPaymentUrl } from "@/lib/payment";
 import "@/lib/types";
 
 interface CustomJwtPayload extends JwtPayload {
@@ -18,7 +16,7 @@ interface PropertyItem {
 
 export async function POST(request: NextRequest) {
   try {
-    console.log("=== Vendor Dashboard Payment Request Started ===");
+    console.log("=== ZarinPal Payment Request Started ===");
     const { cartItems, shippingAddress } = await request.json();
     console.log("Request data:", {
       cartItemsCount: cartItems?.length,
@@ -33,7 +31,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          message: "Authentication required",
+          message: "غیر مجاز - لطفاً وارد شوید",
         },
         { status: 401 }
       );
@@ -52,7 +50,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          message: "Invalid token",
+          message: "توکن نامعتبر",
         },
         { status: 401 }
       );
@@ -67,12 +65,24 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          message: "Cart is empty",
+          message: "سبد خرید خالی است",
         },
         { status: 400 }
       );
     }
     console.log("Cart validation passed, items count:", cartItems.length);
+
+    // Validate shipping address
+    if (!shippingAddress || !shippingAddress.street || !shippingAddress.city || !shippingAddress.state || !shippingAddress.postalCode) {
+      console.log("ERROR: Invalid shipping address");
+      return NextResponse.json(
+        {
+          success: false,
+          message: "آدرس تحویل کامل نیست",
+        },
+        { status: 400 }
+      );
+    }
 
     // Connect to database and validate products
     console.log("Connecting to database...");
@@ -81,36 +91,27 @@ export async function POST(request: NextRequest) {
 
     let totalAmount = 0;
     const validatedItems: CartItem[] = [];
-    const itemsWithNames: CartItem[] = [];
 
     for (const item of cartItems) {
       console.log("Processing cart item:", {
-        productId: item.productId._id,
+        productId: item.productId,
         quantity: item.quantity,
-      });     
+      });
       
-      // Validate productId exists and is a string
-      if (!item.productId._id || typeof item.productId._id !== 'string') {
-        console.log("ERROR: Invalid productId:", item.productId);
-        return NextResponse.json(
-          {
-            success: false,
-            message: `Invalid product ID for item`,
-          },
-          { status: 400 }
-        );
-      }
+      // Extract actual product ID (handle both direct ID and composite key format)
+      const actualProductId = typeof item.productId === 'string' 
+        ? item.productId.includes('_') ? item.productId.split("_")[0] : item.productId
+        : item.productId;
       
-      // Use productId directly (should already be the actual product ID from cart page)
-      const actualProductId = item.productId;
       console.log("Using product ID:", actualProductId);
       const product = await Product.findById(actualProductId);
+      
       if (!product) {
         console.log("ERROR: Product not found:", actualProductId);
         return NextResponse.json(
           {
             success: false,
-            message: `Product not found: ${item.productId}`,
+            message: `محصول یافت نشد: ${item.productId}`,
           },
           { status: 400 }
         );
@@ -140,7 +141,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(
           {
             success: false,
-            message: `Invalid price for product: ${item.productId}`,
+            message: `قیمت محصول نامعتبر است`,
           },
           { status: 400 }
         );
@@ -159,6 +160,7 @@ export async function POST(request: NextRequest) {
         productId: actualProductId,
         quantity: item.quantity,
         price: serverPrice,
+        name: product.name, // Include name for description
       };
 
       // Add color and properties if they exist
@@ -181,66 +183,33 @@ export async function POST(request: NextRequest) {
       }
 
       validatedItems.push(validatedItem);
-
-      // Store item with name for payment token
-      const itemWithName: CartItem = {
-        productId: actualProductId,
-        name: product.name,
-        quantity: item.quantity,
-        price: serverPrice,
-      };
-
-      if (item.colorCode) {
-        itemWithName.colorCode = item.colorCode;
-      }
-
-      if (validatedItem.properties) {
-        itemWithName.properties = validatedItem.properties;
-      }
-
-      itemsWithNames.push(itemWithName);
     }
     console.log("All items validated. Total amount:", totalAmount, "Toman");
 
-    // Create pending order in database
-    const storeId = process.env.STORE_ID;
-    if (!storeId) {
-      console.log("ERROR: STORE_ID not configured");
+    // Validate minimum amount (100 Toman)
+    if (totalAmount < 100) {
+      console.log("ERROR: Amount below minimum:", totalAmount);
       return NextResponse.json(
         {
           success: false,
-          message: "Store configuration missing",
+          message: "مبلغ باید حداقل ۱۰۰ تومان باشد",
         },
-        { status: 500 }
+        { status: 400 }
       );
     }
 
-    const newOrder = await Order.create({
-      userId,
-      storeId,
-      products: validatedItems,
-      totalAmount,
-      shippingAddress,
-      status: "pending",
-      paymentStatus: "pending",
-    });
-
-    console.log("Order created:", newOrder._id.toString());
-
-    // Fetch user info from database for payment token
+    // Fetch user info from database
     let userInfo = {
-      name: "Customer",
-      email: "",
+      name: "مشتری",
       phone: "0000000000",
     };
 
     try {
       const StoreUsers = (await import("@/models/storesUsers")).default;
-      const user = await StoreUsers.findById(userId).select("name phone email");
+      const user = await StoreUsers.findById(userId).select("name phone");
       if (user) {
         userInfo = {
-          name: user.name || "Customer",
-          email: user.email || "",
+          name: user.name || "مشتری",
           phone: user.phone || "0000000000",
         };
         console.log("User info fetched:", {
@@ -254,39 +223,156 @@ export async function POST(request: NextRequest) {
       console.log("Warning: Could not fetch user info:", error);
     }
 
-    // Generate payment token for vendor dashboard
-    try {
-      const paymentToken = generatePaymentToken({
-        orderId: newOrder._id.toString(),
-        userId,
-        items: itemsWithNames,
-        totalAmount,
-        customerName: userInfo.name,
-        customerEmail: userInfo.email,
-        customerPhone: userInfo.phone,
-        shippingAddress,
-      });
+    // Create order data to store temporarily (will be saved after payment verification)
+    const orderData = {
+      userId,
+      storeId: process.env.STORE_ID,
+      products: validatedItems,
+      totalAmount,
+      shippingAddress,
+      status: "pending",
+      paymentStatus: "pending",
+      customerName: userInfo.name,
+      customerPhone: userInfo.phone,
+      createdAt: new Date(),
+    };
 
-      console.log("Payment token generated successfully");
+    // Generate unique order ID for tracking
+    const orderId = `ORDER-${Date.now()}`;
+    console.log("Order ID generated:", orderId);
 
-      // Build vendor dashboard URL
-      const paymentUrl = buildPaymentUrl(paymentToken);
-      console.log("Payment URL generated:", paymentUrl);
+    // Prepare ZarinPal payment request
+    const description = `خرید ${validatedItems.length} محصول از ${process.env.STORE_TITLE || 'فروشگاه'}`;
+    const baseUrl = (process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3001').replace(/\/$/, '');
+    const callbackUrl = `${baseUrl}/api/payment/callback`;
+    
+    const zarinpalData = {
+      merchant_id: process.env.ZARINPAL_MERCHANT_ID,
+      amount: totalAmount, // Amount in Toman (ZarinPal API expects Toman now, not Rials)
+      callback_url: callbackUrl,
+      description,
+      metadata: {
+        mobile: userInfo.phone,
+        order_id: orderId,
+      },
+    };
+
+    console.log("ZarinPal request data:", {
+      merchant_id: zarinpalData.merchant_id ? "SET" : "NOT SET",
+      amount: zarinpalData.amount,
+      callback_url: zarinpalData.callback_url,
+      description: zarinpalData.description,
+    });
+
+    // Request payment from ZarinPal
+    console.log("Sending request to ZarinPal...");
+    const zarinpalResponse = await fetch(
+      "https://payment.zarinpal.com/pg/v4/payment/request.json",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(zarinpalData),
+      }
+    );
+
+    console.log("ZarinPal response status:", zarinpalResponse.status);
+    const zarinpalResult = await zarinpalResponse.json();
+    console.log("ZarinPal response:", zarinpalResult);
+
+    if (zarinpalResult.data?.code === 100 && zarinpalResult.data?.authority) {
+      const authority = zarinpalResult.data.authority;
+      console.log("Payment request successful, authority:", authority);
+
+      // Store order data temporarily with authority for verification
+      // In production, use Redis or database with TTL
+      (global as Record<string, unknown>).pendingOrders =
+        (global as Record<string, unknown>).pendingOrders || new Map();
+      
+      const pendingOrder = {
+        ...orderData,
+        orderId,
+        authority,
+      };
+
+      ((global as Record<string, unknown>).pendingOrders as Map<string, unknown>)
+        .set(authority, pendingOrder);
+
+      // Cleanup expired orders after 15 minutes
+      setTimeout(() => {
+        ((global as Record<string, unknown>).pendingOrders as Map<string, unknown>)
+          ?.delete(authority);
+      }, 15 * 60 * 1000);
+
+      // Build payment URL - ALWAYS use full absolute ZarinPal URL
+      // CRITICAL: This must be the complete URL including protocol and domain
+      // DO NOT return relative URLs like "/pg/StartPay/..." or "pg/StartPay/..."
+      // The frontend will use this URL directly with window.location.href
+      const paymentUrl = `https://payment.zarinpal.com/pg/StartPay/${authority}`;
+      
+      console.log("=== Payment URL Details ===");
+      console.log("Authority:", authority);
+      console.log("Full Payment URL:", paymentUrl);
+      console.log("URL starts with https://payment.zarinpal.com:", paymentUrl.startsWith("https://payment.zarinpal.com"));
+      console.log("URL length:", paymentUrl.length);
+      console.log("===========================");
+
+      // Validate the URL is absolute before returning
+      if (!paymentUrl.startsWith("https://payment.zarinpal.com")) {
+        console.log("ERROR: Payment URL is not absolute!", paymentUrl);
+        return NextResponse.json(
+          {
+            success: false,
+            error: "خطا در ساخت URL پرداخت",
+            message: "URL پرداخت نامعتبر است",
+          },
+          { status: 500 }
+        );
+      }
 
       return NextResponse.json({
         success: true,
-        orderId: newOrder._id.toString(),
-        paymentUrl,
-        amount: totalAmount,
+        message: "درخواست پرداخت با موفقیت ایجاد شد",
+        data: {
+          authority,
+          paymentUrl,
+          amount: totalAmount,
+          orderId,
+        },
       });
-    } catch (error) {
-      console.log("ERROR: Token generation failed:", error);
+    } else {
+      console.log("ERROR: ZarinPal request failed:", {
+        code: zarinpalResult.data?.code,
+        errors: zarinpalResult.errors,
+      });
+      
+      // Map common ZarinPal error codes to Persian messages
+      let errorMessage = "خطا در ایجاد درخواست پرداخت";
+      if (zarinpalResult.errors && zarinpalResult.errors.length > 0) {
+        errorMessage = zarinpalResult.errors[0].message;
+      } else if (zarinpalResult.data?.code) {
+        const errorCode = zarinpalResult.data.code;
+        const errorMessages: Record<number, string> = {
+          [-9]: "خطای اعتبار سنجی",
+          [-10]: "IP یا مرچنت غیرفعال",
+          [-11]: "درخواست کننده معتبر نیست",
+          [-12]: "امکان انجام تراکنش وجود ندارد",
+          [-15]: "مبلغ پرداخت صحیح نیست",
+          [-16]: "سطح تأیید پذیرنده کافی نیست",
+        };
+        errorMessage = errorMessages[errorCode] || `خطای ${errorCode}`;
+      }
+
       return NextResponse.json(
         {
           success: false,
-          message: "Failed to generate payment token",
+          error: "خطا در ایجاد درخواست پرداخت",
+          message: errorMessage,
+          code: zarinpalResult.data?.code,
         },
-        { status: 500 }
+        { status: 400 }
       );
     }
   } catch (error) {

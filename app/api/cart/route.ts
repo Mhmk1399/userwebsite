@@ -200,6 +200,7 @@ export async function POST(request: NextRequest) {
       ) as CustomJwtPayload;
       userId = decoded.userId;
     } catch (error) {
+        console.error("Token verification error:", error);
       return NextResponse.json(
         { success: false, message: "Invalid token" },
         { status: 401 }
