@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     await connect();
 
     const userId = request.headers.get("userId");
-    const storeId = request.headers.get("storeId");
+    const storeId = process.env.STORE_ID
 
     // If userId is provided in headers, get specific cart
     if (userId) {

@@ -22,11 +22,6 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const headers = {
-      "Cache-Control": "no-cache, no-store, must-revalidate",
-      Pragma: "no-cache",
-      Expires: "0",
-    };
 
     if (routeName === "home") {
       const homeDoc = await Jsons.findOne({ storeId, route: "home" });
@@ -44,7 +39,7 @@ export async function GET(request: NextRequest) {
       }
       const homeContent =
         activeMode === "lg" ? homeDoc.lgContent : homeDoc.smContent;
-      return NextResponse.json(homeContent, { status: 200, headers });
+      return NextResponse.json(homeContent, { status: 200 });
     }
 
     try {
@@ -73,7 +68,7 @@ export async function GET(request: NextRequest) {
         },
       };
 
-      return NextResponse.json(layout, { status: 200, headers });
+      return NextResponse.json(layout, { status: 200 });
     } catch (error) {
       console.log("Error fetching content:", error);
       return NextResponse.json(
