@@ -221,7 +221,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ productData, settings }) => {
 
     // Use _id or id, whichever is available
     const productId = productData?._id || productData?.id || "unknown";
-    console.log(productId, "vvvvvvvvvv");
 
     return (
       <Card

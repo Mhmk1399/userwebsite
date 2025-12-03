@@ -13,19 +13,20 @@ export async function GET(request: NextRequest) {
     await connect();
 
     const userId = request.headers.get("userId");
-    const storeId = process.env.STORE_ID
+    const storeId = process.env.STORE_ID;
+    console.log(storeId, "sadads");
 
     // If userId is provided in headers, get specific cart
     if (userId) {
       const query: Record<string, unknown> = { userId };
-      
+
       // Add storeId filter if provided
       if (storeId) {
         query.storeId = storeId;
       }
 
       const cart = await Cart.findOne(query).populate("items.productId");
-      
+
       if (!cart) {
         return NextResponse.json(
           { success: false, message: "Cart not found" },
@@ -200,15 +201,15 @@ export async function POST(request: NextRequest) {
       ) as CustomJwtPayload;
       userId = decoded.userId;
     } catch (error) {
-        console.error("Token verification error:", error);
+      console.error("Token verification error:", error);
       return NextResponse.json(
         { success: false, message: "Invalid token" },
         { status: 401 }
       );
     }
-
+    const storeId = process.env.STORE_ID;
     const body = await request.json();
-    const { storeId, items } = body;
+    const { items } = body;
 
     if (!storeId) {
       return NextResponse.json(
@@ -236,9 +237,19 @@ export async function POST(request: NextRequest) {
 
     // Validate items structure
     for (const item of items) {
-      if (!item.productId || !item.name || !item.price || !item.quantity || !item.image) {
+      if (
+        !item.productId ||
+        !item.name ||
+        !item.price ||
+        !item.quantity ||
+        !item.image
+      ) {
         return NextResponse.json(
-          { success: false, message: "Invalid item structure. Required: productId, name, price, quantity, image" },
+          {
+            success: false,
+            message:
+              "Invalid item structure. Required: productId, name, price, quantity, image",
+          },
           { status: 400 }
         );
       }
@@ -293,7 +304,8 @@ export async function PATCH(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { storeId, action, item } = body;
+    const { action, item } = body;
+    const storeId = process.env.STORE_ID;
 
     if (!storeId) {
       return NextResponse.json(
@@ -304,7 +316,10 @@ export async function PATCH(request: NextRequest) {
 
     if (!action || !["add", "remove", "update", "clear"].includes(action)) {
       return NextResponse.json(
-        { success: false, message: "Valid action required: add, remove, update, clear" },
+        {
+          success: false,
+          message: "Valid action required: add, remove, update, clear",
+        },
         { status: 400 }
       );
     }
@@ -322,16 +337,24 @@ export async function PATCH(request: NextRequest) {
       case "add":
         if (!item || !item.productId) {
           return NextResponse.json(
-            { success: false, message: "Item with productId required for add action" },
+            {
+              success: false,
+              message: "Item with productId required for add action",
+            },
             { status: 400 }
           );
         }
         // Check if item already exists
         const existingItemIndex = cart.items.findIndex(
-          (i: { productId: { toString: () => string }; colorCode: string; properties: Array<{ name: string; value: string }> }) =>
+          (i: {
+            productId: { toString: () => string };
+            colorCode: string;
+            properties: Array<{ name: string; value: string }>;
+          }) =>
             i.productId.toString() === item.productId &&
             i.colorCode === (item.colorCode || "") &&
-            JSON.stringify(i.properties || []) === JSON.stringify(item.properties || [])
+            JSON.stringify(i.properties || []) ===
+              JSON.stringify(item.properties || [])
         );
 
         if (existingItemIndex > -1) {
@@ -346,16 +369,24 @@ export async function PATCH(request: NextRequest) {
       case "remove":
         if (!item || !item.productId) {
           return NextResponse.json(
-            { success: false, message: "Item with productId required for remove action" },
+            {
+              success: false,
+              message: "Item with productId required for remove action",
+            },
             { status: 400 }
           );
         }
         cart.items = cart.items.filter(
-          (i: { productId: { toString: () => string }; colorCode: string; properties: Array<{ name: string; value: string }> }) =>
+          (i: {
+            productId: { toString: () => string };
+            colorCode: string;
+            properties: Array<{ name: string; value: string }>;
+          }) =>
             !(
               i.productId.toString() === item.productId &&
               i.colorCode === (item.colorCode || "") &&
-              JSON.stringify(i.properties || []) === JSON.stringify(item.properties || [])
+              JSON.stringify(i.properties || []) ===
+                JSON.stringify(item.properties || [])
             )
         );
         break;
@@ -363,15 +394,24 @@ export async function PATCH(request: NextRequest) {
       case "update":
         if (!item || !item.productId || !item.quantity) {
           return NextResponse.json(
-            { success: false, message: "Item with productId and quantity required for update action" },
+            {
+              success: false,
+              message:
+                "Item with productId and quantity required for update action",
+            },
             { status: 400 }
           );
         }
         const updateIndex = cart.items.findIndex(
-          (i: { productId: { toString: () => string }; colorCode: string; properties: Array<{ name: string; value: string }> }) =>
+          (i: {
+            productId: { toString: () => string };
+            colorCode: string;
+            properties: Array<{ name: string; value: string }>;
+          }) =>
             i.productId.toString() === item.productId &&
             i.colorCode === (item.colorCode || "") &&
-            JSON.stringify(i.properties || []) === JSON.stringify(item.properties || [])
+            JSON.stringify(i.properties || []) ===
+              JSON.stringify(item.properties || [])
         );
 
         if (updateIndex > -1) {
@@ -421,7 +461,7 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    const storeId = request.headers.get("storeId");
+    const storeId = process.env.STORE_ID;
     if (!storeId) {
       return NextResponse.json(
         { success: false, message: "storeId required in headers" },
